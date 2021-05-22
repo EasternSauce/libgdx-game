@@ -6,11 +6,12 @@ import com.easternsauce.libgdxgame.util.{EsDirection, EsTimer}
 import scala.collection.mutable.ListBuffer
 
 trait Animated {
+
+  private val standStillImages: Array[TextureRegion] = new Array[TextureRegion](4)
+
+  private val walkAnimation: Array[Animation[TextureRegion]] = new Array[Animation[TextureRegion]](4)
+
   val animationTimer: EsTimer = EsTimer()
-
-  val standStillImage: Array[TextureRegion] = new Array[TextureRegion](4)
-
-  val walkAnimation: Array[Animation[TextureRegion]] = new Array[Animation[TextureRegion]](4)
 
   var dirMap: Map[EsDirection.Value, Int] = _
 
@@ -29,10 +30,8 @@ trait Animated {
 
     val spriteTextureRegion: TextureAtlas.AtlasRegion = atlas.findRegion(regionName)
 
-    animationTimer.start()
-
     for (i <- 0 until 4) {
-      standStillImage(i) =
+      standStillImages(i) =
         new TextureRegion(spriteTextureRegion, 1 * textureWidth, i * textureHeight, textureWidth, textureHeight)
     }
 
@@ -55,5 +54,8 @@ trait Animated {
     walkAnimation(dirMap(currentDirection)).getKeyFrame(animationTimer.time, true)
   }
 
+  def standStillImage(currentDirection: EsDirection.Value): TextureRegion = {
+    standStillImages(dirMap(currentDirection))
+  }
 
 }
