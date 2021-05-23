@@ -1,9 +1,12 @@
-package com.easternsauce.libgdxgame.creatures
+package com.easternsauce.libgdxgame.creature
 
 import com.badlogic.gdx.graphics.g2d.Sprite
 import com.badlogic.gdx.math.Vector2
 import com.easternsauce.libgdxgame.area.Area
+import com.easternsauce.libgdxgame.effect.Effect
 import com.easternsauce.libgdxgame.util.{EsDirection, EsTimer}
+
+import scala.collection.mutable
 
 trait Creature extends Sprite with PhysicalBody with Animated {
 
@@ -25,6 +28,13 @@ trait Creature extends Sprite with PhysicalBody with Animated {
   val directionalSpeed = 30f
 
   protected var area: Option[Area] = None
+
+  var maxHealthPoints = 100f
+  var healthPoints: Float = maxHealthPoints
+  val maxStaminaPoints = 100f
+  var staminaPoints: Float = maxStaminaPoints
+
+  protected val effectMap: mutable.Map[String, Effect] = mutable.Map()
 
   def pos: Vector2 = b2Body.getPosition
 
@@ -96,5 +106,13 @@ trait Creature extends Sprite with PhysicalBody with Animated {
       area.creatureMap += (id -> this)
     }
 
+  }
+
+  def effect(effectName: String): Effect = {
+    effectMap.get(effectName) match {
+      case Some(effect) => effect
+      case _ =>
+        throw new RuntimeException("tried to access non-existing effect: " + effectName)
+    }
   }
 }

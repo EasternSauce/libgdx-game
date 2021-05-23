@@ -7,7 +7,8 @@ import com.badlogic.gdx.maps.tiled.{TiledMap, TiledMapTileLayer, TmxMapLoader}
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d._
 import com.easternsauce.libgdxgame.LibgdxGame
-import com.easternsauce.libgdxgame.creatures.Creature
+import com.easternsauce.libgdxgame.creature.Creature
+import com.easternsauce.libgdxgame.util.EsBatch
 
 import scala.collection.mutable
 
@@ -79,10 +80,10 @@ class Area(mapLoader: TmxMapLoader, fileName: String, val id: String, mapScale: 
     }
   }
 
-  def render(batch: SpriteBatch): Unit = {
+  def render(batch: EsBatch): Unit = {
     tiledMapRenderer.render()
 
-    creatureMap.values.foreach(_.draw(batch))
+    creatureMap.values.foreach(_.draw(batch.spriteBatch))
   }
 
   def setView(camera: OrthographicCamera): Unit = {

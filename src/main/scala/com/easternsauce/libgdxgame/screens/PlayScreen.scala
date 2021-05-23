@@ -8,7 +8,7 @@ import com.badlogic.gdx.utils.viewport.{FitViewport, Viewport}
 import com.badlogic.gdx.{Gdx, Input, Screen}
 import com.easternsauce.libgdxgame.LibgdxGame
 import com.easternsauce.libgdxgame.area.Area
-import com.easternsauce.libgdxgame.creatures.{Creature, Player, Skeleton}
+import com.easternsauce.libgdxgame.creature.{Creature, Player, Skeleton}
 import com.easternsauce.libgdxgame.util.{EsDirection, EsTimer}
 
 import scala.collection.mutable
@@ -83,7 +83,7 @@ class PlayScreen(val game: LibgdxGame) extends Screen {
   override def render(delta: Float): Unit = {
     update(delta)
 
-    game.batch.setProjectionMatrix(camera.combined)
+    game.batch.spriteBatch.setProjectionMatrix(camera.combined)
 
     Gdx.gl.glClearColor(0, 0, 0, 1)
 
@@ -94,9 +94,9 @@ class PlayScreen(val game: LibgdxGame) extends Screen {
            else 0)
     )
 
-    game.batch.begin()
+    game.batch.spriteBatch.begin()
     currentArea.render(game.batch)
-    game.batch.end()
+    game.batch.spriteBatch.end()
 
     b2DebugRenderer.render(currentArea.world, camera.combined)
 

@@ -4,16 +4,17 @@ import com.badlogic.gdx.Game
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.easternsauce.libgdxgame.screens.PlayScreen
+import com.easternsauce.libgdxgame.util.EsBatch
 
 import scala.util.Random
 
 class LibgdxGame extends Game {
 
-  var batch: SpriteBatch = _
+  var batch: EsBatch = _
   var manager: AssetManager = _
 
   override def create(): Unit = {
-    batch = new SpriteBatch()
+    batch = new EsBatch()
     manager = new AssetManager()
 
     // load

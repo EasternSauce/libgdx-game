@@ -1,4 +1,4 @@
-package com.easternsauce.libgdxgame.creatures
+package com.easternsauce.libgdxgame.creature
 
 import com.badlogic.gdx.math.Vector2
 import com.easternsauce.libgdxgame.LibgdxGame
@@ -34,7 +34,6 @@ trait AggressiveAI extends Creature {
   }
 
   def decideIfCircling(): Unit = {
-    //println("time: " + circlingDecisionTimer.time)
     if (circlingDecisionTimer.time > circlingDecisionMaxTime) {
       circlingDecisionTimer.restart()
       if (LibgdxGame.Random.nextFloat() < 0.25f) {
@@ -43,7 +42,6 @@ trait AggressiveAI extends Creature {
       } else {
         circling = false
       }
-      println("decision: " + circling)
     }
 
   }
@@ -73,7 +71,6 @@ trait AggressiveAI extends Creature {
 
     val vector = new Vector2(destination.x - pos.x, destination.y - pos.y)
 
-    if (circlingClockwise) println("clockwise")
     val perpendicularDestination =
       if (circlingClockwise) new Vector2(pos.x - vector.y, pos.y + vector.x)
       else new Vector2(pos.x + vector.y, pos.y - vector.x)
