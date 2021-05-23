@@ -8,7 +8,7 @@ import com.badlogic.gdx.utils.viewport.{FitViewport, Viewport}
 import com.badlogic.gdx.{Gdx, Input, Screen}
 import com.easternsauce.libgdxgame.LibgdxGame
 import com.easternsauce.libgdxgame.area.Area
-import com.easternsauce.libgdxgame.creatures.{Creature, Player}
+import com.easternsauce.libgdxgame.creatures.{Creature, Player, Skeleton}
 import com.easternsauce.libgdxgame.util.{EsDirection, EsTimer}
 
 import scala.collection.mutable
@@ -48,15 +48,19 @@ class PlayScreen(val game: LibgdxGame) extends Screen {
   def loadCreatures(): Unit = {
 
     val creature1 = new Player(this, "player", 30, 30)
+    val skeleton = new Skeleton(this, "skellie", 34, 42)
 
     creatureMap = mutable.Map()
     creatureMap += (creature1.id -> creature1)
+    creatureMap += (skeleton.id -> skeleton)
+
 
     player = creature1
   }
 
   def assignCreaturesToAreas(): Unit = {
     creatureMap("player").assignToArea(areaMap("area1"))
+    creatureMap("skellie").assignToArea(areaMap("area1"))
   }
 
   override def show(): Unit = {}
@@ -68,7 +72,8 @@ class PlayScreen(val game: LibgdxGame) extends Screen {
 
     currentArea.world.step(Math.min(Gdx.graphics.getDeltaTime, 0.15f), 6, 2)
 
-    player.update()
+    currentArea.creatureMap.values.foreach(_.update())
+    //player.update()
 
     adjustCamera(player)
 
@@ -125,7 +130,7 @@ class PlayScreen(val game: LibgdxGame) extends Screen {
         case Input.Keys.DOWN  => EsDirection.Down
       }
 
-    if (dirs.nonEmpty) player.moveInDirection(dirs, 30f)
+    if (dirs.nonEmpty) player.moveInDirection(dirs)
 
   }
 
@@ -134,8 +139,8 @@ class PlayScreen(val game: LibgdxGame) extends Screen {
     val lerp = 30f
     val camPosition = camera.position
 
-    camPosition.x += (creature.posX - camPosition.x) * lerp * Gdx.graphics.getDeltaTime
-    camPosition.y += (creature.posY - camPosition.y) * lerp * Gdx.graphics.getDeltaTime
+    camPosition.x += (creature.pos.x - camPosition.x) * lerp * Gdx.graphics.getDeltaTime
+    camPosition.y += (creature.pos.y - camPosition.y) * lerp * Gdx.graphics.getDeltaTime
 
     camera.update()
   }

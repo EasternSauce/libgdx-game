@@ -7,6 +7,8 @@ import com.easternsauce.libgdxgame.util.{EsDirection, EsTimer}
 
 trait Creature extends Sprite with PhysicalBody with Animated {
 
+  val isEnemy: Boolean = false
+
   val id: String
 
   val creatureWidth: Float
@@ -20,11 +22,15 @@ trait Creature extends Sprite with PhysicalBody with Animated {
   val initX: Float
   val initY: Float
 
-  private var area: Option[Area] = None
+  val directionalSpeed = 30f
 
-  def posX: Float = b2Body.getPosition.x
+  protected var area: Option[Area] = None
 
-  def posY: Float = b2Body.getPosition.y
+  def pos: Vector2 = b2Body.getPosition
+
+  def alive: Boolean = {
+    true // TODO
+  }
 
   def initParams(mass: Float): Unit = {
     this.mass = mass
@@ -35,12 +41,12 @@ trait Creature extends Sprite with PhysicalBody with Animated {
     if (isWalkAnimationActive) setRegion(walkAnimationFrame(currentDirection))
     else setRegion(standStillImage(currentDirection))
 
-    setPosition(posX - getWidth / 2f, posY - getHeight / 2f)
+    setPosition(pos.x - getWidth / 2f, pos.y - getHeight / 2f)
 
     if (isWalkAnimationActive && timeSinceMovedTimer.time > 0.25f) isWalkAnimationActive = false
   }
 
-  def moveInDirection(dirs: List[EsDirection.Value], velocity: Float): Unit = {
+  def moveInDirection(dirs: List[EsDirection.Value]): Unit = {
 
     timeSinceMovedTimer.restart()
 
@@ -54,10 +60,10 @@ trait Creature extends Sprite with PhysicalBody with Animated {
     currentDirection = dirs.last
 
     dirs.foreach {
-      case EsDirection.Up    => vector.y += velocity
-      case EsDirection.Down  => vector.y -= velocity
-      case EsDirection.Left  => vector.x -= velocity
-      case EsDirection.Right => vector.x += velocity
+      case EsDirection.Up    => vector.y += directionalSpeed
+      case EsDirection.Down  => vector.y -= directionalSpeed
+      case EsDirection.Left  => vector.x -= directionalSpeed
+      case EsDirection.Right => vector.x += directionalSpeed
     }
 
     val horizontalCount = dirs.count(EsDirection.isHorizontal)

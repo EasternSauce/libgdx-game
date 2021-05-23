@@ -15,7 +15,7 @@ class Player(val screen: PlayScreen, val id: String, val initX: Float, val initY
     32,
     32,
     3,
-    0.2f,
+    0.1f,
     Map(EsDirection.Up -> 3, EsDirection.Down -> 0, EsDirection.Left -> 1, EsDirection.Right -> 2)
   )
 

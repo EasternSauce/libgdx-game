@@ -32,4 +32,8 @@ trait PhysicalBody {
   def sustainVelocity(velocity: Vector2): Unit = {
     b2Body.setLinearVelocity(velocity)
   }
+
+  def distanceTo(otherCreature: Creature): Float = {
+    b2Body.getPosition.dst(otherCreature.b2Body.getPosition)
+  }
 }
