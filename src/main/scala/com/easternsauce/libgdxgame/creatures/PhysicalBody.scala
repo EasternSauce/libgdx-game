@@ -29,8 +29,7 @@ trait PhysicalBody {
     b2Body.setLinearDamping(10f)
   }
 
-  def sustainVelocity(impulse: Vector2, velocityLimit: Float): Unit = {
-    if (b2Body.linVelWorld.len() <= velocityLimit) b2Body.applyLinearImpulse(impulse, b2Body.getWorldCenter, true)
-
+  def sustainVelocity(velocity: Vector2): Unit = {
+    b2Body.setLinearVelocity(velocity)
   }
 }

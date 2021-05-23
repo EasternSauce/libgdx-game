@@ -6,9 +6,9 @@ import com.easternsauce.libgdxgame.util.{EsDirection, EsTimer}
 import scala.collection.mutable.ListBuffer
 
 trait Animated {
-  private val standStillImages: Array[TextureRegion] = new Array[TextureRegion](4)
+  protected val standStillImages: Array[TextureRegion] = new Array[TextureRegion](4)
 
-  private val walkAnimation: Array[Animation[TextureRegion]] = new Array[Animation[TextureRegion]](4)
+  protected val walkAnimation: Array[Animation[TextureRegion]] = new Array[Animation[TextureRegion]](4)
 
   val animationTimer: EsTimer = EsTimer()
 

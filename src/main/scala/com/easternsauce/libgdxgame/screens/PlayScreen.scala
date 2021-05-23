@@ -55,17 +55,9 @@ class PlayScreen(val game: LibgdxGame) extends Screen {
     player = creature1
   }
 
-  def assignCreatureToArea(creatureId: String, areaId: String): Unit = {
-    val creature = creatureMap(creatureId)
-    val area = areaMap(areaId)
-
-    creature.assignToArea(area)
-  }
-
   def assignCreaturesToAreas(): Unit = {
-    assignCreatureToArea("player", "area1")
+    creatureMap("player").assignToArea(areaMap("area1"))
   }
-
 
   override def show(): Unit = {}
 
@@ -98,14 +90,11 @@ class PlayScreen(val game: LibgdxGame) extends Screen {
            else 0)
     )
 
-
-    b2DebugRenderer.render(currentArea.world, camera.combined)
-
     game.batch.begin()
     currentArea.render(game.batch)
-
-    //player.draw(game.batch)
     game.batch.end()
+
+    b2DebugRenderer.render(currentArea.world, camera.combined)
 
   }
 
@@ -122,6 +111,7 @@ class PlayScreen(val game: LibgdxGame) extends Screen {
 
   override def dispose(): Unit = {
     areaMap.values.foreach(_.dispose())
+    atlas.dispose()
   }
 
   def handleInput(): Unit = {
@@ -135,7 +125,7 @@ class PlayScreen(val game: LibgdxGame) extends Screen {
         case Input.Keys.DOWN  => EsDirection.Down
       }
 
-    if (dirs.nonEmpty) player.moveInDirection(dirs, 8000f)
+    if (dirs.nonEmpty) player.moveInDirection(dirs, 30f)
 
   }
 

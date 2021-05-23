@@ -3,6 +3,22 @@ package com.easternsauce.libgdxgame.util
 import com.easternsauce.libgdxgame.LibgdxGame
 
 object EsDirection extends Enumeration {
+  def isHorizontal(value: EsDirection.Value): Boolean = {
+    value match {
+      case Left => true
+      case Right => true
+      case _ => false
+    }
+  }
+
+  def isVertical(value: EsDirection.Value): Boolean = {
+    value match {
+      case Up => true
+      case Down => true
+      case _ => false
+    }
+  }
+
   type WalkDirection = Value
   val Left, Right, Up, Down = Value
 

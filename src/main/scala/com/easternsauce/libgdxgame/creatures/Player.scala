@@ -4,8 +4,8 @@ import com.easternsauce.libgdxgame.screens.PlayScreen
 import com.easternsauce.libgdxgame.util.EsDirection
 
 class Player(val screen: PlayScreen, val id: String, val initX: Float, val initY: Float) extends Creature {
-  override val creatureWidth = 2f
-  override val creatureHeight = 2f
+  override val creatureWidth = 1.85f
+  override val creatureHeight = 1.85f
 
   setBounds(0, 0, creatureWidth, creatureHeight)
 

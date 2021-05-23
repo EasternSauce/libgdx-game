@@ -51,19 +51,26 @@ trait Creature extends Sprite with PhysicalBody with Animated {
 
     val vector = new Vector2()
 
-    var impulseForce = 1000f
-
     currentDirection = dirs.last
 
     dirs.foreach {
-      case EsDirection.Up    => vector.y += impulseForce
-      case EsDirection.Down  => vector.y -= impulseForce
-      case EsDirection.Left  => vector.x -= impulseForce
-      case EsDirection.Right => vector.x += impulseForce
+      case EsDirection.Up    => vector.y += velocity
+      case EsDirection.Down  => vector.y -= velocity
+      case EsDirection.Left  => vector.x -= velocity
+      case EsDirection.Right => vector.x += velocity
     }
 
-    sustainVelocity(vector, velocity)
+    val horizontalCount = dirs.count(EsDirection.isHorizontal)
+    val verticalCount = dirs.count(EsDirection.isVertical)
 
+    if (horizontalCount < 2 && verticalCount < 2) {
+      if (horizontalCount > 0 && verticalCount > 0) {
+        sustainVelocity(new Vector2(vector.x / Math.sqrt(2).toFloat, vector.y / Math.sqrt(2).toFloat))
+      }
+      else {
+        sustainVelocity(vector)
+      }
+    }
   }
 
   def assignToArea(area: Area): Unit = {
@@ -86,5 +93,4 @@ trait Creature extends Sprite with PhysicalBody with Animated {
     }
 
   }
-
 }
