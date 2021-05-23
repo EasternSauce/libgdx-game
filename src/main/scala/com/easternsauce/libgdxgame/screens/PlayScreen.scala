@@ -8,7 +8,7 @@ import com.badlogic.gdx.utils.viewport.{FitViewport, Viewport}
 import com.badlogic.gdx.{Gdx, Input, Screen}
 import com.easternsauce.libgdxgame.LibgdxGame
 import com.easternsauce.libgdxgame.area.Area
-import com.easternsauce.libgdxgame.creatures.Player
+import com.easternsauce.libgdxgame.creatures.{Creature, Player}
 import com.easternsauce.libgdxgame.util.{EsDirection, EsTimer}
 
 import scala.collection.mutable
@@ -28,10 +28,13 @@ class PlayScreen(val game: LibgdxGame) extends Screen {
 
   private var areaMap: mutable.Map[String, Area] = _
 
+  private var creatureMap: mutable.Map[String, Creature] = _
+
   private var currentArea: Area = _
 
   loadAreas()
   loadCreatures()
+  assignCreaturesToAreas()
 
   private def loadAreas(): Unit = {
     val area1: Area = new Area(mapLoader, "assets/areas/area1/tile_map.tmx", "area1", 4.0f)
@@ -43,8 +46,26 @@ class PlayScreen(val game: LibgdxGame) extends Screen {
   }
 
   def loadCreatures(): Unit = {
-    player = new Player(this, 30, 30, areaMap("area1"))
+
+    val creature1 = new Player(this, "player", 30, 30)
+
+    creatureMap = mutable.Map()
+    creatureMap += (creature1.id -> creature1)
+
+    player = creature1
   }
+
+  def assignCreatureToArea(creatureId: String, areaId: String): Unit = {
+    val creature = creatureMap(creatureId)
+    val area = areaMap(areaId)
+
+    creature.assignToArea(area)
+  }
+
+  def assignCreaturesToAreas(): Unit = {
+    assignCreatureToArea("player", "area1")
+  }
+
 
   override def show(): Unit = {}
 
@@ -77,12 +98,13 @@ class PlayScreen(val game: LibgdxGame) extends Screen {
            else 0)
     )
 
-    currentArea.render()
 
     b2DebugRenderer.render(currentArea.world, camera.combined)
 
     game.batch.begin()
-    player.draw(game.batch)
+    currentArea.render(game.batch)
+
+    //player.draw(game.batch)
     game.batch.end()
 
   }

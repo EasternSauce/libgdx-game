@@ -1,10 +1,9 @@
 package com.easternsauce.libgdxgame.creatures
 
-import com.easternsauce.libgdxgame.area.Area
 import com.easternsauce.libgdxgame.screens.PlayScreen
 import com.easternsauce.libgdxgame.util.EsDirection
 
-class Player(val screen: PlayScreen, val initX: Float, val initY: Float, override val area: Area) extends Creature {
+class Player(val screen: PlayScreen, val id: String, val initX: Float, val initY: Float) extends Creature {
   override val creatureWidth = 2f
   override val creatureHeight = 2f
 
@@ -20,6 +19,6 @@ class Player(val screen: PlayScreen, val initX: Float, val initY: Float, overrid
     Map(EsDirection.Up -> 3, EsDirection.Down -> 0, EsDirection.Left -> 1, EsDirection.Right -> 2)
   )
 
-  initCircularBody(area.world, 300f, initX, initY, creatureWidth / 2f)
+  initParams(300f)
 
 }

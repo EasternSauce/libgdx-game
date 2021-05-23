@@ -9,9 +9,7 @@ trait PhysicalBody {
 
   var mass: Float = 0f
 
-  def initCircularBody(world: World, mass: Float, x: Float, y: Float, radius: Float): Unit = {
-    this.mass = mass
-
+  def initCircularBody(world: World, x: Float, y: Float, radius: Float): Unit = {
     val bodyDef = new BodyDef()
     bodyDef.position
       .set(x, y)

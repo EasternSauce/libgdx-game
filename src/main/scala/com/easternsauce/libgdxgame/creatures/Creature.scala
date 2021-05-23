@@ -7,6 +7,8 @@ import com.easternsauce.libgdxgame.util.{EsDirection, EsTimer}
 
 trait Creature extends Sprite with PhysicalBody with Animated {
 
+  val id: String
+
   val creatureWidth: Float
   val creatureHeight: Float
 
@@ -15,11 +17,18 @@ trait Creature extends Sprite with PhysicalBody with Animated {
   var isWalkAnimationActive = false
   val timeSinceMovedTimer: EsTimer = EsTimer()
 
-  val area: Area
+  val initX: Float
+  val initY: Float
+
+  private var area: Option[Area] = None
 
   def posX: Float = b2Body.getPosition.x
 
   def posY: Float = b2Body.getPosition.y
+
+  def initParams(mass: Float): Unit = {
+    this.mass = mass
+  }
 
   def update(): Unit = {
 
@@ -54,6 +63,27 @@ trait Creature extends Sprite with PhysicalBody with Animated {
     }
 
     sustainVelocity(vector, velocity)
+
+  }
+
+  def assignToArea(area: Area): Unit = {
+    if (this.area.isEmpty) {
+      this.area = Some(area)
+      initCircularBody(area.world, initX, initY, creatureWidth / 2f)
+
+      area.creatureMap += (id -> this)
+    }
+    else {
+      val oldArea = this.area.get
+
+      oldArea.world.destroyBody(b2Body)
+      oldArea.creatureMap -= id
+
+      this.area = Some(area)
+      initCircularBody(area.world, initX, initY, creatureWidth / 2f)
+
+      area.creatureMap += (id -> this)
+    }
 
   }
 
