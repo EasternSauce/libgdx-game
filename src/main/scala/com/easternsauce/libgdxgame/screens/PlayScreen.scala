@@ -2,15 +2,16 @@ package com.easternsauce.libgdxgame.screens
 
 import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.graphics.{GL20, OrthographicCamera}
-import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer
-import com.badlogic.gdx.maps.tiled.{TiledMap, TmxMapLoader}
-import com.badlogic.gdx.math.Vector2
-import com.badlogic.gdx.physics.box2d.{Box2DDebugRenderer, World}
+import com.badlogic.gdx.maps.tiled.TmxMapLoader
+import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer
 import com.badlogic.gdx.utils.viewport.{FitViewport, Viewport}
 import com.badlogic.gdx.{Gdx, Input, Screen}
 import com.easternsauce.libgdxgame.LibgdxGame
+import com.easternsauce.libgdxgame.area.Area
 import com.easternsauce.libgdxgame.creatures.Player
 import com.easternsauce.libgdxgame.util.{EsDirection, EsTimer}
+
+import scala.collection.mutable
 
 class PlayScreen(val game: LibgdxGame) extends Screen {
   private val camera: OrthographicCamera = new OrthographicCamera()
@@ -19,16 +20,31 @@ class PlayScreen(val game: LibgdxGame) extends Screen {
 
   val atlas: TextureAtlas = new TextureAtlas("assets/atlas/packed_atlas.atlas")
 
-  val world: World = new World(new Vector2(0, 0), true)
   private val b2DebugRenderer: Box2DDebugRenderer = new Box2DDebugRenderer()
 
-  val player: Player = new Player(this, 30, 30)
+  var player: Player = _
 
   private val mapLoader: TmxMapLoader = new TmxMapLoader()
-  private val map: TiledMap = mapLoader.load("assets/areas/area1/tile_map.tmx")
-  private val mapScale: Float = 4.0f
-  private val tiledMapRenderer: OrthogonalTiledMapRenderer =
-    new OrthogonalTiledMapRenderer(map, mapScale / LibgdxGame.PPM)
+
+  private var areaMap: mutable.Map[String, Area] = _
+
+  private var currentArea: Area = _
+
+  loadAreas()
+  loadCreatures()
+
+  private def loadAreas(): Unit = {
+    val area1: Area = new Area(mapLoader, "assets/areas/area1/tile_map.tmx", "area1", 4.0f)
+
+    areaMap = mutable.Map()
+    areaMap += (area1.id -> area1)
+
+    currentArea = area1
+  }
+
+  def loadCreatures(): Unit = {
+    player = new Player(this, 30, 30, areaMap("area1"))
+  }
 
   override def show(): Unit = {}
 
@@ -37,13 +53,13 @@ class PlayScreen(val game: LibgdxGame) extends Screen {
 
     handleInput()
 
-    world.step(Math.min(Gdx.graphics.getDeltaTime, 0.15f), 6, 2)
+    currentArea.world.step(Math.min(Gdx.graphics.getDeltaTime, 0.15f), 6, 2)
 
     player.update()
 
     adjustCamera(player)
 
-    tiledMapRenderer.setView(camera)
+    currentArea.setView(camera)
 
   }
 
@@ -61,9 +77,9 @@ class PlayScreen(val game: LibgdxGame) extends Screen {
            else 0)
     )
 
-    tiledMapRenderer.render()
+    currentArea.render()
 
-    b2DebugRenderer.render(world, camera.combined)
+    b2DebugRenderer.render(currentArea.world, camera.combined)
 
     game.batch.begin()
     player.draw(game.batch)
@@ -83,7 +99,7 @@ class PlayScreen(val game: LibgdxGame) extends Screen {
   override def hide(): Unit = {}
 
   override def dispose(): Unit = {
-    world.dispose()
+    areaMap.values.foreach(_.dispose())
   }
 
   def handleInput(): Unit = {
@@ -92,9 +108,9 @@ class PlayScreen(val game: LibgdxGame) extends Screen {
       .filter(dir => Gdx.input.isKeyPressed(dir))
       .map {
         case Input.Keys.RIGHT => EsDirection.Right
-        case Input.Keys.LEFT => EsDirection.Left
-        case Input.Keys.UP => EsDirection.Up
-        case Input.Keys.DOWN => EsDirection.Down
+        case Input.Keys.LEFT  => EsDirection.Left
+        case Input.Keys.UP    => EsDirection.Up
+        case Input.Keys.DOWN  => EsDirection.Down
       }
 
     if (dirs.nonEmpty) player.moveInDirection(dirs, 8000f)

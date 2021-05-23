@@ -2,17 +2,20 @@ package com.easternsauce.libgdxgame.creatures
 
 import com.badlogic.gdx.graphics.g2d.Sprite
 import com.badlogic.gdx.math.Vector2
+import com.easternsauce.libgdxgame.area.Area
 import com.easternsauce.libgdxgame.util.{EsDirection, EsTimer}
 
 trait Creature extends Sprite with PhysicalBody with Animated {
 
-  val creatureWidth = 2f
-  val creatureHeight = 2f
+  val creatureWidth: Float
+  val creatureHeight: Float
 
   var currentDirection: EsDirection.Value = EsDirection.Down
 
   var isWalkAnimationActive = false
   val timeSinceMovedTimer: EsTimer = EsTimer()
+
+  val area: Area
 
   def posX: Float = b2Body.getPosition.x
 

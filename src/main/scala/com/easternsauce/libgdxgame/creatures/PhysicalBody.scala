@@ -4,7 +4,6 @@ import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d._
 
 trait PhysicalBody {
-
   var b2Body: Body = _
   var b2fixture: Fixture = _
 
