@@ -54,7 +54,6 @@ class PlayScreen(val game: LibgdxGame) extends Screen {
     creatureMap += (creature1.id -> creature1)
     creatureMap += (skeleton.id -> skeleton)
 
-
     player = creature1
   }
 

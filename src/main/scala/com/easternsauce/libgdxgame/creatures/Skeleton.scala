@@ -16,6 +16,7 @@ class Skeleton(val screen: PlayScreen, val id: String, val initX: Float, val ini
     64,
     9,
     0.05f,
+    0,
     Map(EsDirection.Up -> 0, EsDirection.Down -> 2, EsDirection.Left -> 1, EsDirection.Right -> 3)
   )
 

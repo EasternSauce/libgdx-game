@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer
 import com.badlogic.gdx.maps.tiled.{TiledMap, TiledMapTileLayer, TmxMapLoader}
 import com.badlogic.gdx.math.Vector2
-import com.badlogic.gdx.physics.box2d.{Body, BodyDef, FixtureDef, PolygonShape, World}
+import com.badlogic.gdx.physics.box2d._
 import com.easternsauce.libgdxgame.LibgdxGame
 import com.easternsauce.libgdxgame.creatures.Creature
 
@@ -79,7 +79,6 @@ class Area(mapLoader: TmxMapLoader, fileName: String, val id: String, mapScale: 
     }
   }
 
-
   def render(batch: SpriteBatch): Unit = {
     tiledMapRenderer.render()
 
@@ -95,6 +94,5 @@ class Area(mapLoader: TmxMapLoader, fileName: String, val id: String, mapScale: 
     tiledMapRenderer.dispose()
     map.dispose()
   }
-
 
 }

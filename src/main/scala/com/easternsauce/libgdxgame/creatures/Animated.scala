@@ -21,6 +21,7 @@ trait Animated {
     textureHeight: Int,
     animationFrameCount: Int,
     frameDuration: Float,
+    neutralStanceFrame: Int,
     dirMap: Map[EsDirection.Value, Int]
   ): Unit = {
     this.dirMap = dirMap
@@ -30,8 +31,13 @@ trait Animated {
     val spriteTextureRegion: TextureAtlas.AtlasRegion = atlas.findRegion(regionName)
 
     for (i <- 0 until 4) {
-      standStillImages(i) =
-        new TextureRegion(spriteTextureRegion, 1 * textureWidth, i * textureHeight, textureWidth, textureHeight)
+      standStillImages(i) = new TextureRegion(
+        spriteTextureRegion,
+        neutralStanceFrame * textureWidth,
+        i * textureHeight,
+        textureWidth,
+        textureHeight
+      )
     }
 
     for (i <- 0 until 4) {

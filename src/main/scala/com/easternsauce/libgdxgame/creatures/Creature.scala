@@ -72,8 +72,7 @@ trait Creature extends Sprite with PhysicalBody with Animated {
     if (horizontalCount < 2 && verticalCount < 2) {
       if (horizontalCount > 0 && verticalCount > 0) {
         sustainVelocity(new Vector2(vector.x / Math.sqrt(2).toFloat, vector.y / Math.sqrt(2).toFloat))
-      }
-      else {
+      } else {
         sustainVelocity(vector)
       }
     }
@@ -85,8 +84,7 @@ trait Creature extends Sprite with PhysicalBody with Animated {
       initCircularBody(area.world, initX, initY, creatureWidth / 2f)
 
       area.creatureMap += (id -> this)
-    }
-    else {
+    } else {
       val oldArea = this.area.get
 
       oldArea.world.destroyBody(b2Body)
