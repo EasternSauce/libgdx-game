@@ -1,24 +1,23 @@
 package com.easternsauce.libgdxgame.ability
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch
+import com.badlogic.gdx.audio.Sound
 import com.easternsauce.libgdxgame.ability.AbilityState.{AbilityState, Inactive}
 import com.easternsauce.libgdxgame.creature.Creature
 import com.easternsauce.libgdxgame.util.{EsBatch, EsTimer}
-import space.earlygrey.shapedrawer.ShapeDrawer
 
 trait Ability {
   val creature: Creature
   protected val isStoppable: Boolean = true
   var state: AbilityState = Inactive
   var onCooldown = false
-  var onPerformAction: () => Unit = () => {}
-  var onChannelAction: () => Unit = () => {}
   protected val activeTimer: EsTimer = EsTimer()
   protected val channelTimer: EsTimer = EsTimer()
   protected val cooldownTime: Float
   protected val activeTime: Float
   protected val channelTime: Float
   protected val isAttack = false
+
+  protected val abilitySound: Option[Sound] = None
 
   def updateHitbox(): Unit = {}
 
@@ -45,7 +44,6 @@ trait Ability {
       channelTimer.restart()
       state = AbilityState.Channeling
       onChannellingStart()
-      onChannelAction()
 
       if (isAttack) { // + 0.01 to ensure regen doesn't start if we hold attack button
         creature
@@ -55,10 +53,11 @@ trait Ability {
     }
   }
 
+  def update(): Unit = {}
+
   def onChannellingStart(): Unit = {}
 
   def performMovement(): Unit = {}
-
 
   def active: Boolean = {
     state == AbilityState.Active

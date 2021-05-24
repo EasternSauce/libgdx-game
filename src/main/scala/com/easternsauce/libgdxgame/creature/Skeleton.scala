@@ -9,7 +9,7 @@ class Skeleton(val screen: PlayScreen, val id: String, val initX: Float, val ini
 
   setBounds(0, 0, creatureWidth, creatureHeight)
 
-  setupTextures(
+  setupAnimation(
     screen.atlas,
     "skeleton",
     64,

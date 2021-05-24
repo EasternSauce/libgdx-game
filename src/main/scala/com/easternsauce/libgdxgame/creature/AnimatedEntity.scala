@@ -5,7 +5,7 @@ import com.easternsauce.libgdxgame.util.{EsDirection, EsTimer}
 
 import scala.collection.mutable.ListBuffer
 
-trait Animated {
+trait AnimatedEntity {
   protected val standStillImages: Array[TextureRegion] = new Array[TextureRegion](4)
 
   protected val walkAnimation: Array[Animation[TextureRegion]] = new Array[Animation[TextureRegion]](4)
@@ -14,7 +14,7 @@ trait Animated {
 
   var dirMap: Map[EsDirection.Value, Int] = _
 
-  def setupTextures(
+  def setupAnimation(
     atlas: TextureAtlas,
     regionName: String,
     textureWidth: Int,

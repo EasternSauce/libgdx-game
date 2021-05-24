@@ -1,7 +1,7 @@
 package com.easternsauce.libgdxgame.util
 
-import com.badlogic.gdx.graphics.{Color, Texture}
 import com.badlogic.gdx.graphics.g2d.{SpriteBatch, TextureRegion}
+import com.badlogic.gdx.graphics.{Color, Texture}
 import space.earlygrey.shapedrawer.ShapeDrawer
 
 class EsBatch {

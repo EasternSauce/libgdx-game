@@ -9,7 +9,7 @@ class Player(val screen: PlayScreen, val id: String, val initX: Float, val initY
 
   setBounds(0, 0, creatureWidth, creatureHeight)
 
-  setupTextures(
+  setupAnimation(
     screen.atlas,
     "male1",
     32,

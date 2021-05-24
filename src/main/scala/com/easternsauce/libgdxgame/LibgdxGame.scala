@@ -2,7 +2,6 @@ package com.easternsauce.libgdxgame
 
 import com.badlogic.gdx.Game
 import com.badlogic.gdx.assets.AssetManager
-import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.easternsauce.libgdxgame.screens.PlayScreen
 import com.easternsauce.libgdxgame.util.EsBatch
 
