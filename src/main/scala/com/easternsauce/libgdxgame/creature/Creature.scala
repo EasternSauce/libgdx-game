@@ -1,19 +1,25 @@
 package com.easternsauce.libgdxgame.creature
 
+import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.graphics.g2d.Sprite
 import com.badlogic.gdx.math.Vector2
-import com.easternsauce.libgdxgame.ability.{Ability, SwordAttack}
+import com.badlogic.gdx.physics.box2d.BodyDef
+import com.easternsauce.libgdxgame.ability.{Ability, Attack, SwordAttack}
 import com.easternsauce.libgdxgame.area.Area
 import com.easternsauce.libgdxgame.effect.Effect
-import com.easternsauce.libgdxgame.util.{EsDirection, EsTimer}
+import com.easternsauce.libgdxgame.screens.PlayScreen
+import com.easternsauce.libgdxgame.util.{EsBatch, EsDirection, EsTimer}
 
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
 
 trait Creature extends Sprite with PhysicalBody with AnimatedEntity {
 
+  val screen: PlayScreen
+
   val isEnemy: Boolean = false
+  val isPlayer: Boolean = false
 
   val id: String
 
@@ -47,16 +53,19 @@ trait Creature extends Sprite with PhysicalBody with AnimatedEntity {
 
   val weaponDamage = 50f // TODO
 
-  var attackVector: Vector2 = _ // TODO
+  var attackVector: Vector2 = new Vector2(0f, 0f)
 
-  var facingVector: Vector2 = _ // TODO
+  var facingVector: Vector2 = new Vector2(0f, 0f)
 
   var staminaOveruse = false
   val staminaOveruseTimer: EsTimer = EsTimer()
 
   var abilityList: mutable.ListBuffer[Ability] = ListBuffer()
+  var attackList: mutable.ListBuffer[Attack] = ListBuffer()
 
   protected val effectMap: mutable.Map[String, Effect] = mutable.Map()
+
+  var swordAttack: SwordAttack = _
 
   def pos: Vector2 = b2Body.getPosition
 
@@ -70,7 +79,67 @@ trait Creature extends Sprite with PhysicalBody with AnimatedEntity {
     this.mass = mass
   }
 
+  def onUpdateStart(): Unit = {
+//    isMoving = false TODO
+//
+//    totalDirections = 0
+//
+//    knockbackSpeed = knockbackPower * Gdx.graphics.getDeltaTime
+//
+//    movingDir.x = 0
+//    movingDir.y = 0
+//
+//    currentMaxVelocity = this.baseSpeed
+//
+//    if (isAttacking) currentMaxVelocity = currentMaxVelocity / 2
+//    else if (sprinting && staminaPoints > 0) {
+//      currentMaxVelocity = currentMaxVelocity * 1.75f
+//      staminaDrain += Gdx.graphics.getDeltaTime
+//    }
+  }
+
   def update(): Unit = {
+//    if (isAlive) {
+//      onUpdateStart()
+
+//      performActions()
+//
+//      controlMovement()
+//      processMovement()
+//
+      setFacingDirection()
+//
+//      regenerate()
+//    }
+
+    for (effect <- effectMap.values) {
+      effect.update()
+    }
+
+    for (ability <- abilityList) {
+      ability.update()
+    }
+
+    currentAttack.update()
+
+//    if (staminaDrain >= 0.3f) {
+//      takeStaminaDamage(11f)
+//
+//      staminaDrain = 0.0f
+//    }
+//
+//    if (
+//      GameSystem.cameraFocussedCreature.nonEmpty
+//        && this == GameSystem.cameraFocussedCreature.get
+//    ) {
+//      GameSystem.adjustCamera(this)
+//    }
+//
+//    if (toSetBodyNonInteractive) {
+//      fixture.setSensor(true)
+//      body.setType(BodyDef.BodyType.StaticBody)
+//      toSetBodyNonInteractive = false
+//    }
 
     if (isWalkAnimationActive) setRegion(walkAnimationFrame(currentDirection))
     else setRegion(standStillImage(currentDirection))
@@ -78,6 +147,15 @@ trait Creature extends Sprite with PhysicalBody with AnimatedEntity {
     setPosition(pos.x - getWidth / 2f, pos.y - getHeight / 2f)
 
     if (isWalkAnimationActive && timeSinceMovedTimer.time > 0.25f) isWalkAnimationActive = false
+  }
+
+  def setFacingDirection(): Unit = {}
+
+
+  def defineStandardAbilities(): Unit = {
+    swordAttack = new SwordAttack(this)
+
+    attackList += swordAttack
   }
 
   def currentAttack: Ability = {
@@ -91,8 +169,17 @@ trait Creature extends Sprite with PhysicalBody with AnimatedEntity {
 //    } else {
 //      unarmedAttack
 //    } TODO
-    new SwordAttack(this)
+    swordAttack
   }
+
+  protected def defineEffects(): Unit = {
+    effectMap.put("immune", Effect())
+    effectMap.put("immobilized", Effect())
+    effectMap.put("staminaRegenStopped", Effect())
+    effectMap.put("poisoned", Effect())
+  }
+
+
 
   def onDeath(): Unit = {
     isWalkAnimationActive = false
@@ -207,5 +294,12 @@ trait Creature extends Sprite with PhysicalBody with AnimatedEntity {
       case _ =>
         throw new RuntimeException("tried to access non-existing effect: " + effectName)
     }
+  }
+
+  def renderAbilities(batch: EsBatch): Unit = {
+    for (ability <- abilityList) {
+      ability.render(batch)
+    }
+    currentAttack.render(batch)
   }
 }

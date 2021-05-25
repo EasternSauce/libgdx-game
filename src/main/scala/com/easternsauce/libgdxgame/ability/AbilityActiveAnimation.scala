@@ -22,7 +22,7 @@ trait AbilityActiveAnimation {
     val spriteTextureRegion: TextureAtlas.AtlasRegion = atlas.findRegion(regionName)
 
     for (i <- 0 until animationFrameCount) {
-      frames += new TextureRegion(spriteTextureRegion, i * textureWidth, textureHeight, textureWidth, textureHeight)
+      frames += new TextureRegion(spriteTextureRegion, i * textureWidth, 0, textureWidth, textureHeight)
     }
 
     abilityActiveAnimation = new Animation[TextureRegion](frameDuration, frames.toArray: _*)

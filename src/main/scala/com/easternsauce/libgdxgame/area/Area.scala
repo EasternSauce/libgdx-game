@@ -18,6 +18,10 @@ class Area(val mapLoader: TmxMapLoader, val fileName: String, val id: String, va
     tiledMapRenderer.render()
 
     creatureMap.values.foreach(_.draw(batch.spriteBatch))
+
+    for (creature <- creatureMap.values) {
+      creature.renderAbilities(batch)
+    }
   }
 
   def setView(camera: OrthographicCamera): Unit = {

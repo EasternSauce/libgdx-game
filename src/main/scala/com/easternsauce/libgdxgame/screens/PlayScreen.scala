@@ -1,5 +1,6 @@
 package com.easternsauce.libgdxgame.screens
 
+import com.badlogic.gdx.Input.Buttons
 import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.graphics.{GL20, OrthographicCamera}
 import com.badlogic.gdx.maps.tiled.TmxMapLoader
@@ -96,6 +97,8 @@ class PlayScreen(val game: LibgdxGame) extends Screen {
 
     game.batch.spriteBatch.begin()
     currentArea.render(game.batch)
+
+
     game.batch.spriteBatch.end()
 
     b2DebugRenderer.render(currentArea.world, camera.combined)
@@ -120,13 +123,16 @@ class PlayScreen(val game: LibgdxGame) extends Screen {
 
   def handleInput(): Unit = {
 
-    val dirs: List[EsDirection.Value] = List(Input.Keys.RIGHT, Input.Keys.LEFT, Input.Keys.UP, Input.Keys.DOWN)
+    if (Gdx.input.isButtonPressed(Buttons.LEFT)) player.currentAttack.perform()
+
+
+    val dirs: List[EsDirection.Value] = List(Input.Keys.D, Input.Keys.A, Input.Keys.W, Input.Keys.S)
       .filter(dir => Gdx.input.isKeyPressed(dir))
       .map {
-        case Input.Keys.RIGHT => EsDirection.Right
-        case Input.Keys.LEFT  => EsDirection.Left
-        case Input.Keys.UP    => EsDirection.Up
-        case Input.Keys.DOWN  => EsDirection.Down
+        case Input.Keys.D => EsDirection.Right
+        case Input.Keys.A => EsDirection.Left
+        case Input.Keys.W => EsDirection.Up
+        case Input.Keys.S => EsDirection.Down
       }
 
     if (dirs.nonEmpty) player.moveInDirection(dirs)

@@ -2,6 +2,7 @@ package com.easternsauce.libgdxgame.ability
 
 import com.badlogic.gdx.math.{Polygon, Rectangle, Vector2}
 import com.badlogic.gdx.physics.box2d.{Body, BodyDef, FixtureDef, PolygonShape}
+import com.easternsauce.libgdxgame.LibgdxGame
 import com.easternsauce.libgdxgame.creature.Creature
 import com.easternsauce.libgdxgame.util.{EsBatch, EsPolygon}
 
@@ -17,13 +18,12 @@ trait MeleeAttack extends Attack {
   // the reference can STILL be attached to some other random body after destruction, like arrow bodies)
 
   protected var aimed: Boolean
-  protected var width: Float
-  protected var height: Float
+  protected var spriteWidth: Int
+  protected var spriteHeight: Int
+  protected def width: Float = spriteWidth.toFloat / LibgdxGame.PPM
+  protected def height: Float = spriteHeight.toFloat / LibgdxGame.PPM
   protected var knockbackPower: Float
   override protected val isAttack = true
-
-  implicit def rectConversion(s: com.badlogic.gdx.math.Rectangle): Rectangle =
-    new Rectangle(s.x, s.y, s.width, s.height)
 
   override def onActiveStart(): Unit = {
     super.onActiveStart()
@@ -51,7 +51,6 @@ trait MeleeAttack extends Attack {
 
     poly.setOrigin(0, height / 2)
     poly.setRotation(theta)
-    //poly.setPosition(attackRectX, attackRectY)
     poly.translate(0, -height / 2)
     poly.setScale(scale, scale)
 
@@ -73,6 +72,7 @@ trait MeleeAttack extends Attack {
 
     val fixtureDef: FixtureDef = new FixtureDef()
     val shape: PolygonShape = new PolygonShape()
+
     shape.set(hitbox.polygon.getTransformedVertices)
     fixtureDef.shape = shape
     fixtureDef.isSensor = true
@@ -88,6 +88,8 @@ trait MeleeAttack extends Attack {
     super.render(batch)
 
     if (state == AbilityState.Channeling) {
+
+
       val image = currentWindupAnimationFrame
 
       val attackVector = creature.attackVector
@@ -96,9 +98,9 @@ trait MeleeAttack extends Attack {
       batch.spriteBatch.draw(
         image,
         hitbox.x,
-        hitbox.y - height / 2,
+        hitbox.y - spriteHeight / 2,
         0,
-        height / 2,
+        spriteHeight / 2,
         image.getRegionWidth,
         image.getRegionHeight,
         scale,
@@ -115,9 +117,9 @@ trait MeleeAttack extends Attack {
       batch.spriteBatch.draw(
         image,
         hitbox.x,
-        hitbox.y - height / 2,
+        hitbox.y - spriteHeight / 2,
         0,
-        height / 2,
+        spriteHeight / 2,
         image.getRegionWidth,
         image.getRegionHeight,
         scale,
@@ -149,7 +151,6 @@ trait MeleeAttack extends Attack {
 
     poly.setOrigin(0, height / 2)
     poly.setRotation(theta)
-    //poly.setPosition(attackRectX, attackRectY)
     poly.translate(0, -height / 2)
     poly.setScale(scale, scale)
 
@@ -206,11 +207,11 @@ trait MeleeAttack extends Attack {
     if (!(creature.isEnemy && otherCreature.isEnemy)) {
       if (creature != otherCreature && state == AbilityState.Active && !otherCreature.isImmune) {
         otherCreature.takeHealthDamage(
-          creature.weaponDamage,
+          damage = creature.weaponDamage,
           immunityFrames = true,
-          knockbackPower * 100f,
-          creature.pos.x,
-          creature.pos.y
+          knockbackPower = knockbackPower * 100f,
+          sourceX = creature.pos.x,
+          sourceY = creature.pos.y
         )
       }
     }

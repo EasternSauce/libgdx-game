@@ -22,7 +22,7 @@ trait AbilityWindupAnimation {
     val spriteTextureRegion: TextureAtlas.AtlasRegion = atlas.findRegion(regionName)
 
     for (i <- 0 until animationFrameCount) {
-      frames += new TextureRegion(spriteTextureRegion, i * textureWidth, textureHeight, textureWidth, textureHeight)
+      frames += new TextureRegion(spriteTextureRegion, i * textureWidth, 0, textureWidth, textureHeight)
     }
 
     abilityWindupAnimation = new Animation[TextureRegion](frameDuration, frames.toArray: _*)

@@ -53,7 +53,29 @@ trait Ability {
     }
   }
 
-  def update(): Unit = {}
+  def update(): Unit = {
+    if ((state == AbilityState.Channeling) && channelTimer.time > channelTime) {
+      state = AbilityState.Active
+      onActiveStart()
+      activeTimer.restart()
+      onCooldown = true
+    }
+    if ((state == AbilityState.Active) && activeTimer.time > activeTime) {
+      onStop()
+
+      state = AbilityState.Inactive
+    }
+
+    if (state == AbilityState.Channeling || state == AbilityState.Active) {
+      updateHitbox()
+    }
+
+    if (state == AbilityState.Channeling) onUpdateChanneling()
+    else if (state == AbilityState.Active) onUpdateActive()
+
+    if ((state == AbilityState.Inactive) && onCooldown)
+      if (activeTimer.time > cooldownTime) onCooldown = false
+  }
 
   def onChannellingStart(): Unit = {}
 
