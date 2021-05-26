@@ -219,7 +219,7 @@ trait Creature extends Sprite with PhysicalBody with AnimatedEntity {
         )
       }
 
-      onGettingHitSound.play(0.1f)
+      // onGettingHitSound.play(0.1f) TODO ASSETS
     }
   }
 

@@ -1,6 +1,8 @@
 package com.easternsauce.libgdxgame.area.traits
 
 import com.badlogic.gdx.physics.box2d.{Contact, ContactImpulse, ContactListener, Manifold}
+import com.easternsauce.libgdxgame.ability.traits.Ability
+import com.easternsauce.libgdxgame.creature.traits.Creature
 
 trait CollisionDetection extends PhysicalTerrain {
 
@@ -12,21 +14,21 @@ trait CollisionDetection extends PhysicalTerrain {
         val objB = contact.getFixtureB.getBody.getUserData
 
         def onContactStart(pair: (AnyRef, AnyRef)): Unit = {
-//          pair match { // will run onContact twice for same type objects!
+          pair match { // will run onContact twice for same type objects!
 //            case (creature: Creature, areaGate: AreaGate) =>
 //              if (!creature.passedGateRecently) {
 //                onPassedAreaGate(areaGate, creature)
 //              }
-//            case (creature: Creature, ability: Ability) =>
-//              ability.onCollideWithCreature(creature)
+            case (creature: Creature, ability: Ability) =>
+              ability.onCollideWithCreature(creature)
 //            case (creature: Creature, abilityComponent: AbilityComponent) =>
 //              abilityComponent.onCollideWithCreature(creature)
 //            case (creature: Creature, arrow: Arrow) =>
 //              arrow.onCollideWithCreature(creature)
 //            case (areaTile: AreaTile, arrow: Arrow) =>
 //              arrow.onCollideWithTerrain(areaTile)
-//            case _ =>
-//          }
+            case _ =>
+          }
         }
 
         onContactStart(objA, objB)
