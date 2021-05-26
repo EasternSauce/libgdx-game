@@ -1,5 +1,6 @@
 package com.easternsauce.libgdxgame.creature.traits
 
+import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.graphics.g2d.Sprite
 import com.badlogic.gdx.math.Vector2
@@ -17,8 +18,9 @@ trait Creature extends Sprite with PhysicalBody with AnimatedEntity {
 
   val screen: PlayScreen
 
-  val isEnemy: Boolean = false
-  val isPlayer: Boolean = false
+  val isEnemy = false
+  val isPlayer = false
+  val isNPC = false
 
   val id: String
 
@@ -57,7 +59,6 @@ trait Creature extends Sprite with PhysicalBody with AnimatedEntity {
   var facingVector: Vector2 = new Vector2(0f, 0f)
 
   var staminaOveruse = false
-  val staminaOveruseTimer: EsTimer = EsTimer()
 
   var abilityList: mutable.ListBuffer[Ability] = ListBuffer()
   var attackList: mutable.ListBuffer[Attack] = ListBuffer()
@@ -65,6 +66,30 @@ trait Creature extends Sprite with PhysicalBody with AnimatedEntity {
   protected val effectMap: mutable.Map[String, Effect] = mutable.Map()
 
   var swordAttack: SwordAttack = _
+
+  protected val healthRegenTimer: EsTimer = EsTimer(true)
+  protected val staminaRegenTimer: EsTimer = EsTimer(true)
+  protected val poisonTickTimer: EsTimer = EsTimer()
+  protected val staminaOveruseTimer: EsTimer = EsTimer()
+  protected val healingTimer: EsTimer = EsTimer()
+  protected val healingTickTimer: EsTimer = EsTimer()
+
+  protected val healthRegen = 0.3f
+  protected val staminaRegen = 3f
+  protected val staminaOveruseTime = 1.3f
+  protected val poisonTickTime = 1.5f
+  protected val poisonTime = 20f
+  protected val knockbackPower = 0f
+  protected var healing = false
+  protected val healingTickTime = 0.3f
+  protected val healingTime = 8f
+  protected var healingPower = 0f
+
+  protected var knocbackable = true
+  protected var knockbackSpeed: Float = 0f
+
+  protected var staminaDrain = 0.0f
+  var sprinting = false
 
   def pos: Vector2 = b2Body.getPosition
 
@@ -79,37 +104,23 @@ trait Creature extends Sprite with PhysicalBody with AnimatedEntity {
   }
 
   def onUpdateStart(): Unit = {
-//    isMoving = false TODO
-//
-//    totalDirections = 0
-//
-//    knockbackSpeed = knockbackPower * Gdx.graphics.getDeltaTime
-//
-//    movingDir.x = 0
-//    movingDir.y = 0
-//
-//    currentMaxVelocity = this.baseSpeed
-//
-//    if (isAttacking) currentMaxVelocity = currentMaxVelocity / 2
-//    else if (sprinting && staminaPoints > 0) {
-//      currentMaxVelocity = currentMaxVelocity * 1.75f
-//      staminaDrain += Gdx.graphics.getDeltaTime
-//    }
+    knockbackSpeed = knockbackPower * Gdx.graphics.getDeltaTime
+
+    if (sprinting && staminaPoints > 0) {
+      staminaDrain += Gdx.graphics.getDeltaTime
+    }
   }
 
-  def update(): Unit = {
-//    if (isAlive) {
-//      onUpdateStart()
+  def isAlive: Boolean = healthPoints > 0f
 
-//      performActions()
-//
-//      controlMovement()
-//      processMovement()
-//
-    setFacingDirection()
-//
-//      regenerate()
-//    }
+  def update(): Unit = {
+    if (isAlive) {
+      onUpdateStart()
+
+      setFacingDirection()
+
+      regenerate()
+    }
 
     for (effect <- effectMap.values) {
       effect.update()
@@ -146,6 +157,63 @@ trait Creature extends Sprite with PhysicalBody with AnimatedEntity {
     setPosition(pos.x - getWidth / 2f, pos.y - getHeight / 2f)
 
     if (isWalkAnimationActive && timeSinceMovedTimer.time > 0.25f) isWalkAnimationActive = false
+  }
+
+  def abilityActive: Boolean = {
+    var abilityActive = false
+
+    for (ability <- abilityList) {
+      if (!abilityActive && ability.active) {
+        abilityActive = true
+
+      }
+    }
+
+    if (currentAttack.active) return true
+
+    abilityActive
+  }
+
+  def regenerate(): Unit = {
+    if (healthRegenTimer.time > 0.5f) {
+      heal(healthRegen)
+      healthRegenTimer.restart()
+    }
+
+    if (!effect("staminaRegenStopped").isActive && !sprinting)
+      if (staminaRegenTimer.time > 0.05f && !abilityActive && !staminaOveruse) {
+        if (staminaPoints < maxStaminaPoints) {
+          val afterRegen = staminaPoints + staminaRegen
+          staminaPoints = Math.min(afterRegen, maxStaminaPoints)
+        }
+        staminaRegenTimer.restart()
+      }
+
+    if (staminaOveruse)
+      if (staminaOveruseTimer.time > staminaOveruseTime) staminaOveruse = false
+
+    if (effect("poisoned").isActive)
+      if (poisonTickTimer.time > poisonTickTime) {
+        takeHealthDamage(15f, immunityFrames = false)
+        poisonTickTimer.restart()
+      }
+
+    if (healing) {
+      if (healingTickTimer.time > healingTickTime) {
+        heal(healingPower)
+        healingTickTimer.restart()
+      }
+      if (healingTimer.time > healingTime || healthPoints >= maxHealthPoints)
+        healing = false
+    }
+  }
+
+  def heal(healValue: Float): Unit = {
+    if (healthPoints < maxHealthPoints) {
+      val afterHeal = healthPoints + healValue
+      healthPoints = Math.min(afterHeal, maxHealthPoints)
+
+    }
   }
 
   def setFacingDirection(): Unit = {}
@@ -245,11 +313,16 @@ trait Creature extends Sprite with PhysicalBody with AnimatedEntity {
 
     currentDirection = dirs.last
 
+    val modifiedSpeed =
+      if (isAttacking) directionalSpeed / 2f
+      else if (sprinting && staminaPoints > 0) directionalSpeed * 1.75f
+      else directionalSpeed
+
     dirs.foreach {
-      case EsDirection.Up    => vector.y += directionalSpeed
-      case EsDirection.Down  => vector.y -= directionalSpeed
-      case EsDirection.Left  => vector.x -= directionalSpeed
-      case EsDirection.Right => vector.x += directionalSpeed
+      case EsDirection.Up    => vector.y += modifiedSpeed
+      case EsDirection.Down  => vector.y -= modifiedSpeed
+      case EsDirection.Left  => vector.x -= modifiedSpeed
+      case EsDirection.Right => vector.x += modifiedSpeed
     }
 
     val horizontalCount = dirs.count(EsDirection.isHorizontal)

@@ -8,12 +8,14 @@ import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer
 import com.badlogic.gdx.utils.viewport.{FitViewport, Viewport}
 import com.badlogic.gdx.{Gdx, Input, Screen}
 import com.easternsauce.libgdxgame.LibgdxGame
-import com.easternsauce.libgdxgame.area.Area
+import com.easternsauce.libgdxgame.area.{Area, AreaGate}
+import com.easternsauce.libgdxgame.assets.AssetPaths
 import com.easternsauce.libgdxgame.creature.traits.Creature
 import com.easternsauce.libgdxgame.creature.{Player, Skeleton}
 import com.easternsauce.libgdxgame.util.{EsDirection, EsTimer}
 
 import scala.collection.mutable
+import scala.collection.mutable.ListBuffer
 
 class PlayScreen(val game: LibgdxGame) extends Screen {
   private val camera: OrthographicCamera = new OrthographicCamera()
@@ -32,19 +34,29 @@ class PlayScreen(val game: LibgdxGame) extends Screen {
 
   private var creatureMap: mutable.Map[String, Creature] = _
 
-  private var currentArea: Area = _
+  private var currentArea: Option[Area] = _
+
+  var gateList: ListBuffer[AreaGate] = ListBuffer()
 
   loadAreas()
   loadCreatures()
   assignCreaturesToAreas()
 
   private def loadAreas(): Unit = {
-    val area1: Area = new Area(mapLoader, "assets/areas/area1/tile_map.tmx", "area1", 4.0f)
+    val area1: Area = new Area(mapLoader, AssetPaths.area1Map, "area1", 4.0f)
+    val area2: Area = new Area(mapLoader, AssetPaths.area2Map, "area2", 4.0f)
+    val area3: Area = new Area(mapLoader, AssetPaths.area3Map, "area3", 4.0f)
 
     areaMap = mutable.Map()
     areaMap += (area1.id -> area1)
+    areaMap += (area2.id -> area2)
+    areaMap += (area3.id -> area3)
 
-    currentArea = area1
+    currentArea = Some(area1)
+
+    gateList += AreaGate(currentArea, areaMap("area1"), 197, 15, areaMap("area3"), 17, 2)
+    gateList += AreaGate(currentArea, areaMap("area1"), 2, 63, areaMap("area2"), 58, 9)
+
   }
 
   def loadCreatures(): Unit = {
@@ -71,14 +83,13 @@ class PlayScreen(val game: LibgdxGame) extends Screen {
 
     handleInput()
 
-    currentArea.world.step(Math.min(Gdx.graphics.getDeltaTime, 0.15f), 6, 2)
+    currentArea.get.world.step(Math.min(Gdx.graphics.getDeltaTime, 0.15f), 6, 2)
 
-    currentArea.creatureMap.values.foreach(_.update())
-    //player.update()
+    currentArea.get.creatureMap.values.foreach(_.update())
 
     adjustCamera(player)
 
-    currentArea.setView(camera)
+    currentArea.get.setView(camera)
 
   }
 
@@ -97,12 +108,12 @@ class PlayScreen(val game: LibgdxGame) extends Screen {
     )
 
     game.batch.spriteBatch.begin()
-    currentArea.render(game.batch)
+    currentArea.get.render(game.batch)
 
 
     game.batch.spriteBatch.end()
 
-    b2DebugRenderer.render(currentArea.world, camera.combined)
+    b2DebugRenderer.render(currentArea.get.world, camera.combined)
 
   }
 

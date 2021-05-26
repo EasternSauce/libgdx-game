@@ -2,6 +2,8 @@ package com.easternsauce.libgdxgame
 
 import com.badlogic.gdx.Game
 import com.badlogic.gdx.assets.AssetManager
+import com.badlogic.gdx.graphics.Texture
+import com.easternsauce.libgdxgame.assets.AssetPaths
 import com.easternsauce.libgdxgame.screens.PlayScreen
 import com.easternsauce.libgdxgame.util.EsBatch
 
@@ -10,15 +12,14 @@ import scala.util.Random
 class LibgdxGame extends Game {
 
   var batch: EsBatch = _
-  var manager: AssetManager = _
 
   override def create(): Unit = {
     batch = new EsBatch()
-    manager = new AssetManager()
+    LibgdxGame.manager = new AssetManager()
 
-    // load
+    LibgdxGame.manager.load(AssetPaths.downArrowTexture, classOf[Texture])
 
-    manager.finishLoading()
+    LibgdxGame.manager.finishLoading()
 
     setScreen(new PlayScreen(this))
 
@@ -27,6 +28,8 @@ class LibgdxGame extends Game {
 
 object LibgdxGame {
   val Random: Random = new Random()
+
+  var manager: AssetManager = _
 
   val VWidth = 1536
   val VHeight = 864
