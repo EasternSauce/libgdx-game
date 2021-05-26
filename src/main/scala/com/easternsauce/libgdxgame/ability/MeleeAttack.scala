@@ -1,16 +1,16 @@
 package com.easternsauce.libgdxgame.ability
 
+import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.math.{Polygon, Rectangle, Vector2}
-import com.badlogic.gdx.physics.box2d.{Body, BodyDef, FixtureDef, PolygonShape}
 import com.easternsauce.libgdxgame.LibgdxGame
-import com.easternsauce.libgdxgame.creature.Creature
+import com.easternsauce.libgdxgame.ability.traits.{Attack, PhysicalHitbox}
+import com.easternsauce.libgdxgame.creature.traits.Creature
 import com.easternsauce.libgdxgame.util.{EsBatch, EsPolygon}
 
-trait MeleeAttack extends Attack {
+trait MeleeAttack extends Attack with PhysicalHitbox {
   var scale: Float
   var attackRange: Float
-  var body: Body = _
-  var hitbox: AttackHitbox = _
+  var hitbox: Option[AttackHitbox] = None
   var toRemoveBody = false
 
   var bodyActive = false
@@ -54,29 +54,13 @@ trait MeleeAttack extends Attack {
     poly.translate(0, -height / 2)
     poly.setScale(scale, scale)
 
-    hitbox = AttackHitbox(attackRectX, attackRectY, poly)
+    hitbox = Some(AttackHitbox(attackRectX, attackRectY, poly))
 
-    initBody(hitbox)
+    if (creature.area.nonEmpty) initHitboxBody(creature.area.get.world, hitbox.get)
+
     bodyActive = true
 
     toRemoveBody = false
-  }
-
-  def initBody(hitbox: AttackHitbox): Unit = {
-    val bodyDef = new BodyDef()
-    bodyDef.position.set(hitbox.x, hitbox.y)
-
-    bodyDef.`type` = BodyDef.BodyType.KinematicBody
-    body = creature.area.get.world.createBody(bodyDef)
-    body.setUserData(this)
-
-    val fixtureDef: FixtureDef = new FixtureDef()
-    val shape: PolygonShape = new PolygonShape()
-
-    shape.set(hitbox.polygon.getTransformedVertices)
-    fixtureDef.shape = shape
-    fixtureDef.isSensor = true
-    body.createFixture(fixtureDef)
   }
 
   override def onUpdateActive(): Unit = {
@@ -87,46 +71,28 @@ trait MeleeAttack extends Attack {
   override def render(batch: EsBatch): Unit = {
     super.render(batch)
 
-    if (state == AbilityState.Channeling) {
-
-
-      val image = currentWindupAnimationFrame
-
+    def renderFrame(image: TextureRegion): Unit = {
       val attackVector = creature.attackVector
       val theta = new Vector2(attackVector.x, attackVector.y).angleDeg()
 
-      batch.spriteBatch.draw(
-        image,
-        hitbox.x,
-        hitbox.y - spriteHeight / 2,
-        0,
-        spriteHeight / 2,
-        image.getRegionWidth,
-        image.getRegionHeight,
-        scale,
-        scale,
-        theta
-      )
+      if (hitbox.nonEmpty)
+        batch.spriteBatch.draw(
+          image,
+          hitbox.get.x,
+          hitbox.get.y - height / 2,
+          0,
+          height / 2,
+          width,
+          height,
+          scale,
+          scale,
+          theta
+        )
     }
-    if (state == AbilityState.Active) {
-      val image = currentActiveAnimationFrame
 
-      val attackVector = creature.attackVector
-      val theta = new Vector2(attackVector.x, attackVector.y).angleDeg()
+    if (state == AbilityState.Channeling) renderFrame(currentWindupAnimationFrame)
+    if (state == AbilityState.Active) renderFrame(currentActiveAnimationFrame)
 
-      batch.spriteBatch.draw(
-        image,
-        hitbox.x,
-        hitbox.y - spriteHeight / 2,
-        0,
-        spriteHeight / 2,
-        image.getRegionWidth,
-        image.getRegionHeight,
-        scale,
-        scale,
-        theta
-      )
-    }
   }
 
   override def onChannellingStart(): Unit = {
@@ -154,15 +120,15 @@ trait MeleeAttack extends Attack {
     poly.translate(0, -height / 2)
     poly.setScale(scale, scale)
 
-    hitbox = AttackHitbox(attackRectX, attackRectY, poly)
+    hitbox = Some(AttackHitbox(attackRectX, attackRectY, poly))
 
   }
 
   override def update(): Unit = {
     super.update()
 
-    if (body != null && toRemoveBody) {
-      body.getWorld.destroyBody(body)
+    if (b2body.nonEmpty && toRemoveBody) {
+      b2body.get.getWorld.destroyBody(b2body.get)
       toRemoveBody = false
       bodyActive = false
     }
@@ -171,7 +137,8 @@ trait MeleeAttack extends Attack {
   override def updateHitbox(): Unit = {
     super.updateHitbox()
 
-    if (hitbox != null) {
+    if (hitbox.nonEmpty) {
+
       var attackVector = creature.attackVector
 
       if (attackVector.len() > 0f) {
@@ -181,11 +148,11 @@ trait MeleeAttack extends Attack {
       val attackShiftX = attackVector.x * attackRange
       val attackShiftY = attackVector.y * attackRange
 
-      hitbox.x = attackShiftX + creature.pos.x
-      hitbox.y = attackShiftY + creature.pos.y
+      hitbox.get.x = attackShiftX + creature.pos.x
+      hitbox.get.y = attackShiftY + creature.pos.y
 
       if (bodyActive) {
-        body.setTransform(hitbox.x, hitbox.y, 0f)
+        b2body.get.setTransform(hitbox.get.x, hitbox.get.y, 0f)
       }
     }
 

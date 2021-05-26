@@ -1,11 +1,10 @@
-package com.easternsauce.libgdxgame.creature
+package com.easternsauce.libgdxgame.creature.traits
 
-import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.graphics.g2d.Sprite
 import com.badlogic.gdx.math.Vector2
-import com.badlogic.gdx.physics.box2d.BodyDef
-import com.easternsauce.libgdxgame.ability.{Ability, Attack, SwordAttack}
+import com.easternsauce.libgdxgame.ability.SwordAttack
+import com.easternsauce.libgdxgame.ability.traits.{Ability, Attack}
 import com.easternsauce.libgdxgame.area.Area
 import com.easternsauce.libgdxgame.effect.Effect
 import com.easternsauce.libgdxgame.screens.PlayScreen
@@ -107,7 +106,7 @@ trait Creature extends Sprite with PhysicalBody with AnimatedEntity {
 //      controlMovement()
 //      processMovement()
 //
-      setFacingDirection()
+    setFacingDirection()
 //
 //      regenerate()
 //    }
@@ -151,7 +150,6 @@ trait Creature extends Sprite with PhysicalBody with AnimatedEntity {
 
   def setFacingDirection(): Unit = {}
 
-
   def defineStandardAbilities(): Unit = {
     swordAttack = new SwordAttack(this)
 
@@ -178,8 +176,6 @@ trait Creature extends Sprite with PhysicalBody with AnimatedEntity {
     effectMap.put("staminaRegenStopped", Effect())
     effectMap.put("poisoned", Effect())
   }
-
-
 
   def onDeath(): Unit = {
     isWalkAnimationActive = false

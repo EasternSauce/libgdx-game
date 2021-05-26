@@ -1,5 +1,6 @@
 package com.easternsauce.libgdxgame.creature
 
+import com.easternsauce.libgdxgame.creature.traits.Enemy
 import com.easternsauce.libgdxgame.screens.PlayScreen
 import com.easternsauce.libgdxgame.util.EsDirection
 

@@ -1,8 +1,9 @@
-package com.easternsauce.libgdxgame.area
+package com.easternsauce.libgdxgame.area.traits
 
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer
 import com.badlogic.gdx.maps.tiled.{TiledMap, TmxMapLoader}
 import com.easternsauce.libgdxgame.LibgdxGame
+import com.easternsauce.libgdxgame.area.AreaTile
 
 import scala.collection.mutable
 

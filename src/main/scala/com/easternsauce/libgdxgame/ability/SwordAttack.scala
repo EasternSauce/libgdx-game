@@ -1,7 +1,7 @@
 package com.easternsauce.libgdxgame.ability
 
 import com.badlogic.gdx.graphics.g2d.{Animation, TextureRegion}
-import com.easternsauce.libgdxgame.creature.Creature
+import com.easternsauce.libgdxgame.creature.traits.Creature
 
 class SwordAttack(val creature: Creature) extends MeleeAttack {
 
@@ -20,14 +20,13 @@ class SwordAttack(val creature: Creature) extends MeleeAttack {
   override protected var abilityActiveAnimation: Animation[TextureRegion] = _
   override protected var abilityWindupAnimation: Animation[TextureRegion] = _
 
-  override var scale: Float = 0.1f
+  override var scale: Float = 2.0f
   override var attackRange: Float = 0.9375f
   override protected var aimed: Boolean = false
   override protected var spriteWidth: Int = 40
   override protected var spriteHeight: Int = 40
   override protected var knockbackPower: Float = 10f
   override protected val cooldownTime: Float = 0.8f
-
 
   setupActiveAnimation(
     atlas = creature.screen.atlas,

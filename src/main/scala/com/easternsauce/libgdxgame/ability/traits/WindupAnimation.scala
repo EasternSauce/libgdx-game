@@ -1,11 +1,11 @@
-package com.easternsauce.libgdxgame.ability
+package com.easternsauce.libgdxgame.ability.traits
 
 import com.badlogic.gdx.graphics.g2d.{Animation, TextureAtlas, TextureRegion}
 import com.easternsauce.libgdxgame.util.EsTimer
 
 import scala.collection.mutable.ListBuffer
 
-trait AbilityWindupAnimation {
+trait WindupAnimation {
   protected var abilityWindupAnimation: Animation[TextureRegion]
   protected val abilityWindupAnimationTimer: EsTimer = EsTimer()
 

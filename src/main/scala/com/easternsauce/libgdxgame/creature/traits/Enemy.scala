@@ -1,4 +1,4 @@
-package com.easternsauce.libgdxgame.creature
+package com.easternsauce.libgdxgame.creature.traits
 
 trait Enemy extends Creature with AggressiveAI {
 

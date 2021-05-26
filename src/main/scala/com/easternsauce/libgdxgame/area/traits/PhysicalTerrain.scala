@@ -1,9 +1,10 @@
-package com.easternsauce.libgdxgame.area
+package com.easternsauce.libgdxgame.area.traits
 
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d._
 import com.easternsauce.libgdxgame.LibgdxGame
+import com.easternsauce.libgdxgame.area.AreaTile
 
 trait PhysicalTerrain extends TiledGrid {
   val world: World = new World(new Vector2(0, 0), true)

@@ -1,4 +1,4 @@
-package com.easternsauce.libgdxgame.creature
+package com.easternsauce.libgdxgame.creature.traits
 
 import com.badlogic.gdx.graphics.g2d.{Animation, TextureAtlas, TextureRegion}
 import com.easternsauce.libgdxgame.util.{EsDirection, EsTimer}

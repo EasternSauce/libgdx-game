@@ -1,4 +1,4 @@
-package com.easternsauce.libgdxgame.area
+package com.easternsauce.libgdxgame.area.traits
 
 import com.badlogic.gdx.physics.box2d.{Contact, ContactImpulse, ContactListener, Manifold}
 

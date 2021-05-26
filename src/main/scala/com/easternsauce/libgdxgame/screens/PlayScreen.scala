@@ -9,7 +9,8 @@ import com.badlogic.gdx.utils.viewport.{FitViewport, Viewport}
 import com.badlogic.gdx.{Gdx, Input, Screen}
 import com.easternsauce.libgdxgame.LibgdxGame
 import com.easternsauce.libgdxgame.area.Area
-import com.easternsauce.libgdxgame.creature.{Creature, Player, Skeleton}
+import com.easternsauce.libgdxgame.creature.traits.Creature
+import com.easternsauce.libgdxgame.creature.{Player, Skeleton}
 import com.easternsauce.libgdxgame.util.{EsDirection, EsTimer}
 
 import scala.collection.mutable

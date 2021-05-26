@@ -2,7 +2,8 @@ package com.easternsauce.libgdxgame.area
 
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.maps.tiled.TmxMapLoader
-import com.easternsauce.libgdxgame.creature.Creature
+import com.easternsauce.libgdxgame.area.traits.PhysicalTerrain
+import com.easternsauce.libgdxgame.creature.traits.Creature
 import com.easternsauce.libgdxgame.util.EsBatch
 
 import scala.collection.mutable

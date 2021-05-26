@@ -1,4 +1,4 @@
-package com.easternsauce.libgdxgame.creature
+package com.easternsauce.libgdxgame.creature.traits
 
 import com.badlogic.gdx.math.Vector2
 import com.easternsauce.libgdxgame.LibgdxGame
