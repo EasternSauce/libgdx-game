@@ -110,6 +110,7 @@ class PlayScreen(val game: LibgdxGame) extends Screen {
     game.batch.spriteBatch.begin()
     currentArea.get.render(game.batch)
 
+    for (areaGate <- gateList) areaGate.render(game.batch)
 
     game.batch.spriteBatch.end()
 
@@ -136,7 +137,6 @@ class PlayScreen(val game: LibgdxGame) extends Screen {
   def handleInput(): Unit = {
 
     if (Gdx.input.isButtonPressed(Buttons.LEFT)) player.currentAttack.perform()
-
 
     val dirs: List[EsDirection.Value] = List(Input.Keys.D, Input.Keys.A, Input.Keys.W, Input.Keys.S)
       .filter(dir => Gdx.input.isKeyPressed(dir))

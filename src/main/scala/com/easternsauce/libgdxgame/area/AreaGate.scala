@@ -18,8 +18,8 @@ class AreaGate private (
   val toPosY: Int
 ) {
 
-  private val width = 48f
-  private val height = 48f
+  private val width = 1.5f
+  private val height = 1.5f
 
   val fromRect = new Rectangle(fromPosX, fromPosY, width, height)
   val toRect = new Rectangle(toPosX, toPosY, width, height)
@@ -29,8 +29,10 @@ class AreaGate private (
 
   downArrowImageFrom.setPosition(fromPosX, fromPosY)
   downArrowImageTo.setPosition(toPosX, toPosY)
-  downArrowImageFrom.setScale(1.5f)
-  downArrowImageTo.setScale(1.5f)
+  downArrowImageFrom.setWidth(width)
+  downArrowImageFrom.setHeight(height)
+  downArrowImageTo.setWidth(width)
+  downArrowImageTo.setHeight(height)
 
   private var body: Body = _
 
