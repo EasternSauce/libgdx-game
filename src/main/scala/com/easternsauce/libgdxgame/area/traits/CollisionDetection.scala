@@ -2,9 +2,13 @@ package com.easternsauce.libgdxgame.area.traits
 
 import com.badlogic.gdx.physics.box2d.{Contact, ContactImpulse, ContactListener, Manifold}
 import com.easternsauce.libgdxgame.ability.traits.Ability
+import com.easternsauce.libgdxgame.area.AreaGate
 import com.easternsauce.libgdxgame.creature.traits.Creature
+import com.easternsauce.libgdxgame.screens.PlayScreen
 
 trait CollisionDetection extends PhysicalTerrain {
+
+  val screen: PlayScreen
 
   def createContactListener(): Unit = {
     val contactListener: ContactListener = new ContactListener {
@@ -15,10 +19,8 @@ trait CollisionDetection extends PhysicalTerrain {
 
         def onContactStart(pair: (AnyRef, AnyRef)): Unit = {
           pair match { // will run onContact twice for same type objects!
-//            case (creature: Creature, areaGate: AreaGate) =>
-//              if (!creature.passedGateRecently) {
-//                onPassedAreaGate(areaGate, creature)
-//              }
+            case (creature: Creature, areaGate: AreaGate) =>
+              areaGate.activate(creature)
             case (creature: Creature, ability: Ability) =>
               ability.onCollideWithCreature(creature)
 //            case (creature: Creature, abilityComponent: AbilityComponent) =>

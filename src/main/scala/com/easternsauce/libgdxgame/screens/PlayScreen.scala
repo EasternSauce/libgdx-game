@@ -34,7 +34,7 @@ class PlayScreen(val game: LibgdxGame) extends Screen {
 
   private var creatureMap: mutable.Map[String, Creature] = _
 
-  private var currentArea: Option[Area] = _
+  var currentArea: Option[Area] = _
 
   var gateList: ListBuffer[AreaGate] = ListBuffer()
 
@@ -43,9 +43,9 @@ class PlayScreen(val game: LibgdxGame) extends Screen {
   assignCreaturesToAreas()
 
   private def loadAreas(): Unit = {
-    val area1: Area = new Area(mapLoader, AssetPaths.area1Map, "area1", 4.0f)
-    val area2: Area = new Area(mapLoader, AssetPaths.area2Map, "area2", 4.0f)
-    val area3: Area = new Area(mapLoader, AssetPaths.area3Map, "area3", 4.0f)
+    val area1: Area = new Area(this, mapLoader, AssetPaths.area1Map, "area1", 4.0f)
+    val area2: Area = new Area(this, mapLoader, AssetPaths.area2Map, "area2", 4.0f)
+    val area3: Area = new Area(this, mapLoader, AssetPaths.area3Map, "area3", 4.0f)
 
     areaMap = mutable.Map()
     areaMap += (area1.id -> area1)

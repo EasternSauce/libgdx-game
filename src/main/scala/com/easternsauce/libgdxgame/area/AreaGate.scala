@@ -1,28 +1,25 @@
 package com.easternsauce.libgdxgame.area
 
 import com.badlogic.gdx.graphics.Texture
-import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.physics.box2d._
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.easternsauce.libgdxgame.LibgdxGame
 import com.easternsauce.libgdxgame.assets.AssetPaths
+import com.easternsauce.libgdxgame.creature.traits.Creature
 import com.easternsauce.libgdxgame.util.EsBatch
 
 class AreaGate private (
   val currentArea: Option[Area],
   val areaFrom: Area,
-  val fromPosX: Int,
-  val fromPosY: Int,
+  val fromPosX: Float,
+  val fromPosY: Float,
   val areaTo: Area,
-  val toPosX: Int,
-  val toPosY: Int
+  val toPosX: Float,
+  val toPosY: Float
 ) {
 
   private val width = 1.5f
   private val height = 1.5f
-
-  val fromRect = new Rectangle(fromPosX, fromPosY, width, height)
-  val toRect = new Rectangle(toPosX, toPosY, width, height)
 
   private val downArrowImageFrom = new Image(LibgdxGame.manager.get(AssetPaths.downArrowTexture, classOf[Texture]))
   private val downArrowImageTo = new Image(LibgdxGame.manager.get(AssetPaths.downArrowTexture, classOf[Texture]))
@@ -36,8 +33,8 @@ class AreaGate private (
 
   private var body: Body = _
 
-  initBody(areaFrom, fromRect)
-  initBody(areaTo, toRect)
+  initBody(areaFrom, fromPosX, fromPosY)
+  initBody(areaTo, toPosX, toPosY)
 
   def render(batch: EsBatch): Unit = {
     val area = currentArea.getOrElse {
@@ -48,10 +45,10 @@ class AreaGate private (
     if (area == areaTo) downArrowImageTo.draw(batch.spriteBatch, 1.0f)
   }
 
-  def initBody(area: Area, rect: Rectangle): Unit = {
+  def initBody(area: Area, x: Float, y: Float): Unit = {
     val bodyDef = new BodyDef()
     bodyDef.position
-      .set(rect.x + width / 2, rect.y + height / 2)
+      .set(x + width / 2, y + height / 2)
     bodyDef.`type` = BodyDef.BodyType.StaticBody
     body = area.world.createBody(bodyDef)
     body.setUserData(this)
@@ -61,12 +58,26 @@ class AreaGate private (
     fixtureDef.isSensor = true
     val shape: PolygonShape = new PolygonShape()
 
-    shape.setAsBox(rect.width / 2, rect.height / 2)
+    shape.setAsBox(width / 2, height / 2)
 
     fixtureDef.shape = shape
     body.createFixture(fixtureDef)
 
   }
+
+  def activate(creature: Creature): Unit = {
+    if (creature.isPlayer) {
+      val (origin: Area, destination: Area, posX: Float, posY: Float) = creature.area match {
+        case Some(areaFrom) => (areaFrom, areaTo, toPosX, toPosY)
+        case Some(areaTo)   => (areaTo, areaFrom, fromPosX, fromPosY)
+      }
+
+      origin.evictCreature(creature)
+      destination.reset()
+      destination.moveInCreature(creature, posX, posY)
+    }
+  }
+
 }
 
 object AreaGate {

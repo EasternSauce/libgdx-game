@@ -4,12 +4,18 @@ import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.maps.tiled.TmxMapLoader
 import com.easternsauce.libgdxgame.area.traits.CollisionDetection
 import com.easternsauce.libgdxgame.creature.traits.Creature
+import com.easternsauce.libgdxgame.screens.PlayScreen
 import com.easternsauce.libgdxgame.util.EsBatch
 
 import scala.collection.mutable
 
-class Area(val mapLoader: TmxMapLoader, val fileName: String, val id: String, val mapScale: Float)
-    extends CollisionDetection {
+class Area(
+  val screen: PlayScreen,
+  val mapLoader: TmxMapLoader,
+  val fileName: String,
+  val id: String,
+  val mapScale: Float
+) extends CollisionDetection {
 
   val creatureMap: mutable.Map[String, Creature] = mutable.Map()
 
@@ -36,5 +42,11 @@ class Area(val mapLoader: TmxMapLoader, val fileName: String, val id: String, va
     tiledMapRenderer.dispose()
     map.dispose()
   }
+
+  def moveInCreature(creature: Creature, posX: Float, posY: Float) = ???
+
+  def reset() = ???
+
+  def evictCreature(creature: Creature) = ???
 
 }
