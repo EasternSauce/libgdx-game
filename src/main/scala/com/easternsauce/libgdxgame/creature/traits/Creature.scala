@@ -58,6 +58,7 @@ trait Creature extends Sprite with PhysicalBody with AnimatedEntity {
   var staminaOveruse = false
 
   var passedGateRecently = false
+  var toSetBodyNonInteractive = false
 
   var abilityList: mutable.ListBuffer[Ability] = ListBuffer()
   var attackList: mutable.ListBuffer[Attack] = ListBuffer()
@@ -98,6 +99,7 @@ trait Creature extends Sprite with PhysicalBody with AnimatedEntity {
 
   def initParams(mass: Float): Unit = {
     this.mass = mass
+
   }
 
   def onUpdateStart(): Unit = {
@@ -114,7 +116,7 @@ trait Creature extends Sprite with PhysicalBody with AnimatedEntity {
     if (isAlive) {
       onUpdateStart()
 
-      setFacingDirection()
+      calculateFacingVector()
 
       regenerate()
     }
@@ -147,6 +149,11 @@ trait Creature extends Sprite with PhysicalBody with AnimatedEntity {
 //      body.setType(BodyDef.BodyType.StaticBody)
 //      toSetBodyNonInteractive = false
 //    }
+
+    if (toSetBodyNonInteractive) {
+      setNonInteractive()
+      toSetBodyNonInteractive = false
+    }
 
     if (isWalkAnimationActive) setRegion(walkAnimationFrame(currentDirection))
     else setRegion(standStillImage(currentDirection))
@@ -215,7 +222,7 @@ trait Creature extends Sprite with PhysicalBody with AnimatedEntity {
     }
   }
 
-  def setFacingDirection(): Unit = {}
+  def calculateFacingVector(): Unit
 
   def defineStandardAbilities(): Unit = {
     swordAttack = new SwordAttack(this)
@@ -251,6 +258,10 @@ trait Creature extends Sprite with PhysicalBody with AnimatedEntity {
       ability.forceStop()
     }
     currentAttack.forceStop()
+
+    setRotation(90f)
+
+    toSetBodyNonInteractive = true
   }
 
   def takeHealthDamage(
@@ -301,39 +312,42 @@ trait Creature extends Sprite with PhysicalBody with AnimatedEntity {
 
   def moveInDirection(dirs: List[EsDirection.Value]): Unit = {
 
-    timeSinceMovedTimer.restart()
+    if (isAlive) {
+      timeSinceMovedTimer.restart()
 
-    if (!isWalkAnimationActive) {
-      animationTimer.restart()
-      isWalkAnimationActive = true
-    }
+      if (!isWalkAnimationActive) {
+        animationTimer.restart()
+        isWalkAnimationActive = true
+      }
 
-    val vector = new Vector2()
+      val vector = new Vector2()
 
-    currentDirection = dirs.last
+      currentDirection = dirs.last
 
-    val modifiedSpeed =
-      if (isAttacking) directionalSpeed / 2f
-      else if (sprinting && staminaPoints > 0) directionalSpeed * 1.75f
-      else directionalSpeed
+      val modifiedSpeed =
+        if (isAttacking) directionalSpeed / 2f
+        else if (sprinting && staminaPoints > 0) directionalSpeed * 1.75f
+        else directionalSpeed
 
-    dirs.foreach {
-      case EsDirection.Up    => vector.y += modifiedSpeed
-      case EsDirection.Down  => vector.y -= modifiedSpeed
-      case EsDirection.Left  => vector.x -= modifiedSpeed
-      case EsDirection.Right => vector.x += modifiedSpeed
-    }
+      dirs.foreach {
+        case EsDirection.Up    => vector.y += modifiedSpeed
+        case EsDirection.Down  => vector.y -= modifiedSpeed
+        case EsDirection.Left  => vector.x -= modifiedSpeed
+        case EsDirection.Right => vector.x += modifiedSpeed
+      }
 
-    val horizontalCount = dirs.count(EsDirection.isHorizontal)
-    val verticalCount = dirs.count(EsDirection.isVertical)
+      val horizontalCount = dirs.count(EsDirection.isHorizontal)
+      val verticalCount = dirs.count(EsDirection.isVertical)
 
-    if (horizontalCount < 2 && verticalCount < 2) {
-      if (horizontalCount > 0 && verticalCount > 0) {
-        sustainVelocity(new Vector2(vector.x / Math.sqrt(2).toFloat, vector.y / Math.sqrt(2).toFloat))
-      } else {
-        sustainVelocity(vector)
+      if (horizontalCount < 2 && verticalCount < 2) {
+        if (horizontalCount > 0 && verticalCount > 0) {
+          sustainVelocity(new Vector2(vector.x / Math.sqrt(2).toFloat, vector.y / Math.sqrt(2).toFloat))
+        } else {
+          sustainVelocity(vector)
+        }
       }
     }
+
   }
 
   def assignToArea(area: Area, x: Float, y: Float): Unit = {

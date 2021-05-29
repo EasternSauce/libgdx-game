@@ -8,25 +8,26 @@ import scala.collection.mutable.ListBuffer
 
 trait AggressiveAI extends Creature {
 
-  var aggroedOn: Option[Creature] = None
+  var aggroedTarget: Option[Creature] = None
   val aggroDistance = 20f
   val minimumWalkUpDistance = 4f
-  val circleDistance = 10f
+  val circleDistance = 15f
+  val attackDistance = 6f
 
   var circling = false
   val circlingDecisionTimer: EsTimer = EsTimer()
   val circlingDecisionMaxTime = 0.2f
   var circlingClockwise = true
 
-  def targetFound: Boolean = aggroedOn.nonEmpty
+  def targetFound: Boolean = aggroedTarget.nonEmpty
 
   def lookForTarget(): Unit = {
     if (alive && !targetFound) {
       area.get.creatureMap.values
         .filter(creature => !creature.isEnemy)
         .foreach(creature => {
-          if (distanceTo(creature) < aggroDistance) {
-            aggroedOn = Some(creature)
+          if (creature.isAlive && distanceTo(creature) < aggroDistance) {
+            aggroedTarget = Some(creature)
             circlingDecisionTimer.restart()
           }
         })
@@ -34,13 +35,17 @@ trait AggressiveAI extends Creature {
   }
 
   def decideIfCircling(): Unit = {
-    if (circlingDecisionTimer.time > circlingDecisionMaxTime) {
-      circlingDecisionTimer.restart()
-      if (LibgdxGame.Random.nextFloat() < 0.25f) {
-        circling = true
-        circlingClockwise = LibgdxGame.Random.nextFloat() < 0.5f
-      } else {
-        circling = false
+    if (isAttacking) {
+      circling = false
+    } else {
+      if (circlingDecisionTimer.time > circlingDecisionMaxTime) {
+        circlingDecisionTimer.restart()
+        if (LibgdxGame.Random.nextFloat() < 0.25f) {
+          circling = true
+          circlingClockwise = LibgdxGame.Random.nextFloat() < 0.5f
+        } else {
+          circling = false
+        }
       }
     }
 
@@ -84,12 +89,20 @@ trait AggressiveAI extends Creature {
     decideIfCircling()
 
     if (targetFound) {
-      if (circling && distanceTo(aggroedOn.get) < circleDistance) {
-        circleTarget(aggroedOn.get.pos)
-      } else if (distanceTo(aggroedOn.get) > minimumWalkUpDistance) {
-        walkToTarget(aggroedOn.get.pos)
+      if (circling && distanceTo(aggroedTarget.get) < circleDistance) {
+        circleTarget(aggroedTarget.get.pos)
+      } else if (distanceTo(aggroedTarget.get) > minimumWalkUpDistance) {
+        walkToTarget(aggroedTarget.get.pos)
+      }
+      if (distanceTo(aggroedTarget.get) < attackDistance) {
+        currentAttack.perform()
+      }
+
+      if (!aggroedTarget.get.isAlive) {
+        aggroedTarget = None
       }
     }
+
   }
 
   override def update(): Unit = {

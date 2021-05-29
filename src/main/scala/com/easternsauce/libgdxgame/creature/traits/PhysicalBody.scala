@@ -60,4 +60,9 @@ trait PhysicalBody {
     } else ???
   }
 
+  def setNonInteractive(): Unit = {
+    b2fixture.setSensor(true)
+    b2Body.setType(BodyDef.BodyType.StaticBody)
+  }
+
 }

@@ -26,7 +26,8 @@ class Area(
   def render(batch: EsBatch): Unit = {
     tiledMapRenderer.render()
 
-    creatureMap.values.foreach(_.draw(batch.spriteBatch))
+    creatureMap.values.filter(!_.isAlive).foreach(_.draw(batch.spriteBatch))
+    creatureMap.values.filter(_.isAlive).foreach(_.draw(batch.spriteBatch))
 
     for (creature <- creatureMap.values) {
       creature.renderAbilities(batch)

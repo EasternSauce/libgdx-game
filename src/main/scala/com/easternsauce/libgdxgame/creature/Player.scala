@@ -13,6 +13,7 @@ class Player(val screen: PlayScreen, val id: String) extends Creature {
   override val isPlayer: Boolean = true
 
   setBounds(0, 0, creatureWidth, creatureHeight)
+  setOrigin(creatureWidth / 2, creatureHeight / 2f)
 
   setupAnimation(
     atlas = screen.atlas,
@@ -31,7 +32,7 @@ class Player(val screen: PlayScreen, val id: String) extends Creature {
 
   defineStandardAbilities()
 
-  override def setFacingDirection(): Unit = {
+  override def calculateFacingVector(): Unit = {
     val mouseX = Gdx.input.getX
     val mouseY = Gdx.input.getY
 

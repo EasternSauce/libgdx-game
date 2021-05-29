@@ -171,6 +171,7 @@ trait MeleeAttack extends Attack with PhysicalHitbox {
 
   override def onCollideWithCreature(otherCreature: Creature): Unit = {
     super.onCollideWithCreature(otherCreature)
+
     if (!(creature.isEnemy && otherCreature.isEnemy)) {
       if (creature != otherCreature && state == AbilityState.Active && !otherCreature.isImmune) {
         otherCreature.takeHealthDamage(

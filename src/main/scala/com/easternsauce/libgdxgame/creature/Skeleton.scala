@@ -9,6 +9,7 @@ class Skeleton(val screen: PlayScreen, val id: String) extends Enemy {
   override val creatureHeight = 2.85f
 
   setBounds(0, 0, creatureWidth, creatureHeight)
+  setOrigin(creatureWidth / 2, creatureHeight / 2f)
 
   setupAnimation(
     atlas = screen.atlas,
