@@ -11,10 +11,12 @@ import scala.util.Random
 
 class LibgdxGame extends Game {
 
-  var batch: EsBatch = _
+  var worldBatch: EsBatch = _
+  var hudBatch: EsBatch = _
 
   override def create(): Unit = {
-    batch = new EsBatch()
+    worldBatch = new EsBatch()
+    hudBatch = new EsBatch()
     LibgdxGame.manager = new AssetManager()
 
     LibgdxGame.manager.load(AssetPaths.downArrowTexture, classOf[Texture])

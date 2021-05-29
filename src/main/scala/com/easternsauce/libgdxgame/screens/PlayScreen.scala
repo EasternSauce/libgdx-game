@@ -8,6 +8,7 @@ import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer
 import com.badlogic.gdx.utils.viewport.{FitViewport, Viewport}
 import com.badlogic.gdx.{Gdx, Input, Screen}
 import com.easternsauce.libgdxgame.LibgdxGame
+import com.easternsauce.libgdxgame.ability.hud.InventoryWindow
 import com.easternsauce.libgdxgame.area.{Area, AreaGate}
 import com.easternsauce.libgdxgame.assets.AssetPaths
 import com.easternsauce.libgdxgame.creature.traits.Creature
@@ -41,6 +42,8 @@ class PlayScreen(val game: LibgdxGame) extends Screen {
   var gateList: ListBuffer[AreaGate] = ListBuffer()
 
   val creaturesToMove: mutable.Queue[(Creature, Area, Float, Float)] = mutable.Queue()
+
+  val inventoryWindow: InventoryWindow = new InventoryWindow()
 
   loadAreas()
   loadCreatures()
@@ -112,7 +115,7 @@ class PlayScreen(val game: LibgdxGame) extends Screen {
   override def render(delta: Float): Unit = {
     update(delta)
 
-    game.batch.spriteBatch.setProjectionMatrix(camera.combined)
+    game.worldBatch.spriteBatch.setProjectionMatrix(camera.combined)
 
     Gdx.gl.glClearColor(0, 0, 0, 1)
 
@@ -125,17 +128,25 @@ class PlayScreen(val game: LibgdxGame) extends Screen {
 
     currentArea.get.renderBottomLayer()
 
-    game.batch.spriteBatch.begin()
+    game.worldBatch.spriteBatch.begin()
 
-    for (areaGate <- gateList) areaGate.render(game.batch)
+    for (areaGate <- gateList) areaGate.render(game.worldBatch)
 
-    currentArea.get.render(game.batch)
+    currentArea.get.render(game.worldBatch)
 
-    game.batch.spriteBatch.end()
+    game.worldBatch.spriteBatch.end()
 
     currentArea.get.renderTopLayer()
 
+    game.hudBatch.spriteBatch.begin()
+
+    inventoryWindow.render(game.hudBatch)
+
+    game.hudBatch.spriteBatch.end()
+
+
     b2DebugRenderer.render(currentArea.get.world, camera.combined)
+
 
   }
 
@@ -158,6 +169,7 @@ class PlayScreen(val game: LibgdxGame) extends Screen {
   def handleInput(): Unit = {
 
     if (Gdx.input.isButtonPressed(Buttons.LEFT)) player.currentAttack.perform()
+    if (Gdx.input.isKeyJustPressed(Input.Keys.I)) inventoryWindow.visible = !inventoryWindow.visible
 
     val dirs: List[EsDirection.Value] = List(Input.Keys.D, Input.Keys.A, Input.Keys.W, Input.Keys.S)
       .filter(dir => Gdx.input.isKeyPressed(dir))

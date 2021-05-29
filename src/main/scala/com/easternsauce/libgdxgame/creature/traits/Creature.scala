@@ -14,7 +14,7 @@ import com.easternsauce.libgdxgame.util.{EsBatch, EsDirection, EsTimer}
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
 
-trait Creature extends Sprite with PhysicalBody with AnimatedEntity {
+trait Creature extends Sprite with PhysicalBody with AnimatedEntity with Inventory {
 
   val screen: PlayScreen
 
