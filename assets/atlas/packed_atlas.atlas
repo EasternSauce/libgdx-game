@@ -6,127 +6,120 @@ filter: Nearest,Nearest
 repeat: none
 explosion
   rotate: false
-  xy: 2, 947
+  xy: 2, 914
   size: 1344, 64
   orig: 1344, 64
   offset: 0, 0
   index: -1
 explosion_windup
   rotate: false
-  xy: 1348, 947
+  xy: 1348, 914
   size: 448, 64
   orig: 448, 64
   offset: 0, 0
   index: -1
 female1
   rotate: false
-  xy: 1094, 701
+  xy: 1092, 668
   size: 96, 128
   orig: 96, 128
   offset: 0, 0
   index: -1
 fist_slam
   rotate: false
-  xy: 838, 465
+  xy: 1092, 798
   size: 200, 80
   orig: 200, 80
   offset: 0, 0
   index: -1
 fist_slam_windup
   rotate: false
-  xy: 1094, 831
+  xy: 514, 252
   size: 200, 80
   orig: 200, 80
   offset: 0, 0
   index: -1
 ghost
   rotate: false
-  xy: 1192, 701
+  xy: 934, 384
   size: 96, 128
   orig: 96, 128
   offset: 0, 0
   index: -1
 goblin
   rotate: false
-  xy: 614, 99
+  xy: 100, 2
   size: 96, 128
   orig: 96, 128
   offset: 0, 0
   index: -1
 male1
   rotate: false
-  xy: 710, 237
+  xy: 2, 2
   size: 96, 128
   orig: 96, 128
   offset: 0, 0
   index: -1
 male2
   rotate: false
-  xy: 516, 99
+  xy: 836, 384
   size: 96, 128
   orig: 96, 128
   offset: 0, 0
   index: -1
 nice_icons
   rotate: false
-  xy: 2, 78
-  size: 512, 867
-  orig: 512, 867
+  xy: 2, 208
+  size: 510, 704
+  orig: 510, 704
   offset: 0, 0
   index: -1
 skeleton
   rotate: false
-  xy: 516, 689
+  xy: 514, 656
   size: 576, 256
   orig: 576, 256
   offset: 0, 0
   index: -1
 slash
   rotate: false
-  xy: 1798, 971
+  xy: 1798, 938
   size: 240, 40
   orig: 240, 40
   offset: 0, 0
   index: -1
 slash_windup
   rotate: false
-  xy: 2, 2
+  xy: 2, 132
   size: 240, 40
   orig: 240, 40
   offset: 0, 0
   index: -1
 taurus
   rotate: false
-  xy: 516, 367
+  xy: 514, 334
   size: 320, 320
   orig: 320, 320
   offset: 0, 0
   index: -1
 trident_thrust
   rotate: false
-  xy: 2, 44
+  xy: 2, 174
   size: 704, 32
   orig: 704, 32
   offset: 0, 0
   index: -1
 trident_thrust_windup
   rotate: false
-  xy: 1094, 913
+  xy: 1092, 880
   size: 448, 32
   orig: 448, 32
   offset: 0, 0
   index: -1
 wolf
   rotate: false
-  xy: 838, 547
+  xy: 836, 514
   size: 200, 140
   orig: 200, 140
-  offset: 0, 0
-  index: -1
-wolf2
-  rotate: false
-  xy: 516, 229
-  size: 192, 136
-  orig: 192, 136
   offset: 0, 0
   index: -1

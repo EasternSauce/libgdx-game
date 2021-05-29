@@ -23,15 +23,18 @@ class Area(
 
   createContactListener()
 
-  def render(batch: EsBatch): Unit = {
-    tiledMapRenderer.render()
+  def renderBottomLayer(): Unit = tiledMapRenderer.render(Array(0, 1))
 
+  def renderTopLayer(): Unit = tiledMapRenderer.render(Array(2))
+
+  def render(batch: EsBatch): Unit = {
     creatureMap.values.filter(!_.isAlive).foreach(_.draw(batch.spriteBatch))
     creatureMap.values.filter(_.isAlive).foreach(_.draw(batch.spriteBatch))
 
     for (creature <- creatureMap.values) {
       creature.renderAbilities(batch)
     }
+
   }
 
   def setView(camera: OrthographicCamera): Unit = {

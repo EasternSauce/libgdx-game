@@ -12,6 +12,7 @@ import com.easternsauce.libgdxgame.area.{Area, AreaGate}
 import com.easternsauce.libgdxgame.assets.AssetPaths
 import com.easternsauce.libgdxgame.creature.traits.Creature
 import com.easternsauce.libgdxgame.creature.{Player, Skeleton}
+import com.easternsauce.libgdxgame.items.ItemTemplate
 import com.easternsauce.libgdxgame.util.{EsDirection, EsTimer}
 
 import scala.collection.mutable
@@ -44,6 +45,8 @@ class PlayScreen(val game: LibgdxGame) extends Screen {
   loadAreas()
   loadCreatures()
   assignCreaturesToAreas()
+
+  ItemTemplate.loadItemTemplates(this)
 
   private def loadAreas(): Unit = {
     val area1: Area = new Area(this, mapLoader, AssetPaths.area1Map, "area1", 4.0f)
@@ -120,6 +123,8 @@ class PlayScreen(val game: LibgdxGame) extends Screen {
            else 0)
     )
 
+    currentArea.get.renderBottomLayer()
+
     game.batch.spriteBatch.begin()
 
     for (areaGate <- gateList) areaGate.render(game.batch)
@@ -127,6 +132,8 @@ class PlayScreen(val game: LibgdxGame) extends Screen {
     currentArea.get.render(game.batch)
 
     game.batch.spriteBatch.end()
+
+    currentArea.get.renderTopLayer()
 
     b2DebugRenderer.render(currentArea.get.world, camera.combined)
 
