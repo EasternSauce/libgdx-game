@@ -32,9 +32,6 @@ trait Creature extends Sprite with PhysicalBody with AnimatedEntity {
   var isWalkAnimationActive = false
   val timeSinceMovedTimer: EsTimer = EsTimer()
 
-  val initX: Float
-  val initY: Float
-
   val directionalSpeed = 30f
 
   var area: Option[Area] = None
@@ -59,6 +56,8 @@ trait Creature extends Sprite with PhysicalBody with AnimatedEntity {
   var facingVector: Vector2 = new Vector2(0f, 0f)
 
   var staminaOveruse = false
+
+  var passedGateRecently = false
 
   var abilityList: mutable.ListBuffer[Ability] = ListBuffer()
   var attackList: mutable.ListBuffer[Attack] = ListBuffer()
@@ -90,8 +89,6 @@ trait Creature extends Sprite with PhysicalBody with AnimatedEntity {
 
   protected var staminaDrain = 0.0f
   var sprinting = false
-
-  def pos: Vector2 = b2Body.getPosition
 
   def isImmune: Boolean = effect("immune").isActive
 
@@ -154,7 +151,9 @@ trait Creature extends Sprite with PhysicalBody with AnimatedEntity {
     if (isWalkAnimationActive) setRegion(walkAnimationFrame(currentDirection))
     else setRegion(standStillImage(currentDirection))
 
-    setPosition(pos.x - getWidth / 2f, pos.y - getHeight / 2f)
+    if (bodyExists) {
+      setPosition(pos.x - getWidth / 2f, pos.y - getHeight / 2f)
+    }
 
     if (isWalkAnimationActive && timeSinceMovedTimer.time > 0.25f) isWalkAnimationActive = false
   }
@@ -337,22 +336,24 @@ trait Creature extends Sprite with PhysicalBody with AnimatedEntity {
     }
   }
 
-  def assignToArea(area: Area): Unit = {
+  def assignToArea(area: Area, x: Float, y: Float): Unit = {
     if (this.area.isEmpty) {
       this.area = Some(area)
-      initCircularBody(area.world, initX, initY, creatureWidth / 2f)
+      initCircularBody(area.world, x, y, creatureWidth / 2f)
 
       area.creatureMap += (id -> this)
+
     } else {
       val oldArea = this.area.get
 
-      oldArea.world.destroyBody(b2Body)
+      destroyBody(oldArea.world)
       oldArea.creatureMap -= id
 
       this.area = Some(area)
-      initCircularBody(area.world, initX, initY, creatureWidth / 2f)
+      initCircularBody(area.world, x, y, creatureWidth / 2f)
 
       area.creatureMap += (id -> this)
+
     }
 
   }

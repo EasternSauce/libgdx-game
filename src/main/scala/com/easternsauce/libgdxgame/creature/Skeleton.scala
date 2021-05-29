@@ -4,7 +4,7 @@ import com.easternsauce.libgdxgame.creature.traits.Enemy
 import com.easternsauce.libgdxgame.screens.PlayScreen
 import com.easternsauce.libgdxgame.util.EsDirection
 
-class Skeleton(val screen: PlayScreen, val id: String, val initX: Float, val initY: Float) extends Enemy {
+class Skeleton(val screen: PlayScreen, val id: String) extends Enemy {
   override val creatureWidth = 2.85f
   override val creatureHeight = 2.85f
 

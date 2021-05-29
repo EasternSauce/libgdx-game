@@ -6,10 +6,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.easternsauce.libgdxgame.LibgdxGame
 import com.easternsauce.libgdxgame.assets.AssetPaths
 import com.easternsauce.libgdxgame.creature.traits.Creature
+import com.easternsauce.libgdxgame.screens.PlayScreen
 import com.easternsauce.libgdxgame.util.EsBatch
 
 class AreaGate private (
-  val currentArea: Option[Area],
+  val playScreen: PlayScreen,
   val areaFrom: Area,
   val fromPosX: Float,
   val fromPosY: Float,
@@ -24,8 +25,8 @@ class AreaGate private (
   private val downArrowImageFrom = new Image(LibgdxGame.manager.get(AssetPaths.downArrowTexture, classOf[Texture]))
   private val downArrowImageTo = new Image(LibgdxGame.manager.get(AssetPaths.downArrowTexture, classOf[Texture]))
 
-  downArrowImageFrom.setPosition(fromPosX, fromPosY)
-  downArrowImageTo.setPosition(toPosX, toPosY)
+  downArrowImageFrom.setPosition(fromPosX - width / 2f, fromPosY - height / 2f)
+  downArrowImageTo.setPosition(toPosX - width / 2f, toPosY - height / 2f)
   downArrowImageFrom.setWidth(width)
   downArrowImageFrom.setHeight(height)
   downArrowImageTo.setWidth(width)
@@ -37,7 +38,7 @@ class AreaGate private (
   initBody(areaTo, toPosX, toPosY)
 
   def render(batch: EsBatch): Unit = {
-    val area = currentArea.getOrElse {
+    val area = playScreen.currentArea.getOrElse {
       throw new RuntimeException("current area not specified")
     }
 
@@ -47,8 +48,7 @@ class AreaGate private (
 
   def initBody(area: Area, x: Float, y: Float): Unit = {
     val bodyDef = new BodyDef()
-    bodyDef.position
-      .set(x + width / 2, y + height / 2)
+    bodyDef.position.set(x, y)
     bodyDef.`type` = BodyDef.BodyType.StaticBody
     body = area.world.createBody(bodyDef)
     body.setUserData(this)
@@ -66,23 +66,27 @@ class AreaGate private (
   }
 
   def activate(creature: Creature): Unit = {
-    if (creature.isPlayer) {
-      val (origin: Area, destination: Area, posX: Float, posY: Float) = creature.area match {
-        case Some(areaFrom) => (areaFrom, areaTo, toPosX, toPosY)
-        case Some(areaTo)   => (areaTo, areaFrom, fromPosX, fromPosY)
-      }
+    if (!creature.passedGateRecently) {
+      if (creature.isPlayer) {
+        val (destination: Area, posX: Float, posY: Float) = creature.area match {
+          case Some(`areaFrom`) => (areaTo, toPosX, toPosY)
+          case Some(`areaTo`)   => (areaFrom, fromPosX, fromPosY)
+        }
 
-      origin.evictCreature(creature)
-      destination.reset()
-      destination.moveInCreature(creature, posX, posY)
+        playScreen.moveCreature(creature, destination, posX, posY)
+
+        destination.reset()
+        playScreen.currentArea = Some(destination)
+      }
     }
+
   }
 
 }
 
 object AreaGate {
   def apply(
-    currentArea: Option[Area],
+    playScreen: PlayScreen,
     areaFrom: Area,
     fromPosX: Int,
     fromPosY: Int,
@@ -90,5 +94,5 @@ object AreaGate {
     toPosX: Int,
     toPosY: Int
   ) =
-    new AreaGate(currentArea, areaFrom, fromPosX, fromPosY, areaTo, toPosX, toPosY)
+    new AreaGate(playScreen, areaFrom, fromPosX, fromPosY, areaTo, toPosX, toPosY)
 }

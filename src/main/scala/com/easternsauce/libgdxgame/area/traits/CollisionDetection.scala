@@ -42,11 +42,11 @@ trait CollisionDetection extends PhysicalTerrain {
         val objB = contact.getFixtureB.getBody.getUserData
 
         def onContactEnd(pair: (AnyRef, AnyRef)): Unit = {
-//          pair match { // will run onContact twice for same type objects!
-//            case (creature: Creature, _: AreaGate) =>
-//              creature.passedGateRecently = false
-//            case _ =>
-//          }
+          pair match { // will run onContact twice for same type objects!
+            case (creature: Creature, _: AreaGate) =>
+              creature.passedGateRecently = false
+            case _ =>
+          }
         }
 
         onContactEnd(objA, objB)

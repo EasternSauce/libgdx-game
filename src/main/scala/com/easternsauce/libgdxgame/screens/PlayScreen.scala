@@ -18,6 +18,7 @@ import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
 
 class PlayScreen(val game: LibgdxGame) extends Screen {
+
   private val camera: OrthographicCamera = new OrthographicCamera()
   private val viewport: Viewport =
     new FitViewport(LibgdxGame.VWidth / LibgdxGame.PPM, LibgdxGame.VHeight / LibgdxGame.PPM, camera)
@@ -38,6 +39,8 @@ class PlayScreen(val game: LibgdxGame) extends Screen {
 
   var gateList: ListBuffer[AreaGate] = ListBuffer()
 
+  val creaturesToMove: mutable.Queue[(Creature, Area, Float, Float)] = mutable.Queue()
+
   loadAreas()
   loadCreatures()
   assignCreaturesToAreas()
@@ -54,15 +57,15 @@ class PlayScreen(val game: LibgdxGame) extends Screen {
 
     currentArea = Some(area1)
 
-    gateList += AreaGate(currentArea, areaMap("area1"), 197, 15, areaMap("area3"), 17, 2)
-    gateList += AreaGate(currentArea, areaMap("area1"), 2, 63, areaMap("area2"), 58, 9)
+    gateList += AreaGate(this, areaMap("area1"), 197, 15, areaMap("area3"), 17, 2)
+    gateList += AreaGate(this, areaMap("area1"), 2, 63, areaMap("area2"), 58, 9)
 
   }
 
   def loadCreatures(): Unit = {
 
-    val creature1 = new Player(this, "player", 30, 30)
-    val skeleton = new Skeleton(this, "skellie", 34, 42)
+    val creature1 = new Player(this, "player")
+    val skeleton = new Skeleton(this, "skellie")
 
     creatureMap = mutable.Map()
     creatureMap += (creature1.id -> creature1)
@@ -72,8 +75,8 @@ class PlayScreen(val game: LibgdxGame) extends Screen {
   }
 
   def assignCreaturesToAreas(): Unit = {
-    creatureMap("player").assignToArea(areaMap("area1"))
-    creatureMap("skellie").assignToArea(areaMap("area1"))
+    creatureMap("player").assignToArea(areaMap("area1"), 30, 30)
+    creatureMap("skellie").assignToArea(areaMap("area1"), 34, 42)
   }
 
   override def show(): Unit = {}
@@ -86,6 +89,16 @@ class PlayScreen(val game: LibgdxGame) extends Screen {
     currentArea.get.world.step(Math.min(Gdx.graphics.getDeltaTime, 0.15f), 6, 2)
 
     currentArea.get.creatureMap.values.foreach(_.update())
+
+    if (creaturesToMove.nonEmpty) {
+      creaturesToMove.foreach(pair => {
+        val (creature, area, x, y) = pair
+        creature.assignToArea(area, x, y)
+        creature.passedGateRecently = true
+      })
+
+      creaturesToMove.clear()
+    }
 
     adjustCamera(player)
 
@@ -108,9 +121,10 @@ class PlayScreen(val game: LibgdxGame) extends Screen {
     )
 
     game.batch.spriteBatch.begin()
-    currentArea.get.render(game.batch)
 
     for (areaGate <- gateList) areaGate.render(game.batch)
+
+    currentArea.get.render(game.batch)
 
     game.batch.spriteBatch.end()
 
@@ -161,4 +175,9 @@ class PlayScreen(val game: LibgdxGame) extends Screen {
 
     camera.update()
   }
+
+  def moveCreature(creature: Creature, destination: Area, x: Float, y: Float): Unit = {
+    creaturesToMove.enqueue((creature, destination, x, y))
+  }
+
 }

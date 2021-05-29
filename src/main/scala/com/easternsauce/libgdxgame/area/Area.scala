@@ -43,10 +43,8 @@ class Area(
     map.dispose()
   }
 
-  def moveInCreature(creature: Creature, posX: Float, posY: Float) = ???
-
-  def reset() = ???
-
-  def evictCreature(creature: Creature) = ???
+  def reset(): Unit = {
+    // TODO
+  }
 
 }
