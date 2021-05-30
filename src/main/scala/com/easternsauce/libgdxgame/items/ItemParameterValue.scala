@@ -1,6 +1,11 @@
 package com.easternsauce.libgdxgame.items
 
-class ItemParameterValue private (val stringValue: Option[String], val boolValue: Option[Boolean], val intValue: Option[Int], val floatValue: Option[Float]) {
+class ItemParameterValue private (
+  val stringValue: Option[String],
+  val boolValue: Option[Boolean],
+  val intValue: Option[Int],
+  val floatValue: Option[Float]
+) {
   def isUndefined: Boolean = {
     stringValue.isEmpty && boolValue.isEmpty && intValue.isEmpty && floatValue.isEmpty
   }

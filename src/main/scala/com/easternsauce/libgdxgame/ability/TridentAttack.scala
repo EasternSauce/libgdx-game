@@ -3,7 +3,7 @@ package com.easternsauce.libgdxgame.ability
 import com.badlogic.gdx.graphics.g2d.{Animation, TextureRegion}
 import com.easternsauce.libgdxgame.creature.traits.Creature
 
-class SwordAttack(val creature: Creature) extends MeleeAttack {
+class TridentAttack(val creature: Creature) extends MeleeAttack {
 
   var weaponSpeed: Float =
     if (creature.isWeaponEquipped) creature.currentWeapon.template.weaponSpeed.get

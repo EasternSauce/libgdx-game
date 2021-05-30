@@ -39,4 +39,8 @@ object LibgdxGame {
 
   val WindowWidth = 1360
   val WindowHeight = 720
+
+  val equipmentTypes = Map(0 -> "weapon", 1 -> "helmet", 2 -> "body", 3 -> "gloves", 4 -> "ring", 5 -> "boots")
+  val equipmentTypeIndices = for ((k, v) <- equipmentTypes) yield (v, k)
+
 }

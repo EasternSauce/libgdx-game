@@ -1,8 +1,9 @@
-package com.easternsauce.libgdxgame.ability.hud
+package com.easternsauce.libgdxgame.hud
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.math.Rectangle
+import com.easternsauce.libgdxgame.LibgdxGame
 import com.easternsauce.libgdxgame.screens.PlayScreen
 import com.easternsauce.libgdxgame.util.EsBatch
 
@@ -36,8 +37,6 @@ class InventoryWindow(val playScreen: PlayScreen) {
 
   private val equipmentTotalSlots = 6
   private val equipmentRectangles: mutable.Map[Int, Rectangle] = mutable.Map()
-
-  private val equipmentTypes = Map(0 -> "weapon", 1 -> "helmet", 2 -> "body", 3 -> "gloves", 4 -> "ring", 5 -> "boots")
 
   defineSlotRectangles()
 
@@ -74,7 +73,7 @@ class InventoryWindow(val playScreen: PlayScreen) {
           playScreen.defaultFont.setColor(Color.BLACK)
           playScreen.defaultFont.draw(
             batch.spriteBatch,
-            equipmentTypes(index).capitalize + ":",
+            LibgdxGame.equipmentTypes(index).capitalize + ":",
             rect.x - slotSize / 2 - 70,
             rect.y + slotSize / 2 + 7
           )
@@ -175,7 +174,7 @@ class InventoryWindow(val playScreen: PlayScreen) {
         batch.spriteBatch,
         item.get.getItemInformation(trader = false),
         background.x + margin,
-        background.y + background.height - (inventoryHeight + margin + 50)
+        background.y + background.height - (inventoryHeight + margin + 30)
       )
     }
 
@@ -252,9 +251,12 @@ class InventoryWindow(val playScreen: PlayScreen) {
     val temp = itemTo
 
     val fromEquipmentTypeMatches =
-      itemFrom.nonEmpty && itemFrom.get.template.parameters("equipableType").stringValue.get == equipmentTypes(toIndex)
+      itemFrom.nonEmpty && itemFrom.get.template.parameters("equipableType").stringValue.get == LibgdxGame
+        .equipmentTypes(toIndex)
     val toEquipmentTypeMatches =
-      itemTo.nonEmpty && itemTo.get.template.parameters("equipableType").stringValue.get == equipmentTypes(fromIndex)
+      itemTo.nonEmpty && itemTo.get.template.parameters("equipableType").stringValue.get == LibgdxGame.equipmentTypes(
+        fromIndex
+      )
 
     if (fromEquipmentTypeMatches && toEquipmentTypeMatches) {
       if (itemFrom.nonEmpty) playScreen.player.equipmentItems(toIndex) = itemFrom.get
@@ -277,7 +279,7 @@ class InventoryWindow(val playScreen: PlayScreen) {
       inventoryItem.nonEmpty && inventoryItem.get.template
         .parameters("equipableType")
         .stringValue
-        .get == equipmentTypes(equipmentIndex)
+        .get == LibgdxGame.equipmentTypes(equipmentIndex)
 
     if (inventoryItem.isEmpty || equipmentTypeMatches) {
       if (temp.nonEmpty) playScreen.player.inventoryItems(inventoryIndex) = temp.get

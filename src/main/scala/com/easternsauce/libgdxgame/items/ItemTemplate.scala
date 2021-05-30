@@ -23,6 +23,14 @@ class ItemTemplate(val id: String, val name: String, val description: String, va
 
   def worth: Option[Int] = parameters("worth").intValue
 
+  def armor: Option[Int] = parameters("armor").intValue
+
+  def damage: Option[Int] = parameters("damage").intValue
+
+  def weaponSpeed: Option[Float] = parameters("weaponSpeed").floatValue
+
+  def attackType: Option[String] = parameters("attackType").stringValue
+
   def setWorth(worth: Int): ItemTemplate = {
     parameters("worth") = ItemParameterValue(worth)
 

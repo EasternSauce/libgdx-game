@@ -4,10 +4,12 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.graphics.g2d.Sprite
 import com.badlogic.gdx.math.Vector2
-import com.easternsauce.libgdxgame.ability.SwordAttack
+import com.easternsauce.libgdxgame.LibgdxGame
 import com.easternsauce.libgdxgame.ability.traits.{Ability, Attack}
+import com.easternsauce.libgdxgame.ability.{BowAttack, SwordAttack, TridentAttack, UnarmedAttack}
 import com.easternsauce.libgdxgame.area.Area
 import com.easternsauce.libgdxgame.effect.Effect
+import com.easternsauce.libgdxgame.items.Item
 import com.easternsauce.libgdxgame.screens.PlayScreen
 import com.easternsauce.libgdxgame.util.{EsBatch, EsDirection, EsTimer}
 
@@ -66,6 +68,9 @@ trait Creature extends Sprite with PhysicalBody with AnimatedEntity with Invento
   protected val effectMap: mutable.Map[String, Effect] = mutable.Map()
 
   var swordAttack: SwordAttack = _
+  var unarmedAttack: UnarmedAttack = _
+  var bowAttack: BowAttack = _
+  var tridentAttack: TridentAttack = _
 
   protected val healthRegenTimer: EsTimer = EsTimer(true)
   protected val staminaRegenTimer: EsTimer = EsTimer(true)
@@ -226,22 +231,24 @@ trait Creature extends Sprite with PhysicalBody with AnimatedEntity with Invento
 
   def defineStandardAbilities(): Unit = {
     swordAttack = new SwordAttack(this)
+    unarmedAttack = new UnarmedAttack(this)
+    bowAttack = new BowAttack(this)
+    tridentAttack = new TridentAttack(this)
 
     attackList += swordAttack
   }
 
   def currentAttack: Ability = {
-//    if (equipmentItems.contains(0)) {
-//      equipmentItems(0).itemType.attackType match {
-//        case Sword   => swordAttack
-//        case Bow     => bowAttack
-//        case Trident => tridentAttack
-//        case _       => throw new RuntimeException("Unrecognized attack type")
-//      }
-//    } else {
-//      unarmedAttack
-//    } TODO
-    swordAttack
+    if (isWeaponEquipped) {
+      currentWeapon.template.attackType match {
+        case Some("sword")   => swordAttack
+        case Some("bow")     => bowAttack
+        case Some("trident") => tridentAttack
+        case _               => throw new RuntimeException("Unrecognized attack type")
+      }
+    } else {
+      unarmedAttack
+    }
   }
 
   protected def defineEffects(): Unit = {
@@ -391,4 +398,13 @@ trait Creature extends Sprite with PhysicalBody with AnimatedEntity with Invento
     }
     currentAttack.render(batch)
   }
+
+  def currentWeapon: Item = {
+    equipmentItems(LibgdxGame.equipmentTypeIndices("weapon"))
+  }
+
+  def isWeaponEquipped: Boolean = {
+    equipmentItems.contains(LibgdxGame.equipmentTypeIndices("weapon"))
+  }
+
 }
