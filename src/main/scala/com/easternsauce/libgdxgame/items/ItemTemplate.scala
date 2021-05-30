@@ -74,6 +74,7 @@ class ItemTemplate(val id: String, val name: String, val description: String, va
 
     this
   }
+
 }
 
 object ItemTemplate {

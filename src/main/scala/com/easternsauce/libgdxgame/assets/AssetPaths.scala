@@ -37,6 +37,8 @@ object AssetPaths {
   val gobletLitTexture = "assets/goblet/goblet_lit.png"
   val downArrowTexture = "assets/downarrow/downarrow.png"
 
-  val  abandonedPlainsMusic = "assets/music/abandoned_plains.wav"
+  val abandonedPlainsMusic = "assets/music/abandoned_plains.wav"
   val fireDemonMusic = "assets/music/fire_demon.wav"
+
+  val youngSerif = "assets/font/YoungSerif-Regular.ttf"
 }

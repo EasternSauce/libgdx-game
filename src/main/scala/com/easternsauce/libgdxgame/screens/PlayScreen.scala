@@ -1,7 +1,8 @@
 package com.easternsauce.libgdxgame.screens
 
 import com.badlogic.gdx.Input.Buttons
-import com.badlogic.gdx.graphics.g2d.TextureAtlas
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator
+import com.badlogic.gdx.graphics.g2d.{BitmapFont, TextureAtlas}
 import com.badlogic.gdx.graphics.{GL20, OrthographicCamera}
 import com.badlogic.gdx.maps.tiled.TmxMapLoader
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer
@@ -45,6 +46,8 @@ class PlayScreen(val game: LibgdxGame) extends Screen {
 
   var inventoryWindow: InventoryWindow = _
 
+  val defaultFont: BitmapFont = loadFont(AssetPaths.youngSerif, 16)
+
   ItemTemplate.loadItemTemplates(this)
 
   loadAreas()
@@ -82,7 +85,7 @@ class PlayScreen(val game: LibgdxGame) extends Screen {
 
   private def setPlayer(creature1: Player): Unit = {
     player = creature1
-    inventoryWindow = new InventoryWindow(player)
+    inventoryWindow = new InventoryWindow(this)
   }
 
   def assignCreaturesToAreas(): Unit = {
@@ -217,4 +220,12 @@ class PlayScreen(val game: LibgdxGame) extends Screen {
     creaturesToMove.enqueue((creature, destination, x, y))
   }
 
+  def loadFont(assetPath: String, size: Int): BitmapFont = {
+    val generator = new FreeTypeFontGenerator(Gdx.files.internal(assetPath))
+    val parameter = new FreeTypeFontGenerator.FreeTypeFontParameter
+    parameter.size = size
+    val font: BitmapFont = generator.generateFont(parameter)
+    generator.dispose()
+    font
+  }
 }
