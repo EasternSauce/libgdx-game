@@ -245,10 +245,15 @@ trait Creature extends Sprite with PhysicalBody with AnimatedEntity with Invento
   }
 
   protected def defineEffects(): Unit = {
-    effectMap.put("immune", Effect())
-    effectMap.put("immobilized", Effect())
-    effectMap.put("staminaRegenStopped", Effect())
-    effectMap.put("poisoned", Effect())
+    initEffect("immune")
+    initEffect("immobilized")
+    initEffect("staminaRegenStopped")
+    initEffect("poisoned")
+
+  }
+
+  protected def initEffect(effectName: String): Unit = {
+    effectMap.put(effectName, Effect())
   }
 
   def onDeath(): Unit = {

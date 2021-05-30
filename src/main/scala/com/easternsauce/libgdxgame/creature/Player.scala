@@ -3,6 +3,7 @@ package com.easternsauce.libgdxgame.creature
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.math.Vector2
 import com.easternsauce.libgdxgame.creature.traits.Creature
+import com.easternsauce.libgdxgame.items.{Item, ItemTemplate}
 import com.easternsauce.libgdxgame.screens.PlayScreen
 import com.easternsauce.libgdxgame.util.EsDirection
 
@@ -31,6 +32,8 @@ class Player(val screen: PlayScreen, val id: String) extends Creature {
   defineEffects()
 
   defineStandardAbilities()
+
+  inventoryItems += (3 -> new Item(ItemTemplate.getItemTemplate("ironSword")))
 
   override def calculateFacingVector(): Unit = {
     val mouseX = Gdx.input.getX

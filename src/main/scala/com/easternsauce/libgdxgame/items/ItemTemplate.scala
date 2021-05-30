@@ -231,11 +231,11 @@ object ItemTemplate {
     )
   }
 
-  def getItemType(itemTypeId: String): ItemTemplate = {
-    if (itemTemplates.contains(itemTypeId)) {
-      itemTemplates(itemTypeId)
+  def getItemTemplate(itemTemplateId: String): ItemTemplate = {
+    if (itemTemplates.contains(itemTemplateId)) {
+      itemTemplates(itemTemplateId)
     } else {
-      throw new RuntimeException("item template doesn't exist: " + itemTypeId)
+      throw new RuntimeException("item template doesn't exist: " + itemTemplateId)
     }
   }
 }

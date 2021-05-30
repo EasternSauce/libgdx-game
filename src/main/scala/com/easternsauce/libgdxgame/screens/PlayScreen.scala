@@ -43,13 +43,13 @@ class PlayScreen(val game: LibgdxGame) extends Screen {
 
   val creaturesToMove: mutable.Queue[(Creature, Area, Float, Float)] = mutable.Queue()
 
-  val inventoryWindow: InventoryWindow = new InventoryWindow()
+  var inventoryWindow: InventoryWindow = _
+
+  ItemTemplate.loadItemTemplates(this)
 
   loadAreas()
   loadCreatures()
   assignCreaturesToAreas()
-
-  ItemTemplate.loadItemTemplates(this)
 
   private def loadAreas(): Unit = {
     val area1: Area = new Area(this, mapLoader, AssetPaths.area1Map, "area1", 4.0f)
@@ -77,7 +77,12 @@ class PlayScreen(val game: LibgdxGame) extends Screen {
     creatureMap += (creature1.id -> creature1)
     creatureMap += (skeleton.id -> skeleton)
 
+    setPlayer(creature1)
+  }
+
+  private def setPlayer(creature1: Player): Unit = {
     player = creature1
+    inventoryWindow = new InventoryWindow(player)
   }
 
   def assignCreaturesToAreas(): Unit = {
@@ -97,11 +102,11 @@ class PlayScreen(val game: LibgdxGame) extends Screen {
     currentArea.get.creatureMap.values.foreach(_.update())
 
     if (creaturesToMove.nonEmpty) {
-      creaturesToMove.foreach(pair => {
-        val (creature, area, x, y) = pair
-        creature.assignToArea(area, x, y)
-        creature.passedGateRecently = true
-      })
+      creaturesToMove.foreach {
+        case (creature, area, x, y) =>
+          creature.assignToArea(area, x, y)
+          creature.passedGateRecently = true
+      }
 
       creaturesToMove.clear()
     }
@@ -144,9 +149,7 @@ class PlayScreen(val game: LibgdxGame) extends Screen {
 
     game.hudBatch.spriteBatch.end()
 
-
     b2DebugRenderer.render(currentArea.get.world, camera.combined)
-
 
   }
 
@@ -168,9 +171,25 @@ class PlayScreen(val game: LibgdxGame) extends Screen {
 
   def handleInput(): Unit = {
 
-    if (Gdx.input.isButtonPressed(Buttons.LEFT)) player.currentAttack.perform()
     if (Gdx.input.isKeyJustPressed(Input.Keys.I)) inventoryWindow.visible = !inventoryWindow.visible
 
+    if (inventoryWindow.visible) {
+      if (Gdx.input.isButtonJustPressed(Buttons.LEFT)) {
+        val x = Gdx.input.getX
+        val y = Gdx.input.getY
+
+        inventoryWindow.handleMouseClick(x, y)
+
+      }
+    } else {
+      if (Gdx.input.isButtonPressed(Buttons.LEFT)) player.currentAttack.perform()
+
+      handlePlayerMovement()
+    }
+
+  }
+
+  private def handlePlayerMovement(): Unit = {
     val dirs: List[EsDirection.Value] = List(Input.Keys.D, Input.Keys.A, Input.Keys.W, Input.Keys.S)
       .filter(dir => Gdx.input.isKeyPressed(dir))
       .map {
@@ -181,7 +200,6 @@ class PlayScreen(val game: LibgdxGame) extends Screen {
       }
 
     if (dirs.nonEmpty) player.moveInDirection(dirs)
-
   }
 
   def adjustCamera(creature: Player): Unit = {
