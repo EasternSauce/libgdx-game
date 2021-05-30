@@ -25,9 +25,9 @@ class InventoryWindow(val playScreen: PlayScreen) {
   private val totalColumns = 8
   private val inventoryTotalSlots = totalRows * totalColumns
   private val margin = 10
-  private val slotSize = 40
+  private val slotSize = 50
   private val spaceBetweenSlots = 5
-  private val spaceBeforeEquipment = 100
+  private val spaceBeforeEquipment = 220
 
   private val inventoryWidth = margin + (slotSize + spaceBetweenSlots) * totalColumns
   private val inventoryHeight = margin + (slotSize + spaceBetweenSlots) * totalRows
@@ -71,6 +71,7 @@ class InventoryWindow(val playScreen: PlayScreen) {
       equipmentRectangles.foreach {
         case (index, rect) =>
           batch.shapeDrawer.filledRectangle(rect, Color.DARK_GRAY)
+          playScreen.defaultFont.setColor(Color.BLACK)
           playScreen.defaultFont.draw(
             batch.spriteBatch,
             equipmentTypes(index).capitalize + ":",
@@ -80,6 +81,7 @@ class InventoryWindow(val playScreen: PlayScreen) {
       }
 
       renderPlayerItems(batch)
+      renderDescription(batch)
     }
 
   }
@@ -112,11 +114,14 @@ class InventoryWindow(val playScreen: PlayScreen) {
           batch.spriteBatch.draw(textureRegion, x, y, slotSize, slotSize)
       }
 
+    val x: Float = playScreen.mousePositionWindowScaled.x
+    val y: Float = playScreen.mousePositionWindowScaled.y
+
     if (inventoryItemBeingMoved.nonEmpty) {
       batch.spriteBatch.draw(
         items(inventoryItemBeingMoved.get).template.textureRegion,
-        Gdx.input.getX - slotSize / 2,
-        Gdx.graphics.getHeight - Gdx.input.getY - slotSize / 2,
+        x - slotSize / 2,
+        y - slotSize / 2,
         slotSize,
         slotSize
       )
@@ -125,12 +130,55 @@ class InventoryWindow(val playScreen: PlayScreen) {
     if (equipmentItemBeingMoved.nonEmpty) {
       batch.spriteBatch.draw(
         equipment(equipmentItemBeingMoved.get).template.textureRegion,
-        Gdx.input.getX - slotSize / 2,
-        Gdx.graphics.getHeight - Gdx.input.getY - slotSize / 2,
+        x - slotSize / 2,
+        y - slotSize / 2,
         slotSize,
         slotSize
       )
     }
+  }
+
+  def renderDescription(batch: EsBatch): Unit = {
+    val x: Float = playScreen.mousePositionWindowScaled.x
+    val y: Float = playScreen.mousePositionWindowScaled.y
+
+    var inventorySlotMousedOver: Option[Int] = None
+    var equipmentSlotMousedOver: Option[Int] = None
+
+    inventoryRectangles
+      .filter { case (_, v) => v.contains(x, y) }
+      .foreach { case (k, _) => inventorySlotMousedOver = Some(k) }
+
+    equipmentRectangles
+      .filter { case (_, v) => v.contains(x, y) }
+      .foreach { case (k, _) => equipmentSlotMousedOver = Some(k) }
+
+    val item = (inventorySlotMousedOver, equipmentSlotMousedOver) match {
+      case (Some(index), _) if inventoryItemBeingMoved.isEmpty || index != inventoryItemBeingMoved.get =>
+        playScreen.player.inventoryItems.get(index)
+      case (_, Some(index)) if equipmentItemBeingMoved.isEmpty || index != equipmentItemBeingMoved.get =>
+        playScreen.player.equipmentItems.get(index)
+      case _ => None
+    }
+
+    if (item.nonEmpty) {
+      playScreen.defaultFont.setColor(Color.BROWN)
+
+      playScreen.defaultFont.draw(
+        batch.spriteBatch,
+        item.get.template.name,
+        background.x + margin,
+        background.y + background.height - (inventoryHeight + margin)
+      )
+
+      playScreen.defaultFont.draw(
+        batch.spriteBatch,
+        item.get.getItemInformation(trader = false),
+        background.x + margin,
+        background.y + background.height - (inventoryHeight + margin + 50)
+      )
+    }
+
   }
 
   private def inventorySlotPositionX(index: Int): Float = {
@@ -151,16 +199,19 @@ class InventoryWindow(val playScreen: PlayScreen) {
     background.y + background.height - (slotSize + margin + (slotSize + spaceBetweenSlots) * index)
   }
 
-  def handleMouseClick(x: Int, y: Int): Unit = {
+  def handleMouseClicked(): Unit = {
     var inventorySlotClicked: Option[Int] = None
     var equipmentSlotClicked: Option[Int] = None
 
+    val x: Float = playScreen.mousePositionWindowScaled.x
+    val y: Float = playScreen.mousePositionWindowScaled.y
+
     inventoryRectangles
-      .filter { case (_, v) => v.contains(x, Gdx.graphics.getHeight - y) }
+      .filter { case (_, v) => v.contains(x, y) }
       .foreach { case (k, _) => inventorySlotClicked = Some(k) }
 
     equipmentRectangles
-      .filter { case (_, v) => v.contains(x, Gdx.graphics.getHeight - y) }
+      .filter { case (_, v) => v.contains(x, y) }
       .foreach { case (k, _) => equipmentSlotClicked = Some(k) }
 
     (inventoryItemBeingMoved, equipmentItemBeingMoved, inventorySlotClicked, equipmentSlotClicked) match {

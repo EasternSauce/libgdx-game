@@ -33,7 +33,10 @@ object LibgdxGame {
 
   var manager: AssetManager = _
 
-  val VWidth = 1536
+  val VWidth = 1650
   val VHeight = 864
   val PPM = 32
+
+  val WindowWidth = 1360
+  val WindowHeight = 720
 }

@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator
 import com.badlogic.gdx.graphics.g2d.{BitmapFont, TextureAtlas}
 import com.badlogic.gdx.graphics.{GL20, OrthographicCamera}
 import com.badlogic.gdx.maps.tiled.TmxMapLoader
+import com.badlogic.gdx.math.Vector3
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer
 import com.badlogic.gdx.utils.viewport.{FitViewport, Viewport}
 import com.badlogic.gdx.{Gdx, Input, Screen}
@@ -23,8 +24,14 @@ import scala.collection.mutable.ListBuffer
 class PlayScreen(val game: LibgdxGame) extends Screen {
 
   private val camera: OrthographicCamera = new OrthographicCamera()
-  private val viewport: Viewport =
+  private val hudCamera: OrthographicCamera = new OrthographicCamera()
+  hudCamera.position.set(LibgdxGame.WindowWidth / 2, LibgdxGame.WindowHeight / 2, 0)
+
+  val viewport: Viewport =
     new FitViewport(LibgdxGame.VWidth / LibgdxGame.PPM, LibgdxGame.VHeight / LibgdxGame.PPM, camera)
+
+  val hudViewport: Viewport =
+    new FitViewport(LibgdxGame.WindowWidth, LibgdxGame.WindowHeight, hudCamera)
 
   val atlas: TextureAtlas = new TextureAtlas("assets/atlas/packed_atlas.atlas")
 
@@ -124,6 +131,7 @@ class PlayScreen(val game: LibgdxGame) extends Screen {
     update(delta)
 
     game.worldBatch.spriteBatch.setProjectionMatrix(camera.combined)
+    game.hudBatch.spriteBatch.setProjectionMatrix(hudCamera.combined)
 
     Gdx.gl.glClearColor(0, 0, 0, 1)
 
@@ -152,12 +160,13 @@ class PlayScreen(val game: LibgdxGame) extends Screen {
 
     game.hudBatch.spriteBatch.end()
 
-    b2DebugRenderer.render(currentArea.get.world, camera.combined)
+    //b2DebugRenderer.render(currentArea.get.world, camera.combined)
 
   }
 
   override def resize(width: Int, height: Int): Unit = {
     viewport.update(width, height)
+    hudViewport.update(width, height)
 
   }
 
@@ -176,19 +185,19 @@ class PlayScreen(val game: LibgdxGame) extends Screen {
 
     if (Gdx.input.isKeyJustPressed(Input.Keys.I)) inventoryWindow.visible = !inventoryWindow.visible
 
+    if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) if (inventoryWindow.visible) inventoryWindow.visible = false
+
     if (inventoryWindow.visible) {
       if (Gdx.input.isButtonJustPressed(Buttons.LEFT)) {
-        val x = Gdx.input.getX
-        val y = Gdx.input.getY
-
-        inventoryWindow.handleMouseClick(x, y)
+        inventoryWindow.handleMouseClicked()
 
       }
     } else {
       if (Gdx.input.isButtonPressed(Buttons.LEFT)) player.currentAttack.perform()
 
-      handlePlayerMovement()
     }
+
+    handlePlayerMovement()
 
   }
 
@@ -214,6 +223,7 @@ class PlayScreen(val game: LibgdxGame) extends Screen {
     camPosition.y += (creature.pos.y - camPosition.y) * lerp * Gdx.graphics.getDeltaTime
 
     camera.update()
+
   }
 
   def moveCreature(creature: Creature, destination: Area, x: Float, y: Float): Unit = {
@@ -227,5 +237,11 @@ class PlayScreen(val game: LibgdxGame) extends Screen {
     val font: BitmapFont = generator.generateFont(parameter)
     generator.dispose()
     font
+  }
+
+  def mousePositionWindowScaled: Vector3 = {
+    val v = new Vector3(Gdx.input.getX, Gdx.input.getY, 0f)
+    hudCamera.unproject(v)
+    v
   }
 }

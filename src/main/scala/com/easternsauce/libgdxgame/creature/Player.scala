@@ -34,6 +34,8 @@ class Player(val screen: PlayScreen, val id: String) extends Creature {
   defineStandardAbilities()
 
   inventoryItems += (3 -> new Item(ItemTemplate.getItemTemplate("ironSword")))
+  inventoryItems += (4 -> new Item(ItemTemplate.getItemTemplate("leatherArmor")))
+  inventoryItems += (5 -> new Item(ItemTemplate.getItemTemplate("crossbow")))
 
   override def calculateFacingVector(): Unit = {
     val mouseX = Gdx.input.getX

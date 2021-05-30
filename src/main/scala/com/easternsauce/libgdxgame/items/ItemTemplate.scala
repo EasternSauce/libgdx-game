@@ -21,6 +21,8 @@ class ItemTemplate(val id: String, val name: String, val description: String, va
       "attackType" -> ItemParameterValue()
     )
 
+  def worth: Option[Int] = parameters("worth").intValue
+
   def setWorth(worth: Int): ItemTemplate = {
     parameters("worth") = ItemParameterValue(worth)
 

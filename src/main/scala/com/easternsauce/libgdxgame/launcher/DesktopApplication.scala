@@ -5,13 +5,10 @@ import com.easternsauce.libgdxgame.LibgdxGame
 
 object DesktopApplication {
 
-  val windowWidth: Int = 1280
-  val windowHeight: Int = 720
-
   def main(arg: Array[String]): Unit = {
 
     val config = new Lwjgl3ApplicationConfiguration
-    config.setWindowedMode(windowWidth, windowHeight)
+    config.setWindowedMode(LibgdxGame.WindowWidth, LibgdxGame.WindowHeight)
     new Lwjgl3Application(new LibgdxGame(), config)
   }
 }
