@@ -20,6 +20,7 @@ class LibgdxGame extends Game {
     LibgdxGame.manager = new AssetManager()
 
     LibgdxGame.manager.load(AssetPaths.downArrowTexture, classOf[Texture])
+    LibgdxGame.manager.load(AssetPaths.arrowTexture, classOf[Texture])
 
     LibgdxGame.manager.finishLoading()
 
@@ -41,6 +42,7 @@ object LibgdxGame {
   val WindowHeight = 720
 
   val equipmentTypes = Map(0 -> "weapon", 1 -> "helmet", 2 -> "body", 3 -> "gloves", 4 -> "ring", 5 -> "boots")
-  val equipmentTypeIndices = for ((k, v) <- equipmentTypes) yield (v, k)
+  val equipmentTypeIndices: Map[String, Int] = for ((k, v) <- equipmentTypes) yield (v, k)
 
+  val TiledMapCellSize: Float = 2f
 }

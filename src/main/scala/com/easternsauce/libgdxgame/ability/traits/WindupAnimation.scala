@@ -6,7 +6,7 @@ import com.easternsauce.libgdxgame.util.EsTimer
 import scala.collection.mutable.ListBuffer
 
 trait WindupAnimation {
-  protected var abilityWindupAnimation: Animation[TextureRegion]
+  protected var abilityWindupAnimation: Animation[TextureRegion] = _
   protected val abilityWindupAnimationTimer: EsTimer = EsTimer()
 
   def setupWindupAnimation(

@@ -4,19 +4,17 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.graphics.g2d.Sprite
 import com.badlogic.gdx.math.Vector2
-import com.easternsauce.libgdxgame.LibgdxGame
 import com.easternsauce.libgdxgame.ability.traits.{Ability, Attack}
 import com.easternsauce.libgdxgame.ability.{BowAttack, SwordAttack, TridentAttack, UnarmedAttack}
 import com.easternsauce.libgdxgame.area.Area
 import com.easternsauce.libgdxgame.effect.Effect
-import com.easternsauce.libgdxgame.items.Item
 import com.easternsauce.libgdxgame.screens.PlayScreen
 import com.easternsauce.libgdxgame.util.{EsBatch, EsDirection, EsTimer}
 
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
 
-trait Creature extends Sprite with PhysicalBody with AnimatedEntity with Inventory {
+trait Creature extends Sprite with PhysicalBody with AnimatedWalk with Inventory {
 
   val screen: PlayScreen
 
@@ -397,14 +395,6 @@ trait Creature extends Sprite with PhysicalBody with AnimatedEntity with Invento
       ability.render(batch)
     }
     currentAttack.render(batch)
-  }
-
-  def currentWeapon: Item = {
-    equipmentItems(LibgdxGame.equipmentTypeIndices("weapon"))
-  }
-
-  def isWeaponEquipped: Boolean = {
-    equipmentItems.contains(LibgdxGame.equipmentTypeIndices("weapon"))
   }
 
 }

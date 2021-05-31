@@ -16,6 +16,7 @@ import com.easternsauce.libgdxgame.creature.traits.Creature
 import com.easternsauce.libgdxgame.creature.{Player, Skeleton}
 import com.easternsauce.libgdxgame.hud.InventoryWindow
 import com.easternsauce.libgdxgame.items.ItemTemplate
+import com.easternsauce.libgdxgame.projectile.Arrow
 import com.easternsauce.libgdxgame.util.{EsDirection, EsTimer}
 
 import scala.collection.mutable
@@ -107,9 +108,7 @@ class PlayScreen(val game: LibgdxGame) extends Screen {
 
     handleInput()
 
-    currentArea.get.world.step(Math.min(Gdx.graphics.getDeltaTime, 0.15f), 6, 2)
-
-    currentArea.get.creatureMap.values.foreach(_.update())
+    currentArea.get.update()
 
     if (creaturesToMove.nonEmpty) {
       creaturesToMove.foreach {
@@ -150,6 +149,8 @@ class PlayScreen(val game: LibgdxGame) extends Screen {
 
     currentArea.get.render(game.worldBatch)
 
+    currentArea.get.arrowList.foreach((arrow: Arrow) => arrow.render(game.worldBatch))
+
     game.worldBatch.spriteBatch.end()
 
     currentArea.get.renderTopLayer()
@@ -160,7 +161,7 @@ class PlayScreen(val game: LibgdxGame) extends Screen {
 
     game.hudBatch.spriteBatch.end()
 
-    //b2DebugRenderer.render(currentArea.get.world, camera.combined)
+    b2DebugRenderer.render(currentArea.get.world, camera.combined)
 
   }
 

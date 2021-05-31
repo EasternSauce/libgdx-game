@@ -2,8 +2,9 @@ package com.easternsauce.libgdxgame.area.traits
 
 import com.badlogic.gdx.physics.box2d.{Contact, ContactImpulse, ContactListener, Manifold}
 import com.easternsauce.libgdxgame.ability.traits.Ability
-import com.easternsauce.libgdxgame.area.AreaGate
+import com.easternsauce.libgdxgame.area.{AreaGate, AreaTile}
 import com.easternsauce.libgdxgame.creature.traits.Creature
+import com.easternsauce.libgdxgame.projectile.Arrow
 import com.easternsauce.libgdxgame.screens.PlayScreen
 
 trait CollisionDetection extends PhysicalTerrain {
@@ -25,10 +26,10 @@ trait CollisionDetection extends PhysicalTerrain {
               ability.onCollideWithCreature(creature)
 //            case (creature: Creature, abilityComponent: AbilityComponent) =>
 //              abilityComponent.onCollideWithCreature(creature)
-//            case (creature: Creature, arrow: Arrow) =>
-//              arrow.onCollideWithCreature(creature)
-//            case (areaTile: AreaTile, arrow: Arrow) =>
-//              arrow.onCollideWithTerrain(areaTile)
+            case (creature: Creature, arrow: Arrow) =>
+              arrow.onCollideWithCreature(creature)
+            case (areaTile: AreaTile, arrow: Arrow) =>
+              arrow.onCollideWithTerrain(areaTile)
             case _ =>
           }
         }

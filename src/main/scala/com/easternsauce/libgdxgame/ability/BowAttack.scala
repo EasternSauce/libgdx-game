@@ -1,47 +1,58 @@
 package com.easternsauce.libgdxgame.ability
 
-import com.badlogic.gdx.graphics.g2d.{Animation, TextureRegion}
+import com.badlogic.gdx.maps.tiled.TiledMap
+import com.badlogic.gdx.math.Vector2
+import com.easternsauce.libgdxgame.ability.traits.Attack
 import com.easternsauce.libgdxgame.creature.traits.Creature
+import com.easternsauce.libgdxgame.projectile.Arrow
 
-class BowAttack(val creature: Creature) extends MeleeAttack {
+import scala.collection.mutable
+import scala.collection.mutable.ListBuffer
 
-  var weaponSpeed: Float =
-    if (creature.isWeaponEquipped) creature.currentWeapon.template.weaponSpeed.get
-    else 1.0f
+class BowAttack(val creature: Creature) extends Attack {
 
-  private val baseChannelTime = 0.3f
-  private val baseActiveTime = 0.3f
-  private val numOfChannelFrames = 6
-  private val numOfFrames = 6
+  override protected val channelTime: Float = 0.85f
+  override protected val activeTime: Float = 0.1f
+  override protected val cooldownTime = 0.8f
 
-  override protected val activeTime: Float = baseActiveTime * 1f / weaponSpeed
-  override protected val channelTime: Float = 0.3f
-  override protected var abilityActiveAnimation: Animation[TextureRegion] = _
-  override protected var abilityWindupAnimation: Animation[TextureRegion] = _
+  override def onChannellingStart(): Unit = {
+    super.onChannellingStart()
 
-  override var scale: Float = 2.0f
-  override var attackRange: Float = 0.9375f
-  override protected var aimed: Boolean = false
-  override protected var spriteWidth: Int = 40
-  override protected var spriteHeight: Int = 40
-  override protected var knockbackPower: Float = 10f
-  override protected val cooldownTime: Float = 0.8f
+    creature.isAttacking = true
 
-  setupActiveAnimation(
-    atlas = creature.screen.atlas,
-    regionName = "slash",
-    textureWidth = spriteWidth,
-    textureHeight = spriteHeight,
-    animationFrameCount = numOfChannelFrames,
-    frameDuration = baseChannelTime / numOfChannelFrames
-  )
+    //Assets.bowPullSound.play(0.1f) TODO
+  }
 
-  setupWindupAnimation(
-    atlas = creature.screen.atlas,
-    regionName = "slash_windup",
-    textureWidth = spriteWidth,
-    textureHeight = spriteHeight,
-    animationFrameCount = numOfFrames,
-    frameDuration = baseActiveTime / numOfFrames
-  )
+  override def onActiveStart(): Unit = {
+    super.onActiveStart()
+
+    //Assets.bowReleaseSound.play(0.1f) TODO
+
+    creature.attackVector = creature.facingVector.cpy()
+
+    val arrowList: ListBuffer[Arrow] = creature.area.get.arrowList
+    val tiles: TiledMap = creature.area.get.map
+    val areaCreatures: mutable.Map[String, Creature] =
+      creature.area.get.creatureMap
+
+    if (!creature.facingVector.equals(new Vector2(0.0f, 0.0f))) {
+      val arrowStartX = creature.pos.x
+      val arrowStartY = creature.pos.y
+
+      val arrow: Arrow = Arrow(
+        arrowStartX,
+        arrowStartY,
+        creature.area.get,
+        creature.facingVector,
+        arrowList,
+        tiles,
+        areaCreatures,
+        this.creature
+      )
+      arrowList += arrow
+    }
+
+    creature.takeStaminaDamage(20f)
+  }
+
 }

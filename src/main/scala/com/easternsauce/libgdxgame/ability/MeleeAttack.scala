@@ -3,11 +3,11 @@ package com.easternsauce.libgdxgame.ability
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.math.{Polygon, Rectangle, Vector2}
 import com.easternsauce.libgdxgame.LibgdxGame
-import com.easternsauce.libgdxgame.ability.traits.{Attack, PhysicalHitbox}
+import com.easternsauce.libgdxgame.ability.traits.{ActiveAnimation, Attack, PhysicalHitbox, WindupAnimation}
 import com.easternsauce.libgdxgame.creature.traits.Creature
 import com.easternsauce.libgdxgame.util.{EsBatch, EsPolygon}
 
-trait MeleeAttack extends Attack with PhysicalHitbox {
+trait MeleeAttack extends Attack with PhysicalHitbox with ActiveAnimation with WindupAnimation {
   var scale: Float
   var attackRange: Float
   var hitbox: Option[AttackHitbox] = None
@@ -75,7 +75,7 @@ trait MeleeAttack extends Attack with PhysicalHitbox {
       val attackVector = creature.attackVector
       val theta = new Vector2(attackVector.x, attackVector.y).angleDeg()
 
-      if (hitbox.nonEmpty)
+      if (hitbox.nonEmpty) {
         batch.spriteBatch.draw(
           image,
           hitbox.get.x,
@@ -88,6 +88,7 @@ trait MeleeAttack extends Attack with PhysicalHitbox {
           scale,
           theta
         )
+      }
     }
 
     if (state == AbilityState.Channeling) renderFrame(currentWindupAnimationFrame)

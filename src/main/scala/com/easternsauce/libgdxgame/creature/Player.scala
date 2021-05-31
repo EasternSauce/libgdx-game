@@ -37,6 +37,7 @@ class Player(val screen: PlayScreen, val id: String) extends Creature {
   inventoryItems += (4 -> new Item(ItemTemplate.getItemTemplate("leatherArmor")))
   inventoryItems += (5 -> new Item(ItemTemplate.getItemTemplate("crossbow")))
   inventoryItems += (20 -> new Item(ItemTemplate.getItemTemplate("lifeRing")))
+  inventoryItems += (21 -> new Item(ItemTemplate.getItemTemplate("trident")))
 
   override def calculateFacingVector(): Unit = {
     val mouseX = Gdx.input.getX
@@ -45,8 +46,8 @@ class Player(val screen: PlayScreen, val id: String) extends Creature {
     val centerX = Gdx.graphics.getWidth / 2f
     val centerY = Gdx.graphics.getHeight / 2f
 
-    facingVector = new Vector2(mouseX - centerX, (Gdx.graphics.getHeight - mouseY) - centerY)
-      .nor() // we need to reverse y due to mouse coordinates being in different system
+    // we need to reverse y due to mouse coordinates being in different system
+    facingVector = new Vector2(mouseX - centerX, (Gdx.graphics.getHeight - mouseY) - centerY).nor()
   }
 
 }

@@ -1,6 +1,5 @@
 package com.easternsauce.libgdxgame.ability
 
-import com.badlogic.gdx.graphics.g2d.{Animation, TextureRegion}
 import com.easternsauce.libgdxgame.creature.traits.Creature
 
 class UnarmedAttack(val creature: Creature) extends MeleeAttack {
@@ -14,12 +13,10 @@ class UnarmedAttack(val creature: Creature) extends MeleeAttack {
   private val numOfChannelFrames = 6
   private val numOfFrames = 6
 
-  override protected val activeTime: Float = baseActiveTime * 1f / weaponSpeed
-  override protected val channelTime: Float = 0.3f
-  override protected var abilityActiveAnimation: Animation[TextureRegion] = _
-  override protected var abilityWindupAnimation: Animation[TextureRegion] = _
+  override protected val activeTime: Float = baseActiveTime / weaponSpeed
+  override protected val channelTime: Float = baseChannelTime / weaponSpeed
 
-  override var scale: Float = 1.0f
+  override var scale: Float = 1.3f
   override var attackRange: Float = 0.9375f
   override protected var aimed: Boolean = false
   override protected var spriteWidth: Int = 40
@@ -32,8 +29,8 @@ class UnarmedAttack(val creature: Creature) extends MeleeAttack {
     regionName = "slash",
     textureWidth = spriteWidth,
     textureHeight = spriteHeight,
-    animationFrameCount = numOfChannelFrames,
-    frameDuration = baseChannelTime / numOfChannelFrames
+    animationFrameCount = numOfFrames,
+    frameDuration = baseActiveTime / numOfFrames
   )
 
   setupWindupAnimation(
@@ -41,7 +38,7 @@ class UnarmedAttack(val creature: Creature) extends MeleeAttack {
     regionName = "slash_windup",
     textureWidth = spriteWidth,
     textureHeight = spriteHeight,
-    animationFrameCount = numOfFrames,
-    frameDuration = baseActiveTime / numOfFrames
+    animationFrameCount = numOfChannelFrames,
+    frameDuration = baseChannelTime / numOfChannelFrames
   )
 }

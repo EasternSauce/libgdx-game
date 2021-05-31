@@ -14,7 +14,7 @@ trait TiledGrid {
   val fileName: String
   val mapScale: Float
 
-  protected val map: TiledMap = mapLoader.load(fileName)
+  val map: TiledMap = mapLoader.load(fileName)
 
   protected val tiledMapRenderer: OrthogonalTiledMapRenderer =
     new OrthogonalTiledMapRenderer(map, mapScale / LibgdxGame.PPM)

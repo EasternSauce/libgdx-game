@@ -1,6 +1,6 @@
 package com.easternsauce.libgdxgame.ability.traits
 
-trait Attack extends Ability with ActiveAnimation with WindupAnimation {
+trait Attack extends Ability {
 
   override protected val isAttack = true
 

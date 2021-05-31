@@ -5,7 +5,7 @@ import com.easternsauce.libgdxgame.util.{EsDirection, EsTimer}
 
 import scala.collection.mutable.ListBuffer
 
-trait AnimatedEntity {
+trait AnimatedWalk {
   protected val standStillImages: Array[TextureRegion] = new Array[TextureRegion](4)
 
   protected val walkAnimation: Array[Animation[TextureRegion]] = new Array[Animation[TextureRegion]](4)

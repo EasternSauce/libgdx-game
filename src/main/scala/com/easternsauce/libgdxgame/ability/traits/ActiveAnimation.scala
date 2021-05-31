@@ -6,7 +6,7 @@ import com.easternsauce.libgdxgame.util.EsTimer
 import scala.collection.mutable.ListBuffer
 
 trait ActiveAnimation {
-  protected var abilityActiveAnimation: Animation[TextureRegion]
+  protected var abilityActiveAnimation: Animation[TextureRegion] = _
   protected val abilityActiveAnimationTimer: EsTimer = EsTimer()
 
   def setupActiveAnimation(
