@@ -48,7 +48,8 @@ trait Creature extends Sprite with PhysicalBody with AnimatedWalk with Inventory
   val knockbackable = false // TODO
   var knockbackVector = new Vector2() //TODO
 
-  val onGettingHitSound: Option[Sound]
+  val onGettingHitSound: Option[Sound] = None
+  val walkSound: Option[Sound] = None
 
   val weaponDamage = 50f // TODO
 
@@ -156,7 +157,10 @@ trait Creature extends Sprite with PhysicalBody with AnimatedWalk with Inventory
       setPosition(pos.x - getWidth / 2f, pos.y - getHeight / 2f)
     }
 
-    if (isWalkAnimationActive && timeSinceMovedTimer.time > 0.25f) isWalkAnimationActive = false
+    if (isWalkAnimationActive && timeSinceMovedTimer.time > 0.25f) {
+      isWalkAnimationActive = false
+      if (walkSound.nonEmpty) walkSound.get.stop()
+    }
   }
 
   def abilityActive: Boolean = {
@@ -254,6 +258,7 @@ trait Creature extends Sprite with PhysicalBody with AnimatedWalk with Inventory
 
   def onDeath(): Unit = {
     isWalkAnimationActive = false
+    if (walkSound.nonEmpty) walkSound.get.stop()
 
     for (ability <- abilityList) {
       ability.forceStop()
@@ -319,6 +324,7 @@ trait Creature extends Sprite with PhysicalBody with AnimatedWalk with Inventory
       if (!isWalkAnimationActive) {
         animationTimer.restart()
         isWalkAnimationActive = true
+        if (walkSound.nonEmpty) walkSound.get.loop(0.1f)
       }
 
       val vector = new Vector2()
