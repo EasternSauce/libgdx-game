@@ -2,6 +2,7 @@ package com.easternsauce.libgdxgame
 
 import com.badlogic.gdx.Game
 import com.badlogic.gdx.assets.AssetManager
+import com.badlogic.gdx.audio.{Music, Sound}
 import com.badlogic.gdx.graphics.Texture
 import com.easternsauce.libgdxgame.assets.AssetPaths
 import com.easternsauce.libgdxgame.screens.PlayScreen
@@ -19,8 +20,9 @@ class LibgdxGame extends Game {
     hudBatch = new EsBatch()
     LibgdxGame.manager = new AssetManager()
 
-    LibgdxGame.manager.load(AssetPaths.downArrowTexture, classOf[Texture])
-    LibgdxGame.manager.load(AssetPaths.arrowTexture, classOf[Texture])
+    AssetPaths.sounds.foreach(LibgdxGame.manager.load(_, classOf[Sound]))
+    AssetPaths.textures.foreach(LibgdxGame.manager.load(_, classOf[Texture]))
+    AssetPaths.music.foreach(LibgdxGame.manager.load(_, classOf[Music]))
 
     LibgdxGame.manager.finishLoading()
 

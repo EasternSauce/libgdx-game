@@ -4,6 +4,7 @@ object AssetPaths {
   val area1Map = "assets/areas/area1/tile_map.tmx"
   val area2Map = "assets/areas/area2/tile_map.tmx"
   val area3Map = "assets/areas/area3/tile_map.tmx"
+
   val attackSound = "assets/sounds/swoosh.wav"
   val painSound = "assets/sounds/pain.wav"
   val arrowWhizzSound = "assets/sounds/arrow-whizz.wav"
@@ -30,6 +31,34 @@ object AssetPaths {
   val coinBagSound = "assets/sounds/coinbag.wav"
   val matchIgniteSound = "assets/sounds/match-ignite.wav"
 
+  val sounds = List(
+    attackSound,
+    painSound,
+    arrowWhizzSound,
+    bloodSquirtSound,
+    boneClickSound,
+    boneCrushSound,
+    bowPullSound,
+    bowReleaseSound,
+    darkLaughSound,
+    dogBarkSound,
+    dogWhineSound,
+    evilYellingSound,
+    explosionSound,
+    flybySound,
+    glassBreakSound,
+    gruntSound,
+    monsterGrowlSound,
+    punchSound,
+    roarSound,
+    runningSound,
+    strongPunchSound,
+    swooshSound,
+    chestOpeningSound,
+    coinBagSound,
+    matchIgniteSound
+  )
+
   val arrowTexture = "assets/projectiles/arrow.png"
   val treasureTexture = "assets/treasure/treasure.png"
   val bagTexture = "assets/treasure/bag.png"
@@ -37,8 +66,12 @@ object AssetPaths {
   val gobletLitTexture = "assets/goblet/goblet_lit.png"
   val downArrowTexture = "assets/downarrow/downarrow.png"
 
+  val textures = List(arrowTexture, treasureTexture, bagTexture, gobletTexture, gobletLitTexture, downArrowTexture)
+
   val abandonedPlainsMusic = "assets/music/abandoned_plains.wav"
   val fireDemonMusic = "assets/music/fire_demon.wav"
+
+  val music = List(abandonedPlainsMusic, fireDemonMusic)
 
   val youngSerif = "assets/font/YoungSerif-Regular.ttf"
 }

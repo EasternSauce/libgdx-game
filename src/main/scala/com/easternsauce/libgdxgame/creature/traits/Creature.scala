@@ -48,7 +48,7 @@ trait Creature extends Sprite with PhysicalBody with AnimatedWalk with Inventory
   val knockbackable = false // TODO
   var knockbackVector = new Vector2() //TODO
 
-  var onGettingHitSound: Sound = _ // TODO
+  val onGettingHitSound: Option[Sound]
 
   val weaponDamage = 50f // TODO
 
@@ -298,7 +298,7 @@ trait Creature extends Sprite with PhysicalBody with AnimatedWalk with Inventory
         )
       }
 
-      // onGettingHitSound.play(0.1f) TODO ASSETS
+      if (onGettingHitSound.nonEmpty) onGettingHitSound.get.play(0.1f)
     }
   }
 

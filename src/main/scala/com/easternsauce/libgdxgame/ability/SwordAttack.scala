@@ -1,5 +1,8 @@
 package com.easternsauce.libgdxgame.ability
 
+import com.badlogic.gdx.audio.Sound
+import com.easternsauce.libgdxgame.LibgdxGame
+import com.easternsauce.libgdxgame.assets.AssetPaths
 import com.easternsauce.libgdxgame.creature.traits.Creature
 
 class SwordAttack(val creature: Creature) extends MeleeAttack {
@@ -23,6 +26,10 @@ class SwordAttack(val creature: Creature) extends MeleeAttack {
   override protected var spriteHeight: Int = 40
   override protected var knockbackPower: Float = 10f
   override protected val cooldownTime: Float = 0.8f
+
+  override protected val abilitySound: Option[Sound] = Some(
+    LibgdxGame.manager.get(AssetPaths.attackSound, classOf[Sound])
+  )
 
   setupActiveAnimation(
     atlas = creature.screen.atlas,

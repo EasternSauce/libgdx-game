@@ -1,7 +1,10 @@
 package com.easternsauce.libgdxgame.creature
 
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.math.Vector2
+import com.easternsauce.libgdxgame.LibgdxGame
+import com.easternsauce.libgdxgame.assets.AssetPaths
 import com.easternsauce.libgdxgame.creature.traits.Creature
 import com.easternsauce.libgdxgame.items.{Item, ItemTemplate}
 import com.easternsauce.libgdxgame.screens.PlayScreen
@@ -12,6 +15,8 @@ class Player(val screen: PlayScreen, val id: String) extends Creature {
   override val creatureHeight = 1.85f
 
   override val isPlayer: Boolean = true
+
+  override val onGettingHitSound: Option[Sound] = Some(LibgdxGame.manager.get(AssetPaths.painSound, classOf[Sound]))
 
   setBounds(0, 0, creatureWidth, creatureHeight)
   setOrigin(creatureWidth / 2, creatureHeight / 2f)
