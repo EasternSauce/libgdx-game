@@ -60,6 +60,10 @@ class Area(
       creature.renderAbilities(batch)
     }
 
+    for (creature <- creatureMap.values) {
+      if (creature.isAlive && !creature.atFullLife)
+        creature.renderHealthBar(batch)
+    }
   }
 
   def setView(camera: OrthographicCamera): Unit = {

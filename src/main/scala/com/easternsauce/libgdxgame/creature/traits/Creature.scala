@@ -2,8 +2,9 @@ package com.easternsauce.libgdxgame.creature.traits
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.audio.Sound
+import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.Sprite
-import com.badlogic.gdx.math.Vector2
+import com.badlogic.gdx.math.{Rectangle, Vector2}
 import com.easternsauce.libgdxgame.ability.traits.{Ability, Attack}
 import com.easternsauce.libgdxgame.ability.{BowAttack, SwordAttack, TridentAttack, UnarmedAttack}
 import com.easternsauce.libgdxgame.area.Area
@@ -32,7 +33,7 @@ trait Creature extends Sprite with PhysicalBody with AnimatedWalk with Inventory
   var isWalkAnimationActive = false
   val timeSinceMovedTimer: EsTimer = EsTimer()
 
-  val directionalSpeed = 30f
+  val directionalSpeed = 18f
 
   var area: Option[Area] = None
 
@@ -96,6 +97,8 @@ trait Creature extends Sprite with PhysicalBody with AnimatedWalk with Inventory
 
   def isImmune: Boolean = effect("immune").isActive
 
+  def atFullLife: Boolean = healthPoints >= maxHealthPoints
+
   def alive: Boolean = {
     true // TODO
   }
@@ -111,6 +114,7 @@ trait Creature extends Sprite with PhysicalBody with AnimatedWalk with Inventory
     if (sprinting && staminaPoints > 0) {
       staminaDrain += Gdx.graphics.getDeltaTime
     }
+
   }
 
   def isAlive: Boolean = healthPoints > 0f
@@ -134,24 +138,11 @@ trait Creature extends Sprite with PhysicalBody with AnimatedWalk with Inventory
 
     currentAttack.update()
 
-//    if (staminaDrain >= 0.3f) {
-//      takeStaminaDamage(11f)
-//
-//      staminaDrain = 0.0f
-//    }
-//
-//    if (
-//      GameSystem.cameraFocussedCreature.nonEmpty
-//        && this == GameSystem.cameraFocussedCreature.get
-//    ) {
-//      GameSystem.adjustCamera(this)
-//    }
-//
-//    if (toSetBodyNonInteractive) {
-//      fixture.setSensor(true)
-//      body.setType(BodyDef.BodyType.StaticBody)
-//      toSetBodyNonInteractive = false
-//    }
+    if (staminaDrain >= 0.3f) {
+      takeStaminaDamage(11f)
+
+      staminaDrain = 0.0f
+    }
 
     if (toSetBodyNonInteractive) {
       setNonInteractive()
@@ -395,6 +386,18 @@ trait Creature extends Sprite with PhysicalBody with AnimatedWalk with Inventory
       ability.render(batch)
     }
     currentAttack.render(batch)
+  }
+
+  def renderHealthBar(batch: EsBatch): Unit = {
+    val healthBarHeight = 0.16f
+    val healthBarWidth = 2.0f
+    val currentHealthBarWidth = healthBarWidth * healthPoints / maxHealthPoints
+    val barPosX = pos.x - healthBarWidth / 2
+    val barPosY = pos.y + getWidth / 2 + 0.3125f
+    batch.shapeDrawer.filledRectangle(new Rectangle(barPosX, barPosY, healthBarWidth, healthBarHeight), Color.ORANGE)
+    batch.shapeDrawer
+      .filledRectangle(new Rectangle(barPosX, barPosY, currentHealthBarWidth, healthBarHeight), Color.RED)
+
   }
 
 }

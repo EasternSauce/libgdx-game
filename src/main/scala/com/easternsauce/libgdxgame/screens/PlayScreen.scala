@@ -14,7 +14,7 @@ import com.easternsauce.libgdxgame.area.{Area, AreaGate}
 import com.easternsauce.libgdxgame.assets.AssetPaths
 import com.easternsauce.libgdxgame.creature.traits.Creature
 import com.easternsauce.libgdxgame.creature.{Player, Skeleton}
-import com.easternsauce.libgdxgame.hud.InventoryWindow
+import com.easternsauce.libgdxgame.hud.{InventoryWindow, PlayerHealthStaminaBar}
 import com.easternsauce.libgdxgame.items.ItemTemplate
 import com.easternsauce.libgdxgame.projectile.Arrow
 import com.easternsauce.libgdxgame.util.{EsDirection, EsTimer}
@@ -56,6 +56,8 @@ class PlayScreen(val game: LibgdxGame) extends Screen {
 
   val defaultFont: BitmapFont = loadFont(AssetPaths.youngSerif, 16)
 
+  var healthStaminaBar: PlayerHealthStaminaBar = _
+
   ItemTemplate.loadItemTemplates(this)
 
   loadAreas()
@@ -94,6 +96,7 @@ class PlayScreen(val game: LibgdxGame) extends Screen {
   private def setPlayer(creature1: Player): Unit = {
     player = creature1
     inventoryWindow = new InventoryWindow(this)
+    healthStaminaBar = new PlayerHealthStaminaBar(this)
   }
 
   def assignCreaturesToAreas(): Unit = {
@@ -123,6 +126,8 @@ class PlayScreen(val game: LibgdxGame) extends Screen {
     adjustCamera(player)
 
     currentArea.get.setView(camera)
+
+    healthStaminaBar.update()
 
   }
 
@@ -158,6 +163,8 @@ class PlayScreen(val game: LibgdxGame) extends Screen {
     game.hudBatch.spriteBatch.begin()
 
     inventoryWindow.render(game.hudBatch)
+
+    healthStaminaBar.render(game.hudBatch)
 
     game.hudBatch.spriteBatch.end()
 
@@ -213,6 +220,9 @@ class PlayScreen(val game: LibgdxGame) extends Screen {
       }
 
     if (dirs.nonEmpty) player.moveInDirection(dirs)
+
+    player.sprinting = Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT)
+
   }
 
   def adjustCamera(creature: Player): Unit = {
