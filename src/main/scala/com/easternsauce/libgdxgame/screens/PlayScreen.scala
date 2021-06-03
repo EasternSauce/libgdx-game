@@ -4,7 +4,7 @@ import com.badlogic.gdx.Input.Buttons
 import com.badlogic.gdx.graphics.Texture.TextureFilter
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator
 import com.badlogic.gdx.graphics.g2d.{BitmapFont, TextureAtlas}
-import com.badlogic.gdx.graphics.{GL20, OrthographicCamera}
+import com.badlogic.gdx.graphics.{Color, GL20, OrthographicCamera}
 import com.badlogic.gdx.maps.tiled.TmxMapLoader
 import com.badlogic.gdx.math.Vector3
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer
@@ -167,6 +167,7 @@ class PlayScreen(val game: LibgdxGame) extends Screen {
 
     healthStaminaBar.render(game.hudBatch)
 
+    defaultFont.setColor(Color.WHITE)
     defaultFont.draw(
       game.hudBatch.spriteBatch,
       Gdx.graphics.getFramesPerSecond + " fps",

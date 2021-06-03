@@ -24,7 +24,7 @@ class SwordAttack(val creature: Creature) extends MeleeAttack {
   override protected var aimed: Boolean = false
   override protected var spriteWidth: Int = 40
   override protected var spriteHeight: Int = 40
-  override protected var knockbackPower: Float = 10f
+  override protected var knockbackPower: Float = 20f
   override protected val cooldownTime: Float = 0.8f
 
   override protected val abilitySound: Option[Sound] = Some(

@@ -84,22 +84,24 @@ trait AggressiveAI extends Creature {
   }
 
   def searchForAndAttackTargets(): Unit = {
-    lookForTarget()
+    if (isAlive) {
+      lookForTarget()
 
-    decideIfCircling()
+      decideIfCircling()
 
-    if (targetFound) {
-      if (circling && distanceTo(aggroedTarget.get) < circleDistance) {
-        circleTarget(aggroedTarget.get.pos)
-      } else if (distanceTo(aggroedTarget.get) > minimumWalkUpDistance) {
-        walkToTarget(aggroedTarget.get.pos)
-      }
-      if (distanceTo(aggroedTarget.get) < attackDistance) {
-        currentAttack.perform()
-      }
+      if (targetFound) {
+        if (circling && distanceTo(aggroedTarget.get) < circleDistance) {
+          circleTarget(aggroedTarget.get.pos)
+        } else if (distanceTo(aggroedTarget.get) > minimumWalkUpDistance) {
+          walkToTarget(aggroedTarget.get.pos)
+        }
+        if (distanceTo(aggroedTarget.get) < attackDistance) {
+          currentAttack.perform()
+        }
 
-      if (!aggroedTarget.get.isAlive) {
-        aggroedTarget = None
+        if (!aggroedTarget.get.isAlive) {
+          aggroedTarget = None
+        }
       }
     }
 
@@ -109,5 +111,6 @@ trait AggressiveAI extends Creature {
     super.update()
 
     searchForAndAttackTargets()
+
   }
 }

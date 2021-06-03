@@ -45,8 +45,8 @@ trait Creature extends Sprite with PhysicalBody with AnimatedWalk with Inventory
   var isAttacking = false
 
   val totalArmor = 100f // TODO
-  val knockbackable = false // TODO
-  var knockbackVector = new Vector2() //TODO
+  val knockbackable = true
+  var knockbackVector = new Vector2(0f, 0f)
 
   val onGettingHitSound: Option[Sound] = None
   val walkSound: Option[Sound] = None
@@ -110,8 +110,6 @@ trait Creature extends Sprite with PhysicalBody with AnimatedWalk with Inventory
   }
 
   def onUpdateStart(): Unit = {
-    knockbackSpeed = knockbackPower * Gdx.graphics.getDeltaTime
-
     if (sprinting && staminaPoints > 0) {
       staminaDrain += Gdx.graphics.getDeltaTime
     }
@@ -161,6 +159,9 @@ trait Creature extends Sprite with PhysicalBody with AnimatedWalk with Inventory
       isWalkAnimationActive = false
       if (walkSound.nonEmpty) walkSound.get.stop()
     }
+
+    handleKnockback()
+
   }
 
   def abilityActive: Boolean = {
@@ -249,6 +250,7 @@ trait Creature extends Sprite with PhysicalBody with AnimatedWalk with Inventory
     initEffect("immobilized")
     initEffect("staminaRegenStopped")
     initEffect("poisoned")
+    initEffect("knockedBack")
 
   }
 
@@ -295,15 +297,17 @@ trait Creature extends Sprite with PhysicalBody with AnimatedWalk with Inventory
 
       if (knockbackable) {
         knockbackVector = new Vector2(pos.x - sourceX, pos.y - sourceY).nor()
-
-        b2Body.applyLinearImpulse(
-          new Vector2(knockbackVector.x * knockbackPower, knockbackVector.y * knockbackPower),
-          b2Body.getWorldCenter,
-          true
-        )
+        knockbackSpeed = knockbackPower
+        effect("knockedBack").applyEffect(0.15f)
       }
 
       if (onGettingHitSound.nonEmpty) onGettingHitSound.get.play(0.1f)
+    }
+  }
+
+  def handleKnockback(): Unit = {
+    if (effect("knockedBack").isActive) {
+      sustainVelocity(new Vector2(knockbackVector.x * knockbackSpeed, knockbackVector.y * knockbackSpeed))
     }
   }
 
@@ -346,11 +350,13 @@ trait Creature extends Sprite with PhysicalBody with AnimatedWalk with Inventory
       val horizontalCount = dirs.count(EsDirection.isHorizontal)
       val verticalCount = dirs.count(EsDirection.isVertical)
 
-      if (horizontalCount < 2 && verticalCount < 2) {
-        if (horizontalCount > 0 && verticalCount > 0) {
-          sustainVelocity(new Vector2(vector.x / Math.sqrt(2).toFloat, vector.y / Math.sqrt(2).toFloat))
-        } else {
-          sustainVelocity(vector)
+      if (!effect("knockedBack").isActive) {
+        if (horizontalCount < 2 && verticalCount < 2) {
+          if (horizontalCount > 0 && verticalCount > 0) {
+            sustainVelocity(new Vector2(vector.x / Math.sqrt(2).toFloat, vector.y / Math.sqrt(2).toFloat))
+          } else {
+            sustainVelocity(vector)
+          }
         }
       }
     }
