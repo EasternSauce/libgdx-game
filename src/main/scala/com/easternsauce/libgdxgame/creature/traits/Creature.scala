@@ -80,7 +80,7 @@ trait Creature extends Sprite with PhysicalBody with AnimatedWalk with Inventory
   protected val healingTickTimer: EsTimer = EsTimer()
 
   protected val healthRegen = 0.3f
-  protected val staminaRegen = 3f
+  protected val staminaRegen = 0.3f
   protected val staminaOveruseTime = 1.3f
   protected val poisonTickTime = 1.5f
   protected val poisonTime = 20f
@@ -185,7 +185,7 @@ trait Creature extends Sprite with PhysicalBody with AnimatedWalk with Inventory
     }
 
     if (!effect("staminaRegenStopped").isActive && !sprinting)
-      if (staminaRegenTimer.time > 0.05f && !abilityActive && !staminaOveruse) {
+      if (staminaRegenTimer.time > 0.005f && !abilityActive && !staminaOveruse) {
         if (staminaPoints < maxStaminaPoints) {
           val afterRegen = staminaPoints + staminaRegen
           staminaPoints = Math.min(afterRegen, maxStaminaPoints)

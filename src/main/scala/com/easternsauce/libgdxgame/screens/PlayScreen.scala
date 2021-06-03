@@ -1,6 +1,7 @@
 package com.easternsauce.libgdxgame.screens
 
 import com.badlogic.gdx.Input.Buttons
+import com.badlogic.gdx.graphics.Texture.TextureFilter
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator
 import com.badlogic.gdx.graphics.g2d.{BitmapFont, TextureAtlas}
 import com.badlogic.gdx.graphics.{GL20, OrthographicCamera}
@@ -166,6 +167,13 @@ class PlayScreen(val game: LibgdxGame) extends Screen {
 
     healthStaminaBar.render(game.hudBatch)
 
+    defaultFont.draw(
+      game.hudBatch.spriteBatch,
+      Gdx.graphics.getFramesPerSecond + " fps",
+      3,
+      LibgdxGame.WindowHeight - 3
+    )
+
     game.hudBatch.spriteBatch.end()
 
     b2DebugRenderer.render(currentArea.get.world, camera.combined)
@@ -246,6 +254,8 @@ class PlayScreen(val game: LibgdxGame) extends Screen {
     val parameter = new FreeTypeFontGenerator.FreeTypeFontParameter
     parameter.size = size
     val font: BitmapFont = generator.generateFont(parameter)
+    font.getRegion.getTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear)
+
     generator.dispose()
     font
   }
