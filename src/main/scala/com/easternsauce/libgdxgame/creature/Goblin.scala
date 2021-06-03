@@ -7,12 +7,12 @@ import com.easternsauce.libgdxgame.creature.traits.Enemy
 import com.easternsauce.libgdxgame.screens.PlayScreen
 import com.easternsauce.libgdxgame.util.EsDirection
 
-class Skeleton(val screen: PlayScreen, val id: String) extends Enemy {
+class Goblin(val screen: PlayScreen, val id: String) extends Enemy {
   override val creatureWidth = 2.85f
   override val creatureHeight = 2.85f
 
   override val onGettingHitSound: Option[Sound] = Some(
-    LibgdxGame.manager.get(AssetPaths.boneClickSound, classOf[Sound])
+    LibgdxGame.manager.get(AssetPaths.evilYellingSound, classOf[Sound])
   )
 
   setBounds(0, 0, creatureWidth, creatureHeight)
@@ -20,13 +20,13 @@ class Skeleton(val screen: PlayScreen, val id: String) extends Enemy {
 
   setupAnimation(
     atlas = screen.atlas,
-    regionName = "skeleton",
-    textureWidth = 64,
-    textureHeight = 64,
-    animationFrameCount = 9,
-    frameDuration = 0.05f,
-    neutralStanceFrame = 0,
-    dirMap = Map(EsDirection.Up -> 0, EsDirection.Down -> 2, EsDirection.Left -> 1, EsDirection.Right -> 3)
+    regionName = "goblin",
+    textureWidth = 32,
+    textureHeight = 32,
+    animationFrameCount = 3,
+    frameDuration = 0.25f,
+    neutralStanceFrame = 1,
+    dirMap = Map(EsDirection.Up -> 3, EsDirection.Down -> 0, EsDirection.Left -> 1, EsDirection.Right -> 2)
   )
 
   initParams(300f)

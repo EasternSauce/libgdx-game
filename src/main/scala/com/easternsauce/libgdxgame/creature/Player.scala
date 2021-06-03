@@ -21,7 +21,7 @@ class Player(val screen: PlayScreen, val id: String) extends Creature {
   override val walkSound: Option[Sound] = Some(LibgdxGame.manager.get(AssetPaths.runningSound, classOf[Sound]))
 
   setBounds(0, 0, creatureWidth, creatureHeight)
-  setOrigin(creatureWidth / 2, creatureHeight / 2f)
+  setOrigin(creatureWidth / 2f, creatureHeight / 2f)
 
   setupAnimation(
     atlas = screen.atlas,

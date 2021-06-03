@@ -2,7 +2,7 @@ package com.easternsauce.libgdxgame.effect
 
 import com.easternsauce.libgdxgame.util.EsTimer
 
-class Effect private {
+class Effect {
 
   protected val effectTimer: EsTimer = EsTimer()
 

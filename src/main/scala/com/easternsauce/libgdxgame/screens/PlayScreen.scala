@@ -14,7 +14,7 @@ import com.easternsauce.libgdxgame.LibgdxGame
 import com.easternsauce.libgdxgame.area.{Area, AreaGate}
 import com.easternsauce.libgdxgame.assets.AssetPaths
 import com.easternsauce.libgdxgame.creature.traits.Creature
-import com.easternsauce.libgdxgame.creature.{Player, Skeleton}
+import com.easternsauce.libgdxgame.creature.{Player, Skeleton, Wolf}
 import com.easternsauce.libgdxgame.hud.{InventoryWindow, PlayerHealthStaminaBar}
 import com.easternsauce.libgdxgame.items.ItemTemplate
 import com.easternsauce.libgdxgame.projectile.Arrow
@@ -86,10 +86,12 @@ class PlayScreen(val game: LibgdxGame) extends Screen {
 
     val creature1 = new Player(this, "player")
     val skeleton = new Skeleton(this, "skellie")
+    val wolf = new Wolf(this, "wolf")
 
     creatureMap = mutable.Map()
     creatureMap += (creature1.id -> creature1)
     creatureMap += (skeleton.id -> skeleton)
+    creatureMap += (wolf.id -> wolf)
 
     setPlayer(creature1)
   }
@@ -102,7 +104,9 @@ class PlayScreen(val game: LibgdxGame) extends Screen {
 
   def assignCreaturesToAreas(): Unit = {
     creatureMap("player").assignToArea(areaMap("area1"), 30, 30)
-    creatureMap("skellie").assignToArea(areaMap("area1"), 34, 42)
+    creatureMap("skellie").assignToArea(areaMap("area3"), 34, 42)
+    creatureMap("wolf").assignToArea(areaMap("area1"), 34, 42)
+
   }
 
   override def show(): Unit = {}
