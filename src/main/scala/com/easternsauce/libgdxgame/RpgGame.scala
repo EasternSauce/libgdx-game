@@ -5,33 +5,39 @@ import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.audio.{Music, Sound}
 import com.badlogic.gdx.graphics.Texture
 import com.easternsauce.libgdxgame.assets.AssetPaths
+import com.easternsauce.libgdxgame.saving.SavefileManager
 import com.easternsauce.libgdxgame.screens.PlayScreen
 import com.easternsauce.libgdxgame.util.EsBatch
 
 import scala.util.Random
 
-class LibgdxGame extends Game {
+class RpgGame extends Game {
 
   var worldBatch: EsBatch = _
   var hudBatch: EsBatch = _
 
+  var savefileManager: SavefileManager = _
+
   override def create(): Unit = {
     worldBatch = new EsBatch()
     hudBatch = new EsBatch()
-    LibgdxGame.manager = new AssetManager()
+    RpgGame.manager = new AssetManager()
 
-    AssetPaths.sounds.foreach(LibgdxGame.manager.load(_, classOf[Sound]))
-    AssetPaths.textures.foreach(LibgdxGame.manager.load(_, classOf[Texture]))
-    AssetPaths.music.foreach(LibgdxGame.manager.load(_, classOf[Music]))
+    savefileManager = new SavefileManager()
 
-    LibgdxGame.manager.finishLoading()
+    AssetPaths.sounds.foreach(RpgGame.manager.load(_, classOf[Sound]))
+    AssetPaths.textures.foreach(RpgGame.manager.load(_, classOf[Texture]))
+    AssetPaths.music.foreach(RpgGame.manager.load(_, classOf[Music]))
+
+    RpgGame.manager.finishLoading()
 
     setScreen(new PlayScreen(this))
 
   }
+
 }
 
-object LibgdxGame {
+object RpgGame {
   val Random: Random = new Random()
 
   var manager: AssetManager = _

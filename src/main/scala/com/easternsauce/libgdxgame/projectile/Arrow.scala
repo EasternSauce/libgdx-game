@@ -5,7 +5,7 @@ import com.badlogic.gdx.maps.tiled.TiledMap
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.{Body, BodyDef, CircleShape, FixtureDef}
 import com.badlogic.gdx.scenes.scene2d.ui.Image
-import com.easternsauce.libgdxgame.LibgdxGame
+import com.easternsauce.libgdxgame.RpgGame
 import com.easternsauce.libgdxgame.area.{Area, AreaTile}
 import com.easternsauce.libgdxgame.assets.AssetPaths
 import com.easternsauce.libgdxgame.creature.traits.Creature
@@ -27,13 +27,15 @@ class Arrow private (
 
   val damage: Float = shooter.weaponDamage
 
-  private val arrowTexture: Texture = LibgdxGame.manager.get(AssetPaths.arrowTexture, classOf[Texture])
+  private val arrowTexture: Texture = RpgGame.manager.get(AssetPaths.arrowTexture, classOf[Texture])
   private val arrowImage: Image = new Image(arrowTexture)
   var markedForDeletion: Boolean = false
   var body: Body = _
   var isActive: Boolean = true
   var landed: Boolean = false
   val arrowLandedTimer: EsTimer = EsTimer()
+
+  val knockbackPower = 10f
 
   val directionalVelocity = 48f
 
@@ -83,7 +85,7 @@ class Arrow private (
     if (!(shooter.isEnemy && creature.isEnemy) && isActive) {
 
       if (shooter != creature && creature.isAlive && !creature.isImmune) {
-        creature.takeHealthDamage(damage, immunityFrames = true, 7000f, startX, startY)
+        creature.takeHealthDamage(damage, immunityFrames = true, knockbackPower, startX, startY)
         markedForDeletion = true
       }
     }

@@ -18,3 +18,9 @@ libraryDependencies += "com.badlogicgames.gdx" % "gdx-box2d-platform" % "1.9.14"
 libraryDependencies += "com.badlogicgames.gdx" % "gdx-freetype-platform" % "1.9.14" classifier "natives-desktop"
 
 libraryDependencies += "space.earlygrey" % "shapedrawer" % "2.4.0"
+
+libraryDependencies += "io.circe" % "circe-core_2.13" % "0.14.1"
+
+libraryDependencies += "io.circe" %% "circe-parser" % "0.14.1"
+
+libraryDependencies += "io.circe" %% "circe-generic" % "0.14.1"

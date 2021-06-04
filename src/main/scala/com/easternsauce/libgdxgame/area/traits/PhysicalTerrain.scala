@@ -3,7 +3,7 @@ package com.easternsauce.libgdxgame.area.traits
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d._
-import com.easternsauce.libgdxgame.LibgdxGame
+import com.easternsauce.libgdxgame.RpgGame
 import com.easternsauce.libgdxgame.area.AreaTile
 
 trait PhysicalTerrain extends TiledGrid {
@@ -44,7 +44,7 @@ trait PhysicalTerrain extends TiledGrid {
             val bodyDef = new BodyDef()
             bodyDef.`type` = BodyDef.BodyType.StaticBody
             bodyDef.position
-              .set((rectX + rectH / 2) / LibgdxGame.PPM, (rectY + rectH / 2) / LibgdxGame.PPM)
+              .set((rectX + rectH / 2) / RpgGame.PPM, (rectY + rectH / 2) / RpgGame.PPM)
 
             val body: Body = world.createBody(bodyDef)
 
@@ -55,7 +55,7 @@ trait PhysicalTerrain extends TiledGrid {
 
             val shape: PolygonShape = new PolygonShape()
 
-            shape.setAsBox((rectW / 2) / LibgdxGame.PPM, (rectH / 2) / LibgdxGame.PPM)
+            shape.setAsBox((rectW / 2) / RpgGame.PPM, (rectH / 2) / RpgGame.PPM)
 
             val fixtureDef: FixtureDef = new FixtureDef
 
@@ -77,34 +77,34 @@ trait PhysicalTerrain extends TiledGrid {
   private def createBorders(): Unit = {
     for { x <- Seq.range(0, firstLayer.getWidth) } {
 
-      var rectX = x * firstLayer.getTileWidth * mapScale / LibgdxGame.PPM
-      var rectY = (-1) * firstLayer.getTileHeight * mapScale / LibgdxGame.PPM
-      var rectW = firstLayer.getTileWidth * mapScale / LibgdxGame.PPM
-      var rectH = firstLayer.getTileHeight * mapScale / LibgdxGame.PPM
+      var rectX = x * firstLayer.getTileWidth * mapScale / RpgGame.PPM
+      var rectY = (-1) * firstLayer.getTileHeight * mapScale / RpgGame.PPM
+      var rectW = firstLayer.getTileWidth * mapScale / RpgGame.PPM
+      var rectH = firstLayer.getTileHeight * mapScale / RpgGame.PPM
 
       createBorderTile(rectX, rectY, rectW, rectH)
 
-      rectX = x * firstLayer.getTileWidth * mapScale / LibgdxGame.PPM
-      rectY = firstLayer.getHeight * firstLayer.getTileHeight * mapScale / LibgdxGame.PPM
-      rectW = firstLayer.getTileWidth * mapScale / LibgdxGame.PPM
-      rectH = firstLayer.getTileHeight * mapScale / LibgdxGame.PPM
+      rectX = x * firstLayer.getTileWidth * mapScale / RpgGame.PPM
+      rectY = firstLayer.getHeight * firstLayer.getTileHeight * mapScale / RpgGame.PPM
+      rectW = firstLayer.getTileWidth * mapScale / RpgGame.PPM
+      rectH = firstLayer.getTileHeight * mapScale / RpgGame.PPM
 
       createBorderTile(rectX, rectY, rectW, rectH)
     }
 
     for { y <- Seq.range(0, firstLayer.getHeight) } {
 
-      var rectX = (-1) * firstLayer.getTileWidth * mapScale / LibgdxGame.PPM
-      var rectY = y * firstLayer.getTileHeight * mapScale / LibgdxGame.PPM
-      var rectW = firstLayer.getTileWidth * mapScale / LibgdxGame.PPM
-      var rectH = firstLayer.getTileHeight * mapScale / LibgdxGame.PPM
+      var rectX = (-1) * firstLayer.getTileWidth * mapScale / RpgGame.PPM
+      var rectY = y * firstLayer.getTileHeight * mapScale / RpgGame.PPM
+      var rectW = firstLayer.getTileWidth * mapScale / RpgGame.PPM
+      var rectH = firstLayer.getTileHeight * mapScale / RpgGame.PPM
 
       createBorderTile(rectX, rectY, rectW, rectH)
 
-      rectX = firstLayer.getWidth * firstLayer.getTileWidth * mapScale / LibgdxGame.PPM
-      rectY = y * firstLayer.getTileHeight * mapScale / LibgdxGame.PPM
-      rectW = firstLayer.getTileWidth * mapScale / LibgdxGame.PPM
-      rectH = firstLayer.getTileHeight * mapScale / LibgdxGame.PPM
+      rectX = firstLayer.getWidth * firstLayer.getTileWidth * mapScale / RpgGame.PPM
+      rectY = y * firstLayer.getTileHeight * mapScale / RpgGame.PPM
+      rectW = firstLayer.getTileWidth * mapScale / RpgGame.PPM
+      rectH = firstLayer.getTileHeight * mapScale / RpgGame.PPM
 
       createBorderTile(rectX, rectY, rectW, rectH)
     }

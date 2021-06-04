@@ -1,7 +1,7 @@
 package com.easternsauce.libgdxgame.creature.traits
 
 import com.badlogic.gdx.math.Vector2
-import com.easternsauce.libgdxgame.LibgdxGame
+import com.easternsauce.libgdxgame.RpgGame
 import com.easternsauce.libgdxgame.util.{EsDirection, EsTimer}
 
 import scala.collection.mutable.ListBuffer
@@ -40,9 +40,9 @@ trait AggressiveAI extends Creature {
     } else {
       if (circlingDecisionTimer.time > circlingDecisionMaxTime) {
         circlingDecisionTimer.restart()
-        if (LibgdxGame.Random.nextFloat() < 0.25f) {
+        if (RpgGame.Random.nextFloat() < 0.25f) {
           circling = true
-          circlingClockwise = LibgdxGame.Random.nextFloat() < 0.5f
+          circlingClockwise = RpgGame.Random.nextFloat() < 0.5f
         } else {
           circling = false
         }

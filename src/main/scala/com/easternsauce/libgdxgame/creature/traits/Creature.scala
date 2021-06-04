@@ -9,6 +9,8 @@ import com.easternsauce.libgdxgame.ability.traits.{Ability, Attack}
 import com.easternsauce.libgdxgame.ability.{BowAttack, SwordAttack, TridentAttack, UnarmedAttack}
 import com.easternsauce.libgdxgame.area.Area
 import com.easternsauce.libgdxgame.effect.Effect
+import com.easternsauce.libgdxgame.items.Item
+import com.easternsauce.libgdxgame.saving.{CreatureSavedata, ItemSavedata, PositionSavedata}
 import com.easternsauce.libgdxgame.screens.PlayScreen
 import com.easternsauce.libgdxgame.util.{EsBatch, EsDirection, EsTimer}
 
@@ -95,6 +97,8 @@ trait Creature extends Sprite with PhysicalBody with AnimatedWalk with Inventory
 
   protected var staminaDrain = 0.0f
   var sprinting = false
+
+  protected def creatureType: String = getClass.getName
 
   def isImmune: Boolean = effect("immune").isActive
 
@@ -412,4 +416,38 @@ trait Creature extends Sprite with PhysicalBody with AnimatedWalk with Inventory
 
   }
 
+  def loadFromData(creatureData: CreatureSavedata, playScreen: PlayScreen): Unit = {
+    setPosition(creatureData.position.x, creatureData.position.y)
+    healthPoints = creatureData.healthPoints
+    this.area = Some(playScreen.areaMap(creatureData.area))
+
+    if (creatureData.isPlayer) playScreen.setPlayer(this)
+
+    creatureData.inventoryItems.foreach(item => inventoryItems += (item.index -> Item.loadFromSavedata(item)))
+    creatureData.equipmentItems.foreach(item => equipmentItems += (item.index -> Item.loadFromSavedata(item)))
+
+    playScreen.creatureMap += (id -> this)
+
+    playScreen
+      .creatureMap(id)
+      .assignToArea(playScreen.areaMap(creatureData.area), creatureData.position.x, creatureData.position.y)
+
+  }
+
+  def saveToData(): CreatureSavedata = {
+    CreatureSavedata(
+      creatureClass = creatureType,
+      id = id,
+      healthPoints = healthPoints,
+      area = area.get.id,
+      isPlayer = isPlayer,
+      position = PositionSavedata(pos.x, pos.y),
+      inventoryItems = inventoryItems.map {
+        case (index, item) => ItemSavedata(index, item.template.id, item.damage, item.armor)
+      }.toList,
+      equipmentItems = equipmentItems.map {
+        case (index, item) => ItemSavedata(index, item.template.id, item.damage, item.armor)
+      }.toList
+    )
+  }
 }

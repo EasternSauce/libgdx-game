@@ -3,7 +3,7 @@ package com.easternsauce.libgdxgame.area
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.physics.box2d._
 import com.badlogic.gdx.scenes.scene2d.ui.Image
-import com.easternsauce.libgdxgame.LibgdxGame
+import com.easternsauce.libgdxgame.RpgGame
 import com.easternsauce.libgdxgame.assets.AssetPaths
 import com.easternsauce.libgdxgame.creature.traits.Creature
 import com.easternsauce.libgdxgame.screens.PlayScreen
@@ -22,8 +22,8 @@ class AreaGate private (
   private val width = 1.5f
   private val height = 1.5f
 
-  private val downArrowImageFrom = new Image(LibgdxGame.manager.get(AssetPaths.downArrowTexture, classOf[Texture]))
-  private val downArrowImageTo = new Image(LibgdxGame.manager.get(AssetPaths.downArrowTexture, classOf[Texture]))
+  private val downArrowImageFrom = new Image(RpgGame.manager.get(AssetPaths.downArrowTexture, classOf[Texture]))
+  private val downArrowImageTo = new Image(RpgGame.manager.get(AssetPaths.downArrowTexture, classOf[Texture]))
 
   downArrowImageFrom.setPosition(fromPosX - width / 2f, fromPosY - height / 2f)
   downArrowImageTo.setPosition(toPosX - width / 2f, toPosY - height / 2f)

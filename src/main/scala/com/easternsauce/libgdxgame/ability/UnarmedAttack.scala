@@ -1,7 +1,7 @@
 package com.easternsauce.libgdxgame.ability
 
 import com.badlogic.gdx.audio.Sound
-import com.easternsauce.libgdxgame.LibgdxGame
+import com.easternsauce.libgdxgame.RpgGame
 import com.easternsauce.libgdxgame.assets.AssetPaths
 import com.easternsauce.libgdxgame.creature.traits.Creature
 
@@ -27,9 +27,7 @@ class UnarmedAttack(val creature: Creature) extends MeleeAttack {
   override protected var knockbackPower: Float = 20f
   override protected val cooldownTime: Float = 0.8f
 
-  override protected val abilitySound: Option[Sound] = Some(
-    LibgdxGame.manager.get(AssetPaths.attackSound, classOf[Sound])
-  )
+  override protected val abilitySound: Option[Sound] = Some(RpgGame.manager.get(AssetPaths.attackSound, classOf[Sound]))
 
   setupActiveAnimation(
     atlas = creature.screen.atlas,

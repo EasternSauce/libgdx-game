@@ -3,7 +3,7 @@ package com.easternsauce.libgdxgame.area
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.maps.tiled.{TiledMapTileLayer, TmxMapLoader}
-import com.easternsauce.libgdxgame.LibgdxGame
+import com.easternsauce.libgdxgame.RpgGame
 import com.easternsauce.libgdxgame.area.traits.CollisionDetection
 import com.easternsauce.libgdxgame.creature.traits.Creature
 import com.easternsauce.libgdxgame.projectile.Arrow
@@ -82,12 +82,12 @@ class Area(
 
   def width: Float = {
     val layer = map.getLayers.get(0).asInstanceOf[TiledMapTileLayer]
-    layer.getWidth * LibgdxGame.TiledMapCellSize
+    layer.getWidth * RpgGame.TiledMapCellSize
   }
 
   def height: Float = {
     val layer = map.getLayers.get(0).asInstanceOf[TiledMapTileLayer]
-    layer.getHeight * LibgdxGame.TiledMapCellSize
+    layer.getHeight * RpgGame.TiledMapCellSize
   }
 
 }

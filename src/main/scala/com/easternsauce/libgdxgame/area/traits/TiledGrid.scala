@@ -2,7 +2,7 @@ package com.easternsauce.libgdxgame.area.traits
 
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer
 import com.badlogic.gdx.maps.tiled.{TiledMap, TmxMapLoader}
-import com.easternsauce.libgdxgame.LibgdxGame
+import com.easternsauce.libgdxgame.RpgGame
 import com.easternsauce.libgdxgame.area.AreaTile
 
 import scala.collection.mutable
@@ -17,6 +17,6 @@ trait TiledGrid {
   val map: TiledMap = mapLoader.load(fileName)
 
   protected val tiledMapRenderer: OrthogonalTiledMapRenderer =
-    new OrthogonalTiledMapRenderer(map, mapScale / LibgdxGame.PPM)
+    new OrthogonalTiledMapRenderer(map, mapScale / RpgGame.PPM)
 
 }

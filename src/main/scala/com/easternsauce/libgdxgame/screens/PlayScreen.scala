@@ -10,7 +10,7 @@ import com.badlogic.gdx.math.Vector3
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer
 import com.badlogic.gdx.utils.viewport.{FitViewport, Viewport}
 import com.badlogic.gdx.{Gdx, Input, Screen}
-import com.easternsauce.libgdxgame.LibgdxGame
+import com.easternsauce.libgdxgame.RpgGame
 import com.easternsauce.libgdxgame.area.{Area, AreaGate}
 import com.easternsauce.libgdxgame.assets.AssetPaths
 import com.easternsauce.libgdxgame.creature.traits.Creature
@@ -23,29 +23,29 @@ import com.easternsauce.libgdxgame.util.{EsDirection, EsTimer}
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
 
-class PlayScreen(val game: LibgdxGame) extends Screen {
+class PlayScreen(val game: RpgGame) extends Screen {
 
   private val camera: OrthographicCamera = new OrthographicCamera()
   private val hudCamera: OrthographicCamera = new OrthographicCamera()
-  hudCamera.position.set(LibgdxGame.WindowWidth / 2, LibgdxGame.WindowHeight / 2, 0)
+  hudCamera.position.set(RpgGame.WindowWidth / 2, RpgGame.WindowHeight / 2, 0)
 
   val viewport: Viewport =
-    new FitViewport(LibgdxGame.VWidth / LibgdxGame.PPM, LibgdxGame.VHeight / LibgdxGame.PPM, camera)
+    new FitViewport(RpgGame.VWidth / RpgGame.PPM, RpgGame.VHeight / RpgGame.PPM, camera)
 
   val hudViewport: Viewport =
-    new FitViewport(LibgdxGame.WindowWidth, LibgdxGame.WindowHeight, hudCamera)
+    new FitViewport(RpgGame.WindowWidth, RpgGame.WindowHeight, hudCamera)
 
   val atlas: TextureAtlas = new TextureAtlas("assets/atlas/packed_atlas.atlas")
 
   private val b2DebugRenderer: Box2DDebugRenderer = new Box2DDebugRenderer()
 
-  var player: Player = _
+  var player: Creature = _
 
   private val mapLoader: TmxMapLoader = new TmxMapLoader()
 
-  private var areaMap: mutable.Map[String, Area] = _
+  var areaMap: mutable.Map[String, Area] = _
 
-  private var creatureMap: mutable.Map[String, Creature] = _
+  var creatureMap: mutable.Map[String, Creature] = mutable.Map()
 
   var currentArea: Option[Area] = _
 
@@ -62,8 +62,14 @@ class PlayScreen(val game: LibgdxGame) extends Screen {
   ItemTemplate.loadItemTemplates(this)
 
   loadAreas()
-  loadCreatures()
-  assignCreaturesToAreas()
+
+  if (!game.savefileManager.savefileFound) {
+    loadCreatures()
+    assignCreaturesToAreas()
+    player.asInstanceOf[Player].generateStartingInventory()
+  } else {
+    game.savefileManager.loadGame(this)
+  }
 
   private def loadAreas(): Unit = {
     val area1: Area = new Area(this, mapLoader, AssetPaths.area1Map, "area1", 4.0f)
@@ -96,7 +102,7 @@ class PlayScreen(val game: LibgdxGame) extends Screen {
     setPlayer(creature1)
   }
 
-  private def setPlayer(creature1: Player): Unit = {
+  def setPlayer(creature1: Creature): Unit = {
     player = creature1
     inventoryWindow = new InventoryWindow(this)
     healthStaminaBar = new PlayerHealthStaminaBar(this)
@@ -172,12 +178,7 @@ class PlayScreen(val game: LibgdxGame) extends Screen {
     healthStaminaBar.render(game.hudBatch)
 
     defaultFont.setColor(Color.WHITE)
-    defaultFont.draw(
-      game.hudBatch.spriteBatch,
-      Gdx.graphics.getFramesPerSecond + " fps",
-      3,
-      LibgdxGame.WindowHeight - 3
-    )
+    defaultFont.draw(game.hudBatch.spriteBatch, Gdx.graphics.getFramesPerSecond + " fps", 3, RpgGame.WindowHeight - 3)
 
     game.hudBatch.spriteBatch.end()
 
@@ -203,6 +204,8 @@ class PlayScreen(val game: LibgdxGame) extends Screen {
   }
 
   def handleInput(): Unit = {
+
+    if (Gdx.input.isKeyJustPressed(Input.Keys.F5)) game.savefileManager.saveGame(this)
 
     if (Gdx.input.isKeyJustPressed(Input.Keys.I)) inventoryWindow.visible = !inventoryWindow.visible
 
@@ -238,13 +241,12 @@ class PlayScreen(val game: LibgdxGame) extends Screen {
 
   }
 
-  def adjustCamera(creature: Player): Unit = {
+  def adjustCamera(creature: Creature): Unit = {
 
-    val lerp = 30f
     val camPosition = camera.position
 
-    camPosition.x += (creature.pos.x - camPosition.x) * lerp * Gdx.graphics.getDeltaTime
-    camPosition.y += (creature.pos.y - camPosition.y) * lerp * Gdx.graphics.getDeltaTime
+    camPosition.x = creature.pos.x
+    camPosition.y = creature.pos.y
 
     camera.update()
 

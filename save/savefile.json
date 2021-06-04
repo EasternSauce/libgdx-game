@@ -1,0 +1,103 @@
+{
+  "creatures" : [
+    {
+      "creatureClass" : "com.easternsauce.libgdxgame.creature.Wolf",
+      "id" : "wolf",
+      "healthPoints" : 100.0,
+      "area" : "area1",
+      "isPlayer" : false,
+      "position" : {
+        "x" : 28.570004,
+        "y" : 46.9884
+      },
+      "equipmentItems" : [
+      ],
+      "inventoryItems" : [
+      ]
+    },
+    {
+      "creatureClass" : "com.easternsauce.libgdxgame.creature.Skeleton",
+      "id" : "skellie",
+      "healthPoints" : 100.0,
+      "area" : "area3",
+      "isPlayer" : false,
+      "position" : {
+        "x" : 34.0,
+        "y" : 42.0
+      },
+      "equipmentItems" : [
+      ],
+      "inventoryItems" : [
+      ]
+    },
+    {
+      "creatureClass" : "com.easternsauce.libgdxgame.creature.Player",
+      "id" : "player",
+      "healthPoints" : 100.0,
+      "area" : "area1",
+      "isPlayer" : true,
+      "position" : {
+        "x" : 89.92706,
+        "y" : 51.604816
+      },
+      "equipmentItems" : [
+        {
+          "index" : 0,
+          "template" : "crossbow",
+          "damage" : 40,
+          "armor" : null
+        },
+        {
+          "index" : 2,
+          "template" : "leatherArmor",
+          "damage" : null,
+          "armor" : 11
+        },
+        {
+          "index" : 4,
+          "template" : "lifeRing",
+          "damage" : null,
+          "armor" : null
+        },
+        {
+          "index" : 39,
+          "template" : "trident",
+          "damage" : 66,
+          "armor" : null
+        },
+        {
+          "index" : 31,
+          "template" : "ironSword",
+          "damage" : 58,
+          "armor" : null
+        }
+      ],
+      "inventoryItems" : [
+        {
+          "index" : 36,
+          "template" : "crossbow",
+          "damage" : 44,
+          "armor" : null
+        },
+        {
+          "index" : 37,
+          "template" : "ironSword",
+          "damage" : 52,
+          "armor" : null
+        },
+        {
+          "index" : 38,
+          "template" : "trident",
+          "damage" : 76,
+          "armor" : null
+        },
+        {
+          "index" : 39,
+          "template" : "leatherArmor",
+          "damage" : null,
+          "armor" : 13
+        }
+      ]
+    }
+  ]
+}

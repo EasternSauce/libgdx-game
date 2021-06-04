@@ -65,8 +65,17 @@ object AssetPaths {
   val gobletTexture = "assets/goblet/goblet.png"
   val gobletLitTexture = "assets/goblet/goblet_lit.png"
   val downArrowTexture = "assets/downarrow/downarrow.png"
+  val backgroundTexture = "assets/background/background.png"
 
-  val textures = List(arrowTexture, treasureTexture, bagTexture, gobletTexture, gobletLitTexture, downArrowTexture)
+  val textures = List(
+    arrowTexture,
+    treasureTexture,
+    bagTexture,
+    gobletTexture,
+    gobletLitTexture,
+    downArrowTexture,
+    backgroundTexture
+  )
 
   val abandonedPlainsMusic = "assets/music/abandoned_plains.wav"
   val fireDemonMusic = "assets/music/fire_demon.wav"

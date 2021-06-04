@@ -1,9 +1,11 @@
 package com.easternsauce.libgdxgame.hud
 
 import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.graphics.Color
+import com.badlogic.gdx.graphics.{Color, Texture}
 import com.badlogic.gdx.math.Rectangle
-import com.easternsauce.libgdxgame.LibgdxGame
+import com.badlogic.gdx.scenes.scene2d.ui.Image
+import com.easternsauce.libgdxgame.RpgGame
+import com.easternsauce.libgdxgame.assets.AssetPaths
 import com.easternsauce.libgdxgame.screens.PlayScreen
 import com.easternsauce.libgdxgame.util.EsBatch
 
@@ -15,6 +17,10 @@ class InventoryWindow(val playScreen: PlayScreen) {
   var inventoryItemBeingMoved: Option[Int] = None
   var equipmentItemBeingMoved: Option[Int] = None
 
+  val backgroundTexture: Texture = RpgGame.manager.get(AssetPaths.backgroundTexture, classOf[Texture])
+
+  val backgroundImage = new Image(backgroundTexture)
+
   private val background: Rectangle = new Rectangle(
     (Gdx.graphics.getWidth * 0.2).toInt,
     (Gdx.graphics.getHeight * 0.3).toInt,
@@ -22,12 +28,19 @@ class InventoryWindow(val playScreen: PlayScreen) {
     (Gdx.graphics.getHeight * 0.6).toInt
   )
 
+  backgroundImage.setBounds(
+    background.x - (Gdx.graphics.getWidth * 0.1).toInt,
+    background.y - (Gdx.graphics.getHeight * 0.1).toInt,
+    background.width + (Gdx.graphics.getWidth * 0.2).toInt,
+    background.height + (Gdx.graphics.getHeight * 0.2).toInt
+  )
+
   private val totalRows = 5
   private val totalColumns = 8
   private val inventoryTotalSlots = totalRows * totalColumns
-  private val margin = 10
-  private val slotSize = 50
-  private val spaceBetweenSlots = 5
+  private val margin = 35
+  private val slotSize = 40
+  private val spaceBetweenSlots = 12
   private val spaceBeforeEquipment = 220
 
   private val inventoryWidth = margin + (slotSize + spaceBetweenSlots) * totalColumns
@@ -63,17 +76,21 @@ class InventoryWindow(val playScreen: PlayScreen) {
 
   def render(batch: EsBatch): Unit = {
     if (visible) {
-      batch.shapeDrawer.filledRectangle(background, Color.LIGHT_GRAY)
+      backgroundImage.draw(batch.spriteBatch, 1.0f)
 
-      inventoryRectangles.values.foreach(rect => batch.shapeDrawer.filledRectangle(rect, Color.DARK_GRAY))
+      inventoryRectangles.values.foreach(rect => {
+        batch.shapeDrawer.filledRectangle(rect.x - 3, rect.y - 3, rect.width + 6, rect.height + 6, Color.GRAY)
+        batch.shapeDrawer.filledRectangle(rect, Color.BLACK)
+      })
 
       equipmentRectangles.foreach {
         case (index, rect) =>
-          batch.shapeDrawer.filledRectangle(rect, Color.DARK_GRAY)
-          playScreen.defaultFont.setColor(Color.BLACK)
+          batch.shapeDrawer.filledRectangle(rect.x - 3, rect.y - 3, rect.width + 6, rect.height + 6, Color.GRAY)
+          batch.shapeDrawer.filledRectangle(rect, Color.BLACK)
+          playScreen.defaultFont.setColor(Color.LIGHT_GRAY)
           playScreen.defaultFont.draw(
             batch.spriteBatch,
-            LibgdxGame.equipmentTypes(index).capitalize + ":",
+            RpgGame.equipmentTypes(index).capitalize + ":",
             rect.x - slotSize / 2 - 70,
             rect.y + slotSize / 2 + 7
           )
@@ -161,20 +178,20 @@ class InventoryWindow(val playScreen: PlayScreen) {
     }
 
     if (item.nonEmpty) {
-      playScreen.defaultFont.setColor(Color.BROWN)
+      playScreen.defaultFont.setColor(Color.LIGHT_GRAY)
 
       playScreen.defaultFont.draw(
         batch.spriteBatch,
         item.get.template.name,
         background.x + margin,
-        background.y + background.height - (inventoryHeight + margin)
+        background.y + background.height - (inventoryHeight + 5)
       )
 
       playScreen.defaultFont.draw(
         batch.spriteBatch,
         item.get.getItemInformation(trader = false),
         background.x + margin,
-        background.y + background.height - (inventoryHeight + margin + 30)
+        background.y + background.height - (inventoryHeight + 35)
       )
     }
 
@@ -251,10 +268,10 @@ class InventoryWindow(val playScreen: PlayScreen) {
     val temp = itemTo
 
     val fromEquipmentTypeMatches =
-      itemFrom.nonEmpty && itemFrom.get.template.parameters("equipableType").stringValue.get == LibgdxGame
+      itemFrom.nonEmpty && itemFrom.get.template.parameters("equipableType").stringValue.get == RpgGame
         .equipmentTypes(toIndex)
     val toEquipmentTypeMatches =
-      itemTo.nonEmpty && itemTo.get.template.parameters("equipableType").stringValue.get == LibgdxGame.equipmentTypes(
+      itemTo.nonEmpty && itemTo.get.template.parameters("equipableType").stringValue.get == RpgGame.equipmentTypes(
         fromIndex
       )
 
@@ -279,7 +296,7 @@ class InventoryWindow(val playScreen: PlayScreen) {
       inventoryItem.nonEmpty && inventoryItem.get.template
         .parameters("equipableType")
         .stringValue
-        .get == LibgdxGame.equipmentTypes(equipmentIndex)
+        .get == RpgGame.equipmentTypes(equipmentIndex)
 
     if (inventoryItem.isEmpty || equipmentTypeMatches) {
       if (temp.nonEmpty) playScreen.player.inventoryItems(inventoryIndex) = temp.get
