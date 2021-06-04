@@ -4,7 +4,7 @@
       "creatureClass" : "com.easternsauce.libgdxgame.creature.Wolf",
       "id" : "wolf",
       "healthPoints" : 100.0,
-      "area" : "area1",
+      "area" : "area3",
       "isPlayer" : false,
       "position" : {
         "x" : 28.570004,
@@ -16,10 +16,10 @@
       ]
     },
     {
-      "creatureClass" : "com.easternsauce.libgdxgame.creature.Skeleton",
+      "creatureClass" : "com.easternsauce.libgdxgame.creature.Wolf",
       "id" : "skellie",
       "healthPoints" : 100.0,
-      "area" : "area3",
+      "area" : "area1",
       "isPlayer" : false,
       "position" : {
         "x" : 34.0,
@@ -37,21 +37,21 @@
       "area" : "area1",
       "isPlayer" : true,
       "position" : {
-        "x" : 89.92706,
-        "y" : 51.604816
+        "x" : 93.72866,
+        "y" : 191.8408
       },
       "equipmentItems" : [
         {
           "index" : 0,
-          "template" : "crossbow",
-          "damage" : 40,
+          "template" : "trident",
+          "damage" : 76,
           "armor" : null
         },
         {
           "index" : 2,
           "template" : "leatherArmor",
           "damage" : null,
-          "armor" : 11
+          "armor" : 13
         },
         {
           "index" : 4,
@@ -87,15 +87,15 @@
         },
         {
           "index" : 38,
-          "template" : "trident",
-          "damage" : 76,
+          "template" : "crossbow",
+          "damage" : 40,
           "armor" : null
         },
         {
-          "index" : 39,
+          "index" : 14,
           "template" : "leatherArmor",
           "damage" : null,
-          "armor" : 13
+          "armor" : 11
         }
       ]
     }

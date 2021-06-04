@@ -416,7 +416,7 @@ trait Creature extends Sprite with PhysicalBody with AnimatedWalk with Inventory
 
   }
 
-  def loadFromData(creatureData: CreatureSavedata, playScreen: PlayScreen): Unit = {
+  def loadFromSavedata(creatureData: CreatureSavedata, playScreen: PlayScreen): Unit = {
     setPosition(creatureData.position.x, creatureData.position.y)
     healthPoints = creatureData.healthPoints
     this.area = Some(playScreen.areaMap(creatureData.area))
@@ -426,11 +426,9 @@ trait Creature extends Sprite with PhysicalBody with AnimatedWalk with Inventory
     creatureData.inventoryItems.foreach(item => inventoryItems += (item.index -> Item.loadFromSavedata(item)))
     creatureData.equipmentItems.foreach(item => equipmentItems += (item.index -> Item.loadFromSavedata(item)))
 
-    playScreen.creatureMap += (id -> this)
+    playScreen.allAreaCreaturesMap += (id -> this)
 
-    playScreen
-      .creatureMap(id)
-      .assignToArea(playScreen.areaMap(creatureData.area), creatureData.position.x, creatureData.position.y)
+    assignToArea(playScreen.areaMap(creatureData.area), creatureData.position.x, creatureData.position.y)
 
   }
 

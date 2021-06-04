@@ -53,6 +53,7 @@ trait AnimatedWalk {
       walkAnimation(i) = new Animation[TextureRegion](frameDuration, frames.toArray: _*)
       frames.clear()
     }
+
   }
 
   def walkAnimationFrame(currentDirection: EsDirection.Value): TextureRegion = {

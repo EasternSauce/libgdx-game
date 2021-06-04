@@ -45,7 +45,7 @@ class PlayScreen(val game: RpgGame) extends Screen {
 
   var areaMap: mutable.Map[String, Area] = _
 
-  var creatureMap: mutable.Map[String, Creature] = mutable.Map()
+  var allAreaCreaturesMap: mutable.Map[String, Creature] = mutable.Map()
 
   var currentArea: Option[Area] = _
 
@@ -94,10 +94,10 @@ class PlayScreen(val game: RpgGame) extends Screen {
     val skeleton = new Skeleton(this, "skellie")
     val wolf = new Wolf(this, "wolf")
 
-    creatureMap = mutable.Map()
-    creatureMap += (creature1.id -> creature1)
-    creatureMap += (skeleton.id -> skeleton)
-    creatureMap += (wolf.id -> wolf)
+    allAreaCreaturesMap = mutable.Map()
+    allAreaCreaturesMap += (creature1.id -> creature1)
+    allAreaCreaturesMap += (skeleton.id -> skeleton)
+    allAreaCreaturesMap += (wolf.id -> wolf)
 
     setPlayer(creature1)
   }
@@ -109,9 +109,9 @@ class PlayScreen(val game: RpgGame) extends Screen {
   }
 
   def assignCreaturesToAreas(): Unit = {
-    creatureMap("player").assignToArea(areaMap("area1"), 30, 30)
-    creatureMap("skellie").assignToArea(areaMap("area3"), 34, 42)
-    creatureMap("wolf").assignToArea(areaMap("area1"), 34, 42)
+    allAreaCreaturesMap("player").assignToArea(areaMap("area1"), 30, 30)
+    allAreaCreaturesMap("skellie").assignToArea(areaMap("area3"), 34, 42)
+    allAreaCreaturesMap("wolf").assignToArea(areaMap("area1"), 34, 42)
 
   }
 
@@ -182,7 +182,7 @@ class PlayScreen(val game: RpgGame) extends Screen {
 
     game.hudBatch.spriteBatch.end()
 
-    b2DebugRenderer.render(currentArea.get.world, camera.combined)
+//    b2DebugRenderer.render(currentArea.get.world, camera.combined)
 
   }
 

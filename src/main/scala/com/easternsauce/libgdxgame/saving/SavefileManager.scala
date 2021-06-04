@@ -28,7 +28,7 @@ class SavefileManager() {
   def savefileFound: Boolean = new File(saveFileLocation).exists
 
   def saveGame(playScreen: PlayScreen): Unit = {
-    val saveFile = SaveFile(playScreen.creatureMap.values.map(_.saveToData()).toList)
+    val saveFile = SaveFile(playScreen.allAreaCreaturesMap.values.map(_.saveToData()).toList)
 
     val writer = new PrintWriter(new File(saveFileLocation))
 
@@ -47,7 +47,7 @@ class SavefileManager() {
 
     val result = decoded.getOrElse(throw new RuntimeException("failed to decode save file"))
 
-    playScreen.creatureMap = mutable.Map()
+    playScreen.allAreaCreaturesMap = mutable.Map()
     result.creatures.foreach(creatureData => recreateCreatureFromSavedata(playScreen, creatureData))
 
   }
@@ -59,7 +59,7 @@ class SavefileManager() {
       .newInstance(playScreen, creatureData.id)
     val creature = action.asInstanceOf[Creature]
 
-    creature.loadFromData(creatureData, playScreen)
+    creature.loadFromSavedata(creatureData, playScreen)
 
   }
 

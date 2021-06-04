@@ -33,4 +33,5 @@ class Skeleton(val screen: PlayScreen, val id: String) extends Enemy {
 
   defineStandardAbilities()
 
+  setRegion(standStillImage(currentDirection))
 }

@@ -41,6 +41,8 @@ class Player(val screen: PlayScreen, val id: String) extends Creature {
 
   defineStandardAbilities()
 
+  setRegion(standStillImage(currentDirection))
+
   def generateStartingInventory(): Unit = {
     // TODO remove this later
     inventoryItems += (3 -> Item.generateFromTemplate("ironSword"))
