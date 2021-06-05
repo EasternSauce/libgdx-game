@@ -1,17 +1,17 @@
 package com.easternsauce.libgdxgame.area.traits
 
-import com.badlogic.gdx.physics.box2d.{Contact, ContactImpulse, ContactListener, Manifold}
+import com.badlogic.gdx.physics.box2d._
 import com.easternsauce.libgdxgame.ability.traits.Ability
 import com.easternsauce.libgdxgame.area.{AreaGate, AreaTile}
 import com.easternsauce.libgdxgame.creature.traits.Creature
 import com.easternsauce.libgdxgame.projectile.Arrow
 import com.easternsauce.libgdxgame.screens.PlayScreen
 
-trait CollisionDetection extends PhysicalTerrain {
+trait CollisionDetection {
 
   val screen: PlayScreen
 
-  def createContactListener(): Unit = {
+  def createContactListener(world: World): Unit = {
     val contactListener: ContactListener = new ContactListener {
       override def beginContact(contact: Contact): Unit = {
 

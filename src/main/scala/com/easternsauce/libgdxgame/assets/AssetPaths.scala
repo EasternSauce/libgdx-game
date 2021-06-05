@@ -1,9 +1,9 @@
 package com.easternsauce.libgdxgame.assets
 
 object AssetPaths {
-  val area1Map = "assets/areas/area1/tile_map.tmx"
-  val area2Map = "assets/areas/area2/tile_map.tmx"
-  val area3Map = "assets/areas/area3/tile_map.tmx"
+  val area1Data = "assets/areas/area1"
+  val area2Data = "assets/areas/area2"
+  val area3Data = "assets/areas/area3"
 
   val attackSound = "assets/sounds/swoosh.wav"
   val painSound = "assets/sounds/pain.wav"

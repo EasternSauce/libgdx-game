@@ -1,24 +1,23 @@
 package com.easternsauce.libgdxgame.area.traits
 
-import com.badlogic.gdx.maps.tiled.TiledMapTileLayer
+import com.badlogic.gdx.maps.tiled.{TiledMap, TiledMapTileLayer}
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d._
 import com.easternsauce.libgdxgame.RpgGame
 import com.easternsauce.libgdxgame.area.AreaTile
 
-trait PhysicalTerrain extends TiledGrid {
+import scala.collection.mutable
+
+trait PhysicalTerrain {
   val world: World = new World(new Vector2(0, 0), true)
 
-  val firstLayer: TiledMapTileLayer =
-    map.getLayers.get(0).asInstanceOf[TiledMapTileLayer]
-
-  def initPhysicalTerrain(): Unit = {
-    createMapTerrain()
-    createBorders()
+  def initPhysicalTerrain(map: TiledMap, mapScale: Float, tiles: mutable.Map[(Int, Int, Int), AreaTile]): Unit = {
+    createMapTerrain(map, mapScale, tiles)
+    createBorders(map, mapScale)
 
   }
 
-  private def createMapTerrain(): Unit = {
+  private def createMapTerrain(map: TiledMap, mapScale: Float, tiles: mutable.Map[(Int, Int, Int), AreaTile]): Unit = {
     for (layerNum <- 0 to 1) { // two layers
       val layer: TiledMapTileLayer =
         map.getLayers.get(layerNum).asInstanceOf[TiledMapTileLayer]
@@ -74,7 +73,11 @@ trait PhysicalTerrain extends TiledGrid {
     }
   }
 
-  private def createBorders(): Unit = {
+  private def createBorders(map: TiledMap, mapScale: Float): Unit = {
+
+    val firstLayer: TiledMapTileLayer =
+      map.getLayers.get(0).asInstanceOf[TiledMapTileLayer]
+
     for { x <- Seq.range(0, firstLayer.getWidth) } {
 
       var rectX = x * firstLayer.getTileWidth * mapScale / RpgGame.PPM

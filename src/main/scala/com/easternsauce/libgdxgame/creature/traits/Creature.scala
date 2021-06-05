@@ -46,14 +46,11 @@ trait Creature extends Sprite with PhysicalBody with AnimatedWalk with Inventory
 
   var isAttacking = false
 
-  val totalArmor = 100f // TODO
   val knockbackable = true
   var knockbackVector = new Vector2(0f, 0f)
 
   val onGettingHitSound: Option[Sound] = None
   val walkSound: Option[Sound] = None
-
-  val weaponDamage = 50f // TODO
 
   var attackVector: Vector2 = new Vector2(0f, 0f)
 
@@ -92,6 +89,8 @@ trait Creature extends Sprite with PhysicalBody with AnimatedWalk with Inventory
   protected val healingTime = 8f
   protected var healingPower = 0f
 
+  var unarmedDamage = 15f
+
   protected var knocbackable = true
   protected var knockbackSpeed: Float = 0f
 
@@ -104,9 +103,11 @@ trait Creature extends Sprite with PhysicalBody with AnimatedWalk with Inventory
 
   def atFullLife: Boolean = healthPoints >= maxHealthPoints
 
-  def alive: Boolean = {
-    true // TODO
-  }
+  def totalArmor: Float = equipmentItems.values.map(item => item.armor.getOrElse(0)).sum
+
+  def weaponDamage: Float = if (equipmentItems.contains(0)) equipmentItems(0).damage.get else unarmedDamage
+
+  def alive: Boolean = healthPoints > 0f
 
   def initParams(mass: Float): Unit = {
     this.mass = mass

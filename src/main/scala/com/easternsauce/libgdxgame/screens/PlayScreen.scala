@@ -72,16 +72,16 @@ class PlayScreen(val game: RpgGame) extends Screen {
   }
 
   private def loadAreas(): Unit = {
-    val area1: Area = new Area(this, mapLoader, AssetPaths.area1Map, "area1", 4.0f)
-    val area2: Area = new Area(this, mapLoader, AssetPaths.area2Map, "area2", 4.0f)
-    val area3: Area = new Area(this, mapLoader, AssetPaths.area3Map, "area3", 4.0f)
+    val area1: Area = new Area(this, mapLoader, AssetPaths.area1Data, "area1", 4.0f)
+    val area2: Area = new Area(this, mapLoader, AssetPaths.area2Data, "area2", 4.0f)
+    val area3: Area = new Area(this, mapLoader, AssetPaths.area3Data, "area3", 4.0f)
 
     areaMap = mutable.Map()
     areaMap += (area1.id -> area1)
     areaMap += (area2.id -> area2)
     areaMap += (area3.id -> area3)
 
-    currentArea = Some(area1)
+    //currentArea = Some(area1)
 
     gateList += AreaGate(this, areaMap("area1"), 197, 15, areaMap("area3"), 17, 2)
     gateList += AreaGate(this, areaMap("area1"), 2, 63, areaMap("area2"), 58, 9)
@@ -106,6 +106,8 @@ class PlayScreen(val game: RpgGame) extends Screen {
     player = creature1
     inventoryWindow = new InventoryWindow(this)
     healthStaminaBar = new PlayerHealthStaminaBar(this)
+
+    currentArea = player.area
   }
 
   def assignCreaturesToAreas(): Unit = {

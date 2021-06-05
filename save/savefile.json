@@ -3,12 +3,12 @@
     {
       "creatureClass" : "com.easternsauce.libgdxgame.creature.Wolf",
       "id" : "wolf",
-      "healthPoints" : 100.0,
+      "healthPoints" : 0.0,
       "area" : "area3",
       "isPlayer" : false,
       "position" : {
-        "x" : 28.570004,
-        "y" : 46.9884
+        "x" : 62.719223,
+        "y" : 77.04814
       },
       "equipmentItems" : [
       ],
@@ -23,7 +23,7 @@
       "isPlayer" : false,
       "position" : {
         "x" : 34.0,
-        "y" : 42.0
+        "y" : 43.429993
       },
       "equipmentItems" : [
       ],
@@ -34,17 +34,17 @@
       "creatureClass" : "com.easternsauce.libgdxgame.creature.Player",
       "id" : "player",
       "healthPoints" : 100.0,
-      "area" : "area1",
+      "area" : "area3",
       "isPlayer" : true,
       "position" : {
-        "x" : 93.72866,
-        "y" : 191.8408
+        "x" : 173.25226,
+        "y" : 32.068172
       },
       "equipmentItems" : [
         {
           "index" : 0,
-          "template" : "trident",
-          "damage" : 76,
+          "template" : "crossbow",
+          "damage" : 44,
           "armor" : null
         },
         {
@@ -75,8 +75,8 @@
       "inventoryItems" : [
         {
           "index" : 36,
-          "template" : "crossbow",
-          "damage" : 44,
+          "template" : "trident",
+          "damage" : 76,
           "armor" : null
         },
         {

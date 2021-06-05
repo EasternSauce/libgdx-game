@@ -11,10 +11,10 @@ trait TiledGrid {
   val tiles: mutable.Map[(Int, Int, Int), AreaTile] = mutable.Map()
   val mapLoader: TmxMapLoader
 
-  val fileName: String
+  val areaFilesLocation: String
   val mapScale: Float
 
-  val map: TiledMap = mapLoader.load(fileName)
+  val map: TiledMap = mapLoader.load(areaFilesLocation + "/tile_map.tmx")
 
   protected val tiledMapRenderer: OrthogonalTiledMapRenderer =
     new OrthogonalTiledMapRenderer(map, mapScale / RpgGame.PPM)

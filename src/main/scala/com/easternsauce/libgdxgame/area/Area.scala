@@ -4,7 +4,7 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.maps.tiled.{TiledMapTileLayer, TmxMapLoader}
 import com.easternsauce.libgdxgame.RpgGame
-import com.easternsauce.libgdxgame.area.traits.CollisionDetection
+import com.easternsauce.libgdxgame.area.traits.{CollisionDetection, EnemySpawns, PhysicalTerrain, TiledGrid}
 import com.easternsauce.libgdxgame.creature.traits.Creature
 import com.easternsauce.libgdxgame.projectile.Arrow
 import com.easternsauce.libgdxgame.screens.PlayScreen
@@ -16,18 +16,23 @@ import scala.collection.mutable.ListBuffer
 class Area(
   val screen: PlayScreen,
   val mapLoader: TmxMapLoader,
-  val fileName: String,
+  val areaFilesLocation: String,
   val id: String,
   val mapScale: Float
-) extends CollisionDetection {
+) extends CollisionDetection
+    with EnemySpawns
+    with PhysicalTerrain
+    with TiledGrid {
 
   val creatureMap: mutable.Map[String, Creature] = mutable.Map()
 
   val arrowList: mutable.ListBuffer[Arrow] = ListBuffer()
 
-  initPhysicalTerrain()
+  initPhysicalTerrain(map, mapScale, tiles)
 
-  createContactListener()
+  createContactListener(world)
+
+  loadEnemySpawns(areaFilesLocation)
 
   def renderBottomLayer(): Unit = tiledMapRenderer.render(Array(0, 1))
 
