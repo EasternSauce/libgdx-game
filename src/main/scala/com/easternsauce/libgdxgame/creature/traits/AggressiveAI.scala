@@ -6,7 +6,7 @@ import com.easternsauce.libgdxgame.util.{EsDirection, EsTimer}
 
 import scala.collection.mutable.ListBuffer
 
-trait AggressiveAI extends Creature {
+trait AggressiveAI {
 
   var aggroedTarget: Option[Creature] = None
   val aggroDistance = 20f
@@ -21,21 +21,21 @@ trait AggressiveAI extends Creature {
 
   def targetFound: Boolean = aggroedTarget.nonEmpty
 
-  def lookForTarget(): Unit = {
-    if (alive && !targetFound) {
-      area.get.creatureMap.values
+  def lookForTarget(creature: Creature): Unit = {
+    if (creature.alive && !targetFound) {
+      creature.area.get.creatureMap.values
         .filter(creature => !creature.isEnemy)
-        .foreach(creature => {
-          if (creature.isAlive && distanceTo(creature) < aggroDistance) {
-            aggroedTarget = Some(creature)
+        .foreach(otherCreature => {
+          if (otherCreature.isAlive && creature.distanceTo(otherCreature) < aggroDistance) {
+            aggroedTarget = Some(otherCreature)
             circlingDecisionTimer.restart()
           }
         })
     }
   }
 
-  def decideIfCircling(): Unit = {
-    if (isAttacking) {
+  def decideIfCircling(creature: Creature): Unit = {
+    if (creature.isAttacking) {
       circling = false
     } else {
       if (circlingDecisionTimer.time > circlingDecisionMaxTime) {
@@ -51,52 +51,52 @@ trait AggressiveAI extends Creature {
 
   }
 
-  def walkToTarget(destination: Vector2): Unit = {
+  def walkToTarget(creature: Creature, destination: Vector2): Unit = {
     val dirs: ListBuffer[EsDirection.Value] = ListBuffer()
 
-    if (pos.x < destination.x - 0.1f) dirs += EsDirection.Right
-    if (pos.x > destination.x + 0.1f) dirs += EsDirection.Left
-    if (pos.y > destination.y + 0.1f) dirs += EsDirection.Down
-    if (pos.y < destination.y - 0.1f) dirs += EsDirection.Up
+    if (creature.pos.x < destination.x - 0.1f) dirs += EsDirection.Right
+    if (creature.pos.x > destination.x + 0.1f) dirs += EsDirection.Left
+    if (creature.pos.y > destination.y + 0.1f) dirs += EsDirection.Down
+    if (creature.pos.y < destination.y - 0.1f) dirs += EsDirection.Up
 
-    val horizontalDistance = Math.abs(pos.x - destination.x)
-    val verticalDistance = Math.abs(pos.y - destination.y)
+    val horizontalDistance = Math.abs(creature.pos.x - destination.x)
+    val verticalDistance = Math.abs(creature.pos.y - destination.y)
 
     if (horizontalDistance > verticalDistance + 2f) {
-      moveInDirection(dirs.filter(EsDirection.isHorizontal).toList)
+      creature.moveInDirection(dirs.filter(EsDirection.isHorizontal).toList)
     } else if (verticalDistance > horizontalDistance + 2f) {
-      moveInDirection(dirs.filter(EsDirection.isVertical).toList)
+      creature.moveInDirection(dirs.filter(EsDirection.isVertical).toList)
     } else {
-      moveInDirection(dirs.toList)
+      creature.moveInDirection(dirs.toList)
     }
 
   }
 
-  def circleTarget(destination: Vector2): Unit = {
+  def circleTarget(creature: Creature, destination: Vector2): Unit = {
 
-    val vector = new Vector2(destination.x - pos.x, destination.y - pos.y)
+    val vector = new Vector2(destination.x - creature.pos.x, destination.y - creature.pos.y)
 
     val perpendicularDestination =
-      if (circlingClockwise) new Vector2(pos.x - vector.y, pos.y + vector.x)
-      else new Vector2(pos.x + vector.y, pos.y - vector.x)
+      if (circlingClockwise) new Vector2(creature.pos.x - vector.y, creature.pos.y + vector.x)
+      else new Vector2(creature.pos.x + vector.y, creature.pos.y - vector.x)
 
-    walkToTarget(perpendicularDestination)
+    walkToTarget(creature, perpendicularDestination)
   }
 
-  def searchForAndAttackTargets(): Unit = {
-    if (isAlive) {
-      lookForTarget()
+  def searchForAndAttackTargets(creature: Creature): Unit = {
+    if (creature.isAlive) {
+      lookForTarget(creature)
 
-      decideIfCircling()
+      decideIfCircling(creature)
 
       if (targetFound) {
-        if (circling && distanceTo(aggroedTarget.get) < circleDistance) {
-          circleTarget(aggroedTarget.get.pos)
-        } else if (distanceTo(aggroedTarget.get) > minimumWalkUpDistance) {
-          walkToTarget(aggroedTarget.get.pos)
+        if (circling && creature.distanceTo(aggroedTarget.get) < circleDistance) {
+          circleTarget(creature, aggroedTarget.get.pos)
+        } else if (creature.distanceTo(aggroedTarget.get) > minimumWalkUpDistance) {
+          walkToTarget(creature, aggroedTarget.get.pos)
         }
-        if (distanceTo(aggroedTarget.get) < attackDistance) {
-          currentAttack.perform()
+        if (creature.distanceTo(aggroedTarget.get) < attackDistance) {
+          creature.currentAttack.perform()
         }
 
         if (!aggroedTarget.get.isAlive) {
@@ -107,10 +107,4 @@ trait AggressiveAI extends Creature {
 
   }
 
-  override def update(): Unit = {
-    super.update()
-
-    searchForAndAttackTargets()
-
-  }
 }

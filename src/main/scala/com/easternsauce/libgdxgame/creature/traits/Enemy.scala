@@ -12,4 +12,11 @@ trait Enemy extends Creature with AggressiveAI {
       facingVector = new Vector2(aggroed.pos.x - pos.x, aggroed.pos.y - pos.y).nor()
     }
   }
+
+  override def update(): Unit = {
+    super.update()
+
+    searchForAndAttackTargets(this)
+
+  }
 }
