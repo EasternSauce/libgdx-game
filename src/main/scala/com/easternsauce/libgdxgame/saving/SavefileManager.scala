@@ -28,7 +28,9 @@ class SavefileManager() {
   def savefileFound: Boolean = new File(saveFileLocation).exists
 
   def saveGame(playScreen: PlayScreen): Unit = {
-    val saveFile = SaveFile(playScreen.allAreaCreaturesMap.values.map(_.saveToData()).toList)
+    val saveFile = SaveFile(
+      playScreen.allAreaCreaturesMap.values.filter(c => c.isPlayer || c.isAlive).map(_.saveToData()).toList
+    )
 
     val writer = new PrintWriter(new File(saveFileLocation))
 

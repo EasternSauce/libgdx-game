@@ -23,7 +23,7 @@ class Wolf(val screen: PlayScreen, val id: String) extends Enemy {
     textureHeight = 34,
     animationFrameCount = 6,
     frameDuration = 0.1f,
-    neutralStanceFrame = 0,
+    neutralStanceFrame = 1,
     dirMap = Map(EsDirection.Up -> 3, EsDirection.Down -> 0, EsDirection.Left -> 1, EsDirection.Right -> 2)
   )
 

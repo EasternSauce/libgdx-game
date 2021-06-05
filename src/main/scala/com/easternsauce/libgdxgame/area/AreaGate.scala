@@ -75,7 +75,7 @@ class AreaGate private (
 
         playScreen.moveCreature(creature, destination, posX, posY)
 
-        destination.reset()
+        destination.reset(playScreen)
         playScreen.currentArea = Some(destination)
       }
     }

@@ -23,7 +23,7 @@ trait AggressiveAI {
 
   def lookForTarget(creature: Creature): Unit = {
     if (creature.alive && !targetFound) {
-      creature.area.get.creatureMap.values
+      creature.area.get.creaturesMap.values
         .filter(creature => !creature.isEnemy)
         .foreach(otherCreature => {
           if (otherCreature.isAlive && creature.distanceTo(otherCreature) < aggroDistance) {

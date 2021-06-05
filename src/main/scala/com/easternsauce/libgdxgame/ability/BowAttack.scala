@@ -36,7 +36,7 @@ class BowAttack(val creature: Creature) extends Attack {
     val arrowList: ListBuffer[Arrow] = creature.area.get.arrowList
     val tiles: TiledMap = creature.area.get.map
     val areaCreatures: mutable.Map[String, Creature] =
-      creature.area.get.creatureMap
+      creature.area.get.creaturesMap
 
     if (!creature.facingVector.equals(new Vector2(0.0f, 0.0f))) {
       val arrowStartX = creature.pos.x

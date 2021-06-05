@@ -373,18 +373,18 @@ trait Creature extends Sprite with PhysicalBody with AnimatedWalk with Inventory
       this.area = Some(area)
       initCircularBody(area.world, x, y, creatureWidth / 2f)
 
-      area.creatureMap += (id -> this)
+      area.creaturesMap += (id -> this)
 
     } else {
       val oldArea = this.area.get
 
       destroyBody(oldArea.world)
-      oldArea.creatureMap -= id
+      oldArea.creaturesMap -= id
 
       this.area = Some(area)
       initCircularBody(area.world, x, y, creatureWidth / 2f)
 
-      area.creatureMap += (id -> this)
+      area.creaturesMap += (id -> this)
 
     }
 

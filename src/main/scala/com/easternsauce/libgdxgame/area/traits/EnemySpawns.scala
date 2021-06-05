@@ -1,5 +1,6 @@
 package com.easternsauce.libgdxgame.area.traits
 
+import com.easternsauce.libgdxgame.area.Area
 import com.easternsauce.libgdxgame.spawns.EnemySpawnPoint
 import io.circe.Decoder
 import io.circe.generic.semiauto.deriveDecoder
@@ -15,7 +16,7 @@ trait EnemySpawns {
 
   val enemySpawns: ListBuffer[EnemySpawnPoint] = ListBuffer()
 
-  def loadEnemySpawns(areaFilesLocation: String): Unit = {
+  def loadEnemySpawns(area: Area, areaFilesLocation: String): Unit = {
     val source = scala.io.Source.fromFile(areaFilesLocation + "/spawns.json")
     val lines =
       try source.mkString
@@ -25,7 +26,7 @@ trait EnemySpawns {
 
     val result = decoded.getOrElse(throw new RuntimeException("failed to decode spawns file"))
 
-    println(result)
+    enemySpawns.addAll(result.spawnpoints.map(EnemySpawnPoint.loadFromSavedata(area, _)))
 
   }
 

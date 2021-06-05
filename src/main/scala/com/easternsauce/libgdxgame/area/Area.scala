@@ -6,8 +6,10 @@ import com.badlogic.gdx.maps.tiled.{TiledMapTileLayer, TmxMapLoader}
 import com.easternsauce.libgdxgame.RpgGame
 import com.easternsauce.libgdxgame.area.traits.{CollisionDetection, EnemySpawns, PhysicalTerrain, TiledGrid}
 import com.easternsauce.libgdxgame.creature.traits.Creature
+import com.easternsauce.libgdxgame.items.Item
 import com.easternsauce.libgdxgame.projectile.Arrow
 import com.easternsauce.libgdxgame.screens.PlayScreen
+import com.easternsauce.libgdxgame.spawns.EnemySpawnPoint
 import com.easternsauce.libgdxgame.util.EsBatch
 
 import scala.collection.mutable
@@ -24,7 +26,7 @@ class Area(
     with PhysicalTerrain
     with TiledGrid {
 
-  val creatureMap: mutable.Map[String, Creature] = mutable.Map()
+  val creaturesMap: mutable.Map[String, Creature] = mutable.Map()
 
   val arrowList: mutable.ListBuffer[Arrow] = ListBuffer()
 
@@ -32,7 +34,7 @@ class Area(
 
   createContactListener(world)
 
-  loadEnemySpawns(areaFilesLocation)
+  loadEnemySpawns(this, areaFilesLocation)
 
   def renderBottomLayer(): Unit = tiledMapRenderer.render(Array(0, 1))
 
@@ -42,7 +44,7 @@ class Area(
 
     world.step(Math.min(Gdx.graphics.getDeltaTime, 0.15f), 6, 2)
 
-    creatureMap.values.foreach(_.update())
+    creaturesMap.values.foreach(_.update())
 
     val toBeDeleted = ListBuffer[Arrow]()
     for (arrow <- arrowList) {
@@ -58,14 +60,14 @@ class Area(
   }
 
   def render(batch: EsBatch): Unit = {
-    creatureMap.values.filter(!_.isAlive).foreach(_.draw(batch.spriteBatch))
-    creatureMap.values.filter(_.isAlive).foreach(_.draw(batch.spriteBatch))
+    creaturesMap.values.filter(!_.isAlive).foreach(_.draw(batch.spriteBatch))
+    creaturesMap.values.filter(_.isAlive).foreach(_.draw(batch.spriteBatch))
 
-    for (creature <- creatureMap.values) {
+    for (creature <- creaturesMap.values) {
       creature.renderAbilities(batch)
     }
 
-    for (creature <- creatureMap.values) {
+    for (creature <- creaturesMap.values) {
       if (creature.isAlive && !creature.atFullLife)
         creature.renderHealthBar(batch)
     }
@@ -81,8 +83,30 @@ class Area(
     map.dispose()
   }
 
-  def reset(): Unit = {
-    // TODO
+  def reset(playScreen: PlayScreen): Unit = {
+    creaturesMap.filterInPlace { case (_, creature) => creature.isPlayer && creature.isNPC }
+    enemySpawns.foreach(spawnPoint => spawnEnemy(playScreen, spawnPoint))
+    arrowList.clear()
+  }
+
+  private def spawnEnemy(playScreen: PlayScreen, spawnPoint: EnemySpawnPoint): Unit = {
+    val indexOfDot = spawnPoint.creatureClass.lastIndexOf('.') + 1
+    val creatureId = spawnPoint.creatureClass.substring(indexOfDot) + "_" + RpgGame.Random.nextInt()
+
+    val action = Class
+      .forName(spawnPoint.creatureClass)
+      .getDeclaredConstructor(classOf[PlayScreen], classOf[String])
+      .newInstance(playScreen, creatureId)
+    val creature = action.asInstanceOf[Creature]
+
+    creature.assignToArea(this, spawnPoint.posX, spawnPoint.posY)
+
+    if (spawnPoint.weaponType.nonEmpty) {
+      creature.equipmentItems(RpgGame.equipmentTypeIndices("weapon")) =
+        Item.generateFromTemplate(spawnPoint.weaponType.get)
+    }
+
+    playScreen.allAreaCreaturesMap += (creatureId -> creature)
   }
 
   def width: Float = {
