@@ -2,6 +2,7 @@ package com.easternsauce.libgdxgame.saving
 
 import java.io.{File, PrintWriter}
 
+import com.easternsauce.libgdxgame.RpgGame
 import com.easternsauce.libgdxgame.creature.traits.Creature
 import com.easternsauce.libgdxgame.screens.PlayScreen
 import io.circe.generic.semiauto._
@@ -11,7 +12,7 @@ import io.circe.{Decoder, Encoder}
 
 import scala.collection.mutable
 
-class SavefileManager() {
+class SavefileManager(val game: RpgGame) {
 
   implicit val decodeItemSave: Decoder[ItemSavedata] = deriveDecoder[ItemSavedata]
   implicit val decodeCreatureSave: Decoder[CreatureSavedata] = deriveDecoder[CreatureSavedata]
@@ -29,7 +30,7 @@ class SavefileManager() {
 
   def saveGame(playScreen: PlayScreen): Unit = {
     val saveFile = SaveFile(
-      playScreen.allAreaCreaturesMap.values.filter(c => c.isPlayer || c.isAlive).map(_.saveToData()).toList
+      game.allAreaCreaturesMap.values.filter(c => c.isPlayer || c.isAlive).map(_.saveToData()).toList
     )
 
     val writer = new PrintWriter(new File(saveFileLocation))
@@ -39,7 +40,7 @@ class SavefileManager() {
     writer.close()
   }
 
-  def loadGame(playScreen: PlayScreen): Unit = {
+  def loadGame(): Unit = {
     val source = scala.io.Source.fromFile(saveFileLocation)
     val lines =
       try source.mkString
@@ -49,19 +50,19 @@ class SavefileManager() {
 
     val result = decoded.getOrElse(throw new RuntimeException("failed to decode save file"))
 
-    playScreen.allAreaCreaturesMap = mutable.Map()
-    result.creatures.foreach(creatureData => recreateCreatureFromSavedata(playScreen, creatureData))
+    game.allAreaCreaturesMap = mutable.Map()
+    result.creatures.foreach(creatureData => recreateCreatureFromSavedata(game, creatureData))
 
   }
 
-  private def recreateCreatureFromSavedata(playScreen: PlayScreen, creatureData: CreatureSavedata): Unit = {
+  private def recreateCreatureFromSavedata(game: RpgGame, creatureData: CreatureSavedata): Unit = {
     val action = Class
       .forName(creatureData.creatureClass)
-      .getDeclaredConstructor(classOf[PlayScreen], classOf[String])
-      .newInstance(playScreen, creatureData.id)
+      .getDeclaredConstructor(classOf[RpgGame], classOf[String])
+      .newInstance(game, creatureData.id)
     val creature = action.asInstanceOf[Creature]
 
-    creature.loadFromSavedata(creatureData, playScreen)
+    creature.loadFromSavedata(creatureData, game)
 
   }
 

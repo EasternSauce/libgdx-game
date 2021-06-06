@@ -7,10 +7,9 @@ import com.easternsauce.libgdxgame.RpgGame
 import com.easternsauce.libgdxgame.assets.AssetPaths
 import com.easternsauce.libgdxgame.creature.traits.Creature
 import com.easternsauce.libgdxgame.items.Item
-import com.easternsauce.libgdxgame.screens.PlayScreen
 import com.easternsauce.libgdxgame.util.EsDirection
 
-class Player(val screen: PlayScreen, val id: String) extends Creature {
+class Player(val game: RpgGame, val id: String) extends Creature {
 
   override val creatureWidth = 1.85f
   override val creatureHeight = 1.85f
@@ -25,7 +24,7 @@ class Player(val screen: PlayScreen, val id: String) extends Creature {
   setOrigin(creatureWidth / 2f, creatureHeight / 2f)
 
   setupAnimation(
-    atlas = screen.atlas,
+    atlas = game.atlas,
     regionName = "male1",
     textureWidth = 32,
     textureHeight = 32,

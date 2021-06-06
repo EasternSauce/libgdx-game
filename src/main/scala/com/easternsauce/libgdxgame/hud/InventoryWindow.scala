@@ -6,12 +6,11 @@ import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.easternsauce.libgdxgame.RpgGame
 import com.easternsauce.libgdxgame.assets.AssetPaths
-import com.easternsauce.libgdxgame.screens.PlayScreen
 import com.easternsauce.libgdxgame.util.EsBatch
 
 import scala.collection.mutable
 
-class InventoryWindow(val playScreen: PlayScreen) {
+class InventoryWindow(game: RpgGame) {
 
   var visible = false
   var inventoryItemBeingMoved: Option[Int] = None
@@ -79,16 +78,16 @@ class InventoryWindow(val playScreen: PlayScreen) {
       backgroundImage.draw(batch.spriteBatch, 1.0f)
 
       inventoryRectangles.values.foreach(rect => {
-        batch.shapeDrawer.filledRectangle(rect.x - 3, rect.y - 3, rect.width + 6, rect.height + 6, Color.GRAY)
+        batch.shapeDrawer.filledRectangle(rect.x - 3, rect.y - 3, rect.width + 6, rect.height + 6, Color.BROWN)
         batch.shapeDrawer.filledRectangle(rect, Color.BLACK)
       })
 
       equipmentRectangles.foreach {
         case (index, rect) =>
-          batch.shapeDrawer.filledRectangle(rect.x - 3, rect.y - 3, rect.width + 6, rect.height + 6, Color.GRAY)
+          batch.shapeDrawer.filledRectangle(rect.x - 3, rect.y - 3, rect.width + 6, rect.height + 6, Color.BROWN)
           batch.shapeDrawer.filledRectangle(rect, Color.BLACK)
-          playScreen.defaultFont.setColor(Color.LIGHT_GRAY)
-          playScreen.defaultFont.draw(
+          RpgGame.defaultFont.setColor(Color.DARK_GRAY)
+          RpgGame.defaultFont.draw(
             batch.spriteBatch,
             RpgGame.equipmentTypes(index).capitalize + ":",
             rect.x - slotSize / 2 - 70,
@@ -103,8 +102,8 @@ class InventoryWindow(val playScreen: PlayScreen) {
   }
 
   def renderPlayerItems(batch: EsBatch): Unit = {
-    val items = playScreen.player.inventoryItems
-    val equipment = playScreen.player.equipmentItems
+    val items = game.player.inventoryItems
+    val equipment = game.player.equipmentItems
 
     items
       .filterNot {
@@ -130,8 +129,8 @@ class InventoryWindow(val playScreen: PlayScreen) {
           batch.spriteBatch.draw(textureRegion, x, y, slotSize, slotSize)
       }
 
-    val x: Float = playScreen.mousePositionWindowScaled.x
-    val y: Float = playScreen.mousePositionWindowScaled.y
+    val x: Float = game.mousePositionWindowScaled.x
+    val y: Float = game.mousePositionWindowScaled.y
 
     if (inventoryItemBeingMoved.nonEmpty) {
       batch.spriteBatch.draw(
@@ -155,8 +154,8 @@ class InventoryWindow(val playScreen: PlayScreen) {
   }
 
   def renderDescription(batch: EsBatch): Unit = {
-    val x: Float = playScreen.mousePositionWindowScaled.x
-    val y: Float = playScreen.mousePositionWindowScaled.y
+    val x: Float = game.mousePositionWindowScaled.x
+    val y: Float = game.mousePositionWindowScaled.y
 
     var inventorySlotMousedOver: Option[Int] = None
     var equipmentSlotMousedOver: Option[Int] = None
@@ -171,23 +170,23 @@ class InventoryWindow(val playScreen: PlayScreen) {
 
     val item = (inventorySlotMousedOver, equipmentSlotMousedOver) match {
       case (Some(index), _) if inventoryItemBeingMoved.isEmpty || index != inventoryItemBeingMoved.get =>
-        playScreen.player.inventoryItems.get(index)
+        game.player.inventoryItems.get(index)
       case (_, Some(index)) if equipmentItemBeingMoved.isEmpty || index != equipmentItemBeingMoved.get =>
-        playScreen.player.equipmentItems.get(index)
+        game.player.equipmentItems.get(index)
       case _ => None
     }
 
     if (item.nonEmpty) {
-      playScreen.defaultFont.setColor(Color.LIGHT_GRAY)
+      RpgGame.defaultFont.setColor(Color.DARK_GRAY)
 
-      playScreen.defaultFont.draw(
+      RpgGame.defaultFont.draw(
         batch.spriteBatch,
         item.get.template.name,
         background.x + margin,
         background.y + background.height - (inventoryHeight + 5)
       )
 
-      playScreen.defaultFont.draw(
+      RpgGame.defaultFont.draw(
         batch.spriteBatch,
         item.get.getItemInformation(trader = false),
         background.x + margin,
@@ -219,8 +218,8 @@ class InventoryWindow(val playScreen: PlayScreen) {
     var inventorySlotClicked: Option[Int] = None
     var equipmentSlotClicked: Option[Int] = None
 
-    val x: Float = playScreen.mousePositionWindowScaled.x
-    val y: Float = playScreen.mousePositionWindowScaled.y
+    val x: Float = game.mousePositionWindowScaled.x
+    val y: Float = game.mousePositionWindowScaled.y
 
     inventoryRectangles
       .filter { case (_, v) => v.contains(x, y) }
@@ -236,9 +235,9 @@ class InventoryWindow(val playScreen: PlayScreen) {
       case (_, Some(from), Some(to), _) => swapBetweenInventoryAndEquipment(to, from)
       case (_, Some(from), _, Some(to)) => swapEquipmentSlotContent(from, to)
       case (_, _, Some(index), _) =>
-        if (playScreen.player.inventoryItems.contains(index)) inventoryItemBeingMoved = Some(index)
+        if (game.player.inventoryItems.contains(index)) inventoryItemBeingMoved = Some(index)
       case (_, _, _, Some(index)) =>
-        if (playScreen.player.equipmentItems.contains(index)) equipmentItemBeingMoved = Some(index)
+        if (game.player.equipmentItems.contains(index)) equipmentItemBeingMoved = Some(index)
       case _ =>
         inventoryItemBeingMoved = None
         equipmentItemBeingMoved = None
@@ -247,23 +246,23 @@ class InventoryWindow(val playScreen: PlayScreen) {
   }
 
   def swapInventorySlotContent(fromIndex: Int, toIndex: Int): Unit = {
-    val itemFrom = playScreen.player.inventoryItems.get(fromIndex)
-    val itemTo = playScreen.player.inventoryItems.get(toIndex)
+    val itemFrom = game.player.inventoryItems.get(fromIndex)
+    val itemTo = game.player.inventoryItems.get(toIndex)
 
     val temp = itemTo
 
-    if (itemFrom.nonEmpty) playScreen.player.inventoryItems(toIndex) = itemFrom.get
-    else playScreen.player.inventoryItems.remove(toIndex)
-    if (temp.nonEmpty) playScreen.player.inventoryItems(fromIndex) = temp.get
-    else playScreen.player.inventoryItems.remove(fromIndex)
+    if (itemFrom.nonEmpty) game.player.inventoryItems(toIndex) = itemFrom.get
+    else game.player.inventoryItems.remove(toIndex)
+    if (temp.nonEmpty) game.player.inventoryItems(fromIndex) = temp.get
+    else game.player.inventoryItems.remove(fromIndex)
 
     inventoryItemBeingMoved = None
     equipmentItemBeingMoved = None
   }
 
   def swapEquipmentSlotContent(fromIndex: Int, toIndex: Int): Unit = {
-    val itemFrom = playScreen.player.equipmentItems.get(fromIndex)
-    val itemTo = playScreen.player.equipmentItems.get(toIndex)
+    val itemFrom = game.player.equipmentItems.get(fromIndex)
+    val itemTo = game.player.equipmentItems.get(toIndex)
 
     val temp = itemTo
 
@@ -276,10 +275,10 @@ class InventoryWindow(val playScreen: PlayScreen) {
       )
 
     if (fromEquipmentTypeMatches && toEquipmentTypeMatches) {
-      if (itemFrom.nonEmpty) playScreen.player.equipmentItems(toIndex) = itemFrom.get
-      else playScreen.player.equipmentItems.remove(toIndex)
-      if (temp.nonEmpty) playScreen.player.equipmentItems(fromIndex) = temp.get
-      else playScreen.player.equipmentItems.remove(fromIndex)
+      if (itemFrom.nonEmpty) game.player.equipmentItems(toIndex) = itemFrom.get
+      else game.player.equipmentItems.remove(toIndex)
+      if (temp.nonEmpty) game.player.equipmentItems(fromIndex) = temp.get
+      else game.player.equipmentItems.remove(fromIndex)
     }
 
     inventoryItemBeingMoved = None
@@ -287,8 +286,8 @@ class InventoryWindow(val playScreen: PlayScreen) {
   }
 
   def swapBetweenInventoryAndEquipment(inventoryIndex: Int, equipmentIndex: Int): Unit = {
-    val inventoryItem = playScreen.player.inventoryItems.get(inventoryIndex)
-    val equipmentItem = playScreen.player.equipmentItems.get(equipmentIndex)
+    val inventoryItem = game.player.inventoryItems.get(inventoryIndex)
+    val equipmentItem = game.player.equipmentItems.get(equipmentIndex)
 
     val temp = equipmentItem
 
@@ -299,10 +298,10 @@ class InventoryWindow(val playScreen: PlayScreen) {
         .get == RpgGame.equipmentTypes(equipmentIndex)
 
     if (inventoryItem.isEmpty || equipmentTypeMatches) {
-      if (temp.nonEmpty) playScreen.player.inventoryItems(inventoryIndex) = temp.get
-      else playScreen.player.inventoryItems.remove(inventoryIndex)
-      if (inventoryItem.nonEmpty) playScreen.player.equipmentItems(equipmentIndex) = inventoryItem.get
-      else playScreen.player.equipmentItems.remove(equipmentIndex)
+      if (temp.nonEmpty) game.player.inventoryItems(inventoryIndex) = temp.get
+      else game.player.inventoryItems.remove(inventoryIndex)
+      if (inventoryItem.nonEmpty) game.player.equipmentItems(equipmentIndex) = inventoryItem.get
+      else game.player.equipmentItems.remove(equipmentIndex)
     }
 
     inventoryItemBeingMoved = None

@@ -5,13 +5,13 @@ import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.Sprite
 import com.badlogic.gdx.math.{Rectangle, Vector2}
+import com.easternsauce.libgdxgame.RpgGame
 import com.easternsauce.libgdxgame.ability.traits.{Ability, Attack}
 import com.easternsauce.libgdxgame.ability.{BowAttack, SwordAttack, TridentAttack, UnarmedAttack}
 import com.easternsauce.libgdxgame.area.Area
 import com.easternsauce.libgdxgame.effect.Effect
 import com.easternsauce.libgdxgame.items.Item
 import com.easternsauce.libgdxgame.saving.{CreatureSavedata, ItemSavedata, PositionSavedata}
-import com.easternsauce.libgdxgame.screens.PlayScreen
 import com.easternsauce.libgdxgame.util.{EsBatch, EsDirection, EsTimer}
 
 import scala.collection.mutable
@@ -19,7 +19,7 @@ import scala.collection.mutable.ListBuffer
 
 trait Creature extends Sprite with PhysicalBody with AnimatedWalk with Inventory {
 
-  val screen: PlayScreen
+  val game: RpgGame
 
   val isEnemy = false
   val isPlayer = false
@@ -417,19 +417,19 @@ trait Creature extends Sprite with PhysicalBody with AnimatedWalk with Inventory
 
   }
 
-  def loadFromSavedata(creatureData: CreatureSavedata, playScreen: PlayScreen): Unit = {
+  def loadFromSavedata(creatureData: CreatureSavedata, game: RpgGame): Unit = {
     setPosition(creatureData.position.x, creatureData.position.y)
     healthPoints = creatureData.healthPoints
-    this.area = Some(playScreen.areaMap(creatureData.area))
+    this.area = Some(game.areaMap(creatureData.area))
 
-    if (creatureData.isPlayer) playScreen.setPlayer(this)
+    if (creatureData.isPlayer) game.setPlayer(this)
 
     creatureData.inventoryItems.foreach(item => inventoryItems += (item.index -> Item.loadFromSavedata(item)))
     creatureData.equipmentItems.foreach(item => equipmentItems += (item.index -> Item.loadFromSavedata(item)))
 
-    playScreen.allAreaCreaturesMap += (id -> this)
+    game.allAreaCreaturesMap += (id -> this)
 
-    assignToArea(playScreen.areaMap(creatureData.area), creatureData.position.x, creatureData.position.y)
+    assignToArea(game.areaMap(creatureData.area), creatureData.position.x, creatureData.position.y)
 
   }
 

@@ -30,7 +30,7 @@ class TridentAttack(val creature: Creature) extends MeleeAttack {
   override protected val abilitySound: Option[Sound] = Some(RpgGame.manager.get(AssetPaths.attackSound, classOf[Sound]))
 
   setupActiveAnimation(
-    atlas = creature.screen.atlas,
+    atlas = creature.game.atlas,
     regionName = "trident_thrust",
     textureWidth = spriteWidth,
     textureHeight = spriteHeight,
@@ -39,7 +39,7 @@ class TridentAttack(val creature: Creature) extends MeleeAttack {
   )
 
   setupWindupAnimation(
-    atlas = creature.screen.atlas,
+    atlas = creature.game.atlas,
     regionName = "trident_thrust_windup",
     textureWidth = spriteWidth,
     textureHeight = spriteHeight,

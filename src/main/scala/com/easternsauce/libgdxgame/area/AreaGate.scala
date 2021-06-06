@@ -6,11 +6,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.easternsauce.libgdxgame.RpgGame
 import com.easternsauce.libgdxgame.assets.AssetPaths
 import com.easternsauce.libgdxgame.creature.traits.Creature
-import com.easternsauce.libgdxgame.screens.PlayScreen
 import com.easternsauce.libgdxgame.util.EsBatch
 
 class AreaGate private (
-  val playScreen: PlayScreen,
+  val game: RpgGame,
   val areaFrom: Area,
   val fromPosX: Float,
   val fromPosY: Float,
@@ -38,7 +37,7 @@ class AreaGate private (
   initBody(areaTo, toPosX, toPosY)
 
   def render(batch: EsBatch): Unit = {
-    val area = playScreen.currentArea.getOrElse {
+    val area = game.currentArea.getOrElse {
       throw new RuntimeException("current area not specified")
     }
 
@@ -73,10 +72,10 @@ class AreaGate private (
           case Some(`areaTo`)   => (areaFrom, fromPosX, fromPosY)
         }
 
-        playScreen.moveCreature(creature, destination, posX, posY)
+        game.moveCreature(creature, destination, posX, posY)
 
-        destination.reset(playScreen)
-        playScreen.currentArea = Some(destination)
+        destination.reset(game)
+        game.currentArea = Some(destination)
       }
     }
 
@@ -85,14 +84,6 @@ class AreaGate private (
 }
 
 object AreaGate {
-  def apply(
-    playScreen: PlayScreen,
-    areaFrom: Area,
-    fromPosX: Int,
-    fromPosY: Int,
-    areaTo: Area,
-    toPosX: Int,
-    toPosY: Int
-  ) =
-    new AreaGate(playScreen, areaFrom, fromPosX, fromPosY, areaTo, toPosX, toPosY)
+  def apply(game: RpgGame, areaFrom: Area, fromPosX: Int, fromPosY: Int, areaTo: Area, toPosX: Int, toPosY: Int) =
+    new AreaGate(game, areaFrom, fromPosX, fromPosY, areaTo, toPosX, toPosY)
 }

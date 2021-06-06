@@ -65,7 +65,7 @@ object AssetPaths {
   val gobletTexture = "assets/goblet/goblet.png"
   val gobletLitTexture = "assets/goblet/goblet_lit.png"
   val downArrowTexture = "assets/downarrow/downarrow.png"
-  val backgroundTexture = "assets/background/background.png"
+  val backgroundTexture = "assets/background/background2.png"
 
   val textures = List(
     arrowTexture,

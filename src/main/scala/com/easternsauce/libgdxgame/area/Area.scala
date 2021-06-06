@@ -8,7 +8,6 @@ import com.easternsauce.libgdxgame.area.traits.{CollisionDetection, EnemySpawns,
 import com.easternsauce.libgdxgame.creature.traits.Creature
 import com.easternsauce.libgdxgame.items.Item
 import com.easternsauce.libgdxgame.projectile.Arrow
-import com.easternsauce.libgdxgame.screens.PlayScreen
 import com.easternsauce.libgdxgame.spawns.EnemySpawnPoint
 import com.easternsauce.libgdxgame.util.EsBatch
 
@@ -16,7 +15,7 @@ import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
 
 class Area(
-  val screen: PlayScreen,
+  val game: RpgGame,
   val mapLoader: TmxMapLoader,
   val areaFilesLocation: String,
   val id: String,
@@ -83,20 +82,20 @@ class Area(
     map.dispose()
   }
 
-  def reset(playScreen: PlayScreen): Unit = {
+  def reset(game: RpgGame): Unit = {
     creaturesMap.filterInPlace { case (_, creature) => creature.isPlayer && creature.isNPC }
-    enemySpawns.foreach(spawnPoint => spawnEnemy(playScreen, spawnPoint))
+    enemySpawns.foreach(spawnPoint => spawnEnemy(game, spawnPoint))
     arrowList.clear()
   }
 
-  private def spawnEnemy(playScreen: PlayScreen, spawnPoint: EnemySpawnPoint): Unit = {
+  private def spawnEnemy(game: RpgGame, spawnPoint: EnemySpawnPoint): Unit = {
     val indexOfDot = spawnPoint.creatureClass.lastIndexOf('.') + 1
     val creatureId = spawnPoint.creatureClass.substring(indexOfDot) + "_" + RpgGame.Random.nextInt()
 
     val action = Class
       .forName(spawnPoint.creatureClass)
-      .getDeclaredConstructor(classOf[PlayScreen], classOf[String])
-      .newInstance(playScreen, creatureId)
+      .getDeclaredConstructor(classOf[RpgGame], classOf[String])
+      .newInstance(game, creatureId)
     val creature = action.asInstanceOf[Creature]
 
     creature.assignToArea(this, spawnPoint.posX, spawnPoint.posY)
@@ -106,7 +105,7 @@ class Area(
         Item.generateFromTemplate(spawnPoint.weaponType.get)
     }
 
-    playScreen.allAreaCreaturesMap += (creatureId -> creature)
+    game.allAreaCreaturesMap += (creatureId -> creature)
   }
 
   def width: Float = {

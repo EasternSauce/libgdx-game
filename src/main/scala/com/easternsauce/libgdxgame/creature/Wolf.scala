@@ -4,10 +4,9 @@ import com.badlogic.gdx.audio.Sound
 import com.easternsauce.libgdxgame.RpgGame
 import com.easternsauce.libgdxgame.assets.AssetPaths
 import com.easternsauce.libgdxgame.creature.traits.Enemy
-import com.easternsauce.libgdxgame.screens.PlayScreen
 import com.easternsauce.libgdxgame.util.EsDirection
 
-class Wolf(val screen: PlayScreen, val id: String) extends Enemy {
+class Wolf(val game: RpgGame, val id: String) extends Enemy {
   override val creatureWidth = 2.85f
   override val creatureHeight = 2.85f
 
@@ -17,7 +16,7 @@ class Wolf(val screen: PlayScreen, val id: String) extends Enemy {
   setOrigin(creatureWidth / 2f, creatureHeight / 2f)
 
   setupAnimation(
-    atlas = screen.atlas,
+    atlas = game.atlas,
     regionName = "wolf2",
     textureWidth = 32,
     textureHeight = 34,

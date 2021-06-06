@@ -1,15 +1,15 @@
 package com.easternsauce.libgdxgame.area.traits
 
 import com.badlogic.gdx.physics.box2d._
+import com.easternsauce.libgdxgame.RpgGame
 import com.easternsauce.libgdxgame.ability.traits.Ability
 import com.easternsauce.libgdxgame.area.{AreaGate, AreaTile}
 import com.easternsauce.libgdxgame.creature.traits.Creature
 import com.easternsauce.libgdxgame.projectile.Arrow
-import com.easternsauce.libgdxgame.screens.PlayScreen
 
 trait CollisionDetection {
 
-  val screen: PlayScreen
+  val game: RpgGame
 
   def createContactListener(world: World): Unit = {
     val contactListener: ContactListener = new ContactListener {
