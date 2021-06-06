@@ -5,28 +5,74 @@ import com.badlogic.gdx.{Gdx, Input, Screen}
 import com.easternsauce.libgdxgame.RpgGame
 import com.easternsauce.libgdxgame.util.EsBatch
 
-import scala.collection.mutable.ListBuffer
-
 class MainMenuScreen(game: RpgGame) extends Screen {
   private var currentSelected: Int = 0
 
-  private var optionList: ListBuffer[String] = ListBuffer()
-
-  private var startMenu: Boolean = true
-
-  private var prompt: Boolean = false
-  private var promptOption: String = ""
-  private var promptText: String = ""
-  private var savedOptionList: ListBuffer[String] = ListBuffer()
-
   var batch: EsBatch = new EsBatch()
 
-  if (game.savefileManager.savefileFound) {
-    optionList += "Continue"
-  }
+  val saveExistsOptions: List[MenuOptionNode] = List(
+    MenuOptionNode(name = "Continue", MenuAction.LoadGame),
+    MenuOptionNode(
+      "New game",
+      MenuAction.NextMenu,
+      List(MenuOptionNode("No", MenuAction.PreviousMenu), MenuOptionNode("Yes", MenuAction.NewGame)),
+      Some("Are you sure?")
+    ),
+    MenuOptionNode(
+      "Exit",
+      MenuAction.NextMenu,
+      List(MenuOptionNode("No", MenuAction.PreviousMenu), MenuOptionNode("Yes", MenuAction.Exit)),
+      Some("Are you sure?")
+    )
+  )
 
-  optionList += "New game"
-  optionList += "Exit"
+  val saveDoesntExistOptions: List[MenuOptionNode] =
+    List(
+      MenuOptionNode(
+        "New game",
+        MenuAction.NextMenu,
+        List(MenuOptionNode("No", MenuAction.PreviousMenu), MenuOptionNode("Yes", MenuAction.NewGame)),
+        Some("Are you sure?")
+      ),
+      MenuOptionNode(
+        "Exit",
+        MenuAction.NextMenu,
+        List(MenuOptionNode("No", MenuAction.PreviousMenu), MenuOptionNode("Yes", MenuAction.Exit))
+      )
+    )
+
+  val pauseOptions: List[MenuOptionNode] =
+    List(
+      MenuOptionNode(name = "Continue", MenuAction.Continue),
+      MenuOptionNode(
+        "New game",
+        MenuAction.NextMenu,
+        List(MenuOptionNode("No", MenuAction.PreviousMenu), MenuOptionNode("Yes", MenuAction.NewGame)),
+        Some("Are you sure?")
+      ),
+      MenuOptionNode(
+        "Exit",
+        MenuAction.NextMenu,
+        List(MenuOptionNode("No", MenuAction.PreviousMenu), MenuOptionNode("Yes", MenuAction.Exit))
+      )
+    )
+
+  val optionTreeRoot: MenuOptionNode = MenuOptionNode(
+    "",
+    MenuAction.NextMenu,
+    if (game.savefileManager.savefileFound) saveExistsOptions else saveDoesntExistOptions
+  )
+
+  val pausedOptionTreeRoot: MenuOptionNode = MenuOptionNode(
+    "",
+    MenuAction.NextMenu,
+    saveExistsOptions
+  )
+
+
+  var currentNode: MenuOptionNode = optionTreeRoot
+  val gameplayStarted = false
+  var previousNode: Option[MenuOptionNode] = None
 
   override def show(): Unit = {}
 
@@ -43,116 +89,67 @@ class MainMenuScreen(game: RpgGame) extends Screen {
     )
 
     batch.spriteBatch.begin()
-    println("rendering")
-    if (!prompt) for (i <- 0 until Math.min(4, optionList.size)) {
-      RpgGame.defaultFont.setColor(Color.WHITE)
+
+    val posX = 100
+    val posY = if (currentNode.promptText.nonEmpty) 130 else 100
+
+    if (currentNode.promptText.nonEmpty) {
       RpgGame.defaultFont.draw(
         batch.spriteBatch,
-        (if (currentSelected == i) ">"
-         else "") + optionList(i),
-        100,
-        RpgGame.WindowHeight - (100 + 30 * i)
+        currentNode.promptText.get,
+        posX,
+        RpgGame.WindowHeight - 100
       )
     }
-    else {
-      RpgGame.defaultFont.setColor(Color.WHITE)
-      RpgGame.defaultFont.draw(batch.spriteBatch, promptText, 100, RpgGame.WindowHeight - 100)
-      for (i <- 0 until Math.min(4, optionList.size)) {
-        RpgGame.defaultFont.setColor(Color.WHITE)
-        RpgGame.defaultFont.draw(
-          batch.spriteBatch,
-          (if (currentSelected == i) ">"
-           else "") + optionList(i),
-          100,
-          RpgGame.WindowHeight - (130 + 30 * i)
-        )
-      }
+
+    RpgGame.defaultFont.setColor(Color.WHITE)
+    for (i <- currentNode.children.indices) {
+      val option = currentNode.children(i)
+      RpgGame.defaultFont.draw(
+        batch.spriteBatch,
+        (if (currentSelected == i) ">" else "") + option.name,
+        posX,
+        RpgGame.WindowHeight - (posY + 30 * i)
+      )
     }
+
     batch.spriteBatch.end()
 
   }
 
   def update(): Unit = {
     if (Gdx.input.isKeyJustPressed(Input.Keys.E)) {
-
-      if (optionList(currentSelected) == "Continue") {
-        game.setScreen(game.playScreen)
-        if (startMenu) {
-          startMenu = false
-          optionList = ListBuffer()
-          optionList += "Continue"
-          optionList += "New game"
-          optionList += "Save game"
-          optionList += "Exit"
-          game.savefileManager.loadGame()
-        }
-      } else if (optionList(currentSelected) == "New game") {
-        if (!prompt) {
-          prompt = true
-          promptOption = "New game"
-          savedOptionList = optionList
-          optionList = ListBuffer()
-          optionList += "No"
-          optionList += "Yes"
-          promptText = "Start new game?"
-          currentSelected = 0
-        }
-      } else if (optionList(currentSelected) == "Save game") {
-        game.savefileManager.saveGame(game.playScreen)
-      } else if (optionList(currentSelected) == "Exit") {
-        if (!prompt) {
-          prompt = true
-          promptOption = "Exit"
-          savedOptionList = optionList
-          optionList = ListBuffer()
-          optionList += "No"
-          optionList += "Yes"
-          promptText = "Quit without saving?"
-          currentSelected = 0
-        }
-      } else if (
-        optionList(currentSelected).equals("Yes") || optionList(currentSelected)
-          .equals("No")
-      ) {
-        val option: String = optionList(currentSelected)
-        if (option.equals("Yes")) {
-          if (promptOption.equals("Exit")) {
-            prompt = false
-            System.exit(0)
-          } else if (promptOption == "New game") {
-
-            // TODO: remove existing save file?
-
-            game.savefileManager.loadGame()
-            game.setScreen(game.playScreen)
-
-            if (startMenu) {
-
-              startMenu = false
-              optionList = ListBuffer()
-              optionList += "Continue"
-              optionList += "New game"
-              optionList += "Save game"
-              optionList += "Exit"
-            } else optionList = savedOptionList
-            prompt = false
-            currentSelected = 0
-          }
-        } else {
-          optionList = savedOptionList
-          prompt = false
-          currentSelected = 0
-        }
-      }
+      handleAction(currentNode.children(currentSelected))
+      currentSelected = 0
     }
+
     if (Gdx.input.isKeyJustPressed(Input.Keys.W))
       if (currentSelected > 0) currentSelected -= 1
     if (Gdx.input.isKeyJustPressed(Input.Keys.S))
-      if (currentSelected < optionList.size - 1) currentSelected += 1
+      if (currentSelected < currentNode.children.size - 1) currentSelected += 1
     if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
-      if (!startMenu) game.setScreen(game.playScreen)
+      if (gameplayStarted) game.setScreen(game.playScreen)
 
     }
+
+  }
+
+  def handleAction(node: MenuOptionNode): Unit = node.action match {
+    case MenuAction.NextMenu =>
+      previousNode = Some(currentNode)
+      currentNode = node
+    case MenuAction.PreviousMenu =>
+      if (previousNode.nonEmpty) currentNode = previousNode.get
+    case MenuAction.NewGame =>
+      game.savefileManager.loadGame() // TODO: new game instead of loading save
+      game.setScreen(game.playScreen)
+    case MenuAction.LoadGame =>
+      game.savefileManager.loadGame()
+      game.setScreen(game.playScreen)
+    case MenuAction.Continue =>
+      game.setScreen(game.playScreen)
+    case MenuAction.Exit =>
+      Gdx.app.exit()
   }
 
   override def resize(width: Int, height: Int): Unit = {}
@@ -166,3 +163,15 @@ class MainMenuScreen(game: RpgGame) extends Screen {
   override def dispose(): Unit = {}
 
 }
+
+object MenuAction extends Enumeration {
+  type MenuAction = Value
+  val NewGame, NextMenu, PreviousMenu, Continue, LoadGame, Exit = Value
+}
+
+case class MenuOptionNode(
+  name: String,
+  action: MenuAction.Value,
+  children: List[MenuOptionNode] = List(),
+  promptText: Option[String] = None
+)

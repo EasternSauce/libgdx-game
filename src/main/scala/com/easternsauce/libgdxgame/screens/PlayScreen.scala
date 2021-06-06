@@ -113,6 +113,10 @@ class PlayScreen(val game: RpgGame) extends Screen {
 
     if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE))
       if (game.inventoryWindow.visible) game.inventoryWindow.visible = false
+      else {
+        game.mainMenuScreen.currentNode = game.mainMenuScreen.pausedOptionTreeRoot
+        game.setScreen(game.mainMenuScreen)
+      }
 
     if (game.inventoryWindow.visible) {
       if (Gdx.input.isButtonJustPressed(Buttons.LEFT)) {
