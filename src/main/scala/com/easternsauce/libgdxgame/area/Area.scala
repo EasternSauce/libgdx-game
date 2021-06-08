@@ -98,7 +98,7 @@ class Area(
     creaturesMap.values
       .filter(creature => creature.isEnemy)
       .foreach(creature => creature.destroyBody(creature.area.get.world))
-    game.allAreaCreaturesMap.filterInPlace{case (_, creature) => !(creature.isEnemy && creature.area.get == this)}
+    game.allAreaCreaturesMap.filterInPlace { case (_, creature) => !(creature.isEnemy && creature.area.get == this) }
     creaturesMap.filterInPlace { case (_, creature) => !creature.isEnemy }
     enemySpawns.foreach(spawnPoint => spawnEnemy(game, spawnPoint))
     arrowList.clear()

@@ -4,7 +4,6 @@ import java.io.{File, PrintWriter}
 
 import com.easternsauce.libgdxgame.RpgGame
 import com.easternsauce.libgdxgame.creature.traits.Creature
-import com.easternsauce.libgdxgame.screens.PlayScreen
 import io.circe.generic.semiauto._
 import io.circe.parser._
 import io.circe.syntax.EncoderOps

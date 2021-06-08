@@ -21,8 +21,7 @@ object AStar {
           m.g = totalWeight
           m.f = m.g + m.calculateHeuristic(target)
           openList += m
-        }
-        else{
+        } else {
           if (totalWeight < m.g) {
             m.parent = Some(n)
             m.g = totalWeight

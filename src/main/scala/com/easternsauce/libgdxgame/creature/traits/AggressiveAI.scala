@@ -36,13 +36,17 @@ trait AggressiveAI {
         .filter(creature => !creature.isEnemy)
         .foreach(otherCreature => {
           if (otherCreature.isAlive && creature.distanceTo(otherCreature) < aggroDistance) {
-            aggroedTarget = Some(otherCreature)
-            circlingDecisionTimer.restart()
-            recalculatePathTimer.restart()
-            calculatePath(creature.area.get, creature, aggroedTarget.get.pos)
+            aggroOnCreature(creature, otherCreature)
           }
         })
     }
+  }
+
+  def aggroOnCreature(creature: Creature, otherCreature: Creature): Unit = {
+    aggroedTarget = Some(otherCreature)
+    circlingDecisionTimer.restart()
+    recalculatePathTimer.restart()
+    calculatePath(creature.area.get, creature, aggroedTarget.get.pos)
   }
 
   def decideIfCircling(creature: Creature): Unit = {

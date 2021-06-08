@@ -28,8 +28,6 @@ import scala.util.Random
 
 class RpgGame extends Game {
 
-
-
   var savefileManager: SavefileManager = _
 
   var mainMenuScreen: MainMenuScreen = _
@@ -52,7 +50,6 @@ class RpgGame extends Game {
 
   val hudViewport: Viewport =
     new FitViewport(RpgGame.WindowWidth, RpgGame.WindowHeight, hudCamera)
-
 
   var b2DebugRenderer: Box2DDebugRenderer = _
 

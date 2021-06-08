@@ -84,6 +84,14 @@ class AreaGate private (
 }
 
 object AreaGate {
-  def apply(game: RpgGame, areaFrom: Area, fromPosX: Float, fromPosY: Float, areaTo: Area, toPosX: Float, toPosY: Float) =
+  def apply(
+    game: RpgGame,
+    areaFrom: Area,
+    fromPosX: Float,
+    fromPosY: Float,
+    areaTo: Area,
+    toPosX: Float,
+    toPosY: Float
+  ) =
     new AreaGate(game, areaFrom, fromPosX, fromPosY, areaTo, toPosX, toPosY)
 }

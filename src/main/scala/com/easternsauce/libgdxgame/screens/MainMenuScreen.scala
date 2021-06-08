@@ -63,12 +63,7 @@ class MainMenuScreen(game: RpgGame) extends Screen {
     if (game.savefileManager.savefileFound) saveExistsOptions else saveDoesntExistOptions
   )
 
-  val pausedOptionTreeRoot: MenuOptionNode = MenuOptionNode(
-    "",
-    MenuAction.NextMenu,
-    pauseOptions
-  )
-
+  val pausedOptionTreeRoot: MenuOptionNode = MenuOptionNode("", MenuAction.NextMenu, pauseOptions)
 
   var currentNode: MenuOptionNode = optionTreeRoot
   val gameplayStarted = false
@@ -94,12 +89,7 @@ class MainMenuScreen(game: RpgGame) extends Screen {
     val posY = if (currentNode.promptText.nonEmpty) 130 else 100
 
     if (currentNode.promptText.nonEmpty) {
-      RpgGame.defaultFont.draw(
-        batch.spriteBatch,
-        currentNode.promptText.get,
-        posX,
-        RpgGame.WindowHeight - 100
-      )
+      RpgGame.defaultFont.draw(batch.spriteBatch, currentNode.promptText.get, posX, RpgGame.WindowHeight - 100)
     }
 
     RpgGame.defaultFont.setColor(Color.WHITE)
@@ -134,23 +124,24 @@ class MainMenuScreen(game: RpgGame) extends Screen {
 
   }
 
-  def handleAction(node: MenuOptionNode): Unit = node.action match {
-    case MenuAction.NextMenu =>
-      previousNode = Some(currentNode)
-      currentNode = node
-    case MenuAction.PreviousMenu =>
-      if (previousNode.nonEmpty) currentNode = previousNode.get
-    case MenuAction.NewGame =>
-      game.savefileManager.loadGame() // TODO: new game instead of loading save
-      game.setScreen(game.playScreen)
-    case MenuAction.LoadGame =>
-      game.savefileManager.loadGame()
-      game.setScreen(game.playScreen)
-    case MenuAction.Continue =>
-      game.setScreen(game.playScreen)
-    case MenuAction.Exit =>
-      Gdx.app.exit()
-  }
+  def handleAction(node: MenuOptionNode): Unit =
+    node.action match {
+      case MenuAction.NextMenu =>
+        previousNode = Some(currentNode)
+        currentNode = node
+      case MenuAction.PreviousMenu =>
+        if (previousNode.nonEmpty) currentNode = previousNode.get
+      case MenuAction.NewGame =>
+        game.savefileManager.loadGame() // TODO: new game instead of loading save
+        game.setScreen(game.playScreen)
+      case MenuAction.LoadGame =>
+        game.savefileManager.loadGame()
+        game.setScreen(game.playScreen)
+      case MenuAction.Continue =>
+        game.setScreen(game.playScreen)
+      case MenuAction.Exit =>
+        Gdx.app.exit()
+    }
 
   override def resize(width: Int, height: Int): Unit = {}
 

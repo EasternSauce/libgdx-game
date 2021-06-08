@@ -5,7 +5,6 @@ import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.Sprite
 import com.badlogic.gdx.math.{Rectangle, Vector2}
-import com.badlogic.gdx.physics.box2d.World
 import com.easternsauce.libgdxgame.RpgGame
 import com.easternsauce.libgdxgame.ability.traits.{Ability, Attack}
 import com.easternsauce.libgdxgame.ability.{BowAttack, SwordAttack, TridentAttack, UnarmedAttack}
@@ -283,6 +282,7 @@ trait Creature extends Sprite with PhysicalBody with AnimatedWalk with Inventory
   def takeHealthDamage(
     damage: Float,
     immunityFrames: Boolean,
+    dealtBy: Option[Creature] = None,
     knockbackPower: Float = 0,
     sourceX: Float = 0,
     sourceY: Float = 0
@@ -427,6 +427,8 @@ trait Creature extends Sprite with PhysicalBody with AnimatedWalk with Inventory
     healthPoints = creatureData.healthPoints
     this.area = Some(game.areaMap(creatureData.area))
 
+    spawnPointId = creatureData.spawnPointId
+
     if (creatureData.isPlayer) game.setPlayer(this)
 
     creatureData.inventoryItems.foreach(item => inventoryItems += (item.index -> Item.loadFromSavedata(item)))
@@ -459,23 +461,5 @@ trait Creature extends Sprite with PhysicalBody with AnimatedWalk with Inventory
         case (index, item) => ItemSavedata(index, item.template.id, item.damage, item.armor)
       }.toList
     )
-  }
-
-  // TODO debug use only
-  override   def pos: Vector2 = {
-    if (bodyExists) {
-      b2Body.getPosition
-    } else {
-      ???
-    }
-  }
-
-  override def destroyBody(world: World): Unit = {
-
-    if (bodyExists) {
-      world.destroyBody(b2Body)
-      bodyExists = false
-    }
-
   }
 }

@@ -19,4 +19,20 @@ trait Enemy extends Creature with AggressiveAI {
     searchForAndAttackTargets(this)
 
   }
+
+  override def takeHealthDamage(
+    damage: Float,
+    immunityFrames: Boolean,
+    dealtBy: Option[Creature] = None,
+    knockbackPower: Float = 0,
+    sourceX: Float = 0,
+    sourceY: Float = 0
+  ) {
+    super.takeHealthDamage(damage, immunityFrames, dealtBy, knockbackPower, sourceX, sourceY)
+
+    if (aggroedTarget.isEmpty && dealtBy.nonEmpty) {
+      aggroOnCreature(this, dealtBy.get)
+    }
+
+  }
 }

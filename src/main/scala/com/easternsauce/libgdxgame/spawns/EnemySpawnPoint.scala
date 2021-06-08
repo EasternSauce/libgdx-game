@@ -20,6 +20,13 @@ class EnemySpawnPoint(
 object EnemySpawnPoint {
 
   def loadFromSavedata(area: Area, savedata: EnemySpawnSavedata): EnemySpawnPoint = {
-    new EnemySpawnPoint(savedata.id, area, savedata.location.x, savedata.location.y, savedata.creatureClass, savedata.weaponType)
+    new EnemySpawnPoint(
+      savedata.id,
+      area,
+      savedata.location.x,
+      savedata.location.y,
+      savedata.creatureClass,
+      savedata.weaponType
+    )
   }
 }

@@ -11,7 +11,7 @@ class AStarNode(val x: Int, val y: Int, val id: String) extends Comparable[AStar
   var g: Double = Double.MaxValue
 
   override def compareTo(n: AStarNode): Int = f.compare(n.f)
-  def addEdge(weight: Int, node: AStarNode): Unit =  {
+  def addEdge(weight: Int, node: AStarNode): Unit = {
     val newEdge = AStarEdge(weight, node)
     neighbors += newEdge
   }
@@ -21,6 +21,5 @@ class AStarNode(val x: Int, val y: Int, val id: String) extends Comparable[AStar
 
   override def toString() = id
 }
-
 
 case class AStarEdge(weight: Int, node: AStarNode)

@@ -178,6 +178,7 @@ trait MeleeAttack extends Attack with PhysicalHitbox with ActiveAnimation with W
         otherCreature.takeHealthDamage(
           damage = creature.weaponDamage,
           immunityFrames = true,
+          dealtBy = Some(creature),
           knockbackPower = knockbackPower,
           sourceX = creature.pos.x,
           sourceY = creature.pos.y
