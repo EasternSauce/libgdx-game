@@ -107,7 +107,7 @@ class PlayScreen(val game: RpgGame) extends Screen {
 
   def handleInput(): Unit = {
 
-    if (Gdx.input.isKeyJustPressed(Input.Keys.F5)) game.savefileManager.saveGame(this)
+    if (Gdx.input.isKeyJustPressed(Input.Keys.F5)) game.savefileManager.saveGame()
 
     if (Gdx.input.isKeyJustPressed(Input.Keys.I)) game.inventoryWindow.visible = !game.inventoryWindow.visible
 

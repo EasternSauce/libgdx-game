@@ -66,7 +66,7 @@ class MainMenuScreen(game: RpgGame) extends Screen {
   val pausedOptionTreeRoot: MenuOptionNode = MenuOptionNode(
     "",
     MenuAction.NextMenu,
-    saveExistsOptions
+    pauseOptions
   )
 
 

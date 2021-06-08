@@ -143,10 +143,8 @@ class RpgGame extends Game {
     areaMap += (area2.id -> area2)
     areaMap += (area3.id -> area3)
 
-    //currentArea = Some(area1)
-
-    gateList += AreaGate(this, areaMap("area1"), 197, 15, areaMap("area3"), 17, 2)
-    gateList += AreaGate(this, areaMap("area1"), 2, 63, areaMap("area2"), 58, 9)
+    gateList += AreaGate(this, areaMap("area1"), 199.5f, 15f, areaMap("area3"), 17f, 2.5f)
+    gateList += AreaGate(this, areaMap("area1"), 2f, 63f, areaMap("area2"), 58f, 9f)
 
   }
 

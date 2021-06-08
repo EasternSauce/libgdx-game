@@ -50,7 +50,7 @@ class Area(
       arrow.update()
       if (arrow.markedForDeletion) {
         toBeDeleted += arrow
-        arrow.area.world.destroyBody(arrow.body)
+        arrow.destroyBody()
       }
     }
 
@@ -98,6 +98,7 @@ class Area(
     creaturesMap.values
       .filter(creature => creature.isEnemy)
       .foreach(creature => creature.destroyBody(creature.area.get.world))
+    game.allAreaCreaturesMap.filterInPlace{case (_, creature) => !(creature.isEnemy && creature.area.get == this)}
     creaturesMap.filterInPlace { case (_, creature) => !creature.isEnemy }
     enemySpawns.foreach(spawnPoint => spawnEnemy(game, spawnPoint))
     arrowList.clear()
@@ -105,7 +106,7 @@ class Area(
 
   private def spawnEnemy(game: RpgGame, spawnPoint: EnemySpawnPoint): Unit = {
     val indexOfDot = spawnPoint.creatureClass.lastIndexOf('.')
-    val creatureId = spawnPoint.creatureClass.substring(indexOfDot + 1) + "_" + RpgGame.Random.nextInt()
+    val creatureId = spawnPoint.creatureClass.substring(indexOfDot + 1) + "_" + Math.abs(RpgGame.Random.nextInt())
 
     val action = Class
       .forName(spawnPoint.creatureClass)

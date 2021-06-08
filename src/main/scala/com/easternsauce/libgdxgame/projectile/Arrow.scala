@@ -30,7 +30,7 @@ class Arrow private (
   private val arrowTexture: Texture = RpgGame.manager.get(AssetPaths.arrowTexture, classOf[Texture])
   private val arrowImage: Image = new Image(arrowTexture)
   var markedForDeletion: Boolean = false
-  var body: Body = _
+  var b2body: Body = _
   var isActive: Boolean = true
   var landed: Boolean = false
   val arrowLandedTimer: EsTimer = EsTimer()
@@ -59,23 +59,23 @@ class Arrow private (
     if (isActive) {
       if (landed) {
         if (arrowLandedTimer.time > 0.02f) {
-          body.setLinearVelocity(new Vector2(0f, 0f))
+          b2body.setLinearVelocity(new Vector2(0f, 0f))
           isActive = false
           arrowLandedTimer.stop()
         }
       }
 
-      body.setLinearVelocity(dirVector.x * directionalVelocity, dirVector.y * directionalVelocity)
+      b2body.setLinearVelocity(dirVector.x * directionalVelocity, dirVector.y * directionalVelocity)
 
-      arrowImage.setX(body.getPosition.x - width / 2f)
-      arrowImage.setY(body.getPosition.y - height / 2f)
+      arrowImage.setX(b2body.getPosition.x - width / 2f)
+      arrowImage.setY(b2body.getPosition.y - height / 2f)
 
       val margin = 2
       if (
-        !((body.getPosition.x >= 0 - margin
-          && body.getPosition.x < area.width + margin)
-          && (body.getPosition.y >= 0 - margin
-            && body.getPosition.y < area.height + margin))
+        !((b2body.getPosition.x >= 0 - margin
+          && b2body.getPosition.x < area.width + margin)
+          && (b2body.getPosition.y >= 0 - margin
+            && b2body.getPosition.y < area.height + margin))
       ) markedForDeletion = true
 
     }
@@ -103,8 +103,8 @@ class Arrow private (
     bodyDef.position.set(x, y)
 
     bodyDef.`type` = BodyDef.BodyType.DynamicBody
-    body = area.world.createBody(bodyDef)
-    body.setUserData(this)
+    b2body = area.world.createBody(bodyDef)
+    b2body.setUserData(this)
 
     val radius = 0.315f
 
@@ -113,7 +113,11 @@ class Arrow private (
     shape.setRadius(radius)
     fixtureDef.shape = shape
     fixtureDef.isSensor = true
-    body.createFixture(fixtureDef)
+    b2body.createFixture(fixtureDef)
+  }
+
+  def destroyBody(): Unit = {
+    area.world.destroyBody(b2body)
   }
 }
 

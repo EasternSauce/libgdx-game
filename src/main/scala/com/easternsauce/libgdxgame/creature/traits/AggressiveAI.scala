@@ -125,8 +125,7 @@ trait AggressiveAI {
         if (!aggroedTarget.get.isAlive || path.size > 10) {
           dropAggro()
         }
-      }
-      else {
+      } else {
         if (recalculatePathTimer.time > goToSpawnTime) {
           calculatePath(creature.area.get, creature, creature.spawnPosition)
           recalculatePathTimer.restart()
@@ -185,10 +184,22 @@ trait AggressiveAI {
       tryAddingEdge(area.aStarNodes(y)(x), x + 1, y, 10) // right
       tryAddingEdge(area.aStarNodes(y)(x), x, y - 1, 10) // bottom
       tryAddingEdge(area.aStarNodes(y)(x), x, y + 1, 10) // top
-      tryAddingEdge(area.aStarNodes(y)(x), x - 1, y - 1, 14)
-      tryAddingEdge(area.aStarNodes(y)(x), x + 1, y - 1, 14)
-      tryAddingEdge(area.aStarNodes(y)(x), x - 1, y + 1, 14)
-      tryAddingEdge(area.aStarNodes(y)(x), x + 1, y + 1, 14)
+      if (
+        x - 1 >= 0 && y - 1 >= 0
+        && area.traversable(y)(x - 1) && area.traversable(y - 1)(x)
+      ) tryAddingEdge(area.aStarNodes(y)(x), x - 1, y - 1, 14)
+      if (
+        x + 1 < area.widthInTiles && y - 1 >= 0
+        && area.traversable(y)(x + 1) && area.traversable(y - 1)(x)
+      ) tryAddingEdge(area.aStarNodes(y)(x), x + 1, y - 1, 14)
+      if (
+        x - 1 >= 0 && y + 1 < area.heightInTiles
+        && area.traversable(y)(x - 1) && area.traversable(y + 1)(x)
+      ) tryAddingEdge(area.aStarNodes(y)(x), x - 1, y + 1, 14)
+      if (
+        x + 1 < area.widthInTiles && y + 1 < area.heightInTiles
+        && area.traversable(y)(x + 1) && area.traversable(y + 1)(x)
+      ) tryAddingEdge(area.aStarNodes(y)(x), x + 1, y + 1, 14)
 
     }
   }

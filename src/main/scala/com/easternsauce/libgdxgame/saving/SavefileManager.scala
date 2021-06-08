@@ -28,7 +28,7 @@ class SavefileManager(val game: RpgGame) {
 
   def savefileFound: Boolean = new File(saveFileLocation).exists
 
-  def saveGame(playScreen: PlayScreen): Unit = {
+  def saveGame(): Unit = {
     val saveFile = SaveFile(
       game.allAreaCreaturesMap.values.filter(c => c.isPlayer || c.isAlive).map(_.saveToData()).toList
     )
@@ -72,6 +72,7 @@ case class ItemSavedata(index: Int, template: String, damage: Option[Int], armor
 case class CreatureSavedata(
   creatureClass: String,
   id: String,
+  spawnPointId: Option[String],
   healthPoints: Float,
   area: String,
   isPlayer: Boolean,
