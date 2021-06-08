@@ -7,6 +7,7 @@ import com.easternsauce.libgdxgame.RpgGame
 import com.easternsauce.libgdxgame.area.traits.{CollisionDetection, EnemySpawns, PhysicalTerrain, TiledGrid}
 import com.easternsauce.libgdxgame.creature.traits.{Creature, Enemy}
 import com.easternsauce.libgdxgame.items.Item
+import com.easternsauce.libgdxgame.pathfinding.AStarNode
 import com.easternsauce.libgdxgame.projectile.Arrow
 import com.easternsauce.libgdxgame.spawns.EnemySpawnPoint
 import com.easternsauce.libgdxgame.util.EsBatch
@@ -27,13 +28,18 @@ class Area(
 
   val creaturesMap: mutable.Map[String, Creature] = mutable.Map()
 
-  val arrowList: mutable.ListBuffer[Arrow] = ListBuffer()
+  val arrowList: ListBuffer[Arrow] = ListBuffer()
+
+  val aStarNodeList: ListBuffer[AStarNode] = ListBuffer()
+
 
   initPhysicalTerrain(map, mapScale)
 
   createContactListener(world)
 
   loadEnemySpawns(this, areaFilesLocation)
+
+  setupPathfindingGraph()
 
   def renderBottomLayer(): Unit = tiledMapRenderer.render(Array(0, 1))
 
@@ -134,6 +140,59 @@ class Area(
   def height: Float = {
     val layer = map.getLayers.get(0).asInstanceOf[TiledMapTileLayer]
     layer.getHeight * RpgGame.TiledMapCellSize
+  }
+
+  def resetPathfindingGraph(): Unit = {
+    aStarNodeList.foreach(node => {
+      node.f = Double.MaxValue
+      node.g = Double.MaxValue
+      node.parent = None
+    })
+  }
+
+  private def setupPathfindingGraph(): Unit = {
+    aStarNodes = Array.ofDim[AStarNode](heightInTiles, widthInTiles)
+    for {
+      x <- 0 until widthInTiles
+      y <- 0 until heightInTiles
+    } aStarNodes(y)(x) = new AStarNode(x, y, "(" + x + "," + y + ")")
+
+    def tryAddingEdge(node: AStarNode, x: Int, y: Int, weight: Int): Unit = {
+      if (0 <= y && y < heightInTiles && 0 <= x && x < widthInTiles) {
+        if (traversable(y)(x)) {
+          val targetNode = aStarNodes(y)(x)
+          node.addEdge(weight, targetNode)
+          aStarNodeList += node
+        }
+      }
+    }
+
+    for {
+      x <- 0 until widthInTiles
+      y <- 0 until heightInTiles
+    } {
+      tryAddingEdge(aStarNodes(y)(x), x - 1, y, 10) // left
+      tryAddingEdge(aStarNodes(y)(x), x + 1, y, 10) // right
+      tryAddingEdge(aStarNodes(y)(x), x, y - 1, 10) // bottom
+      tryAddingEdge(aStarNodes(y)(x), x, y + 1, 10) // top
+      if (
+        x - 1 >= 0 && y - 1 >= 0
+          && traversable(y)(x - 1) && traversable(y - 1)(x)
+      ) tryAddingEdge(aStarNodes(y)(x), x - 1, y - 1, 14)
+      if (
+        x + 1 < widthInTiles && y - 1 >= 0
+          && traversable(y)(x + 1) && traversable(y - 1)(x)
+      ) tryAddingEdge(aStarNodes(y)(x), x + 1, y - 1, 14)
+      if (
+        x - 1 >= 0 && y + 1 < heightInTiles
+          && traversable(y)(x - 1) && traversable(y + 1)(x)
+      ) tryAddingEdge(aStarNodes(y)(x), x - 1, y + 1, 14)
+      if (
+        x + 1 < widthInTiles && y + 1 < heightInTiles
+          && traversable(y)(x + 1) && traversable(y + 1)(x)
+      ) tryAddingEdge(aStarNodes(y)(x), x + 1, y + 1, 14)
+
+    }
   }
 
 }

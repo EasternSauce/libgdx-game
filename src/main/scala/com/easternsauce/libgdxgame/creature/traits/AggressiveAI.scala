@@ -154,7 +154,7 @@ trait AggressiveAI {
   }
 
   def calculatePath(area: Area, creature: Creature, target: Vector2): Unit = {
-    setupPathfindingGraph(area)
+    area.resetPathfindingGraph()
 
     val start: Vector2 = area.getClosestTile(creature.pos.x, creature.pos.y)
     val end: Vector2 = area.getClosestTile(target.x, target.y)
@@ -164,47 +164,5 @@ trait AggressiveAI {
 
   }
 
-  private def setupPathfindingGraph(area: Area): Unit = {
-    area.aStarNodes = Array.ofDim[AStarNode](area.heightInTiles, area.widthInTiles)
-    for {
-      x <- 0 until area.widthInTiles
-      y <- 0 until area.heightInTiles
-    } area.aStarNodes(y)(x) = new AStarNode(x, y, "(" + x + "," + y + ")")
 
-    def tryAddingEdge(node: AStarNode, x: Int, y: Int, weight: Int): Unit = {
-      if (0 <= y && y < area.heightInTiles && 0 <= x && x < area.widthInTiles) {
-        if (area.traversable(y)(x)) {
-          val targetNode = area.aStarNodes(y)(x)
-          node.addEdge(weight, targetNode)
-        }
-      }
-    }
-
-    for {
-      x <- 0 until area.widthInTiles
-      y <- 0 until area.heightInTiles
-    } {
-      tryAddingEdge(area.aStarNodes(y)(x), x - 1, y, 10) // left
-      tryAddingEdge(area.aStarNodes(y)(x), x + 1, y, 10) // right
-      tryAddingEdge(area.aStarNodes(y)(x), x, y - 1, 10) // bottom
-      tryAddingEdge(area.aStarNodes(y)(x), x, y + 1, 10) // top
-      if (
-        x - 1 >= 0 && y - 1 >= 0
-        && area.traversable(y)(x - 1) && area.traversable(y - 1)(x)
-      ) tryAddingEdge(area.aStarNodes(y)(x), x - 1, y - 1, 14)
-      if (
-        x + 1 < area.widthInTiles && y - 1 >= 0
-        && area.traversable(y)(x + 1) && area.traversable(y - 1)(x)
-      ) tryAddingEdge(area.aStarNodes(y)(x), x + 1, y - 1, 14)
-      if (
-        x - 1 >= 0 && y + 1 < area.heightInTiles
-        && area.traversable(y)(x - 1) && area.traversable(y + 1)(x)
-      ) tryAddingEdge(area.aStarNodes(y)(x), x - 1, y + 1, 14)
-      if (
-        x + 1 < area.widthInTiles && y + 1 < area.heightInTiles
-        && area.traversable(y)(x + 1) && area.traversable(y + 1)(x)
-      ) tryAddingEdge(area.aStarNodes(y)(x), x + 1, y + 1, 14)
-
-    }
-  }
 }
