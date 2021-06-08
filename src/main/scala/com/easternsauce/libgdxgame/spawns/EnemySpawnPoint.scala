@@ -5,6 +5,7 @@ import com.easternsauce.libgdxgame.area.traits.EnemySpawnSavedata
 import com.easternsauce.libgdxgame.creature.traits.Creature
 
 class EnemySpawnPoint(
+  val id: String,
   val area: Area,
   val posX: Float,
   val posY: Float,
@@ -19,6 +20,6 @@ class EnemySpawnPoint(
 object EnemySpawnPoint {
 
   def loadFromSavedata(area: Area, savedata: EnemySpawnSavedata): EnemySpawnPoint = {
-    new EnemySpawnPoint(area, savedata.location.x, savedata.location.y, savedata.creatureClass, savedata.weaponType)
+    new EnemySpawnPoint(savedata.id, area, savedata.location.x, savedata.location.y, savedata.creatureClass, savedata.weaponType)
   }
 }

@@ -37,7 +37,7 @@ class Area(
 
   def renderBottomLayer(): Unit = tiledMapRenderer.render(Array(0, 1))
 
-  def renderTopLayer(): Unit = tiledMapRenderer.render(Array(2))
+  def renderTopLayer(): Unit = tiledMapRenderer.render(Array(2, 3))
 
   def update(): Unit = {
 
@@ -74,6 +74,7 @@ class Area(
     for (creature <- creaturesMap.values.filter(_.isEnemy)) {
       val enemy = creature.asInstanceOf[Enemy]
 
+      // render debug path
       enemy.path.foreach(node => {
         batch.shapeDrawer.setColor(Color.RED)
         val pos = enemy.area.get.getTileCenter(node.x, node.y)
@@ -103,14 +104,16 @@ class Area(
   }
 
   private def spawnEnemy(game: RpgGame, spawnPoint: EnemySpawnPoint): Unit = {
-    val indexOfDot = spawnPoint.creatureClass.lastIndexOf('.') + 1
-    val creatureId = spawnPoint.creatureClass.substring(indexOfDot) + "_" + RpgGame.Random.nextInt()
+    val indexOfDot = spawnPoint.creatureClass.lastIndexOf('.')
+    val creatureId = spawnPoint.creatureClass.substring(indexOfDot + 1) + "_" + RpgGame.Random.nextInt()
 
     val action = Class
       .forName(spawnPoint.creatureClass)
       .getDeclaredConstructor(classOf[RpgGame], classOf[String])
       .newInstance(game, creatureId)
     val creature = action.asInstanceOf[Creature]
+
+    creature.spawnPointId = Some(spawnPoint.id)
 
     creature.assignToArea(this, spawnPoint.posX, spawnPoint.posY)
 

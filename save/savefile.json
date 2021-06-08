@@ -534,12 +534,12 @@
     {
       "creatureClass" : "com.easternsauce.libgdxgame.creature.Player",
       "id" : "player",
-      "healthPoints" : 29.100866,
+      "healthPoints" : 100.0,
       "area" : "area3",
       "isPlayer" : true,
       "position" : {
-        "x" : 34.922035,
-        "y" : 35.306305
+        "x" : 16.488186,
+        "y" : 13.475116
       },
       "equipmentItems" : [
         {

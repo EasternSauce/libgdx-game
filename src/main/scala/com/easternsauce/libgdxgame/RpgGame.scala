@@ -20,7 +20,7 @@ import com.easternsauce.libgdxgame.hud.{InventoryWindow, PlayerHealthStaminaBar}
 import com.easternsauce.libgdxgame.items.ItemTemplate
 import com.easternsauce.libgdxgame.saving.SavefileManager
 import com.easternsauce.libgdxgame.screens.{MainMenuScreen, PlayScreen}
-import com.easternsauce.libgdxgame.util.{EsBatch, EsDirection}
+import com.easternsauce.libgdxgame.util.EsDirection
 
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer

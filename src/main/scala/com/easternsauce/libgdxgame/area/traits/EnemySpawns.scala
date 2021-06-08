@@ -33,5 +33,5 @@ trait EnemySpawns {
 }
 
 case class EnemySpawnFile(spawnpoints: List[EnemySpawnSavedata])
-case class EnemySpawnSavedata(creatureClass: String, location: EnemySpawnLocation, weaponType: Option[String])
+case class EnemySpawnSavedata(id: String, creatureClass: String, location: EnemySpawnLocation, weaponType: Option[String])
 case class EnemySpawnLocation(x: Float, y: Float)

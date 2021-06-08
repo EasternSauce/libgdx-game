@@ -6,7 +6,6 @@ import com.easternsauce.libgdxgame.area.Area
 import com.easternsauce.libgdxgame.pathfinding.{AStar, AStarNode}
 import com.easternsauce.libgdxgame.util.{EsDirection, EsTimer}
 
-import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
 
 trait AggressiveAI {
@@ -23,6 +22,8 @@ trait AggressiveAI {
   var circlingClockwise = true
 
   val recalculatePathTimer: EsTimer = EsTimer()
+
+  var goToSpawnTime: Float = _
 
   var path: ListBuffer[AStarNode] = ListBuffer()
 
@@ -107,11 +108,10 @@ trait AggressiveAI {
           circleTarget(creature, aggroedTarget.get.pos)
         } else if (creature.distanceTo(aggroedTarget.get) > minimumWalkUpDistance) {
 
-          if (path.nonEmpty && path.size > 3) {
+          if (path.nonEmpty && path.size > 4) {
             val destination = creature.area.get.getTileCenter(path.head.x, path.head.y)
+            if (destination.dst(creature.pos) < 2f) path.dropInPlace(1)
             walkToTarget(creature, destination)
-            if (destination.dst(creature.pos) < 4f) path.dropInPlace(1)
-
           } else {
             walkToTarget(creature, aggroedTarget.get.pos)
           }
@@ -123,6 +123,25 @@ trait AggressiveAI {
 
         if (!aggroedTarget.get.isAlive) {
           aggroedTarget = None
+          goToSpawnTime = 7 * RpgGame.Random.nextFloat()
+          recalculatePathTimer.restart()
+        }
+      }
+      else {
+        if (recalculatePathTimer.time > goToSpawnTime) {
+          calculatePath(creature.area.get, creature, creature.spawnPosition)
+          recalculatePathTimer.restart()
+          recalculatePathTimer.stop()
+        }
+        if (path.nonEmpty) {
+          val destination = creature.area.get.getTileCenter(path.head.x, path.head.y)
+          println("dist: " + destination.dst(creature.pos))
+          if (destination.dst(creature.pos) < 2f) {
+            println("removing item, path:" + path)
+            path.dropInPlace(1)
+          }
+          println("trying to walk to target")
+          walkToTarget(creature, destination)
         }
       }
     }
@@ -164,10 +183,10 @@ trait AggressiveAI {
       tryAddingEdge(area.aStarNodes(y)(x), x + 1, y, 10) // right
       tryAddingEdge(area.aStarNodes(y)(x), x, y - 1, 10) // bottom
       tryAddingEdge(area.aStarNodes(y)(x), x, y + 1, 10) // top
-//      tryAddingEdge(area.aStarNodes(y)(x), x - 1, y - 1, 14)
-//      tryAddingEdge(area.aStarNodes(y)(x), x + 1, y - 1, 14)
-//      tryAddingEdge(area.aStarNodes(y)(x), x - 1, y + 1, 14)
-//      tryAddingEdge(area.aStarNodes(y)(x), x + 1, y + 1, 14)
+      tryAddingEdge(area.aStarNodes(y)(x), x - 1, y - 1, 14)
+      tryAddingEdge(area.aStarNodes(y)(x), x + 1, y - 1, 14)
+      tryAddingEdge(area.aStarNodes(y)(x), x - 1, y + 1, 14)
+      tryAddingEdge(area.aStarNodes(y)(x), x + 1, y + 1, 14)
 
     }
   }

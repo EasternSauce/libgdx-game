@@ -61,6 +61,8 @@ trait Creature extends Sprite with PhysicalBody with AnimatedWalk with Inventory
   var passedGateRecently = false
   var toSetBodyNonInteractive = false
 
+  var spawnPointId: Option[String] = None
+
   var abilityList: mutable.ListBuffer[Ability] = ListBuffer()
   var attackList: mutable.ListBuffer[Attack] = ListBuffer()
 
@@ -433,6 +435,11 @@ trait Creature extends Sprite with PhysicalBody with AnimatedWalk with Inventory
 
     assignToArea(game.areaMap(creatureData.area), creatureData.position.x, creatureData.position.y)
 
+  }
+
+  def spawnPosition: Vector2 = {
+    val spawnPoint = area.get.enemySpawns.filter(_.id == spawnPointId.get).head
+    new Vector2(spawnPoint.posX, spawnPoint.posY)
   }
 
   def saveToData(): CreatureSavedata = {
