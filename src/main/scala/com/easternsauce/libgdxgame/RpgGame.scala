@@ -53,7 +53,8 @@ class RpgGame extends Game {
   val hudViewport: Viewport =
     new FitViewport(RpgGame.WindowWidth, RpgGame.WindowHeight, hudCamera)
 
-  private var b2DebugRenderer: Box2DDebugRenderer = _
+
+  var b2DebugRenderer: Box2DDebugRenderer = _
 
   private val mapLoader: TmxMapLoader = new TmxMapLoader()
 
@@ -91,13 +92,13 @@ class RpgGame extends Game {
 
     loadAreas()
 
-    if (!savefileManager.savefileFound) {
-      loadCreatures()
-      assignCreaturesToAreas()
-      player.asInstanceOf[Player].generateStartingInventory()
-    } else {
-      savefileManager.loadGame()
-    }
+//    if (!savefileManager.savefileFound) { TODO?
+//      loadCreatures()
+//      assignCreaturesToAreas()
+//      player.asInstanceOf[Player].generateStartingInventory()
+//    } else {
+//      savefileManager.loadGame()
+//    }
 
     setScreen(mainMenuScreen)
 

@@ -3,7 +3,7 @@ package com.easternsauce.libgdxgame.area.traits
 import com.badlogic.gdx.physics.box2d._
 import com.easternsauce.libgdxgame.RpgGame
 import com.easternsauce.libgdxgame.ability.traits.Ability
-import com.easternsauce.libgdxgame.area.{AreaGate, AreaTile}
+import com.easternsauce.libgdxgame.area.{AreaGate, TerrainTile}
 import com.easternsauce.libgdxgame.creature.traits.Creature
 import com.easternsauce.libgdxgame.projectile.Arrow
 
@@ -28,7 +28,7 @@ trait CollisionDetection {
 //              abilityComponent.onCollideWithCreature(creature)
             case (creature: Creature, arrow: Arrow) =>
               arrow.onCollideWithCreature(creature)
-            case (areaTile: AreaTile, arrow: Arrow) =>
+            case (areaTile: TerrainTile, arrow: Arrow) =>
               arrow.onCollideWithTerrain(areaTile)
             case _ =>
           }

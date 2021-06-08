@@ -2,8 +2,11 @@ package com.easternsauce.libgdxgame.creature.traits
 
 import com.badlogic.gdx.math.Vector2
 import com.easternsauce.libgdxgame.RpgGame
+import com.easternsauce.libgdxgame.area.Area
+import com.easternsauce.libgdxgame.pathfinding.{AStar, AStarNode}
 import com.easternsauce.libgdxgame.util.{EsDirection, EsTimer}
 
+import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
 
 trait AggressiveAI {
@@ -19,6 +22,10 @@ trait AggressiveAI {
   val circlingDecisionMaxTime = 0.2f
   var circlingClockwise = true
 
+  val recalculatePathTimer: EsTimer = EsTimer()
+
+  var path: ListBuffer[AStarNode] = ListBuffer()
+
   def targetFound: Boolean = aggroedTarget.nonEmpty
 
   def lookForTarget(creature: Creature): Unit = {
@@ -29,6 +36,8 @@ trait AggressiveAI {
           if (otherCreature.isAlive && creature.distanceTo(otherCreature) < aggroDistance) {
             aggroedTarget = Some(otherCreature)
             circlingDecisionTimer.restart()
+            recalculatePathTimer.restart()
+            calculatePath(creature.area.get, creature, aggroedTarget.get.pos)
           }
         })
     }
@@ -69,7 +78,6 @@ trait AggressiveAI {
     } else {
       creature.moveInDirection(dirs.toList)
     }
-
   }
 
   def circleTarget(creature: Creature, destination: Vector2): Unit = {
@@ -90,10 +98,24 @@ trait AggressiveAI {
       decideIfCircling(creature)
 
       if (targetFound) {
+        if (recalculatePathTimer.time > 0.5f) {
+          calculatePath(creature.area.get, creature, aggroedTarget.get.pos)
+          recalculatePathTimer.restart()
+        }
+
         if (circling && creature.distanceTo(aggroedTarget.get) < circleDistance) {
           circleTarget(creature, aggroedTarget.get.pos)
         } else if (creature.distanceTo(aggroedTarget.get) > minimumWalkUpDistance) {
-          walkToTarget(creature, aggroedTarget.get.pos)
+
+          if (path.nonEmpty && path.size > 3) {
+            val destination = creature.area.get.getTileCenter(path.head.x, path.head.y)
+            walkToTarget(creature, destination)
+            if (destination.dst(creature.pos) < 4f) path.dropInPlace(1)
+
+          } else {
+            walkToTarget(creature, aggroedTarget.get.pos)
+          }
+
         }
         if (creature.distanceTo(aggroedTarget.get) < attackDistance) {
           creature.currentAttack.perform()
@@ -107,4 +129,46 @@ trait AggressiveAI {
 
   }
 
+  def calculatePath(area: Area, creature: Creature, target: Vector2): Unit = {
+    setupPathfindingGraph(area)
+
+    val start: Vector2 = area.getClosestTile(creature.pos.x, creature.pos.y)
+    val end: Vector2 = area.getClosestTile(target.x, target.y)
+
+    val node = AStar.aStar(area.aStarNodes(start.y.toInt)(start.x.toInt), area.aStarNodes(end.y.toInt)(end.x.toInt))
+    path = ListBuffer().addAll(AStar.getPath(node))
+
+  }
+
+  private def setupPathfindingGraph(area: Area): Unit = {
+    area.aStarNodes = Array.ofDim[AStarNode](area.heightInTiles, area.widthInTiles)
+    for {
+      x <- 0 until area.widthInTiles
+      y <- 0 until area.heightInTiles
+    } area.aStarNodes(y)(x) = new AStarNode(x, y, "(" + x + "," + y + ")")
+
+    def tryAddingEdge(node: AStarNode, x: Int, y: Int, weight: Int): Unit = {
+      if (0 <= y && y < area.heightInTiles && 0 <= x && x < area.widthInTiles) {
+        if (area.traversable(y)(x)) {
+          val targetNode = area.aStarNodes(y)(x)
+          node.addEdge(weight, targetNode)
+        }
+      }
+    }
+
+    for {
+      x <- 0 until area.widthInTiles
+      y <- 0 until area.heightInTiles
+    } {
+      tryAddingEdge(area.aStarNodes(y)(x), x - 1, y, 10) // left
+      tryAddingEdge(area.aStarNodes(y)(x), x + 1, y, 10) // right
+      tryAddingEdge(area.aStarNodes(y)(x), x, y - 1, 10) // bottom
+      tryAddingEdge(area.aStarNodes(y)(x), x, y + 1, 10) // top
+//      tryAddingEdge(area.aStarNodes(y)(x), x - 1, y - 1, 14)
+//      tryAddingEdge(area.aStarNodes(y)(x), x + 1, y - 1, 14)
+//      tryAddingEdge(area.aStarNodes(y)(x), x - 1, y + 1, 14)
+//      tryAddingEdge(area.aStarNodes(y)(x), x + 1, y + 1, 14)
+
+    }
+  }
 }

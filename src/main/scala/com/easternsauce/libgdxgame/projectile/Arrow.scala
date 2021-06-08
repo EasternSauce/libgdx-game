@@ -6,7 +6,7 @@ import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.{Body, BodyDef, CircleShape, FixtureDef}
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.easternsauce.libgdxgame.RpgGame
-import com.easternsauce.libgdxgame.area.{Area, AreaTile}
+import com.easternsauce.libgdxgame.area.{Area, TerrainTile}
 import com.easternsauce.libgdxgame.assets.AssetPaths
 import com.easternsauce.libgdxgame.creature.traits.Creature
 import com.easternsauce.libgdxgame.util.{EsBatch, EsTimer}
@@ -91,7 +91,7 @@ class Arrow private (
     }
   }
 
-  def onCollideWithTerrain(areaTile: AreaTile): Unit = {
+  def onCollideWithTerrain(areaTile: TerrainTile): Unit = {
     if (!areaTile.flyover) {
       landed = true
       arrowLandedTimer.restart()

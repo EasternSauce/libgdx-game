@@ -3,12 +3,9 @@ package com.easternsauce.libgdxgame.area.traits
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer
 import com.badlogic.gdx.maps.tiled.{TiledMap, TmxMapLoader}
 import com.easternsauce.libgdxgame.RpgGame
-import com.easternsauce.libgdxgame.area.AreaTile
-
-import scala.collection.mutable
 
 trait TiledGrid {
-  val tiles: mutable.Map[(Int, Int, Int), AreaTile] = mutable.Map()
+  //val tiles: mutable.Map[(Int, Int, Int), AreaTile] = mutable.Map()
   val mapLoader: TmxMapLoader
 
   val areaFilesLocation: String

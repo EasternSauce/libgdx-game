@@ -4,20 +4,49 @@ import com.badlogic.gdx.maps.tiled.{TiledMap, TiledMapTileLayer}
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d._
 import com.easternsauce.libgdxgame.RpgGame
-import com.easternsauce.libgdxgame.area.AreaTile
-
-import scala.collection.mutable
+import com.easternsauce.libgdxgame.area.TerrainTile
+import com.easternsauce.libgdxgame.pathfinding.AStarNode
 
 trait PhysicalTerrain {
   val world: World = new World(new Vector2(0, 0), true)
 
-  def initPhysicalTerrain(map: TiledMap, mapScale: Float, tiles: mutable.Map[(Int, Int, Int), AreaTile]): Unit = {
-    createMapTerrain(map, mapScale, tiles)
-    createBorders(map, mapScale)
+  var traversable: Array[Array[Boolean]] = _
+  var flyover: Array[Array[Boolean]] = _
+
+  var aStarNodes: Array[Array[AStarNode]] = _
+
+  var widthInTiles: Int = _
+  var heightInTiles: Int = _
+  var tileWidth: Float = _
+  var tileHeight: Float = _
+
+  def initPhysicalTerrain(map: TiledMap, mapScale: Float): Unit = {
+    val layer = map.getLayers.get(0).asInstanceOf[TiledMapTileLayer]
+
+    widthInTiles = layer.getWidth
+    heightInTiles = layer.getHeight
+
+    tileWidth = layer.getTileWidth * mapScale / RpgGame.PPM
+    tileHeight = layer.getTileHeight * mapScale / RpgGame.PPM
+
+    traversable = Array.ofDim(heightInTiles, widthInTiles)
+    flyover = Array.ofDim(heightInTiles, widthInTiles)
+
+    for {
+      x <- 0 until widthInTiles
+      y <- 0 until heightInTiles
+    } traversable(y)(x) = true
+    for {
+      x <- 0 until widthInTiles
+      y <- 0 until heightInTiles
+    } flyover(y)(x) = true
+
+    createMapTerrain(map)
+    createBorders()
 
   }
 
-  private def createMapTerrain(map: TiledMap, mapScale: Float, tiles: mutable.Map[(Int, Int, Int), AreaTile]): Unit = {
+  private def createMapTerrain(map: TiledMap): Unit = {
     for (layerNum <- 0 to 1) { // two layers
       val layer: TiledMapTileLayer =
         map.getLayers.get(layerNum).asInstanceOf[TiledMapTileLayer]
@@ -29,95 +58,67 @@ trait PhysicalTerrain {
         val cell: TiledMapTileLayer.Cell = layer.getCell(x, y)
 
         if (cell != null) {
-          val traversable: Boolean =
+          val isTileTraversable: Boolean =
             cell.getTile.getProperties.get("traversable").asInstanceOf[Boolean]
-          val flyover: Boolean =
+          val isTileFlyover: Boolean =
             cell.getTile.getProperties.get("flyover").asInstanceOf[Boolean]
 
-          if (!traversable) {
-            val rectX = x * layer.getTileWidth * mapScale
-            val rectY = y * layer.getTileHeight * mapScale
-            val rectW = layer.getTileWidth * mapScale
-            val rectH = layer.getTileHeight * mapScale
-
-            val bodyDef = new BodyDef()
-            bodyDef.`type` = BodyDef.BodyType.StaticBody
-            bodyDef.position
-              .set((rectX + rectH / 2) / RpgGame.PPM, (rectY + rectH / 2) / RpgGame.PPM)
-
-            val body: Body = world.createBody(bodyDef)
-
-            val tile: AreaTile =
-              AreaTile((layerNum, x, y), body, traversable, flyover)
-
-            body.setUserData(tile)
-
-            val shape: PolygonShape = new PolygonShape()
-
-            shape.setAsBox((rectW / 2) / RpgGame.PPM, (rectH / 2) / RpgGame.PPM)
-
-            val fixtureDef: FixtureDef = new FixtureDef
-
-            fixtureDef.shape = shape
-
-            body.createFixture(fixtureDef)
-
-            tiles += (layerNum, x, y) -> tile
-
-          }
-
+          if (!isTileTraversable) traversable(y)(x) = false
+          if (!isTileFlyover) flyover(y)(x) = false
         }
 
+      }
+
+      for {
+        x <- 0 until widthInTiles
+        y <- 0 until heightInTiles
+      } {
+
+        if (!traversable(y)(x)) {
+          val bodyDef = new BodyDef()
+          bodyDef.`type` = BodyDef.BodyType.StaticBody
+          bodyDef.position
+            .set(x * tileWidth + tileWidth / 2, y * tileHeight + tileHeight / 2)
+
+          val body: Body = world.createBody(bodyDef)
+
+          val tile: TerrainTile = TerrainTile((layerNum, x, y), body, flyover(y)(x))
+
+          body.setUserData(tile)
+
+          val shape: PolygonShape = new PolygonShape()
+
+          shape.setAsBox(tileWidth / 2, tileHeight / 2)
+
+          val fixtureDef: FixtureDef = new FixtureDef
+
+          fixtureDef.shape = shape
+
+          body.createFixture(fixtureDef)
+        }
       }
 
     }
   }
 
-  private def createBorders(map: TiledMap, mapScale: Float): Unit = {
+  private def createBorders(): Unit = {
 
-    val firstLayer: TiledMapTileLayer =
-      map.getLayers.get(0).asInstanceOf[TiledMapTileLayer]
-
-    for { x <- Seq.range(0, firstLayer.getWidth) } {
-
-      var rectX = x * firstLayer.getTileWidth * mapScale / RpgGame.PPM
-      var rectY = (-1) * firstLayer.getTileHeight * mapScale / RpgGame.PPM
-      var rectW = firstLayer.getTileWidth * mapScale / RpgGame.PPM
-      var rectH = firstLayer.getTileHeight * mapScale / RpgGame.PPM
-
-      createBorderTile(rectX, rectY, rectW, rectH)
-
-      rectX = x * firstLayer.getTileWidth * mapScale / RpgGame.PPM
-      rectY = firstLayer.getHeight * firstLayer.getTileHeight * mapScale / RpgGame.PPM
-      rectW = firstLayer.getTileWidth * mapScale / RpgGame.PPM
-      rectH = firstLayer.getTileHeight * mapScale / RpgGame.PPM
-
-      createBorderTile(rectX, rectY, rectW, rectH)
+    for { x <- Seq.range(0, widthInTiles) } {
+      createBorderTile(x, -1)
+      createBorderTile(x, heightInTiles)
     }
 
-    for { y <- Seq.range(0, firstLayer.getHeight) } {
-
-      var rectX = (-1) * firstLayer.getTileWidth * mapScale / RpgGame.PPM
-      var rectY = y * firstLayer.getTileHeight * mapScale / RpgGame.PPM
-      var rectW = firstLayer.getTileWidth * mapScale / RpgGame.PPM
-      var rectH = firstLayer.getTileHeight * mapScale / RpgGame.PPM
-
-      createBorderTile(rectX, rectY, rectW, rectH)
-
-      rectX = firstLayer.getWidth * firstLayer.getTileWidth * mapScale / RpgGame.PPM
-      rectY = y * firstLayer.getTileHeight * mapScale / RpgGame.PPM
-      rectW = firstLayer.getTileWidth * mapScale / RpgGame.PPM
-      rectH = firstLayer.getTileHeight * mapScale / RpgGame.PPM
-
-      createBorderTile(rectX, rectY, rectW, rectH)
+    for { y <- Seq.range(0, heightInTiles) } {
+      createBorderTile(-1, y)
+      createBorderTile(widthInTiles, y)
     }
   }
 
-  private def createBorderTile(rectX: Float, rectY: Float, rectW: Float, rectH: Float) = {
+  private def createBorderTile(x: Int, y: Int) = {
     val bodyDef = new BodyDef()
     bodyDef.`type` = BodyDef.BodyType.StaticBody
-    bodyDef.position
-      .set(rectX + rectH / 2, rectY + rectH / 2)
+    val tileCenter = getTileCenter(x, y)
+    bodyDef.position.set(tileCenter.x, tileCenter.y)
 
     val body: Body = world.createBody(bodyDef)
 
@@ -125,12 +126,20 @@ trait PhysicalTerrain {
 
     val shape: PolygonShape = new PolygonShape()
 
-    shape.setAsBox(rectW / 2, rectH / 2)
+    shape.setAsBox(tileWidth / 2, tileHeight / 2)
 
     val fixtureDef: FixtureDef = new FixtureDef
 
     fixtureDef.shape = shape
 
     body.createFixture(fixtureDef)
+  }
+
+  def getTileCenter(x: Int, y: Int): Vector2 = {
+    new Vector2(x * tileWidth + tileWidth / 2, y * tileHeight + tileHeight / 2)
+  }
+
+  def getClosestTile(x: Float, y: Float): Vector2 = {
+    new Vector2(x / tileWidth, y / tileHeight)
   }
 }

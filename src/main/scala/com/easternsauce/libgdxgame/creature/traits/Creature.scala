@@ -327,40 +327,42 @@ trait Creature extends Sprite with PhysicalBody with AnimatedWalk with Inventory
 
   def moveInDirection(dirs: List[EsDirection.Value]): Unit = {
 
-    if (isAlive) {
-      timeSinceMovedTimer.restart()
+    if (dirs.nonEmpty) {
+      if (isAlive) {
+        timeSinceMovedTimer.restart()
 
-      if (!isWalkAnimationActive) {
-        animationTimer.restart()
-        isWalkAnimationActive = true
-        if (walkSound.nonEmpty) walkSound.get.loop(0.1f)
-      }
+        if (!isWalkAnimationActive) {
+          animationTimer.restart()
+          isWalkAnimationActive = true
+          if (walkSound.nonEmpty) walkSound.get.loop(0.1f)
+        }
 
-      val vector = new Vector2()
+        val vector = new Vector2()
 
-      currentDirection = dirs.last
+        currentDirection = dirs.last
 
-      val modifiedSpeed =
-        if (isAttacking) directionalSpeed / 2f
-        else if (sprinting && staminaPoints > 0) directionalSpeed * 1.75f
-        else directionalSpeed
+        val modifiedSpeed =
+          if (isAttacking) directionalSpeed / 2f
+          else if (sprinting && staminaPoints > 0) directionalSpeed * 1.75f
+          else directionalSpeed
 
-      dirs.foreach {
-        case EsDirection.Up    => vector.y += modifiedSpeed
-        case EsDirection.Down  => vector.y -= modifiedSpeed
-        case EsDirection.Left  => vector.x -= modifiedSpeed
-        case EsDirection.Right => vector.x += modifiedSpeed
-      }
+        dirs.foreach {
+          case EsDirection.Up    => vector.y += modifiedSpeed
+          case EsDirection.Down  => vector.y -= modifiedSpeed
+          case EsDirection.Left  => vector.x -= modifiedSpeed
+          case EsDirection.Right => vector.x += modifiedSpeed
+        }
 
-      val horizontalCount = dirs.count(EsDirection.isHorizontal)
-      val verticalCount = dirs.count(EsDirection.isVertical)
+        val horizontalCount = dirs.count(EsDirection.isHorizontal)
+        val verticalCount = dirs.count(EsDirection.isVertical)
 
-      if (!effect("knockedBack").isActive) {
-        if (horizontalCount < 2 && verticalCount < 2) {
-          if (horizontalCount > 0 && verticalCount > 0) {
-            sustainVelocity(new Vector2(vector.x / Math.sqrt(2).toFloat, vector.y / Math.sqrt(2).toFloat))
-          } else {
-            sustainVelocity(vector)
+        if (!effect("knockedBack").isActive) {
+          if (horizontalCount < 2 && verticalCount < 2) {
+            if (horizontalCount > 0 && verticalCount > 0) {
+              sustainVelocity(new Vector2(vector.x / Math.sqrt(2).toFloat, vector.y / Math.sqrt(2).toFloat))
+            } else {
+              sustainVelocity(vector)
+            }
           }
         }
       }

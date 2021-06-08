@@ -1,11 +1,11 @@
 package com.easternsauce.libgdxgame.area
 
 import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.graphics.OrthographicCamera
+import com.badlogic.gdx.graphics.{Color, OrthographicCamera}
 import com.badlogic.gdx.maps.tiled.{TiledMapTileLayer, TmxMapLoader}
 import com.easternsauce.libgdxgame.RpgGame
 import com.easternsauce.libgdxgame.area.traits.{CollisionDetection, EnemySpawns, PhysicalTerrain, TiledGrid}
-import com.easternsauce.libgdxgame.creature.traits.Creature
+import com.easternsauce.libgdxgame.creature.traits.{Creature, Enemy}
 import com.easternsauce.libgdxgame.items.Item
 import com.easternsauce.libgdxgame.projectile.Arrow
 import com.easternsauce.libgdxgame.spawns.EnemySpawnPoint
@@ -29,7 +29,7 @@ class Area(
 
   val arrowList: mutable.ListBuffer[Arrow] = ListBuffer()
 
-  initPhysicalTerrain(map, mapScale, tiles)
+  initPhysicalTerrain(map, mapScale)
 
   createContactListener(world)
 
@@ -70,6 +70,17 @@ class Area(
       if (creature.isAlive && !creature.atFullLife)
         creature.renderHealthBar(batch)
     }
+
+    for (creature <- creaturesMap.values.filter(_.isEnemy)) {
+      val enemy = creature.asInstanceOf[Enemy]
+
+      enemy.path.foreach(node => {
+        batch.shapeDrawer.setColor(Color.RED)
+        val pos = enemy.area.get.getTileCenter(node.x, node.y)
+        batch.shapeDrawer.filledCircle(pos.x, pos.y, 0.1f)
+      })
+
+    }
   }
 
   def setView(camera: OrthographicCamera): Unit = {
@@ -83,7 +94,10 @@ class Area(
   }
 
   def reset(game: RpgGame): Unit = {
-    creaturesMap.filterInPlace { case (_, creature) => creature.isPlayer && creature.isNPC }
+    creaturesMap.values
+      .filter(creature => creature.isEnemy)
+      .foreach(creature => creature.destroyBody(creature.area.get.world))
+    creaturesMap.filterInPlace { case (_, creature) => !creature.isEnemy }
     enemySpawns.foreach(spawnPoint => spawnEnemy(game, spawnPoint))
     arrowList.clear()
   }

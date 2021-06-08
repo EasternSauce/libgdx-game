@@ -84,7 +84,7 @@ class PlayScreen(val game: RpgGame) extends Screen {
 
     hudBatch.spriteBatch.end()
 
-//    b2DebugRenderer.render(currentArea.get.world, camera.combined)
+    game.b2DebugRenderer.render(game.currentArea.get.world, game.camera.combined)
 
   }
 
