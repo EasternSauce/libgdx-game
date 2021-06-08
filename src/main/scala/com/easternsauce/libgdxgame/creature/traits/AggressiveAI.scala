@@ -15,6 +15,7 @@ trait AggressiveAI {
   val minimumWalkUpDistance = 4f
   val circleDistance = 15f
   val attackDistance = 6f
+  val aggroDropDistance = 25f
 
   var circling = false
   val circlingDecisionTimer: EsTimer = EsTimer()
@@ -99,7 +100,7 @@ trait AggressiveAI {
       decideIfCircling(creature)
 
       if (targetFound) {
-        if (recalculatePathTimer.time > 0.5f) {
+        if (recalculatePathTimer.time > 1.5f) {
           calculatePath(creature.area.get, creature, aggroedTarget.get.pos)
           recalculatePathTimer.restart()
         }
@@ -108,7 +109,7 @@ trait AggressiveAI {
           circleTarget(creature, aggroedTarget.get.pos)
         } else if (creature.distanceTo(aggroedTarget.get) > minimumWalkUpDistance) {
 
-          if (path.nonEmpty && path.size > 4) {
+          if (path.nonEmpty && path.size > 3) {
             val destination = creature.area.get.getTileCenter(path.head.x, path.head.y)
             if (destination.dst(creature.pos) < 2f) path.dropInPlace(1)
             walkToTarget(creature, destination)
@@ -121,10 +122,8 @@ trait AggressiveAI {
           creature.currentAttack.perform()
         }
 
-        if (!aggroedTarget.get.isAlive) {
-          aggroedTarget = None
-          goToSpawnTime = 7 * RpgGame.Random.nextFloat()
-          recalculatePathTimer.restart()
+        if (!aggroedTarget.get.isAlive || path.size > 10) {
+          dropAggro()
         }
       }
       else {
@@ -135,17 +134,20 @@ trait AggressiveAI {
         }
         if (path.nonEmpty) {
           val destination = creature.area.get.getTileCenter(path.head.x, path.head.y)
-          println("dist: " + destination.dst(creature.pos))
           if (destination.dst(creature.pos) < 2f) {
-            println("removing item, path:" + path)
             path.dropInPlace(1)
           }
-          println("trying to walk to target")
           walkToTarget(creature, destination)
         }
       }
     }
 
+  }
+
+  private def dropAggro(): Unit = {
+    aggroedTarget = None
+    goToSpawnTime = 7 * RpgGame.Random.nextFloat()
+    recalculatePathTimer.restart()
   }
 
   def calculatePath(area: Area, creature: Creature, target: Vector2): Unit = {
