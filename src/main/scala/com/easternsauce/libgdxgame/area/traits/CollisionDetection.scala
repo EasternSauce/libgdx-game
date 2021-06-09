@@ -4,8 +4,10 @@ import com.badlogic.gdx.physics.box2d._
 import com.easternsauce.libgdxgame.RpgGame
 import com.easternsauce.libgdxgame.ability.traits.Ability
 import com.easternsauce.libgdxgame.area.{AreaGate, TerrainTile}
+import com.easternsauce.libgdxgame.creature.Player
 import com.easternsauce.libgdxgame.creature.traits.Creature
 import com.easternsauce.libgdxgame.projectile.Arrow
+import com.easternsauce.libgdxgame.spawns.PlayerSpawnPoint
 
 trait CollisionDetection {
 
@@ -30,6 +32,8 @@ trait CollisionDetection {
               arrow.onCollideWithCreature(creature)
             case (areaTile: TerrainTile, arrow: Arrow) =>
               arrow.onCollideWithTerrain(areaTile)
+            case (player: Player, playerSpawnPoint: PlayerSpawnPoint) =>
+              player.onSpawnPointId = Some(playerSpawnPoint.id)
             case _ =>
           }
         }
@@ -46,6 +50,8 @@ trait CollisionDetection {
           pair match { // will run onContact twice for same type objects!
             case (creature: Creature, _: AreaGate) =>
               creature.passedGateRecently = false
+            case (player: Player, playerSpawnPoint: PlayerSpawnPoint) =>
+              player.onSpawnPointId = None
             case _ =>
           }
         }

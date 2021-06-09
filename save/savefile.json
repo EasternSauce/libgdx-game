@@ -1,21 +1,39 @@
 {
   "creatures" : [
     {
-      "creatureClass" : "com.easternsauce.libgdxgame.creature.Skeleton",
-      "id" : "Skeleton_1335483145",
-      "spawnPointId" : "0",
+      "creatureClass" : "com.easternsauce.libgdxgame.creature.Wolf",
+      "id" : "Wolf_1303732026",
+      "spawnPointId" : "22",
+      "playerSpawnPointId" : null,
       "healthPoints" : 100.0,
       "area" : "area1",
       "isPlayer" : false,
       "position" : {
-        "x" : 108.0625,
-        "y" : 183.6875
+        "x" : 54.65625,
+        "y" : 17.458345
+      },
+      "equipmentItems" : [
+      ],
+      "inventoryItems" : [
+      ]
+    },
+    {
+      "creatureClass" : "com.easternsauce.libgdxgame.creature.Skeleton",
+      "id" : "Skeleton_1520218979",
+      "spawnPointId" : "6",
+      "playerSpawnPointId" : null,
+      "healthPoints" : 100.0,
+      "area" : "area1",
+      "isPlayer" : false,
+      "position" : {
+        "x" : 131.15625,
+        "y" : 144.78065
       },
       "equipmentItems" : [
         {
           "index" : 0,
           "template" : "woodenSword",
-          "damage" : 45,
+          "damage" : 39,
           "armor" : null
         }
       ],
@@ -24,14 +42,15 @@
     },
     {
       "creatureClass" : "com.easternsauce.libgdxgame.creature.Skeleton",
-      "id" : "Skeleton_1800283730",
-      "spawnPointId" : "37",
+      "id" : "Skeleton_1745558559",
+      "spawnPointId" : "31",
+      "playerSpawnPointId" : null,
       "healthPoints" : 100.0,
       "area" : "area1",
       "isPlayer" : false,
       "position" : {
-        "x" : 191.65625,
-        "y" : 131.6875
+        "x" : 129.93529,
+        "y" : 6.570658
       },
       "equipmentItems" : [
         {
@@ -46,95 +65,20 @@
     },
     {
       "creatureClass" : "com.easternsauce.libgdxgame.creature.Skeleton",
-      "id" : "Skeleton_1914183799",
-      "spawnPointId" : "18",
-      "healthPoints" : 100.0,
-      "area" : "area1",
-      "isPlayer" : false,
-      "position" : {
-        "x" : 82.04243,
-        "y" : 59.77841
-      },
-      "equipmentItems" : [
-        {
-          "index" : 0,
-          "template" : "woodenSword",
-          "damage" : 36,
-          "armor" : null
-        }
-      ],
-      "inventoryItems" : [
-      ]
-    },
-    {
-      "creatureClass" : "com.easternsauce.libgdxgame.creature.Ghost",
-      "id" : "Ghost_235056187",
+      "id" : "Skeleton_778514998",
       "spawnPointId" : "2",
-      "healthPoints" : 100.0,
-      "area" : "area3",
-      "isPlayer" : false,
-      "position" : {
-        "x" : 6.4375,
-        "y" : 50.375
-      },
-      "equipmentItems" : [
-      ],
-      "inventoryItems" : [
-      ]
-    },
-    {
-      "creatureClass" : "com.easternsauce.libgdxgame.creature.Ghost",
-      "id" : "Ghost_1306827826",
-      "spawnPointId" : "20",
-      "healthPoints" : 100.0,
-      "area" : "area3",
-      "isPlayer" : false,
-      "position" : {
-        "x" : 166.08911,
-        "y" : 185.28505
-      },
-      "equipmentItems" : [
-      ],
-      "inventoryItems" : [
-      ]
-    },
-    {
-      "creatureClass" : "com.easternsauce.libgdxgame.creature.Skeleton",
-      "id" : "Skeleton_134878261",
-      "spawnPointId" : "19",
+      "playerSpawnPointId" : null,
       "healthPoints" : 100.0,
       "area" : "area1",
       "isPlayer" : false,
       "position" : {
-        "x" : 13.002951,
-        "y" : 27.972683
+        "x" : 55.78125,
+        "y" : 157.75
       },
       "equipmentItems" : [
         {
           "index" : 0,
-          "template" : "crossbow",
-          "damage" : 35,
-          "armor" : null
-        }
-      ],
-      "inventoryItems" : [
-      ]
-    },
-    {
-      "creatureClass" : "com.easternsauce.libgdxgame.creature.Goblin",
-      "id" : "Goblin_20840565",
-      "spawnPointId" : "13",
-      "healthPoints" : 100.0,
-      "area" : "area3",
-      "isPlayer" : false,
-      "position" : {
-        "x" : 127.03125,
-        "y" : 160.60997
-      },
-      "equipmentItems" : [
-        {
-          "index" : 0,
-          "template" : "poisonDagger",
+          "template" : "woodenSword",
           "damage" : 40,
           "armor" : null
         }
@@ -143,9 +87,27 @@
       ]
     },
     {
+      "creatureClass" : "com.easternsauce.libgdxgame.creature.Wolf",
+      "id" : "Wolf_1784105862",
+      "spawnPointId" : "26",
+      "playerSpawnPointId" : null,
+      "healthPoints" : 100.0,
+      "area" : "area1",
+      "isPlayer" : false,
+      "position" : {
+        "x" : 130.89105,
+        "y" : 32.602047
+      },
+      "equipmentItems" : [
+      ],
+      "inventoryItems" : [
+      ]
+    },
+    {
       "creatureClass" : "com.easternsauce.libgdxgame.creature.Goblin",
-      "id" : "Goblin_2018303357",
+      "id" : "Goblin_1229380713",
       "spawnPointId" : "4",
+      "playerSpawnPointId" : null,
       "healthPoints" : 100.0,
       "area" : "area3",
       "isPlayer" : false,
@@ -157,6 +119,29 @@
         {
           "index" : 0,
           "template" : "poisonDagger",
+          "damage" : 32,
+          "armor" : null
+        }
+      ],
+      "inventoryItems" : [
+      ]
+    },
+    {
+      "creatureClass" : "com.easternsauce.libgdxgame.creature.Skeleton",
+      "id" : "Skeleton_548690229",
+      "spawnPointId" : "10",
+      "playerSpawnPointId" : null,
+      "healthPoints" : 100.0,
+      "area" : "area1",
+      "isPlayer" : false,
+      "position" : {
+        "x" : 84.90625,
+        "y" : 81.96875
+      },
+      "equipmentItems" : [
+        {
+          "index" : 0,
+          "template" : "woodenSword",
           "damage" : 39,
           "armor" : null
         }
@@ -165,15 +150,39 @@
       ]
     },
     {
-      "creatureClass" : "com.easternsauce.libgdxgame.creature.Wolf",
-      "id" : "Wolf_903429176",
-      "spawnPointId" : "36",
+      "creatureClass" : "com.easternsauce.libgdxgame.creature.Skeleton",
+      "id" : "Skeleton_1432436981",
+      "spawnPointId" : "16",
+      "playerSpawnPointId" : null,
       "healthPoints" : 100.0,
       "area" : "area1",
       "isPlayer" : false,
       "position" : {
-        "x" : 179.875,
-        "y" : 92.90686
+        "x" : 83.021324,
+        "y" : 57.023483
+      },
+      "equipmentItems" : [
+        {
+          "index" : 0,
+          "template" : "woodenSword",
+          "damage" : 43,
+          "armor" : null
+        }
+      ],
+      "inventoryItems" : [
+      ]
+    },
+    {
+      "creatureClass" : "com.easternsauce.libgdxgame.creature.Wolf",
+      "id" : "Wolf_2081861605",
+      "spawnPointId" : "13",
+      "playerSpawnPointId" : null,
+      "healthPoints" : 100.0,
+      "area" : "area1",
+      "isPlayer" : false,
+      "position" : {
+        "x" : 14.899482,
+        "y" : 93.014145
       },
       "equipmentItems" : [
       ],
@@ -182,14 +191,55 @@
     },
     {
       "creatureClass" : "com.easternsauce.libgdxgame.creature.Skeleton",
-      "id" : "Skeleton_953889754",
-      "spawnPointId" : "31",
+      "id" : "Skeleton_1990015141",
+      "spawnPointId" : "28",
+      "playerSpawnPointId" : null,
       "healthPoints" : 100.0,
       "area" : "area1",
       "isPlayer" : false,
       "position" : {
-        "x" : 106.568794,
-        "y" : 8.289129
+        "x" : 133.65329,
+        "y" : 33.308083
+      },
+      "equipmentItems" : [
+        {
+          "index" : 0,
+          "template" : "crossbow",
+          "damage" : 36,
+          "armor" : null
+        }
+      ],
+      "inventoryItems" : [
+      ]
+    },
+    {
+      "creatureClass" : "com.easternsauce.libgdxgame.creature.Wolf",
+      "id" : "Wolf_1702870100",
+      "spawnPointId" : "24",
+      "playerSpawnPointId" : null,
+      "healthPoints" : 100.0,
+      "area" : "area1",
+      "isPlayer" : false,
+      "position" : {
+        "x" : 54.65625,
+        "y" : 20.303108
+      },
+      "equipmentItems" : [
+      ],
+      "inventoryItems" : [
+      ]
+    },
+    {
+      "creatureClass" : "com.easternsauce.libgdxgame.creature.Skeleton",
+      "id" : "Skeleton_552832098",
+      "spawnPointId" : "19",
+      "playerSpawnPointId" : null,
+      "healthPoints" : 100.0,
+      "area" : "area1",
+      "isPlayer" : false,
+      "position" : {
+        "x" : 13.002951,
+        "y" : 27.972683
       },
       "equipmentItems" : [
         {
@@ -203,97 +253,10 @@
       ]
     },
     {
-      "creatureClass" : "com.easternsauce.libgdxgame.creature.Skeleton",
-      "id" : "Skeleton_530379434",
-      "spawnPointId" : "15",
-      "healthPoints" : 100.0,
-      "area" : "area1",
-      "isPlayer" : false,
-      "position" : {
-        "x" : 97.625,
-        "y" : 39.796257
-      },
-      "equipmentItems" : [
-        {
-          "index" : 0,
-          "template" : "woodenSword",
-          "damage" : 36,
-          "armor" : null
-        }
-      ],
-      "inventoryItems" : [
-      ]
-    },
-    {
-      "creatureClass" : "com.easternsauce.libgdxgame.creature.Skeleton",
-      "id" : "Skeleton_648037372",
-      "spawnPointId" : "18",
-      "healthPoints" : 100.0,
-      "area" : "area3",
-      "isPlayer" : false,
-      "position" : {
-        "x" : 165.10126,
-        "y" : 182.61716
-      },
-      "equipmentItems" : [
-        {
-          "index" : 0,
-          "template" : "ironSword",
-          "damage" : 58,
-          "armor" : null
-        }
-      ],
-      "inventoryItems" : [
-      ]
-    },
-    {
-      "creatureClass" : "com.easternsauce.libgdxgame.creature.Goblin",
-      "id" : "Goblin_657137597",
-      "spawnPointId" : "34",
-      "healthPoints" : 100.0,
-      "area" : "area1",
-      "isPlayer" : false,
-      "position" : {
-        "x" : 173.85437,
-        "y" : 49.949993
-      },
-      "equipmentItems" : [
-        {
-          "index" : 0,
-          "template" : "poisonDagger",
-          "damage" : 39,
-          "armor" : null
-        }
-      ],
-      "inventoryItems" : [
-      ]
-    },
-    {
-      "creatureClass" : "com.easternsauce.libgdxgame.creature.Skeleton",
-      "id" : "Skeleton_1235846487",
-      "spawnPointId" : "10",
-      "healthPoints" : 100.0,
-      "area" : "area1",
-      "isPlayer" : false,
-      "position" : {
-        "x" : 84.90625,
-        "y" : 81.96875
-      },
-      "equipmentItems" : [
-        {
-          "index" : 0,
-          "template" : "woodenSword",
-          "damage" : 37,
-          "armor" : null
-        }
-      ],
-      "inventoryItems" : [
-      ]
-    },
-    {
       "creatureClass" : "com.easternsauce.libgdxgame.creature.Ghost",
-      "id" : "Ghost_570797599",
+      "id" : "Ghost_1072825899",
       "spawnPointId" : "15",
+      "playerSpawnPointId" : null,
       "healthPoints" : 100.0,
       "area" : "area3",
       "isPlayer" : false,
@@ -308,20 +271,21 @@
     },
     {
       "creatureClass" : "com.easternsauce.libgdxgame.creature.Skeleton",
-      "id" : "Skeleton_1729081811",
-      "spawnPointId" : "25",
+      "id" : "Skeleton_1069435857",
+      "spawnPointId" : "0",
+      "playerSpawnPointId" : null,
       "healthPoints" : 100.0,
-      "area" : "area1",
+      "area" : "area3",
       "isPlayer" : false,
       "position" : {
-        "x" : 81.03125,
-        "y" : 7.03125
+        "x" : 48.171257,
+        "y" : 43.34375
       },
       "equipmentItems" : [
         {
           "index" : 0,
-          "template" : "crossbow",
-          "damage" : 40,
+          "template" : "ironSword",
+          "damage" : 60,
           "armor" : null
         }
       ],
@@ -329,20 +293,21 @@
       ]
     },
     {
-      "creatureClass" : "com.easternsauce.libgdxgame.creature.Skeleton",
-      "id" : "Skeleton_30964815",
-      "spawnPointId" : "1",
+      "creatureClass" : "com.easternsauce.libgdxgame.creature.Goblin",
+      "id" : "Goblin_38406714",
+      "spawnPointId" : "21",
+      "playerSpawnPointId" : null,
       "healthPoints" : 100.0,
       "area" : "area3",
       "isPlayer" : false,
       "position" : {
-        "x" : 51.648624,
-        "y" : 43.21727
+        "x" : 166.33113,
+        "y" : 180.05182
       },
       "equipmentItems" : [
         {
           "index" : 0,
-          "template" : "crossbow",
+          "template" : "poisonDagger",
           "damage" : 39,
           "armor" : null
         }
@@ -351,185 +316,22 @@
       ]
     },
     {
-      "creatureClass" : "com.easternsauce.libgdxgame.creature.Goblin",
-      "id" : "Goblin_2059514465",
-      "spawnPointId" : "8",
-      "healthPoints" : 100.0,
-      "area" : "area3",
-      "isPlayer" : false,
-      "position" : {
-        "x" : 52.79636,
-        "y" : 115.16896
-      },
-      "equipmentItems" : [
-        {
-          "index" : 0,
-          "template" : "poisonDagger",
-          "damage" : 37,
-          "armor" : null
-        }
-      ],
-      "inventoryItems" : [
-      ]
-    },
-    {
       "creatureClass" : "com.easternsauce.libgdxgame.creature.Skeleton",
-      "id" : "Skeleton_1602043359",
-      "spawnPointId" : "11",
-      "healthPoints" : 100.0,
-      "area" : "area3",
-      "isPlayer" : false,
-      "position" : {
-        "x" : 69.46875,
-        "y" : 156.48497
-      },
-      "equipmentItems" : [
-        {
-          "index" : 0,
-          "template" : "crossbow",
-          "damage" : 35,
-          "armor" : null
-        }
-      ],
-      "inventoryItems" : [
-      ]
-    },
-    {
-      "creatureClass" : "com.easternsauce.libgdxgame.creature.Skeleton",
-      "id" : "Skeleton_18862440",
-      "spawnPointId" : "28",
+      "id" : "Skeleton_267662570",
+      "spawnPointId" : "0",
+      "playerSpawnPointId" : null,
       "healthPoints" : 100.0,
       "area" : "area1",
       "isPlayer" : false,
       "position" : {
-        "x" : 192.01988,
-        "y" : 15.343884
-      },
-      "equipmentItems" : [
-        {
-          "index" : 0,
-          "template" : "crossbow",
-          "damage" : 44,
-          "armor" : null
-        }
-      ],
-      "inventoryItems" : [
-      ]
-    },
-    {
-      "creatureClass" : "com.easternsauce.libgdxgame.creature.Wolf",
-      "id" : "Wolf_1179024578",
-      "spawnPointId" : "11",
-      "healthPoints" : 100.0,
-      "area" : "area1",
-      "isPlayer" : false,
-      "position" : {
-        "x" : 16.936457,
-        "y" : 95.282555
-      },
-      "equipmentItems" : [
-      ],
-      "inventoryItems" : [
-      ]
-    },
-    {
-      "creatureClass" : "com.easternsauce.libgdxgame.creature.Skeleton",
-      "id" : "Skeleton_992795634",
-      "spawnPointId" : "6",
-      "healthPoints" : 100.0,
-      "area" : "area1",
-      "isPlayer" : false,
-      "position" : {
-        "x" : 131.15625,
-        "y" : 144.78065
+        "x" : 108.0625,
+        "y" : 183.6875
       },
       "equipmentItems" : [
         {
           "index" : 0,
           "template" : "woodenSword",
-          "damage" : 37,
-          "armor" : null
-        }
-      ],
-      "inventoryItems" : [
-      ]
-    },
-    {
-      "creatureClass" : "com.easternsauce.libgdxgame.creature.Skeleton",
-      "id" : "Skeleton_1957344314",
-      "spawnPointId" : "7",
-      "healthPoints" : 100.0,
-      "area" : "area3",
-      "isPlayer" : false,
-      "position" : {
-        "x" : 55.56713,
-        "y" : 114.523384
-      },
-      "equipmentItems" : [
-        {
-          "index" : 0,
-          "template" : "crossbow",
-          "damage" : 43,
-          "armor" : null
-        }
-      ],
-      "inventoryItems" : [
-      ]
-    },
-    {
-      "creatureClass" : "com.easternsauce.libgdxgame.creature.Skeleton",
-      "id" : "Skeleton_1069718486",
-      "spawnPointId" : "29",
-      "healthPoints" : 100.0,
-      "area" : "area1",
-      "isPlayer" : false,
-      "position" : {
-        "x" : 105.84723,
-        "y" : 3.442308
-      },
-      "equipmentItems" : [
-        {
-          "index" : 0,
-          "template" : "crossbow",
-          "damage" : 43,
-          "armor" : null
-        }
-      ],
-      "inventoryItems" : [
-      ]
-    },
-    {
-      "creatureClass" : "com.easternsauce.libgdxgame.creature.Ghost",
-      "id" : "Ghost_1803883928",
-      "spawnPointId" : "14",
-      "healthPoints" : 100.0,
-      "area" : "area3",
-      "isPlayer" : false,
-      "position" : {
-        "x" : 162.0,
-        "y" : 157.46875
-      },
-      "equipmentItems" : [
-      ],
-      "inventoryItems" : [
-      ]
-    },
-    {
-      "creatureClass" : "com.easternsauce.libgdxgame.creature.Skeleton",
-      "id" : "Skeleton_1114032586",
-      "spawnPointId" : "1",
-      "healthPoints" : 100.0,
-      "area" : "area1",
-      "isPlayer" : false,
-      "position" : {
-        "x" : 11.15625,
-        "y" : 191.28125
-      },
-      "equipmentItems" : [
-        {
-          "index" : 0,
-          "template" : "crossbow",
-          "damage" : 43,
+          "damage" : 40,
           "armor" : null
         }
       ],
@@ -538,8 +340,9 @@
     },
     {
       "creatureClass" : "com.easternsauce.libgdxgame.creature.Goblin",
-      "id" : "Goblin_1458979024",
+      "id" : "Goblin_1746901434",
       "spawnPointId" : "12",
+      "playerSpawnPointId" : null,
       "healthPoints" : 100.0,
       "area" : "area3",
       "isPlayer" : false,
@@ -560,14 +363,210 @@
     },
     {
       "creatureClass" : "com.easternsauce.libgdxgame.creature.Skeleton",
-      "id" : "Skeleton_183723952",
-      "spawnPointId" : "8",
+      "id" : "Skeleton_1830100574",
+      "spawnPointId" : "14",
+      "playerSpawnPointId" : null,
       "healthPoints" : 100.0,
       "area" : "area1",
       "isPlayer" : false,
       "position" : {
-        "x" : 189.96875,
-        "y" : 164.8744
+        "x" : 97.625,
+        "y" : 42.641243
+      },
+      "equipmentItems" : [
+        {
+          "index" : 0,
+          "template" : "crossbow",
+          "damage" : 45,
+          "armor" : null
+        }
+      ],
+      "inventoryItems" : [
+      ]
+    },
+    {
+      "creatureClass" : "com.easternsauce.libgdxgame.creature.Wolf",
+      "id" : "Wolf_1951735112",
+      "spawnPointId" : "23",
+      "playerSpawnPointId" : null,
+      "healthPoints" : 100.0,
+      "area" : "area3",
+      "isPlayer" : false,
+      "position" : {
+        "x" : 164.46875,
+        "y" : 93.25
+      },
+      "equipmentItems" : [
+      ],
+      "inventoryItems" : [
+      ]
+    },
+    {
+      "creatureClass" : "com.easternsauce.libgdxgame.creature.Goblin",
+      "id" : "Goblin_1752868413",
+      "spawnPointId" : "3",
+      "playerSpawnPointId" : null,
+      "healthPoints" : 100.0,
+      "area" : "area3",
+      "isPlayer" : false,
+      "position" : {
+        "x" : 99.65625,
+        "y" : 64.78125
+      },
+      "equipmentItems" : [
+        {
+          "index" : 0,
+          "template" : "poisonDagger",
+          "damage" : 35,
+          "armor" : null
+        }
+      ],
+      "inventoryItems" : [
+      ]
+    },
+    {
+      "creatureClass" : "com.easternsauce.libgdxgame.creature.Ghost",
+      "id" : "Ghost_975722240",
+      "spawnPointId" : "2",
+      "playerSpawnPointId" : null,
+      "healthPoints" : 100.0,
+      "area" : "area3",
+      "isPlayer" : false,
+      "position" : {
+        "x" : 6.4375,
+        "y" : 50.375
+      },
+      "equipmentItems" : [
+      ],
+      "inventoryItems" : [
+      ]
+    },
+    {
+      "creatureClass" : "com.easternsauce.libgdxgame.creature.Skeleton",
+      "id" : "Skeleton_1856396815",
+      "spawnPointId" : "25",
+      "playerSpawnPointId" : null,
+      "healthPoints" : 100.0,
+      "area" : "area1",
+      "isPlayer" : false,
+      "position" : {
+        "x" : 81.03125,
+        "y" : 7.03125
+      },
+      "equipmentItems" : [
+        {
+          "index" : 0,
+          "template" : "crossbow",
+          "damage" : 45,
+          "armor" : null
+        }
+      ],
+      "inventoryItems" : [
+      ]
+    },
+    {
+      "creatureClass" : "com.easternsauce.libgdxgame.creature.Skeleton",
+      "id" : "Skeleton_1283065491",
+      "spawnPointId" : "1",
+      "playerSpawnPointId" : null,
+      "healthPoints" : 100.0,
+      "area" : "area3",
+      "isPlayer" : false,
+      "position" : {
+        "x" : 51.016243,
+        "y" : 43.34375
+      },
+      "equipmentItems" : [
+        {
+          "index" : 0,
+          "template" : "crossbow",
+          "damage" : 35,
+          "armor" : null
+        }
+      ],
+      "inventoryItems" : [
+      ]
+    },
+    {
+      "creatureClass" : "com.easternsauce.libgdxgame.creature.Skeleton",
+      "id" : "Skeleton_1970148641",
+      "spawnPointId" : "18",
+      "playerSpawnPointId" : null,
+      "healthPoints" : 100.0,
+      "area" : "area1",
+      "isPlayer" : false,
+      "position" : {
+        "x" : 82.04243,
+        "y" : 59.77841
+      },
+      "equipmentItems" : [
+        {
+          "index" : 0,
+          "template" : "woodenSword",
+          "damage" : 39,
+          "armor" : null
+        }
+      ],
+      "inventoryItems" : [
+      ]
+    },
+    {
+      "creatureClass" : "com.easternsauce.libgdxgame.creature.Skeleton",
+      "id" : "Skeleton_215339211",
+      "spawnPointId" : "1",
+      "playerSpawnPointId" : null,
+      "healthPoints" : 100.0,
+      "area" : "area1",
+      "isPlayer" : false,
+      "position" : {
+        "x" : 11.15625,
+        "y" : 191.28125
+      },
+      "equipmentItems" : [
+        {
+          "index" : 0,
+          "template" : "crossbow",
+          "damage" : 41,
+          "armor" : null
+        }
+      ],
+      "inventoryItems" : [
+      ]
+    },
+    {
+      "creatureClass" : "com.easternsauce.libgdxgame.creature.Skeleton",
+      "id" : "Skeleton_436833763",
+      "spawnPointId" : "19",
+      "playerSpawnPointId" : null,
+      "healthPoints" : 100.0,
+      "area" : "area3",
+      "isPlayer" : false,
+      "position" : {
+        "x" : 168.2285,
+        "y" : 182.98346
+      },
+      "equipmentItems" : [
+        {
+          "index" : 0,
+          "template" : "ironSword",
+          "damage" : 49,
+          "armor" : null
+        }
+      ],
+      "inventoryItems" : [
+      ]
+    },
+    {
+      "creatureClass" : "com.easternsauce.libgdxgame.creature.Skeleton",
+      "id" : "Skeleton_883639766",
+      "spawnPointId" : "3",
+      "playerSpawnPointId" : null,
+      "healthPoints" : 100.0,
+      "area" : "area1",
+      "isPlayer" : false,
+      "position" : {
+        "x" : 102.0625,
+        "y" : 145.5
       },
       "equipmentItems" : [
         {
@@ -581,81 +580,22 @@
       ]
     },
     {
-      "creatureClass" : "com.easternsauce.libgdxgame.creature.Goblin",
-      "id" : "Goblin_2096826003",
-      "spawnPointId" : "33",
-      "healthPoints" : 100.0,
-      "area" : "area1",
-      "isPlayer" : false,
-      "position" : {
-        "x" : 176.6238,
-        "y" : 49.298103
-      },
-      "equipmentItems" : [
-        {
-          "index" : 0,
-          "template" : "poisonDagger",
-          "damage" : 33,
-          "armor" : null
-        }
-      ],
-      "inventoryItems" : [
-      ]
-    },
-    {
-      "creatureClass" : "com.easternsauce.libgdxgame.creature.Goblin",
-      "id" : "Goblin_835609954",
-      "spawnPointId" : "16",
-      "healthPoints" : 100.0,
-      "area" : "area3",
-      "isPlayer" : false,
-      "position" : {
-        "x" : 83.284836,
-        "y" : 184.9444
-      },
-      "equipmentItems" : [
-        {
-          "index" : 0,
-          "template" : "poisonDagger",
-          "damage" : 32,
-          "armor" : null
-        }
-      ],
-      "inventoryItems" : [
-      ]
-    },
-    {
-      "creatureClass" : "com.easternsauce.libgdxgame.creature.Wolf",
-      "id" : "Wolf_1122005686",
-      "spawnPointId" : "24",
-      "healthPoints" : 100.0,
-      "area" : "area1",
-      "isPlayer" : false,
-      "position" : {
-        "x" : 54.65625,
-        "y" : 20.303328
-      },
-      "equipmentItems" : [
-      ],
-      "inventoryItems" : [
-      ]
-    },
-    {
       "creatureClass" : "com.easternsauce.libgdxgame.creature.Skeleton",
-      "id" : "Skeleton_470862638",
-      "spawnPointId" : "0",
+      "id" : "Skeleton_1098718067",
+      "spawnPointId" : "18",
+      "playerSpawnPointId" : null,
       "healthPoints" : 100.0,
       "area" : "area3",
       "isPlayer" : false,
       "position" : {
-        "x" : 43.619152,
-        "y" : 39.54513
+        "x" : 165.10126,
+        "y" : 182.61716
       },
       "equipmentItems" : [
         {
           "index" : 0,
           "template" : "ironSword",
-          "damage" : 57,
+          "damage" : 58,
           "armor" : null
         }
       ],
@@ -664,134 +604,15 @@
     },
     {
       "creatureClass" : "com.easternsauce.libgdxgame.creature.Skeleton",
-      "id" : "Skeleton_2121767464",
-      "spawnPointId" : "2",
-      "healthPoints" : 100.0,
-      "area" : "area1",
-      "isPlayer" : false,
-      "position" : {
-        "x" : 55.78125,
-        "y" : 157.75
-      },
-      "equipmentItems" : [
-        {
-          "index" : 0,
-          "template" : "woodenSword",
-          "damage" : 43,
-          "armor" : null
-        }
-      ],
-      "inventoryItems" : [
-      ]
-    },
-    {
-      "creatureClass" : "com.easternsauce.libgdxgame.creature.Goblin",
-      "id" : "Goblin_519149285",
-      "spawnPointId" : "3",
-      "healthPoints" : 100.0,
-      "area" : "area3",
-      "isPlayer" : false,
-      "position" : {
-        "x" : 99.65625,
-        "y" : 64.78125
-      },
-      "equipmentItems" : [
-        {
-          "index" : 0,
-          "template" : "poisonDagger",
-          "damage" : 31,
-          "armor" : null
-        }
-      ],
-      "inventoryItems" : [
-      ]
-    },
-    {
-      "creatureClass" : "com.easternsauce.libgdxgame.creature.Ghost",
-      "id" : "Ghost_1969894652",
-      "spawnPointId" : "10",
-      "healthPoints" : 100.0,
-      "area" : "area3",
-      "isPlayer" : false,
-      "position" : {
-        "x" : 69.46875,
-        "y" : 153.64003
-      },
-      "equipmentItems" : [
-      ],
-      "inventoryItems" : [
-      ]
-    },
-    {
-      "creatureClass" : "com.easternsauce.libgdxgame.creature.Skeleton",
-      "id" : "Skeleton_669139240",
-      "spawnPointId" : "30",
-      "healthPoints" : 100.0,
-      "area" : "area1",
-      "isPlayer" : false,
-      "position" : {
-        "x" : 108.80118,
-        "y" : 5.2097936
-      },
-      "equipmentItems" : [
-        {
-          "index" : 0,
-          "template" : "crossbow",
-          "damage" : 36,
-          "armor" : null
-        }
-      ],
-      "inventoryItems" : [
-      ]
-    },
-    {
-      "creatureClass" : "com.easternsauce.libgdxgame.creature.Goblin",
-      "id" : "Goblin_1889941545",
+      "id" : "Skeleton_1911935715",
       "spawnPointId" : "17",
-      "healthPoints" : 100.0,
-      "area" : "area3",
-      "isPlayer" : false,
-      "position" : {
-        "x" : 81.099014,
-        "y" : 182.83362
-      },
-      "equipmentItems" : [
-        {
-          "index" : 0,
-          "template" : "poisonDagger",
-          "damage" : 40,
-          "armor" : null
-        }
-      ],
-      "inventoryItems" : [
-      ]
-    },
-    {
-      "creatureClass" : "com.easternsauce.libgdxgame.creature.Wolf",
-      "id" : "Wolf_93896534",
-      "spawnPointId" : "35",
+      "playerSpawnPointId" : null,
       "healthPoints" : 100.0,
       "area" : "area1",
       "isPlayer" : false,
       "position" : {
-        "x" : 179.875,
-        "y" : 90.06189
-      },
-      "equipmentItems" : [
-      ],
-      "inventoryItems" : [
-      ]
-    },
-    {
-      "creatureClass" : "com.easternsauce.libgdxgame.creature.Skeleton",
-      "id" : "Skeleton_485336887",
-      "spawnPointId" : "21",
-      "healthPoints" : 100.0,
-      "area" : "area1",
-      "isPlayer" : false,
-      "position" : {
-        "x" : 14.168622,
-        "y" : 30.570004
+        "x" : 80.18625,
+        "y" : 57.260605
       },
       "equipmentItems" : [
         {
@@ -806,30 +627,15 @@
     },
     {
       "creatureClass" : "com.easternsauce.libgdxgame.creature.Wolf",
-      "id" : "Wolf_722149166",
-      "spawnPointId" : "26",
+      "id" : "Wolf_197417457",
+      "spawnPointId" : "35",
+      "playerSpawnPointId" : null,
       "healthPoints" : 100.0,
       "area" : "area1",
       "isPlayer" : false,
       "position" : {
-        "x" : 189.86752,
-        "y" : 18.590994
-      },
-      "equipmentItems" : [
-      ],
-      "inventoryItems" : [
-      ]
-    },
-    {
-      "creatureClass" : "com.easternsauce.libgdxgame.creature.Wolf",
-      "id" : "Wolf_2026615842",
-      "spawnPointId" : "23",
-      "healthPoints" : 100.0,
-      "area" : "area1",
-      "isPlayer" : false,
-      "position" : {
-        "x" : 54.65625,
-        "y" : 14.613342
+        "x" : 179.875,
+        "y" : 90.06189
       },
       "equipmentItems" : [
       ],
@@ -838,14 +644,290 @@
     },
     {
       "creatureClass" : "com.easternsauce.libgdxgame.creature.Skeleton",
-      "id" : "Skeleton_527859054",
+      "id" : "Skeleton_838522136",
+      "spawnPointId" : "37",
+      "playerSpawnPointId" : null,
+      "healthPoints" : 100.0,
+      "area" : "area1",
+      "isPlayer" : false,
+      "position" : {
+        "x" : 191.65625,
+        "y" : 131.6875
+      },
+      "equipmentItems" : [
+        {
+          "index" : 0,
+          "template" : "crossbow",
+          "damage" : 37,
+          "armor" : null
+        }
+      ],
+      "inventoryItems" : [
+      ]
+    },
+    {
+      "creatureClass" : "com.easternsauce.libgdxgame.creature.Ghost",
+      "id" : "Ghost_854867072",
+      "spawnPointId" : "10",
+      "playerSpawnPointId" : null,
+      "healthPoints" : 100.0,
+      "area" : "area3",
+      "isPlayer" : false,
+      "position" : {
+        "x" : 69.46875,
+        "y" : 153.64003
+      },
+      "equipmentItems" : [
+      ],
+      "inventoryItems" : [
+      ]
+    },
+    {
+      "creatureClass" : "com.easternsauce.libgdxgame.creature.Goblin",
+      "id" : "Goblin_2030452057",
+      "spawnPointId" : "13",
+      "playerSpawnPointId" : null,
+      "healthPoints" : 100.0,
+      "area" : "area3",
+      "isPlayer" : false,
+      "position" : {
+        "x" : 127.03125,
+        "y" : 160.60997
+      },
+      "equipmentItems" : [
+        {
+          "index" : 0,
+          "template" : "poisonDagger",
+          "damage" : 39,
+          "armor" : null
+        }
+      ],
+      "inventoryItems" : [
+      ]
+    },
+    {
+      "creatureClass" : "com.easternsauce.libgdxgame.creature.Skeleton",
+      "id" : "Skeleton_322991201",
       "spawnPointId" : "20",
+      "playerSpawnPointId" : null,
       "healthPoints" : 100.0,
       "area" : "area1",
       "isPlayer" : false,
       "position" : {
         "x" : 15.839866,
         "y" : 28.186962
+      },
+      "equipmentItems" : [
+        {
+          "index" : 0,
+          "template" : "woodenSword",
+          "damage" : 41,
+          "armor" : null
+        }
+      ],
+      "inventoryItems" : [
+      ]
+    },
+    {
+      "creatureClass" : "com.easternsauce.libgdxgame.creature.Goblin",
+      "id" : "Goblin_1317133770",
+      "spawnPointId" : "5",
+      "playerSpawnPointId" : null,
+      "healthPoints" : 100.0,
+      "area" : "area3",
+      "isPlayer" : false,
+      "position" : {
+        "x" : 98.0625,
+        "y" : 22.547497
+      },
+      "equipmentItems" : [
+        {
+          "index" : 0,
+          "template" : "poisonDagger",
+          "damage" : 31,
+          "armor" : null
+        }
+      ],
+      "inventoryItems" : [
+      ]
+    },
+    {
+      "creatureClass" : "com.easternsauce.libgdxgame.creature.Goblin",
+      "id" : "Goblin_2060600869",
+      "spawnPointId" : "22",
+      "playerSpawnPointId" : null,
+      "healthPoints" : 100.0,
+      "area" : "area3",
+      "isPlayer" : false,
+      "position" : {
+        "x" : 185.375,
+        "y" : 138.875
+      },
+      "equipmentItems" : [
+        {
+          "index" : 0,
+          "template" : "poisonDagger",
+          "damage" : 32,
+          "armor" : null
+        }
+      ],
+      "inventoryItems" : [
+      ]
+    },
+    {
+      "creatureClass" : "com.easternsauce.libgdxgame.creature.Goblin",
+      "id" : "Goblin_399270331",
+      "spawnPointId" : "34",
+      "playerSpawnPointId" : null,
+      "healthPoints" : 100.0,
+      "area" : "area1",
+      "isPlayer" : false,
+      "position" : {
+        "x" : 173.85437,
+        "y" : 49.949993
+      },
+      "equipmentItems" : [
+        {
+          "index" : 0,
+          "template" : "poisonDagger",
+          "damage" : 35,
+          "armor" : null
+        }
+      ],
+      "inventoryItems" : [
+      ]
+    },
+    {
+      "creatureClass" : "com.easternsauce.libgdxgame.creature.Skeleton",
+      "id" : "Skeleton_305711948",
+      "spawnPointId" : "7",
+      "playerSpawnPointId" : null,
+      "healthPoints" : 100.0,
+      "area" : "area1",
+      "isPlayer" : false,
+      "position" : {
+        "x" : 189.96875,
+        "y" : 167.71935
+      },
+      "equipmentItems" : [
+        {
+          "index" : 0,
+          "template" : "crossbow",
+          "damage" : 41,
+          "armor" : null
+        }
+      ],
+      "inventoryItems" : [
+      ]
+    },
+    {
+      "creatureClass" : "com.easternsauce.libgdxgame.creature.Ghost",
+      "id" : "Ghost_83574875",
+      "spawnPointId" : "14",
+      "playerSpawnPointId" : null,
+      "healthPoints" : 100.0,
+      "area" : "area3",
+      "isPlayer" : false,
+      "position" : {
+        "x" : 162.0,
+        "y" : 157.46875
+      },
+      "equipmentItems" : [
+      ],
+      "inventoryItems" : [
+      ]
+    },
+    {
+      "creatureClass" : "com.easternsauce.libgdxgame.creature.Wolf",
+      "id" : "Wolf_2006024887",
+      "spawnPointId" : "36",
+      "playerSpawnPointId" : null,
+      "healthPoints" : 100.0,
+      "area" : "area1",
+      "isPlayer" : false,
+      "position" : {
+        "x" : 179.875,
+        "y" : 92.90686
+      },
+      "equipmentItems" : [
+      ],
+      "inventoryItems" : [
+      ]
+    },
+    {
+      "creatureClass" : "com.easternsauce.libgdxgame.creature.Wolf",
+      "id" : "Wolf_1585401879",
+      "spawnPointId" : "9",
+      "playerSpawnPointId" : null,
+      "healthPoints" : 100.0,
+      "area" : "area1",
+      "isPlayer" : false,
+      "position" : {
+        "x" : 51.96875,
+        "y" : 84.1875
+      },
+      "equipmentItems" : [
+      ],
+      "inventoryItems" : [
+      ]
+    },
+    {
+      "creatureClass" : "com.easternsauce.libgdxgame.creature.Goblin",
+      "id" : "Goblin_1959638567",
+      "spawnPointId" : "8",
+      "playerSpawnPointId" : null,
+      "healthPoints" : 100.0,
+      "area" : "area3",
+      "isPlayer" : false,
+      "position" : {
+        "x" : 52.79636,
+        "y" : 115.16896
+      },
+      "equipmentItems" : [
+        {
+          "index" : 0,
+          "template" : "poisonDagger",
+          "damage" : 31,
+          "armor" : null
+        }
+      ],
+      "inventoryItems" : [
+      ]
+    },
+    {
+      "creatureClass" : "com.easternsauce.libgdxgame.creature.Goblin",
+      "id" : "Goblin_846885213",
+      "spawnPointId" : "16",
+      "playerSpawnPointId" : null,
+      "healthPoints" : 100.0,
+      "area" : "area3",
+      "isPlayer" : false,
+      "position" : {
+        "x" : 83.284836,
+        "y" : 184.9444
+      },
+      "equipmentItems" : [
+        {
+          "index" : 0,
+          "template" : "poisonDagger",
+          "damage" : 40,
+          "armor" : null
+        }
+      ],
+      "inventoryItems" : [
+      ]
+    },
+    {
+      "creatureClass" : "com.easternsauce.libgdxgame.creature.Skeleton",
+      "id" : "Skeleton_1611739729",
+      "spawnPointId" : "5",
+      "playerSpawnPointId" : null,
+      "healthPoints" : 100.0,
+      "area" : "area1",
+      "isPlayer" : false,
+      "position" : {
+        "x" : 131.15625,
+        "y" : 147.6256
       },
       "equipmentItems" : [
         {
@@ -859,45 +941,18 @@
       ]
     },
     {
-      "creatureClass" : "com.easternsauce.libgdxgame.creature.Skeleton",
-      "id" : "Skeleton_1885523171",
-      "spawnPointId" : "6",
-      "healthPoints" : 100.0,
-      "area" : "area3",
-      "isPlayer" : false,
-      "position" : {
-        "x" : 13.90625,
-        "y" : 84.96875
-      },
-      "equipmentItems" : [
-        {
-          "index" : 0,
-          "template" : "ironSword",
-          "damage" : 59,
-          "armor" : null
-        }
-      ],
-      "inventoryItems" : [
-      ]
-    },
-    {
-      "creatureClass" : "com.easternsauce.libgdxgame.creature.Skeleton",
-      "id" : "Skeleton_1708612226",
-      "spawnPointId" : "16",
+      "creatureClass" : "com.easternsauce.libgdxgame.creature.Wolf",
+      "id" : "Wolf_648398842",
+      "spawnPointId" : "11",
+      "playerSpawnPointId" : null,
       "healthPoints" : 100.0,
       "area" : "area1",
       "isPlayer" : false,
       "position" : {
-        "x" : 83.021324,
-        "y" : 57.023483
+        "x" : 16.936457,
+        "y" : 95.282555
       },
       "equipmentItems" : [
-        {
-          "index" : 0,
-          "template" : "woodenSword",
-          "damage" : 42,
-          "armor" : null
-        }
       ],
       "inventoryItems" : [
       ]
@@ -906,12 +961,13 @@
       "creatureClass" : "com.easternsauce.libgdxgame.creature.Player",
       "id" : "player",
       "spawnPointId" : null,
+      "playerSpawnPointId" : "0",
       "healthPoints" : 100.0,
       "area" : "area3",
       "isPlayer" : true,
       "position" : {
-        "x" : 29.344736,
-        "y" : 38.754765
+        "x" : 16.316917,
+        "y" : 7.6741614
       },
       "equipmentItems" : [
         {
@@ -973,151 +1029,45 @@
       ]
     },
     {
-      "creatureClass" : "com.easternsauce.libgdxgame.creature.Wolf",
-      "id" : "Wolf_233643804",
-      "spawnPointId" : "9",
-      "healthPoints" : 100.0,
-      "area" : "area1",
-      "isPlayer" : false,
-      "position" : {
-        "x" : 51.96875,
-        "y" : 84.1875
-      },
-      "equipmentItems" : [
-      ],
-      "inventoryItems" : [
-      ]
-    },
-    {
-      "creatureClass" : "com.easternsauce.libgdxgame.creature.Wolf",
-      "id" : "Wolf_1604314015",
-      "spawnPointId" : "12",
-      "healthPoints" : 100.0,
-      "area" : "area1",
-      "isPlayer" : false,
-      "position" : {
-        "x" : 14.132803,
-        "y" : 95.7658
-      },
-      "equipmentItems" : [
-      ],
-      "inventoryItems" : [
-      ]
-    },
-    {
-      "creatureClass" : "com.easternsauce.libgdxgame.creature.Skeleton",
-      "id" : "Skeleton_650064771",
-      "spawnPointId" : "3",
-      "healthPoints" : 100.0,
-      "area" : "area1",
-      "isPlayer" : false,
-      "position" : {
-        "x" : 102.0625,
-        "y" : 145.5
-      },
-      "equipmentItems" : [
-        {
-          "index" : 0,
-          "template" : "woodenSword",
-          "damage" : 36,
-          "armor" : null
-        }
-      ],
-      "inventoryItems" : [
-      ]
-    },
-    {
-      "creatureClass" : "com.easternsauce.libgdxgame.creature.Skeleton",
-      "id" : "Skeleton_1484650731",
-      "spawnPointId" : "7",
-      "healthPoints" : 100.0,
-      "area" : "area1",
-      "isPlayer" : false,
-      "position" : {
-        "x" : 189.96875,
-        "y" : 167.71935
-      },
-      "equipmentItems" : [
-        {
-          "index" : 0,
-          "template" : "crossbow",
-          "damage" : 39,
-          "armor" : null
-        }
-      ],
-      "inventoryItems" : [
-      ]
-    },
-    {
       "creatureClass" : "com.easternsauce.libgdxgame.creature.Goblin",
-      "id" : "Goblin_1373685925",
-      "spawnPointId" : "9",
+      "id" : "Goblin_701625081",
+      "spawnPointId" : "33",
+      "playerSpawnPointId" : null,
       "healthPoints" : 100.0,
-      "area" : "area3",
+      "area" : "area1",
       "isPlayer" : false,
       "position" : {
-        "x" : 54.98026,
-        "y" : 117.307655
+        "x" : 176.6238,
+        "y" : 49.298103
       },
       "equipmentItems" : [
         {
           "index" : 0,
           "template" : "poisonDagger",
-          "damage" : 37,
+          "damage" : 38,
           "armor" : null
         }
-      ],
-      "inventoryItems" : [
-      ]
-    },
-    {
-      "creatureClass" : "com.easternsauce.libgdxgame.creature.Wolf",
-      "id" : "Wolf_356588231",
-      "spawnPointId" : "23",
-      "healthPoints" : 100.0,
-      "area" : "area3",
-      "isPlayer" : false,
-      "position" : {
-        "x" : 164.46875,
-        "y" : 93.25
-      },
-      "equipmentItems" : [
-      ],
-      "inventoryItems" : [
-      ]
-    },
-    {
-      "creatureClass" : "com.easternsauce.libgdxgame.creature.Wolf",
-      "id" : "Wolf_1239723737",
-      "spawnPointId" : "22",
-      "healthPoints" : 100.0,
-      "area" : "area1",
-      "isPlayer" : false,
-      "position" : {
-        "x" : 54.65625,
-        "y" : 17.458336
-      },
-      "equipmentItems" : [
       ],
       "inventoryItems" : [
       ]
     },
     {
       "creatureClass" : "com.easternsauce.libgdxgame.creature.Skeleton",
-      "id" : "Skeleton_2046899139",
-      "spawnPointId" : "17",
+      "id" : "Skeleton_1220459440",
+      "spawnPointId" : "29",
+      "playerSpawnPointId" : null,
       "healthPoints" : 100.0,
       "area" : "area1",
       "isPlayer" : false,
       "position" : {
-        "x" : 80.18625,
-        "y" : 57.260605
+        "x" : 129.13733,
+        "y" : 3.8405066
       },
       "equipmentItems" : [
         {
           "index" : 0,
-          "template" : "woodenSword",
-          "damage" : 39,
+          "template" : "crossbow",
+          "damage" : 41,
           "armor" : null
         }
       ],
@@ -1125,9 +1075,50 @@
       ]
     },
     {
+      "creatureClass" : "com.easternsauce.libgdxgame.creature.Skeleton",
+      "id" : "Skeleton_1376024009",
+      "spawnPointId" : "8",
+      "playerSpawnPointId" : null,
+      "healthPoints" : 100.0,
+      "area" : "area1",
+      "isPlayer" : false,
+      "position" : {
+        "x" : 189.96875,
+        "y" : 164.8744
+      },
+      "equipmentItems" : [
+        {
+          "index" : 0,
+          "template" : "woodenSword",
+          "damage" : 43,
+          "armor" : null
+        }
+      ],
+      "inventoryItems" : [
+      ]
+    },
+    {
+      "creatureClass" : "com.easternsauce.libgdxgame.creature.Wolf",
+      "id" : "Wolf_1329621463",
+      "spawnPointId" : "23",
+      "playerSpawnPointId" : null,
+      "healthPoints" : 100.0,
+      "area" : "area1",
+      "isPlayer" : false,
+      "position" : {
+        "x" : 54.65625,
+        "y" : 14.613548
+      },
+      "equipmentItems" : [
+      ],
+      "inventoryItems" : [
+      ]
+    },
+    {
       "creatureClass" : "com.easternsauce.libgdxgame.creature.Goblin",
-      "id" : "Goblin_526073186",
+      "id" : "Goblin_779622901",
       "spawnPointId" : "32",
+      "playerSpawnPointId" : null,
       "healthPoints" : 100.0,
       "area" : "area1",
       "isPlayer" : false,
@@ -1147,87 +1138,22 @@
       ]
     },
     {
-      "creatureClass" : "com.easternsauce.libgdxgame.creature.Goblin",
-      "id" : "Goblin_649761167",
+      "creatureClass" : "com.easternsauce.libgdxgame.creature.Skeleton",
+      "id" : "Skeleton_439591334",
       "spawnPointId" : "21",
-      "healthPoints" : 100.0,
-      "area" : "area3",
-      "isPlayer" : false,
-      "position" : {
-        "x" : 166.33113,
-        "y" : 180.05183
-      },
-      "equipmentItems" : [
-        {
-          "index" : 0,
-          "template" : "poisonDagger",
-          "damage" : 32,
-          "armor" : null
-        }
-      ],
-      "inventoryItems" : [
-      ]
-    },
-    {
-      "creatureClass" : "com.easternsauce.libgdxgame.creature.Goblin",
-      "id" : "Goblin_375736446",
-      "spawnPointId" : "5",
-      "healthPoints" : 100.0,
-      "area" : "area3",
-      "isPlayer" : false,
-      "position" : {
-        "x" : 98.0625,
-        "y" : 22.547497
-      },
-      "equipmentItems" : [
-        {
-          "index" : 0,
-          "template" : "poisonDagger",
-          "damage" : 33,
-          "armor" : null
-        }
-      ],
-      "inventoryItems" : [
-      ]
-    },
-    {
-      "creatureClass" : "com.easternsauce.libgdxgame.creature.Skeleton",
-      "id" : "Skeleton_443075338",
-      "spawnPointId" : "14",
+      "playerSpawnPointId" : null,
       "healthPoints" : 100.0,
       "area" : "area1",
       "isPlayer" : false,
       "position" : {
-        "x" : 97.625,
-        "y" : 42.641243
-      },
-      "equipmentItems" : [
-        {
-          "index" : 0,
-          "template" : "crossbow",
-          "damage" : 36,
-          "armor" : null
-        }
-      ],
-      "inventoryItems" : [
-      ]
-    },
-    {
-      "creatureClass" : "com.easternsauce.libgdxgame.creature.Skeleton",
-      "id" : "Skeleton_1788249610",
-      "spawnPointId" : "5",
-      "healthPoints" : 100.0,
-      "area" : "area1",
-      "isPlayer" : false,
-      "position" : {
-        "x" : 131.15625,
-        "y" : 147.6256
+        "x" : 14.168622,
+        "y" : 30.570004
       },
       "equipmentItems" : [
         {
           "index" : 0,
           "template" : "woodenSword",
-          "damage" : 36,
+          "damage" : 45,
           "armor" : null
         }
       ],
@@ -1236,30 +1162,15 @@
     },
     {
       "creatureClass" : "com.easternsauce.libgdxgame.creature.Wolf",
-      "id" : "Wolf_1317929390",
-      "spawnPointId" : "13",
+      "id" : "Wolf_1547205111",
+      "spawnPointId" : "12",
+      "playerSpawnPointId" : null,
       "healthPoints" : 100.0,
       "area" : "area1",
       "isPlayer" : false,
       "position" : {
-        "x" : 14.899482,
-        "y" : 93.014145
-      },
-      "equipmentItems" : [
-      ],
-      "inventoryItems" : [
-      ]
-    },
-    {
-      "creatureClass" : "com.easternsauce.libgdxgame.creature.Wolf",
-      "id" : "Wolf_1380649086",
-      "spawnPointId" : "27",
-      "healthPoints" : 100.0,
-      "area" : "area1",
-      "isPlayer" : false,
-      "position" : {
-        "x" : 184.23875,
-        "y" : 20.570034
+        "x" : 14.132803,
+        "y" : 95.7658
       },
       "equipmentItems" : [
       ],
@@ -1268,8 +1179,101 @@
     },
     {
       "creatureClass" : "com.easternsauce.libgdxgame.creature.Skeleton",
-      "id" : "Skeleton_1600263507",
+      "id" : "Skeleton_1371935702",
+      "spawnPointId" : "6",
+      "playerSpawnPointId" : null,
+      "healthPoints" : 100.0,
+      "area" : "area3",
+      "isPlayer" : false,
+      "position" : {
+        "x" : 13.90625,
+        "y" : 84.96875
+      },
+      "equipmentItems" : [
+        {
+          "index" : 0,
+          "template" : "ironSword",
+          "damage" : 50,
+          "armor" : null
+        }
+      ],
+      "inventoryItems" : [
+      ]
+    },
+    {
+      "creatureClass" : "com.easternsauce.libgdxgame.creature.Skeleton",
+      "id" : "Skeleton_1242589507",
+      "spawnPointId" : "11",
+      "playerSpawnPointId" : null,
+      "healthPoints" : 100.0,
+      "area" : "area3",
+      "isPlayer" : false,
+      "position" : {
+        "x" : 69.46875,
+        "y" : 156.48497
+      },
+      "equipmentItems" : [
+        {
+          "index" : 0,
+          "template" : "crossbow",
+          "damage" : 39,
+          "armor" : null
+        }
+      ],
+      "inventoryItems" : [
+      ]
+    },
+    {
+      "creatureClass" : "com.easternsauce.libgdxgame.creature.Goblin",
+      "id" : "Goblin_1715196273",
+      "spawnPointId" : "9",
+      "playerSpawnPointId" : null,
+      "healthPoints" : 100.0,
+      "area" : "area3",
+      "isPlayer" : false,
+      "position" : {
+        "x" : 54.98026,
+        "y" : 117.307655
+      },
+      "equipmentItems" : [
+        {
+          "index" : 0,
+          "template" : "poisonDagger",
+          "damage" : 37,
+          "armor" : null
+        }
+      ],
+      "inventoryItems" : [
+      ]
+    },
+    {
+      "creatureClass" : "com.easternsauce.libgdxgame.creature.Skeleton",
+      "id" : "Skeleton_1811370883",
+      "spawnPointId" : "15",
+      "playerSpawnPointId" : null,
+      "healthPoints" : 100.0,
+      "area" : "area1",
+      "isPlayer" : false,
+      "position" : {
+        "x" : 97.625,
+        "y" : 39.796257
+      },
+      "equipmentItems" : [
+        {
+          "index" : 0,
+          "template" : "woodenSword",
+          "damage" : 40,
+          "armor" : null
+        }
+      ],
+      "inventoryItems" : [
+      ]
+    },
+    {
+      "creatureClass" : "com.easternsauce.libgdxgame.creature.Skeleton",
+      "id" : "Skeleton_186923050",
       "spawnPointId" : "4",
+      "playerSpawnPointId" : null,
       "healthPoints" : 100.0,
       "area" : "area1",
       "isPlayer" : false,
@@ -1281,7 +1285,7 @@
         {
           "index" : 0,
           "template" : "crossbow",
-          "damage" : 44,
+          "damage" : 37,
           "armor" : null
         }
       ],
@@ -1289,21 +1293,79 @@
       ]
     },
     {
+      "creatureClass" : "com.easternsauce.libgdxgame.creature.Wolf",
+      "id" : "Wolf_1061735719",
+      "spawnPointId" : "27",
+      "playerSpawnPointId" : null,
+      "healthPoints" : 100.0,
+      "area" : "area1",
+      "isPlayer" : false,
+      "position" : {
+        "x" : 131.39316,
+        "y" : 35.40237
+      },
+      "equipmentItems" : [
+      ],
+      "inventoryItems" : [
+      ]
+    },
+    {
       "creatureClass" : "com.easternsauce.libgdxgame.creature.Goblin",
-      "id" : "Goblin_1755027931",
-      "spawnPointId" : "22",
+      "id" : "Goblin_953623221",
+      "spawnPointId" : "17",
+      "playerSpawnPointId" : null,
       "healthPoints" : 100.0,
       "area" : "area3",
       "isPlayer" : false,
       "position" : {
-        "x" : 185.375,
-        "y" : 138.875
+        "x" : 81.099014,
+        "y" : 182.83362
       },
       "equipmentItems" : [
         {
           "index" : 0,
           "template" : "poisonDagger",
-          "damage" : 31,
+          "damage" : 40,
+          "armor" : null
+        }
+      ],
+      "inventoryItems" : [
+      ]
+    },
+    {
+      "creatureClass" : "com.easternsauce.libgdxgame.creature.Ghost",
+      "id" : "Ghost_695918973",
+      "spawnPointId" : "20",
+      "playerSpawnPointId" : null,
+      "healthPoints" : 100.0,
+      "area" : "area3",
+      "isPlayer" : false,
+      "position" : {
+        "x" : 166.08911,
+        "y" : 185.28506
+      },
+      "equipmentItems" : [
+      ],
+      "inventoryItems" : [
+      ]
+    },
+    {
+      "creatureClass" : "com.easternsauce.libgdxgame.creature.Skeleton",
+      "id" : "Skeleton_416462860",
+      "spawnPointId" : "30",
+      "playerSpawnPointId" : null,
+      "healthPoints" : 100.0,
+      "area" : "area1",
+      "isPlayer" : false,
+      "position" : {
+        "x" : 132.11752,
+        "y" : 4.745747
+      },
+      "equipmentItems" : [
+        {
+          "index" : 0,
+          "template" : "crossbow",
+          "damage" : 39,
           "armor" : null
         }
       ],
@@ -1312,20 +1374,21 @@
     },
     {
       "creatureClass" : "com.easternsauce.libgdxgame.creature.Skeleton",
-      "id" : "Skeleton_1486748689",
-      "spawnPointId" : "19",
+      "id" : "Skeleton_413372042",
+      "spawnPointId" : "7",
+      "playerSpawnPointId" : null,
       "healthPoints" : 100.0,
       "area" : "area3",
       "isPlayer" : false,
       "position" : {
-        "x" : 168.2285,
-        "y" : 182.98346
+        "x" : 55.56713,
+        "y" : 114.523384
       },
       "equipmentItems" : [
         {
           "index" : 0,
-          "template" : "ironSword",
-          "damage" : 51,
+          "template" : "crossbow",
+          "damage" : 44,
           "armor" : null
         }
       ],

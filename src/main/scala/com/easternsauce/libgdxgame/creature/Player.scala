@@ -20,6 +20,8 @@ class Player(val game: RpgGame, val id: String) extends Creature {
 
   override val walkSound: Option[Sound] = Some(RpgGame.manager.get(AssetPaths.runningSound, classOf[Sound]))
 
+  var onSpawnPointId: Option[String] = None
+
   setBounds(0, 0, creatureWidth, creatureHeight)
   setOrigin(creatureWidth / 2f, creatureHeight / 2f)
 
@@ -60,5 +62,12 @@ class Player(val game: RpgGame, val id: String) extends Creature {
 
     // we need to reverse y due to mouse coordinates being in different system
     facingVector = new Vector2(mouseX - centerX, (Gdx.graphics.getHeight - mouseY) - centerY).nor()
+  }
+
+  def interact(): Unit = {
+    if (onSpawnPointId.nonEmpty) {
+      playerSpawnPoint = Some(area.get.playerSpawns.filter(_.id == onSpawnPointId.get).head)
+      playerSpawnPoint.get.onRespawnSet()
+    }
   }
 }

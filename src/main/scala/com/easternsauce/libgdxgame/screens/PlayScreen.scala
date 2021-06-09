@@ -4,6 +4,7 @@ import com.badlogic.gdx.Input.Buttons
 import com.badlogic.gdx.graphics.{Color, GL20}
 import com.badlogic.gdx.{Gdx, Input, Screen}
 import com.easternsauce.libgdxgame.RpgGame
+import com.easternsauce.libgdxgame.creature.Player
 import com.easternsauce.libgdxgame.projectile.Arrow
 import com.easternsauce.libgdxgame.util.{EsBatch, EsTimer}
 
@@ -106,6 +107,8 @@ class PlayScreen(val game: RpgGame) extends Screen {
   }
 
   def handleInput(): Unit = {
+
+    if (Gdx.input.isKeyJustPressed(Input.Keys.E)) game.player.asInstanceOf[Player].interact()
 
     if (Gdx.input.isKeyJustPressed(Input.Keys.F5)) game.savefileManager.saveGame()
 

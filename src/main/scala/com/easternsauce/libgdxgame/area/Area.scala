@@ -4,7 +4,7 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.{Color, OrthographicCamera}
 import com.badlogic.gdx.maps.tiled.{TiledMapTileLayer, TmxMapLoader}
 import com.easternsauce.libgdxgame.RpgGame
-import com.easternsauce.libgdxgame.area.traits.{CollisionDetection, EnemySpawns, PhysicalTerrain, TiledGrid}
+import com.easternsauce.libgdxgame.area.traits._
 import com.easternsauce.libgdxgame.creature.traits.{Creature, Enemy}
 import com.easternsauce.libgdxgame.items.Item
 import com.easternsauce.libgdxgame.pathfinding.AStarNode
@@ -23,6 +23,7 @@ class Area(
   val mapScale: Float
 ) extends CollisionDetection
     with EnemySpawns
+    with PlayerSpawns
     with PhysicalTerrain
     with TiledGrid {
 
@@ -32,12 +33,12 @@ class Area(
 
   val aStarNodeList: ListBuffer[AStarNode] = ListBuffer()
 
-
   initPhysicalTerrain(map, mapScale)
 
   createContactListener(world)
 
   loadEnemySpawns(this, areaFilesLocation)
+  loadPLayerSpawns(this, areaFilesLocation)
 
   setupPathfindingGraph()
 
@@ -88,6 +89,9 @@ class Area(
       })
 
     }
+    playerSpawns.foreach(_.update())
+    playerSpawns.foreach(_.draw(batch.spriteBatch))
+
   }
 
   def setView(camera: OrthographicCamera): Unit = {
@@ -177,19 +181,19 @@ class Area(
       tryAddingEdge(aStarNodes(y)(x), x, y + 1, 10) // top
       if (
         x - 1 >= 0 && y - 1 >= 0
-          && traversable(y)(x - 1) && traversable(y - 1)(x)
+        && traversable(y)(x - 1) && traversable(y - 1)(x)
       ) tryAddingEdge(aStarNodes(y)(x), x - 1, y - 1, 14)
       if (
         x + 1 < widthInTiles && y - 1 >= 0
-          && traversable(y)(x + 1) && traversable(y - 1)(x)
+        && traversable(y)(x + 1) && traversable(y - 1)(x)
       ) tryAddingEdge(aStarNodes(y)(x), x + 1, y - 1, 14)
       if (
         x - 1 >= 0 && y + 1 < heightInTiles
-          && traversable(y)(x - 1) && traversable(y + 1)(x)
+        && traversable(y)(x - 1) && traversable(y + 1)(x)
       ) tryAddingEdge(aStarNodes(y)(x), x - 1, y + 1, 14)
       if (
         x + 1 < widthInTiles && y + 1 < heightInTiles
-          && traversable(y)(x + 1) && traversable(y + 1)(x)
+        && traversable(y)(x + 1) && traversable(y + 1)(x)
       ) tryAddingEdge(aStarNodes(y)(x), x + 1, y + 1, 14)
 
     }

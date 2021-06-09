@@ -17,7 +17,7 @@ trait EnemySpawns {
   val enemySpawns: ListBuffer[EnemySpawnPoint] = ListBuffer()
 
   def loadEnemySpawns(area: Area, areaFilesLocation: String): Unit = {
-    val source = scala.io.Source.fromFile(areaFilesLocation + "/spawns.json")
+    val source = scala.io.Source.fromFile(areaFilesLocation + "/enemy_spawns.json")
     val lines =
       try source.mkString
       finally source.close()

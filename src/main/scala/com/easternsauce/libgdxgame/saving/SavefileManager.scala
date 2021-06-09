@@ -72,6 +72,7 @@ case class CreatureSavedata(
   creatureClass: String,
   id: String,
   spawnPointId: Option[String],
+  playerSpawnPointId: Option[String],
   healthPoints: Float,
   area: String,
   isPlayer: Boolean,
