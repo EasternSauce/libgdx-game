@@ -7,7 +7,7 @@ import com.easternsauce.libgdxgame.RpgGame
 import com.easternsauce.libgdxgame.assets.AssetPaths
 import com.easternsauce.libgdxgame.creature.traits.Creature
 import com.easternsauce.libgdxgame.items.Item
-import com.easternsauce.libgdxgame.util.EsDirection
+import com.easternsauce.libgdxgame.util.{EsDirection, EsTimer}
 
 class Player(val game: RpgGame, val id: String) extends Creature {
 
@@ -21,6 +21,9 @@ class Player(val game: RpgGame, val id: String) extends Creature {
   override val walkSound: Option[Sound] = Some(RpgGame.manager.get(AssetPaths.runningSound, classOf[Sound]))
 
   var onSpawnPointId: Option[String] = None
+
+  var respawning: Boolean = false
+  val respawnTimer: EsTimer = EsTimer()
 
   setBounds(0, 0, creatureWidth, creatureHeight)
   setOrigin(creatureWidth / 2f, creatureHeight / 2f)
@@ -62,6 +65,20 @@ class Player(val game: RpgGame, val id: String) extends Creature {
 
     // we need to reverse y due to mouse coordinates being in different system
     facingVector = new Vector2(mouseX - centerX, (Gdx.graphics.getHeight - mouseY) - centerY).nor()
+  }
+
+  override def onDeath(): Unit = {
+    super.onDeath()
+
+    respawnTimer.restart()
+    respawning = true
+    sprinting = false
+
+    //GameSystem.hud.bossHealthBar.hide()
+
+    // TODO: add music manager
+    //Assets.abandonedPlainsMusic.stop()
+    //Assets.fireDemonMusic.stop()
   }
 
   def interact(): Unit = {

@@ -11,7 +11,7 @@ import com.easternsauce.libgdxgame.ability.{BowAttack, SwordAttack, TridentAttac
 import com.easternsauce.libgdxgame.area.Area
 import com.easternsauce.libgdxgame.effect.Effect
 import com.easternsauce.libgdxgame.items.Item
-import com.easternsauce.libgdxgame.saving.{CreatureSavedata, ItemSavedata, PositionSavedata}
+import com.easternsauce.libgdxgame.saving.{CreatureSavedata, ItemSavedata, PlayerSpawnPointSavedata, PositionSavedata}
 import com.easternsauce.libgdxgame.spawns.PlayerSpawnPoint
 import com.easternsauce.libgdxgame.util.{EsBatch, EsDirection, EsTimer}
 
@@ -67,7 +67,7 @@ trait Creature extends Sprite with PhysicalBody with AnimatedWalk with Inventory
   var abilityList: mutable.ListBuffer[Ability] = ListBuffer()
   var attackList: mutable.ListBuffer[Attack] = ListBuffer()
 
-  protected val effectMap: mutable.Map[String, Effect] = mutable.Map()
+  val effectMap: mutable.Map[String, Effect] = mutable.Map()
 
   var swordAttack: SwordAttack = _
   var unarmedAttack: UnarmedAttack = _
@@ -432,8 +432,9 @@ trait Creature extends Sprite with PhysicalBody with AnimatedWalk with Inventory
 
     spawnPointId = creatureData.spawnPointId
 
-    if (creatureData.playerSpawnPointId.nonEmpty) {
-      playerSpawnPoint = Some(area.get.playerSpawns.filter(_.id == creatureData.playerSpawnPointId.get).head)
+    if (creatureData.playerSpawnPoint.nonEmpty) {
+      val area = game.areaMap(creatureData.playerSpawnPoint.get.area)
+      playerSpawnPoint = Some(area.playerSpawns.filter(_.id == creatureData.playerSpawnPoint.get.id).head)
     }
 
     if (creatureData.isPlayer) game.setPlayer(this)
@@ -461,7 +462,10 @@ trait Creature extends Sprite with PhysicalBody with AnimatedWalk with Inventory
       area = area.get.id,
       isPlayer = isPlayer,
       position = PositionSavedata(pos.x, pos.y),
-      playerSpawnPointId = if (playerSpawnPoint.nonEmpty) Some(playerSpawnPoint.get.id) else None,
+      playerSpawnPoint =
+        if (playerSpawnPoint.nonEmpty)
+          Some(PlayerSpawnPointSavedata(playerSpawnPoint.get.area.id, playerSpawnPoint.get.id))
+        else None,
       inventoryItems = inventoryItems.map {
         case (index, item) => ItemSavedata(index, item.template.id, item.damage, item.armor)
       }.toList,

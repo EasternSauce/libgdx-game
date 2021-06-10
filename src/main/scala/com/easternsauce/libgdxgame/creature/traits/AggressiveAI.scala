@@ -22,7 +22,8 @@ trait AggressiveAI {
   val circlingDecisionMaxTime = 0.2f
   var circlingClockwise = true
 
-  val recalculatePathTimer: EsTimer = EsTimer()
+  val aggroRecalculatePathTimer: EsTimer = EsTimer(true)
+  val recalculatePathTimer: EsTimer = EsTimer(true)
 
   var goToSpawnTime: Float = _
 
@@ -36,7 +37,16 @@ trait AggressiveAI {
         .filter(creature => !creature.isEnemy)
         .foreach(otherCreature => {
           if (otherCreature.isAlive && creature.distanceTo(otherCreature) < aggroDistance) {
-            aggroOnCreature(creature, otherCreature)
+
+            if (aggroRecalculatePathTimer.time > 1.5f) {
+              calculatePath(creature.area.get, creature, otherCreature.pos)
+
+              if (path.length < 20) {
+                aggroOnCreature(creature, otherCreature)
+              }
+              path.clear()
+              aggroRecalculatePathTimer.restart()
+            }
           }
         })
     }
@@ -47,6 +57,7 @@ trait AggressiveAI {
     circlingDecisionTimer.restart()
     recalculatePathTimer.restart()
     calculatePath(creature.area.get, creature, aggroedTarget.get.pos)
+
   }
 
   def decideIfCircling(creature: Creature): Unit = {

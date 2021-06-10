@@ -11,7 +11,7 @@ import com.badlogic.gdx.math.Vector3
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer
 import com.badlogic.gdx.utils.viewport.{FitViewport, Viewport}
 import com.badlogic.gdx.{Game, Gdx, Input}
-import com.easternsauce.libgdxgame.RpgGame.defaultFont
+import com.easternsauce.libgdxgame.RpgGame.{defaultFont, hugeFont}
 import com.easternsauce.libgdxgame.area.{Area, AreaGate}
 import com.easternsauce.libgdxgame.assets.AssetPaths
 import com.easternsauce.libgdxgame.creature.traits.Creature
@@ -35,7 +35,7 @@ class RpgGame extends Game {
 
   var allAreaCreaturesMap: mutable.Map[String, Creature] = mutable.Map()
 
-  var player: Creature = _
+  var player: Player = _
 
   var areaMap: mutable.Map[String, Area] = _
 
@@ -79,6 +79,7 @@ class RpgGame extends Game {
     atlas = new TextureAtlas("assets/atlas/packed_atlas.atlas")
 
     defaultFont = RpgGame.loadFont(AssetPaths.youngSerif, 16)
+    hugeFont = RpgGame.loadFont(AssetPaths.youngSerif, 64)
 
     playScreen = new PlayScreen(this)
     mainMenuScreen = new MainMenuScreen(this)
@@ -115,8 +116,9 @@ class RpgGame extends Game {
     setPlayer(creature1)
   }
 
-  def setPlayer(creature1: Creature): Unit = {
-    player = creature1
+  def setPlayer(creature: Creature): Unit = {
+    if (!creature.isPlayer) throw new RuntimeException("creature is not a player")
+    player = creature.asInstanceOf[Player]
     inventoryWindow = new InventoryWindow(this)
     healthStaminaBar = new PlayerHealthStaminaBar(this)
 
@@ -201,6 +203,7 @@ object RpgGame {
   val TiledMapCellSize: Float = 2f
 
   var defaultFont: BitmapFont = _
+  var hugeFont: BitmapFont = _
 
   def loadFont(assetPath: String, size: Int): BitmapFont = {
     val generator = new FreeTypeFontGenerator(Gdx.files.internal(assetPath))

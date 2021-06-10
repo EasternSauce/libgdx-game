@@ -38,6 +38,7 @@ class PlayScreen(val game: RpgGame) extends Screen {
 
     game.healthStaminaBar.update()
 
+    managePlayerRespawns(game.player)
   }
 
   override def render(delta: Float): Unit = {
@@ -83,6 +84,8 @@ class PlayScreen(val game: RpgGame) extends Screen {
       RpgGame.WindowHeight - 3
     )
 
+    renderDeathScreen(hudBatch)
+
     hudBatch.spriteBatch.end()
 
     game.b2DebugRenderer.render(game.currentArea.get.world, game.camera.combined)
@@ -104,6 +107,40 @@ class PlayScreen(val game: RpgGame) extends Screen {
   override def dispose(): Unit = {
     game.areaMap.values.foreach(_.dispose())
     game.atlas.dispose()
+  }
+
+  def managePlayerRespawns(player: Player) {
+    if (player.respawning && player.respawnTimer.time > 3f) {
+      player.respawning = false
+
+      player.healthPoints = game.player.maxHealthPoints
+      player.staminaPoints = game.player.maxStaminaPoints
+      player.isAttacking = false
+      player.staminaOveruse = false
+      player.effectMap("staminaRegenStopped").stop()
+
+      val area = game.player.playerSpawnPoint.get.area
+      game.currentArea = Option(area)
+      area.reset(game)
+
+      game.player.assignToArea(area, game.player.playerSpawnPoint.get.posX, game.player.playerSpawnPoint.get.posY)
+
+      game.player.setRotation(0f)
+
+      //GameSystem.stopBossBattleMusic()
+    }
+  }
+
+  private def renderDeathScreen(batch: EsBatch) = {
+    if (game.player.respawning) {
+      RpgGame.hugeFont.setColor(Color.RED)
+      RpgGame.hugeFont.draw(
+        batch.spriteBatch,
+        "YOU DIED",
+        RpgGame.WindowWidth / 2f - 160,
+        RpgGame.WindowHeight / 2 + 70
+      )
+    }
   }
 
   def handleInput(): Unit = {

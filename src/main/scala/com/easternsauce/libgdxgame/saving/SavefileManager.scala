@@ -13,11 +13,13 @@ import scala.collection.mutable
 
 class SavefileManager(val game: RpgGame) {
 
+  implicit val decodePlayerSpawnPointSave: Decoder[PlayerSpawnPointSavedata] = deriveDecoder[PlayerSpawnPointSavedata]
   implicit val decodeItemSave: Decoder[ItemSavedata] = deriveDecoder[ItemSavedata]
   implicit val decodeCreatureSave: Decoder[CreatureSavedata] = deriveDecoder[CreatureSavedata]
   implicit val decodeSaveFile: Decoder[SaveFile] = deriveDecoder[SaveFile]
   implicit val decodePositionSave: Decoder[PositionSavedata] = deriveDecoder[PositionSavedata]
 
+  implicit val encodePlayerSpawnPointSave: Encoder[PlayerSpawnPointSavedata] = deriveEncoder[PlayerSpawnPointSavedata]
   implicit val encodeItemSave: Encoder[ItemSavedata] = deriveEncoder[ItemSavedata]
   implicit val encodeCreatureSave: Encoder[CreatureSavedata] = deriveEncoder[CreatureSavedata]
   implicit val encodeSaveFile: Encoder[SaveFile] = deriveEncoder[SaveFile]
@@ -67,12 +69,13 @@ class SavefileManager(val game: RpgGame) {
 
 }
 
+case class PlayerSpawnPointSavedata(area: String, id: String)
 case class ItemSavedata(index: Int, template: String, damage: Option[Int], armor: Option[Int])
 case class CreatureSavedata(
   creatureClass: String,
   id: String,
   spawnPointId: Option[String],
-  playerSpawnPointId: Option[String],
+  playerSpawnPoint: Option[PlayerSpawnPointSavedata],
   healthPoints: Float,
   area: String,
   isPlayer: Boolean,
