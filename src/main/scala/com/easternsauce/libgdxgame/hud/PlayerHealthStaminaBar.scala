@@ -23,7 +23,13 @@ class PlayerHealthStaminaBar(val game: RpgGame) {
 
   def update(): Unit = {
     maxHealthRect = new Rectangle(10, 40, 100, 10)
-    healthRect = new Rectangle(10, 40, 100 * game.player.healthPoints / game.player.maxHealthPoints, 10)
+    healthRect = new Rectangle(
+      10,
+      40,
+      100 * (if (game.player.healthPoints > game.player.maxHealthPoints) 1f
+             else game.player.healthPoints / game.player.maxHealthPoints),
+      10
+    )
     maxStaminaRect = new Rectangle(10, 25, 100, 10)
     staminaRect = new Rectangle(10, 25, 100 * game.player.staminaPoints / game.player.maxStaminaPoints, 10)
   }

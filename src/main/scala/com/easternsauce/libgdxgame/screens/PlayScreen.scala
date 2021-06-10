@@ -88,7 +88,9 @@ class PlayScreen(val game: RpgGame) extends Screen {
 
     hudBatch.spriteBatch.end()
 
-    game.b2DebugRenderer.render(game.currentArea.get.world, game.camera.combined)
+    if (game.debugMode) {
+      game.b2DebugRenderer.render(game.currentArea.get.world, game.camera.combined)
+    }
 
   }
 
@@ -145,7 +147,9 @@ class PlayScreen(val game: RpgGame) extends Screen {
 
   def handleInput(): Unit = {
 
-    if (Gdx.input.isKeyJustPressed(Input.Keys.E)) game.player.asInstanceOf[Player].interact()
+    if (Gdx.input.isKeyJustPressed(Input.Keys.F11)) game.debugMode = !game.debugMode
+
+    if (Gdx.input.isKeyJustPressed(Input.Keys.E)) game.player.interact()
 
     if (Gdx.input.isKeyJustPressed(Input.Keys.F5)) game.savefileManager.saveGame()
 

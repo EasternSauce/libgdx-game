@@ -81,12 +81,15 @@ class Area(
     for (creature <- creaturesMap.values.filter(_.isEnemy)) {
       val enemy = creature.asInstanceOf[Enemy]
 
-      // render debug path
-      enemy.path.foreach(node => {
-        batch.shapeDrawer.setColor(Color.RED)
-        val pos = enemy.area.get.getTileCenter(node.x, node.y)
-        batch.shapeDrawer.filledCircle(pos.x, pos.y, 0.1f)
-      })
+      if (game.debugMode) {
+        // render debug path
+        enemy.path.foreach(node => {
+          batch.shapeDrawer.setColor(Color.RED)
+          val pos = enemy.area.get.getTileCenter(node.x, node.y)
+          batch.shapeDrawer.filledCircle(pos.x, pos.y, 0.1f)
+        })
+      }
+
 
     }
     playerSpawns.foreach(_.update())

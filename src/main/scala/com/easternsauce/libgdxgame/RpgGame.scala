@@ -27,7 +27,6 @@ import scala.collection.mutable.ListBuffer
 import scala.util.Random
 
 class RpgGame extends Game {
-
   var savefileManager: SavefileManager = _
 
   var mainMenuScreen: MainMenuScreen = _
@@ -64,6 +63,8 @@ class RpgGame extends Game {
   var inventoryWindow: InventoryWindow = _
 
   var healthStaminaBar: PlayerHealthStaminaBar = _
+
+  var debugMode = false
 
   override def create(): Unit = {
     RpgGame.manager = new AssetManager()
