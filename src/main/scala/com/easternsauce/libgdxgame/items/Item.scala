@@ -40,7 +40,7 @@ class Item private (
 }
 
 object Item {
-  def generateFromTemplate(templateId: String): Item = {
+  def generateFromTemplate(templateId: String, lootPile: Option[LootPile] = None): Item = {
     val template = ItemTemplate.getItemTemplate(templateId)
     val damage = if (template.damage.nonEmpty) {
       Some(Math.ceil(template.damage.get * (0.75f + 0.25f * RpgGame.Random.nextFloat())).toInt)
@@ -50,7 +50,7 @@ object Item {
       Some(Math.ceil(template.armor.get * (0.75f + 0.25f * RpgGame.Random.nextFloat())).toInt)
     } else None
 
-    new Item(template, damage, armor)
+    new Item(template, damage, armor, lootPile)
   }
 
   def loadFromSavedata(savedata: ItemSavedata): Item = {

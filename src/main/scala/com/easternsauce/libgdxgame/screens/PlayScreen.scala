@@ -90,6 +90,8 @@ class PlayScreen(val game: RpgGame) extends Screen {
 
     game.notificationText.render(hudBatch)
 
+    game.lootPickupMenu.render(hudBatch)
+
     hudBatch.spriteBatch.end()
 
     if (game.debugMode) {
@@ -116,7 +118,7 @@ class PlayScreen(val game: RpgGame) extends Screen {
   }
 
   def managePlayerRespawns(player: Player) {
-    if (player.respawning && player.respawnTimer.time > 3f) {
+    if (player.respawning && player.respawnTimer.time > game.playerRespawnTime) {
       player.respawning = false
 
       player.healthPoints = game.player.maxHealthPoints
@@ -174,14 +176,14 @@ class PlayScreen(val game: RpgGame) extends Screen {
         game.setScreen(game.mainMenuScreen)
       }
 
-    if (game.inventoryWindow.visible) {
-      if (Gdx.input.isButtonJustPressed(Buttons.LEFT)) {
+    if (Gdx.input.isButtonJustPressed(Buttons.LEFT)) {
+      if (game.inventoryWindow.visible) {
         game.inventoryWindow.handleMouseClicked()
-
+      } else if (game.lootPickupMenu.visible) {
+        game.lootPickupMenu.handleMouseClicked()
+      } else {
+        game.player.currentAttack.perform()
       }
-    } else {
-      if (Gdx.input.isButtonPressed(Buttons.LEFT)) game.player.currentAttack.perform()
-
     }
 
     game.handlePlayerMovement()

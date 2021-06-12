@@ -2,9 +2,13 @@ package com.easternsauce.libgdxgame.creature.traits
 
 import com.badlogic.gdx.math.Vector2
 
+import scala.collection.mutable
+
 trait Enemy extends Creature with AggressiveAI {
 
   override val isEnemy: Boolean = true
+
+  protected val dropTable: mutable.Map[String, Float] = mutable.Map()
 
   override def calculateFacingVector(): Unit = {
     if (aggroedTarget.nonEmpty) {
@@ -35,4 +39,12 @@ trait Enemy extends Creature with AggressiveAI {
     }
 
   }
+
+  override def onDeath(): Unit = {
+    super.onDeath()
+
+    area.get.spawnLootPile(area.get, pos.x, pos.y, dropTable)
+
+  }
+
 }

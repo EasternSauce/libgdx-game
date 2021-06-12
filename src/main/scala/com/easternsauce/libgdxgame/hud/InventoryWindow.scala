@@ -36,7 +36,7 @@ class InventoryWindow(game: RpgGame) {
 
   private val totalRows = 5
   private val totalColumns = 8
-  private val inventoryTotalSlots = totalRows * totalColumns
+  val inventoryTotalSlots: Int = totalRows * totalColumns
   private val margin = 35
   private val slotSize = 40
   private val spaceBetweenSlots = 12

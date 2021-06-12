@@ -34,4 +34,14 @@ class Wolf(val game: RpgGame, val id: String) extends Enemy {
 
   setRegion(standStillImage(currentDirection))
 
+  dropTable.addAll(
+    List(
+      "ringmailGreaves" -> 0.1f,
+      "leatherArmor" -> 0.05f,
+      "hideGloves" -> 0.1f,
+      "leatherHelmet" -> 0.1f,
+      "healingPowder" -> 0.5f
+    )
+  )
+
 }

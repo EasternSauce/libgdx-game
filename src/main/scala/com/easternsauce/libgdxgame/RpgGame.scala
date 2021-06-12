@@ -16,8 +16,8 @@ import com.easternsauce.libgdxgame.area.{Area, AreaGate}
 import com.easternsauce.libgdxgame.assets.AssetPaths
 import com.easternsauce.libgdxgame.creature.traits.Creature
 import com.easternsauce.libgdxgame.creature.{Player, Skeleton, Wolf}
-import com.easternsauce.libgdxgame.hud.{InventoryWindow, NotificationText, PlayerHealthStaminaBar}
-import com.easternsauce.libgdxgame.items.ItemTemplate
+import com.easternsauce.libgdxgame.hud.{InventoryWindow, LootPickupMenu, NotificationText, PlayerHealthStaminaBar}
+import com.easternsauce.libgdxgame.items.{ItemTemplate, LootPile}
 import com.easternsauce.libgdxgame.saving.SavefileManager
 import com.easternsauce.libgdxgame.screens.{MainMenuScreen, PlayScreen}
 import com.easternsauce.libgdxgame.util.EsDirection
@@ -67,6 +67,10 @@ class RpgGame extends Game {
   var debugMode = false
 
   val notificationText: NotificationText = new NotificationText()
+
+  val playerRespawnTime = 3f
+
+  val lootPickupMenu = new LootPickupMenu(this)
 
   override def create(): Unit = {
     RpgGame.manager = new AssetManager()

@@ -25,7 +25,8 @@ class Area(
     with EnemySpawns
     with PlayerSpawns
     with PhysicalTerrain
-    with TiledGrid {
+    with TiledGrid
+    with LootManagement {
 
   val creaturesMap: mutable.Map[String, Creature] = mutable.Map()
 
@@ -65,14 +66,18 @@ class Area(
 
     arrowList.filterInPlace(!toBeDeleted.contains(_))
 
+    updateLoot()
+
   }
 
   def render(batch: EsBatch): Unit = {
     playerSpawns.foreach(_.draw(batch.spriteBatch))
 
     creaturesMap.values.filter(!_.isAlive).foreach(_.draw(batch.spriteBatch))
-    creaturesMap.values.filter(_.isAlive).foreach(_.draw(batch.spriteBatch))
 
+    lootPileList.foreach(_.draw(batch.spriteBatch))
+
+    creaturesMap.values.filter(_.isAlive).foreach(_.draw(batch.spriteBatch))
 
     for (creature <- creaturesMap.values) {
       creature.renderAbilities(batch)
@@ -94,7 +99,6 @@ class Area(
           batch.shapeDrawer.filledCircle(pos.x, pos.y, 0.1f)
         })
       }
-
 
     }
 

@@ -6,6 +6,7 @@ import com.easternsauce.libgdxgame.ability.traits.Ability
 import com.easternsauce.libgdxgame.area.{AreaGate, TerrainTile}
 import com.easternsauce.libgdxgame.creature.Player
 import com.easternsauce.libgdxgame.creature.traits.Creature
+import com.easternsauce.libgdxgame.items.LootPile
 import com.easternsauce.libgdxgame.projectile.Arrow
 import com.easternsauce.libgdxgame.spawns.PlayerSpawnPoint
 
@@ -34,6 +35,8 @@ trait CollisionDetection {
               arrow.onCollideWithTerrain(areaTile)
             case (player: Player, playerSpawnPoint: PlayerSpawnPoint) =>
               player.onSpawnPointId = Some(playerSpawnPoint.id)
+            case (player: Player, lootPile: LootPile) =>
+              game.lootPickupMenu.showLootPile(lootPile)
             case _ =>
           }
         }
@@ -52,6 +55,8 @@ trait CollisionDetection {
               creature.passedGateRecently = false
             case (player: Player, playerSpawnPoint: PlayerSpawnPoint) =>
               player.onSpawnPointId = None
+            case (player: Player, lootPile: LootPile) =>
+              game.lootPickupMenu.hideLootPile(lootPile)
             case _ =>
           }
         }
