@@ -39,6 +39,8 @@ class SavefileManager(val game: RpgGame) {
     writer.write(saveFile.asJson.toString())
 
     writer.close()
+
+    game.notificationText.showNotification("Saving game...")
   }
 
   def loadGame(): Unit = {

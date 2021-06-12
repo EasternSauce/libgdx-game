@@ -16,7 +16,7 @@ import com.easternsauce.libgdxgame.area.{Area, AreaGate}
 import com.easternsauce.libgdxgame.assets.AssetPaths
 import com.easternsauce.libgdxgame.creature.traits.Creature
 import com.easternsauce.libgdxgame.creature.{Player, Skeleton, Wolf}
-import com.easternsauce.libgdxgame.hud.{InventoryWindow, PlayerHealthStaminaBar}
+import com.easternsauce.libgdxgame.hud.{InventoryWindow, NotificationText, PlayerHealthStaminaBar}
 import com.easternsauce.libgdxgame.items.ItemTemplate
 import com.easternsauce.libgdxgame.saving.SavefileManager
 import com.easternsauce.libgdxgame.screens.{MainMenuScreen, PlayScreen}
@@ -65,6 +65,8 @@ class RpgGame extends Game {
   var healthStaminaBar: PlayerHealthStaminaBar = _
 
   var debugMode = false
+
+  val notificationText: NotificationText = new NotificationText()
 
   override def create(): Unit = {
     RpgGame.manager = new AssetManager()

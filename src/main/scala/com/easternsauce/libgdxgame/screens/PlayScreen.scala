@@ -39,6 +39,8 @@ class PlayScreen(val game: RpgGame) extends Screen {
     game.healthStaminaBar.update()
 
     managePlayerRespawns(game.player)
+
+    game.notificationText.update()
   }
 
   override def render(delta: Float): Unit = {
@@ -85,6 +87,8 @@ class PlayScreen(val game: RpgGame) extends Screen {
     )
 
     renderDeathScreen(hudBatch)
+
+    game.notificationText.render(hudBatch)
 
     hudBatch.spriteBatch.end()
 
@@ -147,7 +151,15 @@ class PlayScreen(val game: RpgGame) extends Screen {
 
   def handleInput(): Unit = {
 
-    if (Gdx.input.isKeyJustPressed(Input.Keys.F11)) game.debugMode = !game.debugMode
+    if (Gdx.input.isKeyJustPressed(Input.Keys.F11)) {
+      if (!game.debugMode) {
+        game.notificationText.showNotification("Debug mode activated")
+        game.debugMode = true
+      } else {
+        game.notificationText.showNotification("Debug mode deactivated")
+        game.debugMode = false
+      }
+    }
 
     if (Gdx.input.isKeyJustPressed(Input.Keys.E)) game.player.interact()
 
