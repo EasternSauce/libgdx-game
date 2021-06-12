@@ -61,13 +61,18 @@ class Area(
       }
     }
 
+    playerSpawns.foreach(_.update())
+
     arrowList.filterInPlace(!toBeDeleted.contains(_))
 
   }
 
   def render(batch: EsBatch): Unit = {
+    playerSpawns.foreach(_.draw(batch.spriteBatch))
+
     creaturesMap.values.filter(!_.isAlive).foreach(_.draw(batch.spriteBatch))
     creaturesMap.values.filter(_.isAlive).foreach(_.draw(batch.spriteBatch))
+
 
     for (creature <- creaturesMap.values) {
       creature.renderAbilities(batch)
@@ -92,8 +97,6 @@ class Area(
 
 
     }
-    playerSpawns.foreach(_.update())
-    playerSpawns.foreach(_.draw(batch.spriteBatch))
 
   }
 

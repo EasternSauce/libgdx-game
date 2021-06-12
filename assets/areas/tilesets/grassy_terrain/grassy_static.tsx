@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tileset version="1.5" tiledversion="1.6.0" name="grassy_static" tilewidth="16" tileheight="16" tilecount="143" columns="11">
+<tileset version="1.5" tiledversion="1.6.0" name="grassy_static" tilewidth="16" tileheight="16" tilecount="143" columns="11" objectalignment="bottomleft">
  <image source="TileSet/StaticTiles.png" width="176" height="208"/>
  <tile id="0">
   <properties>

@@ -32,7 +32,7 @@ class PlayScreen(val game: RpgGame) extends Screen {
       game.creaturesToMove.clear()
     }
 
-    game.adjustCamera(game.player)
+    game.updateCamera(game.player)
 
     game.currentArea.get.setView(game.camera)
 

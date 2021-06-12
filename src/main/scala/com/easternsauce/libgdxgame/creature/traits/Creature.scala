@@ -147,8 +147,8 @@ trait Creature extends Sprite with PhysicalBody with AnimatedWalk with Inventory
 
     currentAttack.update()
 
-    if (staminaDrain >= 0.3f) {
-      takeStaminaDamage(11f)
+    if (staminaDrain > 0.005f) {
+      takeStaminaDamage(0.2f)
 
       staminaDrain = 0.0f
     }

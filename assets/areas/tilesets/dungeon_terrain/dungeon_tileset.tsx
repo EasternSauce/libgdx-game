@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tileset version="1.5" tiledversion="1.6.0" name="Dungeon tileset" tilewidth="16" tileheight="16" tilecount="288" columns="24">
+<tileset version="1.5" tiledversion="1.6.0" name="Dungeon tileset" tilewidth="16" tileheight="16" tilecount="288" columns="24" objectalignment="bottomleft">
  <image source="Dungeon tileset/Dungeon tileset.png" width="384" height="192"/>
  <tile id="0">
   <properties>

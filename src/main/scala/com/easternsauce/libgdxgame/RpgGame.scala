@@ -170,12 +170,12 @@ class RpgGame extends Game {
 
   }
 
-  def adjustCamera(creature: Creature): Unit = {
+  def updateCamera(creature: Creature): Unit = {
 
     val camPosition = camera.position
 
-    camPosition.x = creature.pos.x
-    camPosition.y = creature.pos.y
+    camPosition.x = (math.floor(creature.pos.x * 100) / 100).toFloat
+    camPosition.y = (math.floor(creature.pos.y * 100) / 100).toFloat
 
     camera.update()
 
