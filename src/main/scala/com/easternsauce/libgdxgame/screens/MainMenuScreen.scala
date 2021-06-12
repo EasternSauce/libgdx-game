@@ -69,6 +69,18 @@ class MainMenuScreen(game: RpgGame) extends Screen {
   val gameplayStarted = false
   var previousNode: Option[MenuOptionNode] = None
 
+  val controlsCheatsheetEntries = List(
+    ("CONTROLS", ""),
+    ("", ""),
+    ("Movement:", "W/S/A/D"),
+    ("Sprint:", "Left Shift"),
+    ("Attack:", "Left Mouse Button"),
+    ("Action:", "E"),
+    ("Inventory:", "I"),
+    ("Save:", "F5"),
+    ("Menu:", "Escape")
+  )
+
   override def show(): Unit = {}
 
   override def render(delta: Float): Unit = {
@@ -102,6 +114,22 @@ class MainMenuScreen(game: RpgGame) extends Screen {
         RpgGame.WindowHeight - (posY + 30 * i)
       )
     }
+
+    RpgGame.defaultFont.setColor(Color.WHITE)
+
+    RpgGame.defaultFont.draw(
+      batch.spriteBatch,
+      controlsCheatsheetEntries.map { case (key, _) => key }.mkString("\n"),
+      RpgGame.WindowWidth - 500,
+      350
+    )
+
+    RpgGame.defaultFont.draw(
+      batch.spriteBatch,
+      controlsCheatsheetEntries.map { case (_, value) => value }.mkString("\n"),
+      RpgGame.WindowWidth - 350,
+      350
+    )
 
     batch.spriteBatch.end()
 

@@ -38,7 +38,7 @@ trait AggressiveAI {
         .foreach(otherCreature => {
           if (otherCreature.isAlive && creature.distanceTo(otherCreature) < aggroDistance) {
 
-            if (aggroRecalculatePathTimer.time > 1.5f) {
+            if (aggroRecalculatePathTimer.time > 0.3f) {
               calculatePath(creature.area.get, creature, otherCreature.pos)
 
               if (path.length < 20) {
@@ -115,7 +115,7 @@ trait AggressiveAI {
       decideIfCircling(creature)
 
       if (targetFound) {
-        if (recalculatePathTimer.time > 1.5f) {
+        if (recalculatePathTimer.time > 0.3f) {
           calculatePath(creature.area.get, creature, aggroedTarget.get.pos)
           recalculatePathTimer.restart()
         }
