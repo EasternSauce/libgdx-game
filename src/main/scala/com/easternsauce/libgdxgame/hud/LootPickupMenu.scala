@@ -1,8 +1,10 @@
 package com.easternsauce.libgdxgame.hud
 
+import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.math.Rectangle
 import com.easternsauce.libgdxgame.RpgGame
+import com.easternsauce.libgdxgame.assets.AssetPaths
 import com.easternsauce.libgdxgame.items.{Item, LootPile}
 import com.easternsauce.libgdxgame.util.EsBatch
 
@@ -74,20 +76,19 @@ class LootPickupMenu(game: RpgGame) {
 
     scheduledToRemove.foreach {
       case (item, lootPile) =>
+        RpgGame.manager.get(AssetPaths.coinBagSound, classOf[Sound]).play(0.3f)
+
         if (lootPile.itemList.size == 1) {
-          //          lootPile match { TODO sounds
-          //            case _: Treasure => Assets.chestOpeningSound.play(0.1f)
-          //            case _: LootPile => Assets.coinBagSound.play(0.3f)
-          //          }
           val world = lootPile.b2body.getWorld
           world.destroyBody(lootPile.b2body)
+
+          lootPile.area.lootPileList -= lootPile
         }
 
         lootPile.itemList -= item
         item.lootPile = None
-
-        lootPile.area.lootPileList -= lootPile
     }
+    scheduledToRemove.clear()
   }
 
   def visible: Boolean = lootPiles.nonEmpty && !game.inventoryWindow.visible
