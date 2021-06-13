@@ -21,6 +21,13 @@ trait LootManagement {
     if (lootPile.itemList.nonEmpty) area.lootPileList += lootPile
   }
 
+  def spawnLootPile(area: Area, x: Float, y: Float, item: Item): Unit = {
+    val lootPile = LootPile(area, x, y)
+    lootPile.itemList += item
+    item.lootPile = Some(lootPile)
+    area.lootPileList += lootPile
+  }
+
   def updateLoot(): Unit = {
     lootPileList.foreach(
       lootPile =>

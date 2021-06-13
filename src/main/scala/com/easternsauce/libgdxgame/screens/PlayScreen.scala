@@ -186,6 +186,12 @@ class PlayScreen(val game: RpgGame) extends Screen {
       }
     }
 
+    if (Gdx.input.isKeyJustPressed(Input.Keys.ALT_LEFT)) {
+      if (game.inventoryWindow.visible) {
+        game.inventoryWindow.tryDropSelectedItem()
+      }
+    }
+
     game.handlePlayerMovement()
 
   }

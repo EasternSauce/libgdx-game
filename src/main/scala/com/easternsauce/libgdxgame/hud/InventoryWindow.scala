@@ -312,4 +312,40 @@ class InventoryWindow(game: RpgGame) {
     inventoryItemBeingMoved = None
     equipmentItemBeingMoved = None
   }
+
+  def tryDropSelectedItem(): Unit = {
+    val x: Float = game.mousePositionWindowScaled.x
+    val y: Float = game.mousePositionWindowScaled.y
+
+    var inventorySlotHovered: Option[Int] = None
+    var equipmentSlotHovered: Option[Int] = None
+
+    inventoryRectangles
+      .filter { case (_, v) => v.contains(x, y) }
+      .foreach { case (k, _) => inventorySlotHovered = Some(k) }
+
+    equipmentRectangles
+      .filter { case (_, v) => v.contains(x, y) }
+      .foreach { case (k, _) => equipmentSlotHovered = Some(k) }
+
+    if (inventorySlotHovered.nonEmpty && game.player.inventoryItems.contains(inventorySlotHovered.get)) {
+      game.currentArea.get.spawnLootPile(
+        game.currentArea.get,
+        game.player.pos.x,
+        game.player.pos.y,
+        game.player.inventoryItems(inventorySlotHovered.get)
+      )
+      game.player.inventoryItems.remove(inventorySlotHovered.get)
+    }
+
+    if (equipmentSlotHovered.nonEmpty && game.player.equipmentItems.contains(inventorySlotHovered.get)) {
+      game.currentArea.get.spawnLootPile(
+        game.currentArea.get,
+        game.player.pos.x,
+        game.player.pos.y,
+        game.player.equipmentItems(equipmentSlotHovered.get)
+      )
+      game.player.equipmentItems.remove(equipmentSlotHovered.get)
+    }
+  }
 }

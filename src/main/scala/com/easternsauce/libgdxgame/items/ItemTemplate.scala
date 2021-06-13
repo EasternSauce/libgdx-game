@@ -212,7 +212,7 @@ object ItemTemplate {
     )
 
     addItemType(
-      ItemTemplate("steelGreaves", "Steel Greaves", "-", icons(8)(1))
+      ItemTemplate("steelGloves", "Steel Gloves", "-", icons(8)(1))
         .setWorth(130)
         .setEquipable(true)
         .setEquipableType("gloves")
