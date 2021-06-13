@@ -33,7 +33,7 @@ trait Creature extends Sprite with PhysicalBody with AnimatedWalk with Inventory
 
   var currentDirection: EsDirection.Value = EsDirection.Down
 
-  var isWalkAnimationActive = false
+  var isMoving = false
   val timeSinceMovedTimer: EsTimer = EsTimer()
 
   val directionalSpeed = 18f
@@ -158,15 +158,15 @@ trait Creature extends Sprite with PhysicalBody with AnimatedWalk with Inventory
       toSetBodyNonInteractive = false
     }
 
-    if (isWalkAnimationActive) setRegion(walkAnimationFrame(currentDirection))
+    if (isMoving) setRegion(walkAnimationFrame(currentDirection))
     else setRegion(standStillImage(currentDirection))
 
     if (bodyExists) {
       setPosition(pos.x - getWidth / 2f, pos.y - getHeight / 2f)
     }
 
-    if (isWalkAnimationActive && timeSinceMovedTimer.time > 0.25f) {
-      isWalkAnimationActive = false
+    if (isMoving && timeSinceMovedTimer.time > 0.25f) {
+      isMoving = false
       if (walkSound.nonEmpty) walkSound.get.stop()
     }
 
@@ -269,7 +269,7 @@ trait Creature extends Sprite with PhysicalBody with AnimatedWalk with Inventory
   }
 
   def onDeath(): Unit = {
-    isWalkAnimationActive = false
+    isMoving = false
     if (walkSound.nonEmpty) walkSound.get.stop()
 
     for (ability <- abilityList) {
@@ -337,9 +337,9 @@ trait Creature extends Sprite with PhysicalBody with AnimatedWalk with Inventory
       if (isAlive) {
         timeSinceMovedTimer.restart()
 
-        if (!isWalkAnimationActive) {
+        if (!isMoving) {
           animationTimer.restart()
-          isWalkAnimationActive = true
+          isMoving = true
           if (walkSound.nonEmpty) walkSound.get.loop(0.1f)
         }
 
@@ -348,7 +348,7 @@ trait Creature extends Sprite with PhysicalBody with AnimatedWalk with Inventory
         currentDirection = dirs.last
 
         val modifiedSpeed =
-          if (isAttacking) directionalSpeed / 2f
+          if (isAttacking) directionalSpeed / 3f
           else if (sprinting && staminaPoints > 0) directionalSpeed * 1.75f
           else directionalSpeed
 

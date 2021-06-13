@@ -20,18 +20,25 @@ class InventoryWindow(game: RpgGame) {
 
   val backgroundImage = new Image(backgroundTexture)
 
-  private val background: Rectangle = new Rectangle(
+  private val backgroundRect: Rectangle = new Rectangle(
     (Gdx.graphics.getWidth * 0.2).toInt,
     (Gdx.graphics.getHeight * 0.3).toInt,
     (Gdx.graphics.getWidth * 0.6).toInt,
     (Gdx.graphics.getHeight * 0.6).toInt
   )
 
+  private val backgroundOuterRect: Rectangle = new Rectangle(
+    backgroundRect.x - (Gdx.graphics.getWidth * 0.1).toInt,
+    backgroundRect.y - (Gdx.graphics.getHeight * 0.1).toInt,
+    backgroundRect.width + (Gdx.graphics.getWidth * 0.2).toInt,
+    backgroundRect.height + (Gdx.graphics.getHeight * 0.2).toInt
+  )
+
   backgroundImage.setBounds(
-    background.x - (Gdx.graphics.getWidth * 0.1).toInt,
-    background.y - (Gdx.graphics.getHeight * 0.1).toInt,
-    background.width + (Gdx.graphics.getWidth * 0.2).toInt,
-    background.height + (Gdx.graphics.getHeight * 0.2).toInt
+    backgroundOuterRect.x,
+    backgroundOuterRect.y,
+    backgroundOuterRect.width,
+    backgroundOuterRect.height
   )
 
   private val totalRows = 5
@@ -187,15 +194,15 @@ class InventoryWindow(game: RpgGame) {
       RpgGame.defaultFont.draw(
         batch.spriteBatch,
         item.get.template.name,
-        background.x + margin,
-        background.y + background.height - (inventoryHeight + 5)
+        backgroundRect.x + margin,
+        backgroundRect.y + backgroundRect.height - (inventoryHeight + 5)
       )
 
       RpgGame.defaultFont.draw(
         batch.spriteBatch,
         item.get.getItemInformation(trader = false),
-        background.x + margin,
-        background.y + background.height - (inventoryHeight + 35)
+        backgroundRect.x + margin,
+        backgroundRect.y + backgroundRect.height - (inventoryHeight + 35)
       )
     }
 
@@ -203,20 +210,20 @@ class InventoryWindow(game: RpgGame) {
 
   private def inventorySlotPositionX(index: Int): Float = {
     val currentColumn = index % totalColumns
-    background.x + margin + (slotSize + spaceBetweenSlots) * currentColumn
+    backgroundRect.x + margin + (slotSize + spaceBetweenSlots) * currentColumn
   }
 
   private def inventorySlotPositionY(index: Int): Float = {
     val currentRow = index / totalColumns
-    background.y + background.height - (slotSize + margin + (slotSize + spaceBetweenSlots) * currentRow)
+    backgroundRect.y + backgroundRect.height - (slotSize + margin + (slotSize + spaceBetweenSlots) * currentRow)
   }
 
   private def equipmentSlotPositionX(index: Int): Float = {
-    background.x + inventoryWidth + margin + spaceBeforeEquipment
+    backgroundRect.x + inventoryWidth + margin + spaceBeforeEquipment
   }
 
   private def equipmentSlotPositionY(index: Int): Float = {
-    background.y + background.height - (slotSize + margin + (slotSize + spaceBetweenSlots) * index)
+    backgroundRect.y + backgroundRect.height - (slotSize + margin + (slotSize + spaceBetweenSlots) * index)
   }
 
   def handleMouseClicked(): Unit = {
@@ -226,26 +233,45 @@ class InventoryWindow(game: RpgGame) {
     val x: Float = game.mousePositionWindowScaled.x
     val y: Float = game.mousePositionWindowScaled.y
 
-    inventoryRectangles
-      .filter { case (_, v) => v.contains(x, y) }
-      .foreach { case (k, _) => inventorySlotClicked = Some(k) }
+    if (backgroundOuterRect.contains(x, y)) {
+      inventoryRectangles
+        .filter { case (_, v) => v.contains(x, y) }
+        .foreach { case (k, _) => inventorySlotClicked = Some(k) }
 
-    equipmentRectangles
-      .filter { case (_, v) => v.contains(x, y) }
-      .foreach { case (k, _) => equipmentSlotClicked = Some(k) }
+      equipmentRectangles
+        .filter { case (_, v) => v.contains(x, y) }
+        .foreach { case (k, _) => equipmentSlotClicked = Some(k) }
 
-    (inventoryItemBeingMoved, equipmentItemBeingMoved, inventorySlotClicked, equipmentSlotClicked) match {
-      case (Some(from), _, Some(to), _) => swapInventorySlotContent(from, to)
-      case (Some(from), _, _, Some(to)) => swapBetweenInventoryAndEquipment(from, to)
-      case (_, Some(from), Some(to), _) => swapBetweenInventoryAndEquipment(to, from)
-      case (_, Some(from), _, Some(to)) => swapEquipmentSlotContent(from, to)
-      case (_, _, Some(index), _) =>
-        if (game.player.inventoryItems.contains(index)) inventoryItemBeingMoved = Some(index)
-      case (_, _, _, Some(index)) =>
-        if (game.player.equipmentItems.contains(index)) equipmentItemBeingMoved = Some(index)
-      case _ =>
+      (inventoryItemBeingMoved, equipmentItemBeingMoved, inventorySlotClicked, equipmentSlotClicked) match {
+        case (Some(from), _, Some(to), _) => swapInventorySlotContent(from, to)
+        case (Some(from), _, _, Some(to)) => swapBetweenInventoryAndEquipment(from, to)
+        case (_, Some(from), Some(to), _) => swapBetweenInventoryAndEquipment(to, from)
+        case (_, Some(from), _, Some(to)) => swapEquipmentSlotContent(from, to)
+        case (_, _, Some(index), _) =>
+          if (game.player.inventoryItems.contains(index)) inventoryItemBeingMoved = Some(index)
+        case (_, _, _, Some(index)) =>
+          if (game.player.equipmentItems.contains(index)) equipmentItemBeingMoved = Some(index)
+        case _ =>
+          inventoryItemBeingMoved = None
+          equipmentItemBeingMoved = None
+      }
+    } else {
+      if (inventoryItemBeingMoved.nonEmpty) {
+        val item = game.player.inventoryItems(inventoryItemBeingMoved.get)
+        game.currentArea.get.spawnLootPile(game.currentArea.get, game.player.pos.x, game.player.pos.y, item)
+
+        game.player.inventoryItems.remove(inventoryItemBeingMoved.get)
+
         inventoryItemBeingMoved = None
+      }
+      if (equipmentItemBeingMoved.nonEmpty) {
+        val item = game.player.inventoryItems(equipmentItemBeingMoved.get)
+        game.currentArea.get.spawnLootPile(game.currentArea.get, game.player.pos.x, game.player.pos.y, item)
+
+        game.player.equipmentItems.remove(equipmentItemBeingMoved.get)
+
         equipmentItemBeingMoved = None
+      }
     }
 
   }

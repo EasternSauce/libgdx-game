@@ -73,9 +73,9 @@ class MainMenuScreen(game: RpgGame) extends Screen {
     ("CONTROLS", ""),
     ("", ""),
     ("Movement:", "W/S/A/D"),
+    ("Action:", "E"),
     ("Sprint:", "Left Shift"),
     ("Attack:", "Left Mouse Button"),
-    ("Action:", "E"),
     ("Inventory:", "I"),
     ("Save:", "F5"),
     ("Menu:", "Escape")
