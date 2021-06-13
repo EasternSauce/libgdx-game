@@ -467,10 +467,10 @@ trait Creature extends Sprite with PhysicalBody with AnimatedWalk with Inventory
           Some(PlayerSpawnPointSavedata(playerSpawnPoint.get.area.id, playerSpawnPoint.get.id))
         else None,
       inventoryItems = inventoryItems.map {
-        case (index, item) => ItemSavedata(index, item.template.id, item.damage, item.armor)
+        case (index, item) => ItemSavedata(index, item.template.id, item.quantity, item.damage, item.armor)
       }.toList,
       equipmentItems = equipmentItems.map {
-        case (index, item) => ItemSavedata(index, item.template.id, item.damage, item.armor)
+        case (index, item) => ItemSavedata(index, item.template.id, item.quantity, item.damage, item.armor)
       }.toList
     )
   }

@@ -115,6 +115,11 @@ class InventoryWindow(game: RpgGame) {
           val x = inventorySlotPositionX(index)
           val y = inventorySlotPositionY(index)
           batch.spriteBatch.draw(textureRegion, x, y, slotSize, slotSize)
+
+          if (item.quantity > 1) {
+            RpgGame.defaultFont.setColor(Color.WHITE)
+            RpgGame.defaultFont.draw(batch.spriteBatch, item.quantity.toString, x, y + 15)
+          }
       }
 
     equipment

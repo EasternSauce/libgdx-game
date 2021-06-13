@@ -72,7 +72,7 @@ class SavefileManager(val game: RpgGame) {
 }
 
 case class PlayerSpawnPointSavedata(area: String, id: String)
-case class ItemSavedata(index: Int, template: String, damage: Option[Int], armor: Option[Int])
+case class ItemSavedata(index: Int, template: String, quantity: Int, damage: Option[Int], armor: Option[Int])
 case class CreatureSavedata(
   creatureClass: String,
   id: String,

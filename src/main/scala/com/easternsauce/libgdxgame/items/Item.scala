@@ -5,12 +5,11 @@ import com.easternsauce.libgdxgame.saving.ItemSavedata
 
 class Item private (
   val template: ItemTemplate,
+  var quantity: Int = 1,
   val damage: Option[Int] = None,
   val armor: Option[Int] = None,
   var lootPile: Option[LootPile] = None
 ) {
-
-  var quantity: Int = 0
 
   val name: String = template.name
 
@@ -50,10 +49,10 @@ object Item {
       Some(Math.ceil(template.armor.get * (0.75f + 0.25f * RpgGame.Random.nextFloat())).toInt)
     } else None
 
-    new Item(template, damage, armor, lootPile)
+    new Item(template, quantity = 1, damage = damage, armor = armor, lootPile = lootPile)
   }
 
   def loadFromSavedata(savedata: ItemSavedata): Item = {
-    new Item(ItemTemplate.getItemTemplate(savedata.template), savedata.damage, savedata.armor)
+    new Item(ItemTemplate.getItemTemplate(savedata.template), savedata.quantity, savedata.damage, savedata.armor)
   }
 }
