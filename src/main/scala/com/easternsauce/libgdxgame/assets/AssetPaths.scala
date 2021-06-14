@@ -30,6 +30,7 @@ object AssetPaths {
   val chestOpeningSound = "assets/sounds/chest-opening.wav"
   val coinBagSound = "assets/sounds/coinbag.wav"
   val matchIgniteSound = "assets/sounds/match-ignite.wav"
+  val appleCrunchSound = "assets/sounds/apple-crunch.wav"
 
   val sounds = List(
     attackSound,
@@ -56,7 +57,8 @@ object AssetPaths {
     swooshSound,
     chestOpeningSound,
     coinBagSound,
-    matchIgniteSound
+    matchIgniteSound,
+    appleCrunchSound
   )
 
   val arrowTexture = "assets/projectiles/arrow.png"

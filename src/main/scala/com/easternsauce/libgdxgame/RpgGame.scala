@@ -16,7 +16,7 @@ import com.easternsauce.libgdxgame.area.{Area, AreaGate}
 import com.easternsauce.libgdxgame.assets.AssetPaths
 import com.easternsauce.libgdxgame.creature.traits.Creature
 import com.easternsauce.libgdxgame.creature.{Player, Skeleton, Wolf}
-import com.easternsauce.libgdxgame.hud.{InventoryWindow, LootPickupMenu, NotificationText, PlayerHealthStaminaBar}
+import com.easternsauce.libgdxgame.hud.{InventoryWindow, LootPickupMenu, NotificationText, PlayerInfoHud}
 import com.easternsauce.libgdxgame.items.ItemTemplate
 import com.easternsauce.libgdxgame.saving.SavefileManager
 import com.easternsauce.libgdxgame.screens.{MainMenuScreen, PlayScreen}
@@ -62,7 +62,7 @@ class RpgGame extends Game {
 
   var inventoryWindow: InventoryWindow = _
 
-  var healthStaminaBar: PlayerHealthStaminaBar = _
+  var healthStaminaBar: PlayerInfoHud = _
 
   var debugMode = false
 
@@ -127,7 +127,7 @@ class RpgGame extends Game {
     if (!creature.isPlayer) throw new RuntimeException("creature is not a player")
     player = creature.asInstanceOf[Player]
     inventoryWindow = new InventoryWindow(this)
-    healthStaminaBar = new PlayerHealthStaminaBar(this)
+    healthStaminaBar = new PlayerInfoHud(this)
 
     currentArea = player.area
   }
@@ -204,8 +204,30 @@ object RpgGame {
   val WindowWidth = 1360
   val WindowHeight = 720
 
-  val equipmentTypes = Map(0 -> "weapon", 1 -> "helmet", 2 -> "body", 3 -> "gloves", 4 -> "ring", 5 -> "boots")
-  val equipmentTypeIndices: Map[String, Int] = for ((k, v) <- equipmentTypes) yield (v, k)
+  val equipmentTypes = Map(
+    0 -> "weapon",
+    1 -> "weapon",
+    2 -> "helmet",
+    3 -> "body",
+    4 -> "gloves",
+    5 -> "ring",
+    6 -> "boots",
+    7 -> "consumable"
+  )
+  val equipmentTypeNames = Map(
+    0 -> "Primary Weapon",
+    1 -> "Secondary Weapon",
+    2 -> "Helmet",
+    3 -> "Body",
+    4 -> "Gloves",
+    5 -> "Ring",
+    6 -> "Boots",
+    7 -> "Consumable"
+  )
+
+  val primaryWeaponIndex: Int = (for ((k, v) <- equipmentTypeNames) yield (v, k))("Primary Weapon")
+  val secondaryWeaponIndex: Int = (for ((k, v) <- equipmentTypeNames) yield (v, k))("Secondary Weapon")
+  val consumableIndex: Int = (for ((k, v) <- equipmentTypeNames) yield (v, k))("Consumable")
 
   val TiledMapCellSize: Float = 2f
 

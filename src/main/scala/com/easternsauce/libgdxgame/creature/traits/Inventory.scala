@@ -12,11 +12,11 @@ trait Inventory {
   val game: RpgGame
 
   def currentWeapon: Item = {
-    equipmentItems(RpgGame.equipmentTypeIndices("weapon"))
+    equipmentItems(RpgGame.primaryWeaponIndex)
   }
 
   def isWeaponEquipped: Boolean = {
-    equipmentItems.contains(RpgGame.equipmentTypeIndices("weapon"))
+    equipmentItems.contains(RpgGame.primaryWeaponIndex)
   }
 
   def tryPickUpItem(item: Item): Boolean = {

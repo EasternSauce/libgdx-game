@@ -139,8 +139,7 @@ class Area(
     creature.assignToArea(this, spawnPoint.posX, spawnPoint.posY)
 
     if (spawnPoint.weaponType.nonEmpty) {
-      creature.equipmentItems(RpgGame.equipmentTypeIndices("weapon")) =
-        Item.generateFromTemplate(spawnPoint.weaponType.get)
+      creature.equipmentItems(RpgGame.primaryWeaponIndex) = Item.generateFromTemplate(spawnPoint.weaponType.get)
     }
 
     game.allAreaCreaturesMap += (creatureId -> creature)

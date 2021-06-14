@@ -795,55 +795,69 @@
         "area" : "area2",
         "id" : "0"
       },
-      "healthPoints" : 10,
+      "healthPoints" : 65.49989,
       "area" : "area2",
       "isPlayer" : true,
       "position" : {
-        "x" : 48.695587,
-        "y" : 10.3644
+        "x" : 39.512707,
+        "y" : 23.08266
       },
       "equipmentItems" : [
         {
           "index" : 0,
           "template" : "ironSword",
           "quantity" : 1,
-          "damage" : 52,
+          "damage" : 51,
           "armor" : null
         },
         {
           "index" : 1,
-          "template" : "steelHelmet",
+          "template" : "woodenSword",
           "quantity" : 1,
-          "damage" : null,
-          "armor" : 12
+          "damage" : 40,
+          "armor" : null
         },
         {
           "index" : 2,
-          "template" : "steelArmor",
+          "template" : "steelHelmet",
           "quantity" : 1,
           "damage" : null,
-          "armor" : 17
+          "armor" : 14
         },
         {
           "index" : 3,
+          "template" : "steelArmor",
+          "quantity" : 1,
+          "damage" : null,
+          "armor" : 18
+        },
+        {
+          "index" : 4,
           "template" : "steelGloves",
           "quantity" : 1,
           "damage" : null,
           "armor" : 10
         },
         {
-          "index" : 4,
+          "index" : 5,
           "template" : "lifeRing",
           "quantity" : 1,
           "damage" : null,
           "armor" : null
         },
         {
-          "index" : 5,
+          "index" : 6,
           "template" : "ringmailGreaves",
           "quantity" : 1,
           "damage" : null,
           "armor" : 7
+        },
+        {
+          "index" : 7,
+          "template" : "healingPowder",
+          "quantity" : 41,
+          "damage" : null,
+          "armor" : null
         },
         {
           "index" : 39,
@@ -904,32 +918,11 @@
           "armor" : 13
         },
         {
-          "index" : 6,
-          "template" : "steelArmor",
-          "quantity" : 1,
-          "damage" : null,
-          "armor" : 18
-        },
-        {
           "index" : 7,
           "template" : "steelGloves",
           "quantity" : 1,
           "damage" : null,
           "armor" : 10
-        },
-        {
-          "index" : 8,
-          "template" : "ironSword",
-          "quantity" : 1,
-          "damage" : 51,
-          "armor" : null
-        },
-        {
-          "index" : 9,
-          "template" : "steelHelmet",
-          "quantity" : 1,
-          "damage" : null,
-          "armor" : 14
         },
         {
           "index" : 10,
@@ -974,48 +967,6 @@
           "armor" : 11
         },
         {
-          "index" : 16,
-          "template" : "hideGloves",
-          "quantity" : 1,
-          "damage" : null,
-          "armor" : 4
-        },
-        {
-          "index" : 17,
-          "template" : "hideGloves",
-          "quantity" : 1,
-          "damage" : null,
-          "armor" : 5
-        },
-        {
-          "index" : 18,
-          "template" : "hideGloves",
-          "quantity" : 1,
-          "damage" : null,
-          "armor" : 5
-        },
-        {
-          "index" : 19,
-          "template" : "healingPowder",
-          "quantity" : 41,
-          "damage" : null,
-          "armor" : null
-        },
-        {
-          "index" : 20,
-          "template" : "woodenSword",
-          "quantity" : 1,
-          "damage" : 40,
-          "armor" : null
-        },
-        {
-          "index" : 21,
-          "template" : "hideGloves",
-          "quantity" : 1,
-          "damage" : null,
-          "armor" : 5
-        },
-        {
           "index" : 22,
           "template" : "leatherArmor",
           "quantity" : 1,
@@ -1037,13 +988,6 @@
           "armor" : 11
         },
         {
-          "index" : 25,
-          "template" : "leatherHelmet",
-          "quantity" : 1,
-          "damage" : null,
-          "armor" : 9
-        },
-        {
           "index" : 26,
           "template" : "leatherHelmet",
           "quantity" : 1,
@@ -1052,13 +996,6 @@
         },
         {
           "index" : 27,
-          "template" : "hideGloves",
-          "quantity" : 1,
-          "damage" : null,
-          "armor" : 5
-        },
-        {
-          "index" : 28,
           "template" : "hideGloves",
           "quantity" : 1,
           "damage" : null,
@@ -1086,20 +1023,6 @@
           "armor" : 5
         },
         {
-          "index" : 32,
-          "template" : "hideGloves",
-          "quantity" : 1,
-          "damage" : null,
-          "armor" : 5
-        },
-        {
-          "index" : 33,
-          "template" : "hideGloves",
-          "quantity" : 1,
-          "damage" : null,
-          "armor" : 5
-        },
-        {
           "index" : 34,
           "template" : "woodenSword",
           "quantity" : 1,
@@ -1112,13 +1035,6 @@
           "quantity" : 1,
           "damage" : null,
           "armor" : 11
-        },
-        {
-          "index" : 36,
-          "template" : "leatherHelmet",
-          "quantity" : 1,
-          "damage" : null,
-          "armor" : 7
         },
         {
           "index" : 37,
@@ -1136,10 +1052,10 @@
         },
         {
           "index" : 39,
-          "template" : "hideGloves",
+          "template" : "steelArmor",
           "quantity" : 1,
           "damage" : null,
-          "armor" : 5
+          "armor" : 17
         }
       ]
     },

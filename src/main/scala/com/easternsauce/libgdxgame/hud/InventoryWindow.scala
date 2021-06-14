@@ -1,6 +1,7 @@
 package com.easternsauce.libgdxgame.hud
 
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.graphics.{Color, Texture}
 import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.scenes.scene2d.ui.Image
@@ -44,17 +45,17 @@ class InventoryWindow(game: RpgGame) {
   private val totalRows = 5
   private val totalColumns = 8
   val inventoryTotalSlots: Int = totalRows * totalColumns
-  private val margin = 35
+  private val margin = 20
   private val slotSize = 40
   private val spaceBetweenSlots = 12
-  private val spaceBeforeEquipment = 220
+  private val spaceBeforeEquipment = 270
 
   private val inventoryWidth = margin + (slotSize + spaceBetweenSlots) * totalColumns
   private val inventoryHeight = margin + (slotSize + spaceBetweenSlots) * totalRows
 
   private val inventoryRectangles: mutable.Map[Int, Rectangle] = mutable.Map()
 
-  private val equipmentTotalSlots = 6
+  private val equipmentTotalSlots = 8
   private val equipmentRectangles: mutable.Map[Int, Rectangle] = mutable.Map()
 
   defineSlotRectangles()
@@ -96,8 +97,8 @@ class InventoryWindow(game: RpgGame) {
           RpgGame.defaultFont.setColor(Color.DARK_GRAY)
           RpgGame.defaultFont.draw(
             batch.spriteBatch,
-            RpgGame.equipmentTypes(index).capitalize + ":",
-            rect.x - slotSize / 2 - 70,
+            RpgGame.equipmentTypeNames(index) + ":",
+            rect.x - slotSize / 2 - 170,
             rect.y + slotSize / 2 + 7
           )
       }
@@ -139,6 +140,11 @@ class InventoryWindow(game: RpgGame) {
           val x = equipmentSlotPositionX(index)
           val y = equipmentSlotPositionY(index)
           batch.spriteBatch.draw(textureRegion, x, y, slotSize, slotSize)
+
+          if (item.quantity > 1) {
+            RpgGame.defaultFont.setColor(Color.WHITE)
+            RpgGame.defaultFont.draw(batch.spriteBatch, item.quantity.toString, x, y + 15)
+          }
       }
 
     val x: Float = game.mousePositionWindowScaled.x
@@ -262,6 +268,8 @@ class InventoryWindow(game: RpgGame) {
 
         game.player.inventoryItems.remove(inventoryItemBeingMoved.get)
 
+        RpgGame.manager.get(AssetPaths.coinBagSound, classOf[Sound]).play(0.3f)
+
         inventoryItemBeingMoved = None
       }
       if (equipmentItemBeingMoved.nonEmpty) {
@@ -270,10 +278,23 @@ class InventoryWindow(game: RpgGame) {
 
         game.player.equipmentItems.remove(equipmentItemBeingMoved.get)
 
+        RpgGame.manager.get(AssetPaths.coinBagSound, classOf[Sound]).play(0.3f)
+
         equipmentItemBeingMoved = None
       }
+      promoteSecondaryToPrimaryWeapon()
     }
 
+  }
+
+  private def promoteSecondaryToPrimaryWeapon(): Unit = {
+    if (
+      !game.player.equipmentItems
+        .contains(RpgGame.primaryWeaponIndex) && game.player.equipmentItems.contains(RpgGame.secondaryWeaponIndex)
+    ) {
+      game.player.equipmentItems(RpgGame.primaryWeaponIndex) = game.player.equipmentItems(RpgGame.secondaryWeaponIndex)
+      game.player.equipmentItems.remove(RpgGame.secondaryWeaponIndex)
+    }
   }
 
   def swapInventorySlotContent(fromIndex: Int, toIndex: Int): Unit = {
@@ -335,6 +356,8 @@ class InventoryWindow(game: RpgGame) {
       else game.player.equipmentItems.remove(equipmentIndex)
     }
 
+    promoteSecondaryToPrimaryWeapon()
+
     inventoryItemBeingMoved = None
     equipmentItemBeingMoved = None
   }
@@ -362,6 +385,11 @@ class InventoryWindow(game: RpgGame) {
         game.player.inventoryItems(inventorySlotHovered.get)
       )
       game.player.inventoryItems.remove(inventorySlotHovered.get)
+
+      RpgGame.manager.get(AssetPaths.coinBagSound, classOf[Sound]).play(0.3f)
+
+      promoteSecondaryToPrimaryWeapon()
+
     }
 
     if (equipmentSlotHovered.nonEmpty && game.player.equipmentItems.contains(inventorySlotHovered.get)) {
@@ -372,6 +400,8 @@ class InventoryWindow(game: RpgGame) {
         game.player.equipmentItems(equipmentSlotHovered.get)
       )
       game.player.equipmentItems.remove(equipmentSlotHovered.get)
+
+      RpgGame.manager.get(AssetPaths.coinBagSound, classOf[Sound]).play(0.3f)
     }
   }
 
@@ -381,10 +411,15 @@ class InventoryWindow(game: RpgGame) {
     val y: Float = game.mousePositionWindowScaled.y
 
     var inventorySlotHovered: Option[Int] = None
+    var equipmentSlotHovered: Option[Int] = None
 
     inventoryRectangles
       .filter { case (_, v) => v.contains(x, y) }
       .foreach { case (k, _) => inventorySlotHovered = Some(k) }
+
+    equipmentRectangles
+      .filter { case (_, v) => v.contains(x, y) }
+      .foreach { case (k, _) => equipmentSlotHovered = Some(k) }
 
     if (inventorySlotHovered.nonEmpty && game.player.inventoryItems.contains(inventorySlotHovered.get)) {
       val item = game.player.inventoryItems.get(inventorySlotHovered.get)
@@ -395,5 +430,25 @@ class InventoryWindow(game: RpgGame) {
       }
     }
 
+    if (equipmentSlotHovered.nonEmpty && game.player.equipmentItems.contains(equipmentSlotHovered.get)) {
+      val item = game.player.equipmentItems.get(equipmentSlotHovered.get)
+      if (item.nonEmpty && item.get.template.consumable.get) {
+        game.player.useItem(item.get)
+        if (item.get.quantity <= 1) game.player.equipmentItems.remove(equipmentSlotHovered.get)
+        else item.get.quantity = item.get.quantity - 1
+      }
+    }
+
+  }
+
+  def swapPrimaryAndSecondaryWeapons(): Unit = {
+    if (game.player.equipmentItems.contains(RpgGame.secondaryWeaponIndex)) {
+      val primaryWeapon = game.player.equipmentItems(RpgGame.primaryWeaponIndex)
+      val secondaryWeapon = game.player.equipmentItems(RpgGame.secondaryWeaponIndex)
+
+      game.player.equipmentItems(RpgGame.secondaryWeaponIndex) = primaryWeapon
+      game.player.equipmentItems(RpgGame.primaryWeaponIndex) = secondaryWeapon
+
+    }
   }
 }

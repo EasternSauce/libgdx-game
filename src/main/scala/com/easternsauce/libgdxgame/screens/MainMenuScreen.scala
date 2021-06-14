@@ -78,7 +78,9 @@ class MainMenuScreen(game: RpgGame) extends Screen {
     ("Attack:", "Left Mouse Button"),
     ("Inventory:", "I"),
     ("Save:", "F5"),
-    ("Menu:", "Escape")
+    ("Menu:", "Escape"),
+    ("Swap weapons:", "Tab"),
+    ("Quick consumable:", "F")
   )
 
   override def show(): Unit = {}
@@ -120,7 +122,7 @@ class MainMenuScreen(game: RpgGame) extends Screen {
     RpgGame.defaultFont.draw(
       batch.spriteBatch,
       controlsCheatsheetEntries.map { case (key, _) => key }.mkString("\n"),
-      RpgGame.WindowWidth - 500,
+      RpgGame.WindowWidth - 550,
       350
     )
 

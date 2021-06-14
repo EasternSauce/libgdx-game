@@ -9,6 +9,7 @@ import com.easternsauce.libgdxgame.RpgGame
 import com.easternsauce.libgdxgame.ability.traits.{Ability, Attack}
 import com.easternsauce.libgdxgame.ability.{BowAttack, SwordAttack, TridentAttack, UnarmedAttack}
 import com.easternsauce.libgdxgame.area.Area
+import com.easternsauce.libgdxgame.assets.AssetPaths
 import com.easternsauce.libgdxgame.effect.Effect
 import com.easternsauce.libgdxgame.items.Item
 import com.easternsauce.libgdxgame.saving.{CreatureSavedata, ItemSavedata, PlayerSpawnPointSavedata, PositionSavedata}
@@ -73,6 +74,8 @@ trait Creature extends Sprite with PhysicalBody with AnimatedWalk with Inventory
   var unarmedAttack: UnarmedAttack = _
   var bowAttack: BowAttack = _
   var tridentAttack: TridentAttack = _
+
+  val onItemConsumeSound: Sound = RpgGame.manager.get(AssetPaths.appleCrunchSound, classOf[Sound])
 
   protected val healthRegenTimer: EsTimer = EsTimer(true)
   protected val staminaRegenTimer: EsTimer = EsTimer(true)
@@ -476,12 +479,13 @@ trait Creature extends Sprite with PhysicalBody with AnimatedWalk with Inventory
     )
   }
 
-  def useItem(item: Item): Unit ={
+  def useItem(item: Item): Unit = {
     item.template.id match {
-      case "healingPowder" => startHealing(0.14f)
+      case "healingPowder" =>
+        startHealing(0.14f)
+        onItemConsumeSound.play(0.5f)
     }
   }
-
 
   private def startHealing(healingPower: Float): Unit = {
     healingTimer.restart()

@@ -198,6 +198,20 @@ class PlayScreen(val game: RpgGame) extends Screen {
       }
     }
 
+    if (Gdx.input.isKeyJustPressed(Input.Keys.TAB)) {
+      game.inventoryWindow.swapPrimaryAndSecondaryWeapons()
+    }
+
+    if (Gdx.input.isKeyJustPressed(Input.Keys.F)) {
+      if (game.player.equipmentItems.contains(RpgGame.consumableIndex)) {
+
+        val consumable = game.player.equipmentItems(RpgGame.consumableIndex)
+        game.player.useItem(consumable)
+        if (consumable.quantity <= 1) game.player.equipmentItems.remove(RpgGame.consumableIndex)
+        else consumable.quantity = consumable.quantity - 1
+      }
+    }
+
     game.handlePlayerMovement()
 
   }
