@@ -25,6 +25,17 @@ trait Inventory {
 
     if (stackable) {
       var foundFreeSlot: Int = -1
+      equipmentItems.foreach {
+        case (key, value) =>
+          if (foundFreeSlot == -1 && (value.template == template)) {
+            // stackable and same type item exists in inventory
+            foundFreeSlot = key
+            equipmentItems(foundFreeSlot).quantity =
+              equipmentItems(foundFreeSlot).quantity + item.quantity
+
+            return true
+          }
+      }
       inventoryItems.foreach {
         case (key, value) =>
           if (foundFreeSlot == -1 && (value.template == template)) {
