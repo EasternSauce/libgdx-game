@@ -88,9 +88,10 @@ trait Creature extends Sprite with PhysicalBody with AnimatedWalk with Inventory
   protected val poisonTime = 20f
   protected val knockbackPower = 0f
   protected var healing = false
-  protected val healingTickTime = 0.3f
-  protected val healingTime = 8f
+  protected val healingTickTime = 0.005f
+  protected val healingItemHealTime = 3f
   protected var healingPower = 0f
+  protected val staminaRegenTickTime = 0.005f
 
   var unarmedDamage = 15f
 
@@ -196,7 +197,7 @@ trait Creature extends Sprite with PhysicalBody with AnimatedWalk with Inventory
     }
 
     if (!effect("staminaRegenStopped").isActive && !sprinting)
-      if (staminaRegenTimer.time > 0.005f && !abilityActive && !staminaOveruse) {
+      if (staminaRegenTimer.time > staminaRegenTickTime && !abilityActive && !staminaOveruse) {
         if (staminaPoints < maxStaminaPoints) {
           val afterRegen = staminaPoints + staminaRegen
           staminaPoints = Math.min(afterRegen, maxStaminaPoints)
@@ -218,7 +219,7 @@ trait Creature extends Sprite with PhysicalBody with AnimatedWalk with Inventory
         heal(healingPower)
         healingTickTimer.restart()
       }
-      if (healingTimer.time > healingTime || healthPoints >= maxHealthPoints)
+      if (healingTimer.time > healingItemHealTime || healthPoints >= maxHealthPoints)
         healing = false
     }
   }
@@ -473,5 +474,19 @@ trait Creature extends Sprite with PhysicalBody with AnimatedWalk with Inventory
         case (index, item) => ItemSavedata(index, item.template.id, item.quantity, item.damage, item.armor)
       }.toList
     )
+  }
+
+  def useItem(item: Item): Unit ={
+    item.template.id match {
+      case "healingPowder" => startHealing(0.14f)
+    }
+  }
+
+
+  private def startHealing(healingPower: Float): Unit = {
+    healingTimer.restart()
+    healingTickTimer.restart()
+    healing = true
+    this.healingPower = healingPower
   }
 }

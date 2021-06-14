@@ -226,7 +226,7 @@ class InventoryWindow(game: RpgGame) {
     backgroundRect.y + backgroundRect.height - (slotSize + margin + (slotSize + spaceBetweenSlots) * index)
   }
 
-  def handleMouseClicked(): Unit = {
+  def moveItemClick(): Unit = {
     var inventorySlotClicked: Option[Int] = None
     var equipmentSlotClicked: Option[Int] = None
 
@@ -373,5 +373,27 @@ class InventoryWindow(game: RpgGame) {
       )
       game.player.equipmentItems.remove(equipmentSlotHovered.get)
     }
+  }
+
+  def useItemClick(): Unit = {
+
+    val x: Float = game.mousePositionWindowScaled.x
+    val y: Float = game.mousePositionWindowScaled.y
+
+    var inventorySlotHovered: Option[Int] = None
+
+    inventoryRectangles
+      .filter { case (_, v) => v.contains(x, y) }
+      .foreach { case (k, _) => inventorySlotHovered = Some(k) }
+
+    if (inventorySlotHovered.nonEmpty && game.player.inventoryItems.contains(inventorySlotHovered.get)) {
+      val item = game.player.inventoryItems.get(inventorySlotHovered.get)
+      if (item.nonEmpty && item.get.template.consumable.get) {
+        game.player.useItem(item.get)
+        if (item.get.quantity <= 1) game.player.inventoryItems.remove(inventorySlotHovered.get)
+        else item.get.quantity = item.get.quantity - 1
+      }
+    }
+
   }
 }

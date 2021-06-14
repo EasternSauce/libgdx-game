@@ -33,6 +33,8 @@ class ItemTemplate(val id: String, val name: String, val description: String, va
 
   def stackable: Option[Boolean] = parameters("stackable").boolValue
 
+  def consumable: Option[Boolean] = parameters("consumable").boolValue
+
   def setWorth(worth: Int): ItemTemplate = {
     parameters("worth") = ItemParameterValue(worth)
 

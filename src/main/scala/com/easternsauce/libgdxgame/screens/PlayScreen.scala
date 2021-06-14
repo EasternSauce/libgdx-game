@@ -178,11 +178,17 @@ class PlayScreen(val game: RpgGame) extends Screen {
 
     if (Gdx.input.isButtonJustPressed(Buttons.LEFT)) {
       if (game.inventoryWindow.visible) {
-        game.inventoryWindow.handleMouseClicked()
+        game.inventoryWindow.moveItemClick()
       } else if (game.lootPickupMenu.visible) {
-        game.lootPickupMenu.handleMouseClicked()
+        game.lootPickupMenu.pickUpItemClick()
       } else {
         game.player.currentAttack.perform()
+      }
+    }
+
+    if (Gdx.input.isButtonJustPressed(Buttons.RIGHT)) {
+      if (game.inventoryWindow.visible) {
+        game.inventoryWindow.useItemClick()
       }
     }
 

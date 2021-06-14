@@ -53,7 +53,7 @@ class LootPickupMenu(game: RpgGame) {
     lootPiles -= lootPile
   }
 
-  def handleMouseClicked(): Unit = {
+  def pickUpItemClick(): Unit = {
     val mouseX: Float = game.mousePositionWindowScaled.x
     val mouseY: Float = game.mousePositionWindowScaled.y
 
