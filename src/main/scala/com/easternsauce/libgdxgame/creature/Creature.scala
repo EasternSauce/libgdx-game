@@ -3,11 +3,10 @@ package com.easternsauce.libgdxgame.creature
 import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.graphics.g2d.Sprite
 import com.badlogic.gdx.math.Vector2
-import com.easternsauce.libgdxgame.GameSystem._
 import com.easternsauce.libgdxgame.area.Area
-import com.easternsauce.libgdxgame.assets.Assets
 import com.easternsauce.libgdxgame.creature.traits._
 import com.easternsauce.libgdxgame.spawns.PlayerSpawnPoint
+import com.easternsauce.libgdxgame.system.Assets
 import com.easternsauce.libgdxgame.util.{EsDirection, EsTimer}
 
 abstract class Creature
@@ -51,7 +50,7 @@ abstract class Creature
 
   var spawnPointId: Option[String] = None
 
-  val onItemConsumeSound: Sound = sound(Assets.appleCrunchSound)
+  val onItemConsumeSound: Sound = Assets.sound(Assets.appleCrunchSound)
 
   var sprinting = false
 
@@ -61,7 +60,7 @@ abstract class Creature
 
   protected def creatureType: String = getClass.getName
 
-  def totalArmor: Float = equipmentItems.values.map(item => item.armor.getOrElse(0)).sum
+  def totalArmor: Float = equipmentItems.values.map(item => item.armor.getOrElse(0)).sum.toFloat
 
   def update(): Unit = {
     if (alive) {

@@ -2,9 +2,9 @@ package com.easternsauce.libgdxgame.hud
 
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.math.Rectangle
-import com.easternsauce.libgdxgame.GameSystem._
-import com.easternsauce.libgdxgame.assets.Assets
 import com.easternsauce.libgdxgame.items.{Item, LootPile}
+import com.easternsauce.libgdxgame.system.GameSystem._
+import com.easternsauce.libgdxgame.system.{Assets, Constants, Fonts}
 import com.easternsauce.libgdxgame.util.EsBatch
 
 import scala.collection.mutable.ListBuffer
@@ -17,8 +17,6 @@ class LootPickupMenu {
 
   def render(batch: EsBatch): Unit = {
     if (visible) {
-      defaultFont.setColor(Color.ORANGE)
-
       val mouseX: Float = mousePositionWindowScaled.x
       val mouseY: Float = mousePositionWindowScaled.y
 
@@ -28,14 +26,13 @@ class LootPickupMenu {
         item <- lootPile.itemList
       } {
 
-        val x = WindowWidth / 2 - 100f
+        val x = Constants.WindowWidth / 2 - 100f
         val y = 150f - i * 30f
 
         val rect = new Rectangle(x - 25f, y - 20f, 300f, 25)
 
         batch.shapeDrawer.filledRectangle(rect, Color.DARK_GRAY)
-        defaultFont.setColor(Color.WHITE)
-        defaultFont.draw(batch.spriteBatch, "> " + item.name, x, y)
+        Fonts.defaultFont.draw(batch.spriteBatch, "> " + item.name, x, y, Color.WHITE)
 
         if (rect.contains(mouseX, mouseY)) batch.shapeDrawer.rectangle(rect, Color.RED)
 
@@ -62,7 +59,7 @@ class LootPickupMenu {
       item <- lootPile.itemList
     } {
 
-      val x = WindowWidth / 2 - 100f
+      val x = Constants.WindowWidth / 2 - 100f
       val y = 150f - i * 30f
       val rect = new Rectangle(x - 25f, y - 20f, 300f, 25)
 
@@ -75,7 +72,7 @@ class LootPickupMenu {
 
     scheduledToRemove.foreach {
       case (item, lootPile) =>
-        sound(Assets.coinBagSound).play(0.3f)
+        Assets.sound(Assets.coinBagSound).play(0.3f)
 
         if (lootPile.itemList.size == 1) {
           val world = lootPile.b2body.getWorld

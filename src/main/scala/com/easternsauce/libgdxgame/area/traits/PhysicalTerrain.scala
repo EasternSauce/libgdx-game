@@ -3,9 +3,9 @@ package com.easternsauce.libgdxgame.area.traits
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d._
-import com.easternsauce.libgdxgame.GameSystem._
 import com.easternsauce.libgdxgame.area.{Area, TerrainTile}
 import com.easternsauce.libgdxgame.pathfinding.AStarNode
+import com.easternsauce.libgdxgame.system.Constants
 
 trait PhysicalTerrain {
   this: Area =>
@@ -28,8 +28,8 @@ trait PhysicalTerrain {
     widthInTiles = layer.getWidth
     heightInTiles = layer.getHeight
 
-    tileWidth = layer.getTileWidth * mapScale / PPM
-    tileHeight = layer.getTileHeight * mapScale / PPM
+    tileWidth = layer.getTileWidth * mapScale / Constants.PPM
+    tileHeight = layer.getTileHeight * mapScale / Constants.PPM
 
     traversable = Array.ofDim(heightInTiles, widthInTiles)
     flyover = Array.ofDim(heightInTiles, widthInTiles)

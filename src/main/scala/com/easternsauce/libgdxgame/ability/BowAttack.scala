@@ -2,11 +2,10 @@ package com.easternsauce.libgdxgame.ability
 
 import com.badlogic.gdx.maps.tiled.TiledMap
 import com.badlogic.gdx.math.Vector2
-import com.easternsauce.libgdxgame.GameSystem._
 import com.easternsauce.libgdxgame.ability.traits.Attack
-import com.easternsauce.libgdxgame.assets.Assets
 import com.easternsauce.libgdxgame.creature.Creature
 import com.easternsauce.libgdxgame.projectile.Arrow
+import com.easternsauce.libgdxgame.system.Assets
 
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
@@ -22,13 +21,13 @@ class BowAttack(val creature: Creature) extends Attack {
 
     creature.isAttacking = true
 
-    sound(Assets.bowPullSound).play(0.1f)
+    Assets.sound(Assets.bowPullSound).play(0.1f)
   }
 
   override def onActiveStart(): Unit = {
     super.onActiveStart()
 
-    sound(Assets.bowReleaseSound).play(0.1f)
+    Assets.sound(Assets.bowReleaseSound).play(0.1f)
 
     creature.attackVector = creature.facingVector.cpy()
 

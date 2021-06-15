@@ -31,7 +31,7 @@ abstract class Enemy extends Creature with AggressiveAI {
     knockbackPower: Float = 0,
     sourceX: Float = 0,
     sourceY: Float = 0
-  ) {
+  ): Unit = {
     super.takeHealthDamage(damage, immunityFrames, dealtBy, knockbackPower, sourceX, sourceY)
 
     if (aggroedTarget.isEmpty && dealtBy.nonEmpty) {

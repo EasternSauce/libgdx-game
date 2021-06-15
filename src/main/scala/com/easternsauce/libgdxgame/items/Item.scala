@@ -1,7 +1,7 @@
 package com.easternsauce.libgdxgame.items
 
-import com.easternsauce.libgdxgame.GameSystem._
 import com.easternsauce.libgdxgame.saving.ItemSavedata
+import com.easternsauce.libgdxgame.system.GameSystem._
 
 class Item private (
   val template: ItemTemplate,
@@ -42,11 +42,11 @@ object Item {
   def generateFromTemplate(templateId: String, lootPile: Option[LootPile] = None): Item = {
     val template = ItemTemplate.getItemTemplate(templateId)
     val damage = if (template.damage.nonEmpty) {
-      Some(Math.ceil(template.damage.get * (0.75f + 0.25f * Random.nextFloat())).toInt)
+      Some(Math.ceil(template.damage.get * (0.75f + 0.25f * randomGenerator.nextFloat())).toInt)
     } else None
 
     val armor = if (template.armor.nonEmpty) {
-      Some(Math.ceil(template.armor.get * (0.75f + 0.25f * Random.nextFloat())).toInt)
+      Some(Math.ceil(template.armor.get * (0.75f + 0.25f * randomGenerator.nextFloat())).toInt)
     } else None
 
     new Item(template, quantity = 1, damage = damage, armor = armor, lootPile = lootPile)

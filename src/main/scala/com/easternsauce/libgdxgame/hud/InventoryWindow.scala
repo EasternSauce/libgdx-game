@@ -1,12 +1,11 @@
 package com.easternsauce.libgdxgame.hud
 
 import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.graphics.{Color, Texture}
+import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.scenes.scene2d.ui.Image
-import com.easternsauce.libgdxgame.GameSystem
-import com.easternsauce.libgdxgame.GameSystem._
-import com.easternsauce.libgdxgame.assets.Assets
+import com.easternsauce.libgdxgame.system.GameSystem._
+import com.easternsauce.libgdxgame.system.{Assets, Fonts, InventoryMapping}
 import com.easternsauce.libgdxgame.util.EsBatch
 
 import scala.collection.mutable
@@ -17,22 +16,20 @@ class InventoryWindow {
   var inventoryItemBeingMoved: Option[Int] = None
   var equipmentItemBeingMoved: Option[Int] = None
 
-  val backgroundTexture: Texture = texture(Assets.backgroundTexture)
-
-  val backgroundImage = new Image(backgroundTexture)
+  val backgroundImage = new Image(Assets.atlas.findRegion("background2"))
 
   private val backgroundRect: Rectangle = new Rectangle(
-    (Gdx.graphics.getWidth * 0.2).toInt,
-    (Gdx.graphics.getHeight * 0.3).toInt,
-    (Gdx.graphics.getWidth * 0.6).toInt,
-    (Gdx.graphics.getHeight * 0.6).toInt
+    Gdx.graphics.getWidth * 0.2f,
+    Gdx.graphics.getHeight * 0.3f,
+    Gdx.graphics.getWidth * 0.6f,
+    Gdx.graphics.getHeight * 0.6f
   )
 
   private val backgroundOuterRect: Rectangle = new Rectangle(
-    backgroundRect.x - (Gdx.graphics.getWidth * 0.1).toInt,
-    backgroundRect.y - (Gdx.graphics.getHeight * 0.1).toInt,
-    backgroundRect.width + (Gdx.graphics.getWidth * 0.2).toInt,
-    backgroundRect.height + (Gdx.graphics.getHeight * 0.2).toInt
+    backgroundRect.x - Gdx.graphics.getWidth * 0.1f,
+    backgroundRect.y - Gdx.graphics.getHeight * 0.1f,
+    backgroundRect.width + Gdx.graphics.getWidth * 0.2f,
+    backgroundRect.height + Gdx.graphics.getHeight * 0.2f
   )
 
   backgroundImage.setBounds(
@@ -46,7 +43,7 @@ class InventoryWindow {
   private val totalColumns = 8
   val inventoryTotalSlots: Int = totalRows * totalColumns
   private val margin = 20
-  private val slotSize = 40
+  private val slotSize = 40f
   private val spaceBetweenSlots = 12
   private val spaceBeforeEquipment = 270
 
@@ -94,12 +91,12 @@ class InventoryWindow {
         case (index, rect) =>
           batch.shapeDrawer.filledRectangle(rect.x - 3, rect.y - 3, rect.width + 6, rect.height + 6, Color.BROWN)
           batch.shapeDrawer.filledRectangle(rect, Color.BLACK)
-          defaultFont.setColor(Color.DARK_GRAY)
-          defaultFont.draw(
+          Fonts.defaultFont.draw(
             batch.spriteBatch,
-            equipmentTypeNames(index) + ":",
+            InventoryMapping.equipmentTypeNames(index) + ":",
             rect.x - slotSize / 2 - 170,
-            rect.y + slotSize / 2 + 7
+            rect.y + slotSize / 2 + 7,
+            Color.DARK_GRAY
           )
       }
 
@@ -125,8 +122,7 @@ class InventoryWindow {
           batch.spriteBatch.draw(textureRegion, x, y, slotSize, slotSize)
 
           if (item.quantity > 1) {
-            defaultFont.setColor(Color.WHITE)
-            defaultFont.draw(batch.spriteBatch, item.quantity.toString, x, y + 15)
+            Fonts.defaultFont.draw(batch.spriteBatch, item.quantity.toString, x, y + 15, Color.WHITE)
           }
       }
 
@@ -142,8 +138,7 @@ class InventoryWindow {
           batch.spriteBatch.draw(textureRegion, x, y, slotSize, slotSize)
 
           if (item.quantity > 1) {
-            defaultFont.setColor(Color.WHITE)
-            defaultFont.draw(batch.spriteBatch, item.quantity.toString, x, y + 15)
+            Fonts.defaultFont.draw(batch.spriteBatch, item.quantity.toString, x, y + 15, Color.WHITE)
           }
       }
 
@@ -195,20 +190,21 @@ class InventoryWindow {
     }
 
     if (item.nonEmpty) {
-      defaultFont.setColor(Color.DARK_GRAY)
 
-      defaultFont.draw(
+      Fonts.defaultFont.draw(
         batch.spriteBatch,
         item.get.template.name,
         backgroundRect.x + margin,
-        backgroundRect.y + backgroundRect.height - (inventoryHeight + 5)
+        backgroundRect.y + backgroundRect.height - (inventoryHeight + 5),
+        Color.DARK_GRAY
       )
 
-      defaultFont.draw(
+      Fonts.defaultFont.draw(
         batch.spriteBatch,
         item.get.getItemInformation(trader = false),
         backgroundRect.x + margin,
-        backgroundRect.y + backgroundRect.height - (inventoryHeight + 35)
+        backgroundRect.y + backgroundRect.height - (inventoryHeight + 35),
+        Color.DARK_GRAY
       )
     }
 
@@ -268,7 +264,7 @@ class InventoryWindow {
 
         player.inventoryItems.remove(inventoryItemBeingMoved.get)
 
-        sound(Assets.coinBagSound).play(0.3f)
+        Assets.sound(Assets.coinBagSound).play(0.3f)
 
         inventoryItemBeingMoved = None
       }
@@ -278,23 +274,13 @@ class InventoryWindow {
 
         player.equipmentItems.remove(equipmentItemBeingMoved.get)
 
-        sound(Assets.coinBagSound).play(0.3f)
+        Assets.sound(Assets.coinBagSound).play(0.3f)
 
         equipmentItemBeingMoved = None
       }
-      promoteSecondaryToPrimaryWeapon()
+      player.promoteSecondaryToPrimaryWeapon()
     }
 
-  }
-
-  private def promoteSecondaryToPrimaryWeapon(): Unit = {
-    if (
-      !player.equipmentItems
-        .contains(primaryWeaponIndex) && player.equipmentItems.contains(secondaryWeaponIndex)
-    ) {
-      player.equipmentItems(primaryWeaponIndex) = player.equipmentItems(secondaryWeaponIndex)
-      player.equipmentItems.remove(secondaryWeaponIndex)
-    }
   }
 
   def swapInventorySlotContent(fromIndex: Int, toIndex: Int): Unit = {
@@ -319,10 +305,11 @@ class InventoryWindow {
     val temp = itemTo
 
     val fromEquipmentTypeMatches =
-      itemFrom.nonEmpty && itemFrom.get.template.parameters("equipableType").stringValue.get == GameSystem
+      itemFrom.nonEmpty && itemFrom.get.template.parameters("equipableType").stringValue.get == InventoryMapping
         .equipmentTypes(toIndex)
     val toEquipmentTypeMatches =
-      itemTo.nonEmpty && itemTo.get.template.parameters("equipableType").stringValue.get == equipmentTypes(fromIndex)
+      itemTo.nonEmpty && itemTo.get.template.parameters("equipableType").stringValue.get == InventoryMapping
+        .equipmentTypes(fromIndex)
 
     if (fromEquipmentTypeMatches && toEquipmentTypeMatches) {
       if (itemFrom.nonEmpty) player.equipmentItems(toIndex) = itemFrom.get
@@ -345,7 +332,7 @@ class InventoryWindow {
       inventoryItem.nonEmpty && inventoryItem.get.template
         .parameters("equipableType")
         .stringValue
-        .get == equipmentTypes(equipmentIndex)
+        .get == InventoryMapping.equipmentTypes(equipmentIndex)
 
     if (inventoryItem.isEmpty || equipmentTypeMatches) {
       if (temp.nonEmpty) player.inventoryItems(inventoryIndex) = temp.get
@@ -354,13 +341,13 @@ class InventoryWindow {
       else player.equipmentItems.remove(equipmentIndex)
     }
 
-    promoteSecondaryToPrimaryWeapon()
+    player.promoteSecondaryToPrimaryWeapon()
 
     inventoryItemBeingMoved = None
     equipmentItemBeingMoved = None
   }
 
-  def tryDropSelectedItem(): Unit = {
+  def dropSelectedItem(): Unit = {
     val x: Float = mousePositionWindowScaled.x
     val y: Float = mousePositionWindowScaled.y
 
@@ -379,9 +366,9 @@ class InventoryWindow {
       currentArea.get.spawnLootPile(player.pos.x, player.pos.y, player.inventoryItems(inventorySlotHovered.get))
       player.inventoryItems.remove(inventorySlotHovered.get)
 
-      sound(Assets.coinBagSound).play(0.3f)
+      Assets.sound(Assets.coinBagSound).play(0.3f)
 
-      promoteSecondaryToPrimaryWeapon()
+      player.promoteSecondaryToPrimaryWeapon()
 
     }
 
@@ -389,7 +376,7 @@ class InventoryWindow {
       currentArea.get.spawnLootPile(player.pos.x, player.pos.y, player.equipmentItems(equipmentSlotHovered.get))
       player.equipmentItems.remove(equipmentSlotHovered.get)
 
-      sound(Assets.coinBagSound).play(0.3f)
+      Assets.sound(Assets.coinBagSound).play(0.3f)
     }
   }
 
@@ -427,16 +414,5 @@ class InventoryWindow {
       }
     }
 
-  }
-
-  def swapPrimaryAndSecondaryWeapons(): Unit = {
-    if (player.equipmentItems.contains(secondaryWeaponIndex)) {
-      val primaryWeapon = player.equipmentItems(primaryWeaponIndex)
-      val secondaryWeapon = player.equipmentItems(secondaryWeaponIndex)
-
-      player.equipmentItems(secondaryWeaponIndex) = primaryWeapon
-      player.equipmentItems(primaryWeaponIndex) = secondaryWeapon
-
-    }
   }
 }

@@ -2,9 +2,8 @@ package com.easternsauce.libgdxgame.items
 
 import com.badlogic.gdx.graphics.g2d.Sprite
 import com.badlogic.gdx.physics.box2d.{Body, BodyDef, CircleShape, FixtureDef}
-import com.easternsauce.libgdxgame.GameSystem._
 import com.easternsauce.libgdxgame.area.Area
-import com.easternsauce.libgdxgame.assets.Assets
+import com.easternsauce.libgdxgame.system.Assets
 
 import scala.collection.mutable.ListBuffer
 
@@ -13,7 +12,7 @@ class LootPile protected (val area: Area, x: Float, y: Float) extends Sprite {
   private val spriteHeight: Float = 1.2f
   private val pickupRange: Float = 2.5f
 
-  setRegion(texture(Assets.bagTexture))
+  setRegion(Assets.atlas.findRegion("bag"))
 
   var b2body: Body = _
   var bodyCreated = false

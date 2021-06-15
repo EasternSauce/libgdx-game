@@ -1,13 +1,13 @@
 package com.easternsauce.libgdxgame.area.traits
 
 import com.badlogic.gdx.physics.box2d._
-import com.easternsauce.libgdxgame.GameSystem._
 import com.easternsauce.libgdxgame.ability.traits.Ability
 import com.easternsauce.libgdxgame.area.{Area, AreaGate, TerrainTile}
 import com.easternsauce.libgdxgame.creature.{Creature, Player}
 import com.easternsauce.libgdxgame.items.LootPile
 import com.easternsauce.libgdxgame.projectile.Arrow
 import com.easternsauce.libgdxgame.spawns.PlayerSpawnPoint
+import com.easternsauce.libgdxgame.system.GameSystem._
 
 trait CollisionDetection {
   this: Area =>

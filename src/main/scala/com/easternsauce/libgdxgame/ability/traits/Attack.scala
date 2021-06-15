@@ -4,7 +4,7 @@ trait Attack extends Ability {
 
   override protected val isAttack = true
 
-  override def onStop() {
+  override def onStop(): Unit = {
     super.onStop()
 
     creature.isAttacking = false

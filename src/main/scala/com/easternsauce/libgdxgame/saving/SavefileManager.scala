@@ -2,8 +2,8 @@ package com.easternsauce.libgdxgame.saving
 
 import java.io.{File, PrintWriter}
 
-import com.easternsauce.libgdxgame.GameSystem._
 import com.easternsauce.libgdxgame.creature.Creature
+import com.easternsauce.libgdxgame.system.GameSystem._
 import io.circe.generic.semiauto._
 import io.circe.parser._
 import io.circe.syntax.EncoderOps

@@ -1,8 +1,8 @@
 package com.easternsauce.libgdxgame.area.traits
 
-import com.easternsauce.libgdxgame.GameSystem._
 import com.easternsauce.libgdxgame.area.Area
 import com.easternsauce.libgdxgame.items.{Item, LootPile}
+import com.easternsauce.libgdxgame.system.GameSystem._
 
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
@@ -15,7 +15,7 @@ trait LootManagement {
   def spawnLootPile(x: Float, y: Float, dropTable: mutable.Map[String, Float]): Unit = {
     val lootPile = LootPile(this, x, y)
     for ((key, value) <- dropTable) {
-      if (Random.nextFloat < value) {
+      if (randomGenerator.nextFloat() < value) {
         val item = Item.generateFromTemplate(key, Some(lootPile))
         lootPile.itemList += item
       }

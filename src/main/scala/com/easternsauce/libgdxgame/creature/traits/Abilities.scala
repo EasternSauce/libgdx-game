@@ -23,7 +23,7 @@ trait Abilities {
 
   var unarmedDamage = 15f
 
-  def weaponDamage: Float = if (equipmentItems.contains(0)) equipmentItems(0).damage.get else unarmedDamage
+  def weaponDamage: Float = if (equipmentItems.contains(0)) equipmentItems(0).damage.get.toFloat else unarmedDamage
 
   def renderAbilities(batch: EsBatch): Unit = {
     for (ability <- abilityList) {

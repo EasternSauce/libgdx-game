@@ -1,10 +1,10 @@
 package com.easternsauce.libgdxgame.creature.traits
 
 import com.badlogic.gdx.math.Vector2
-import com.easternsauce.libgdxgame.GameSystem._
 import com.easternsauce.libgdxgame.area.Area
 import com.easternsauce.libgdxgame.creature.{Creature, Enemy}
 import com.easternsauce.libgdxgame.pathfinding.{AStar, AStarNode}
+import com.easternsauce.libgdxgame.system.GameSystem._
 import com.easternsauce.libgdxgame.util.{EsDirection, EsTimer}
 
 import scala.collection.mutable.ListBuffer
@@ -68,9 +68,9 @@ trait AggressiveAI {
     } else {
       if (circlingDecisionTimer.time > circlingDecisionMaxTime) {
         circlingDecisionTimer.restart()
-        if (Random.nextFloat() < 0.25f) {
+        if (randomGenerator.nextFloat() < 0.25f) {
           circling = true
-          circlingClockwise = Random.nextFloat() < 0.5f
+          circlingClockwise = randomGenerator.nextFloat() < 0.5f
         } else {
           circling = false
         }
@@ -162,7 +162,7 @@ trait AggressiveAI {
 
   private def dropAggro(): Unit = {
     aggroedTarget = None
-    goToSpawnTime = 7 * Random.nextFloat()
+    goToSpawnTime = 7 * randomGenerator.nextFloat()
     recalculatePathTimer.restart()
   }
 

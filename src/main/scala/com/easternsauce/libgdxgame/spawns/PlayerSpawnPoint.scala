@@ -2,10 +2,9 @@ package com.easternsauce.libgdxgame.spawns
 
 import com.badlogic.gdx.graphics.g2d.Sprite
 import com.badlogic.gdx.physics.box2d.{Body, BodyDef, FixtureDef, PolygonShape}
-import com.easternsauce.libgdxgame.GameSystem._
 import com.easternsauce.libgdxgame.area.Area
 import com.easternsauce.libgdxgame.area.traits.PlayerSpawnSavedata
-import com.easternsauce.libgdxgame.assets.Assets
+import com.easternsauce.libgdxgame.system.Assets
 import com.easternsauce.libgdxgame.util.EsTimer
 
 class PlayerSpawnPoint(val id: String, val area: Area, val posX: Float, val posY: Float) extends Sprite {
@@ -24,16 +23,16 @@ class PlayerSpawnPoint(val id: String, val area: Area, val posX: Float, val posY
 
   setBounds(posX, posY, spriteWidth, spriteHeight)
 
-  setRegion(texture(Assets.gobletTexture))
+  setRegion(Assets.atlas.findRegion("goblet"))
 
   def onRespawnSet(): Unit = {
     respawnSetTimer.restart()
-    sound(Assets.matchIgniteSound).play(0.4f)
+    Assets.sound(Assets.matchIgniteSound).play(0.4f)
   }
 
   def update(): Unit = {
-    if (respawnSetTimer.time < respawnSetTime) setRegion(texture(Assets.gobletLitTexture))
-    else setRegion(texture(Assets.gobletTexture))
+    if (respawnSetTimer.time < respawnSetTime) setRegion(Assets.atlas.findRegion("goblet_lit"))
+    else setRegion(Assets.atlas.findRegion("goblet"))
 
   }
 

@@ -2,7 +2,8 @@ package com.easternsauce.libgdxgame.hud
 
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.math.Rectangle
-import com.easternsauce.libgdxgame.GameSystem._
+import com.easternsauce.libgdxgame.system.GameSystem._
+import com.easternsauce.libgdxgame.system.{Fonts, InventoryMapping}
 import com.easternsauce.libgdxgame.util.EsBatch
 
 class PlayerInfoHud {
@@ -14,7 +15,7 @@ class PlayerInfoHud {
   private var staminaRect =
     new Rectangle(10, 25, 100 * player.staminaPoints / player.maxStaminaPoints, 10)
 
-  private val slotSize = 40
+  private val slotSize = 40f
 
   val currentWeaponRect = new Rectangle(20f, maxHealthRect.y + 30f, slotSize, slotSize)
 
@@ -38,9 +39,9 @@ class PlayerInfoHud {
     )
     batch.shapeDrawer.filledRectangle(currentWeaponRect, Color.BLACK)
 
-    if (player.equipmentItems.contains(primaryWeaponIndex)) {
+    if (player.equipmentItems.contains(InventoryMapping.primaryWeaponIndex)) {
 
-      val weapon = player.equipmentItems(primaryWeaponIndex)
+      val weapon = player.equipmentItems(InventoryMapping.primaryWeaponIndex)
 
       val textureRegion = weapon.template.textureRegion
       batch.spriteBatch.draw(
@@ -62,9 +63,9 @@ class PlayerInfoHud {
     )
     batch.shapeDrawer.filledRectangle(swapWeaponRect, Color.BLACK)
 
-    if (player.equipmentItems.contains(secondaryWeaponIndex)) {
+    if (player.equipmentItems.contains(InventoryMapping.secondaryWeaponIndex)) {
 
-      val swapWeapon = player.equipmentItems(secondaryWeaponIndex)
+      val swapWeapon = player.equipmentItems(InventoryMapping.secondaryWeaponIndex)
       val swapTextureRegion = swapWeapon.template.textureRegion
       batch.spriteBatch.draw(
         swapTextureRegion,
@@ -85,9 +86,9 @@ class PlayerInfoHud {
     )
     batch.shapeDrawer.filledRectangle(consumableRect, Color.BLACK)
 
-    if (player.equipmentItems.contains(consumableIndex)) {
+    if (player.equipmentItems.contains(InventoryMapping.consumableIndex)) {
 
-      val consumable = player.equipmentItems(consumableIndex)
+      val consumable = player.equipmentItems(InventoryMapping.consumableIndex)
       val consumableRegion = consumable.template.textureRegion
       batch.spriteBatch.draw(
         consumableRegion,
@@ -98,8 +99,13 @@ class PlayerInfoHud {
       )
 
       if (consumable.quantity > 1) {
-        defaultFont.setColor(Color.WHITE)
-        defaultFont.draw(batch.spriteBatch, consumable.quantity.toString, consumableRect.x, consumableRect.y + 15)
+        Fonts.defaultFont.draw(
+          batch.spriteBatch,
+          consumable.quantity.toString,
+          consumableRect.x,
+          consumableRect.y + 15,
+          Color.WHITE
+        )
       }
     }
 

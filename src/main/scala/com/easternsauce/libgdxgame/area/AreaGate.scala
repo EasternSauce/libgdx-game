@@ -2,9 +2,9 @@ package com.easternsauce.libgdxgame.area
 
 import com.badlogic.gdx.physics.box2d._
 import com.badlogic.gdx.scenes.scene2d.ui.Image
-import com.easternsauce.libgdxgame.GameSystem._
-import com.easternsauce.libgdxgame.assets.Assets
 import com.easternsauce.libgdxgame.creature.Creature
+import com.easternsauce.libgdxgame.system.Assets
+import com.easternsauce.libgdxgame.system.GameSystem._
 import com.easternsauce.libgdxgame.util.EsBatch
 
 class AreaGate private (
@@ -19,8 +19,8 @@ class AreaGate private (
   private val width = 1.5f
   private val height = 1.5f
 
-  private val downArrowImageFrom = new Image(texture(Assets.downArrowTexture))
-  private val downArrowImageTo = new Image(texture(Assets.downArrowTexture))
+  private val downArrowImageFrom = new Image(Assets.atlas.findRegion("downarrow"))
+  private val downArrowImageTo = new Image(Assets.atlas.findRegion("downarrow"))
 
   downArrowImageFrom.setPosition(fromPosX - width / 2f, fromPosY - height / 2f)
   downArrowImageTo.setPosition(toPosX - width / 2f, toPosY - height / 2f)
@@ -68,6 +68,7 @@ class AreaGate private (
         val (destination: Area, posX: Float, posY: Float) = creature.area match {
           case Some(`areaFrom`) => (areaTo, toPosX, toPosY)
           case Some(`areaTo`)   => (areaFrom, fromPosX, fromPosY)
+          case _                => throw new RuntimeException("should never reach here")
         }
 
         moveCreature(creature, destination, posX, posY)

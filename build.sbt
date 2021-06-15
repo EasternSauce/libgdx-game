@@ -24,3 +24,5 @@ libraryDependencies += "io.circe" % "circe-core_2.13" % "0.14.1"
 libraryDependencies += "io.circe" %% "circe-parser" % "0.14.1"
 
 libraryDependencies += "io.circe" %% "circe-generic" % "0.14.1"
+
+scalacOptions += "-deprecation"

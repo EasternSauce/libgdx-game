@@ -3,9 +3,10 @@ package com.easternsauce.libgdxgame.screens
 import com.badlogic.gdx.Input.Buttons
 import com.badlogic.gdx.graphics.{Color, GL20}
 import com.badlogic.gdx.{Gdx, Input, Screen}
-import com.easternsauce.libgdxgame.GameSystem._
 import com.easternsauce.libgdxgame.creature.Player
 import com.easternsauce.libgdxgame.projectile.Arrow
+import com.easternsauce.libgdxgame.system.GameSystem._
+import com.easternsauce.libgdxgame.system.{Assets, Constants, Fonts, InventoryMapping}
 import com.easternsauce.libgdxgame.util.{EsBatch, EsTimer}
 
 class PlayScreen() extends Screen {
@@ -78,8 +79,13 @@ class PlayScreen() extends Screen {
 
     healthStaminaBar.render(hudBatch)
 
-    defaultFont.setColor(Color.WHITE)
-    defaultFont.draw(hudBatch.spriteBatch, Gdx.graphics.getFramesPerSecond + " fps", 3, WindowHeight - 3)
+    Fonts.defaultFont.draw(
+      hudBatch.spriteBatch,
+      Gdx.graphics.getFramesPerSecond + " fps",
+      3,
+      Constants.WindowHeight - 3,
+      Color.WHITE
+    )
 
     renderDeathScreen(hudBatch)
 
@@ -109,11 +115,11 @@ class PlayScreen() extends Screen {
 
   override def dispose(): Unit = {
     areaMap.values.foreach(_.dispose())
-    atlas.dispose()
+    Assets.atlas.dispose()
   }
 
   def managePlayerRespawns(player: Player) {
-    if (player.respawning && player.respawnTimer.time > playerRespawnTime) {
+    if (player.respawning && player.respawnTimer.time > Constants.PlayerRespawnTime) {
       player.respawning = false
 
       player.healthPoints = player.maxHealthPoints
@@ -134,10 +140,15 @@ class PlayScreen() extends Screen {
     }
   }
 
-  private def renderDeathScreen(batch: EsBatch) = {
+  private def renderDeathScreen(batch: EsBatch): Unit = {
     if (player.respawning) {
-      hugeFont.setColor(Color.RED)
-      hugeFont.draw(batch.spriteBatch, "YOU DIED", WindowWidth / 2f - 160, WindowHeight / 2 + 70)
+      Fonts.hugeFont.draw(
+        batch.spriteBatch,
+        "YOU DIED",
+        Constants.WindowWidth / 2f - 160,
+        Constants.WindowHeight / 2 + 70,
+        Color.RED
+      )
     }
   }
 
@@ -184,20 +195,20 @@ class PlayScreen() extends Screen {
 
     if (Gdx.input.isKeyJustPressed(Input.Keys.ALT_LEFT)) {
       if (inventoryWindow.visible) {
-        inventoryWindow.tryDropSelectedItem()
+        inventoryWindow.dropSelectedItem()
       }
     }
 
     if (Gdx.input.isKeyJustPressed(Input.Keys.TAB)) {
-      inventoryWindow.swapPrimaryAndSecondaryWeapons()
+      player.swapPrimaryAndSecondaryWeapons()
     }
 
     if (Gdx.input.isKeyJustPressed(Input.Keys.F)) {
-      if (player.equipmentItems.contains(consumableIndex)) {
+      if (player.equipmentItems.contains(InventoryMapping.consumableIndex)) {
 
-        val consumable = player.equipmentItems(consumableIndex)
+        val consumable = player.equipmentItems(InventoryMapping.consumableIndex)
         player.useItem(consumable)
-        if (consumable.quantity <= 1) player.equipmentItems.remove(consumableIndex)
+        if (consumable.quantity <= 1) player.equipmentItems.remove(InventoryMapping.consumableIndex)
         else consumable.quantity = consumable.quantity - 1
       }
     }

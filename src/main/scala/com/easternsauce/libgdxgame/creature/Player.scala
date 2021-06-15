@@ -3,9 +3,8 @@ package com.easternsauce.libgdxgame.creature
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.math.Vector2
-import com.easternsauce.libgdxgame.GameSystem._
-import com.easternsauce.libgdxgame.assets.Assets
 import com.easternsauce.libgdxgame.items.Item
+import com.easternsauce.libgdxgame.system.Assets
 import com.easternsauce.libgdxgame.util.{EsDirection, EsTimer}
 
 class Player(val id: String) extends Creature {
@@ -15,9 +14,9 @@ class Player(val id: String) extends Creature {
 
   override val isPlayer: Boolean = true
 
-  override val onGettingHitSound: Option[Sound] = Some(sound(Assets.painSound))
+  override val onGettingHitSound: Option[Sound] = Some(Assets.sound(Assets.painSound))
 
-  override val walkSound: Option[Sound] = Some(sound(Assets.runningSound))
+  override val walkSound: Option[Sound] = Some(Assets.sound(Assets.runningSound))
 
   var onSpawnPointId: Option[String] = None
 

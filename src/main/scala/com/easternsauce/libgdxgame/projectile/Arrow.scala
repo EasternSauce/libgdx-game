@@ -4,10 +4,9 @@ import com.badlogic.gdx.maps.tiled.TiledMap
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.{Body, BodyDef, CircleShape, FixtureDef}
 import com.badlogic.gdx.scenes.scene2d.ui.Image
-import com.easternsauce.libgdxgame.GameSystem._
 import com.easternsauce.libgdxgame.area.{Area, TerrainTile}
-import com.easternsauce.libgdxgame.assets.Assets
 import com.easternsauce.libgdxgame.creature.Creature
+import com.easternsauce.libgdxgame.system.Assets
 import com.easternsauce.libgdxgame.util.{EsBatch, EsTimer}
 
 import scala.collection.mutable
@@ -26,7 +25,7 @@ class Arrow private (
 
   val damage: Float = shooter.weaponDamage
 
-  private val arrowImage: Image = new Image(texture(Assets.arrowTexture))
+  private val arrowImage: Image = new Image(Assets.atlas.findRegion("arrow"))
   var markedForDeletion: Boolean = false
   var b2body: Body = _
   var isActive: Boolean = true

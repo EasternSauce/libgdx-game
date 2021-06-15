@@ -1,15 +1,14 @@
 package com.easternsauce.libgdxgame.creature
 
 import com.badlogic.gdx.audio.Sound
-import com.easternsauce.libgdxgame.GameSystem._
-import com.easternsauce.libgdxgame.assets.Assets
+import com.easternsauce.libgdxgame.system.Assets
 import com.easternsauce.libgdxgame.util.EsDirection
 
 class Skeleton(val id: String) extends Enemy {
   override val creatureWidth = 2.85f
   override val creatureHeight = 2.85f
 
-  override val onGettingHitSound: Option[Sound] = Some(sound(Assets.boneClickSound))
+  override val onGettingHitSound: Option[Sound] = Some(Assets.sound(Assets.boneClickSound))
 
   setBounds(0, 0, creatureWidth, creatureHeight)
   setOrigin(creatureWidth / 2f, creatureHeight / 2f)

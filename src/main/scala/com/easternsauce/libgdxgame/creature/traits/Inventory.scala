@@ -1,8 +1,9 @@
 package com.easternsauce.libgdxgame.creature.traits
 
-import com.easternsauce.libgdxgame.GameSystem._
 import com.easternsauce.libgdxgame.creature.Creature
 import com.easternsauce.libgdxgame.items.{Item, ItemTemplate}
+import com.easternsauce.libgdxgame.system.GameSystem._
+import com.easternsauce.libgdxgame.system.InventoryMapping
 
 import scala.collection.mutable
 
@@ -13,11 +14,11 @@ trait Inventory {
   val inventoryItems: mutable.Map[Int, Item] = mutable.Map()
 
   def currentWeapon: Item = {
-    equipmentItems(primaryWeaponIndex)
+    equipmentItems(InventoryMapping.primaryWeaponIndex)
   }
 
   def isWeaponEquipped: Boolean = {
-    equipmentItems.contains(primaryWeaponIndex)
+    equipmentItems.contains(InventoryMapping.primaryWeaponIndex)
   }
 
   def tryPickUpItem(item: Item): Boolean = {
@@ -83,6 +84,29 @@ trait Inventory {
       case "healingPowder" =>
         startHealing(0.14f)
         onItemConsumeSound.play(0.5f)
+    }
+  }
+
+  def swapPrimaryAndSecondaryWeapons(): Unit = {
+    if (equipmentItems.contains(InventoryMapping.secondaryWeaponIndex)) {
+      val primaryWeapon = equipmentItems(InventoryMapping.primaryWeaponIndex)
+      val secondaryWeapon = equipmentItems(InventoryMapping.secondaryWeaponIndex)
+
+      equipmentItems(InventoryMapping.secondaryWeaponIndex) = primaryWeapon
+      equipmentItems(InventoryMapping.primaryWeaponIndex) = secondaryWeapon
+
+    }
+  }
+
+  def promoteSecondaryToPrimaryWeapon(): Unit = {
+    if (
+      !equipmentItems
+        .contains(InventoryMapping.primaryWeaponIndex) &&
+      equipmentItems
+        .contains(InventoryMapping.secondaryWeaponIndex)
+    ) {
+      equipmentItems(InventoryMapping.primaryWeaponIndex) = equipmentItems(InventoryMapping.secondaryWeaponIndex)
+      equipmentItems.remove(InventoryMapping.secondaryWeaponIndex)
     }
   }
 }

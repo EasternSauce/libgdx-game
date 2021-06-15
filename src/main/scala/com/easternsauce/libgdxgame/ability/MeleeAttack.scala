@@ -2,9 +2,9 @@ package com.easternsauce.libgdxgame.ability
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.math.{Polygon, Rectangle, Vector2}
-import com.easternsauce.libgdxgame.GameSystem._
 import com.easternsauce.libgdxgame.ability.traits.{ActiveAnimation, Attack, PhysicalHitbox, WindupAnimation}
 import com.easternsauce.libgdxgame.creature.Creature
+import com.easternsauce.libgdxgame.system.Constants
 import com.easternsauce.libgdxgame.util.{EsBatch, EsPolygon}
 
 trait MeleeAttack extends Attack with PhysicalHitbox with ActiveAnimation with WindupAnimation {
@@ -20,8 +20,8 @@ trait MeleeAttack extends Attack with PhysicalHitbox with ActiveAnimation with W
   protected var aimed: Boolean
   protected var spriteWidth: Int
   protected var spriteHeight: Int
-  protected def width: Float = spriteWidth.toFloat / PPM
-  protected def height: Float = spriteHeight.toFloat / PPM
+  protected def width: Float = spriteWidth.toFloat / Constants.PPM
+  protected def height: Float = spriteHeight.toFloat / Constants.PPM
   protected var knockbackPower: Float
   override protected val isAttack = true
 
@@ -159,7 +159,7 @@ trait MeleeAttack extends Attack with PhysicalHitbox with ActiveAnimation with W
 
   }
 
-  override def onStop() {
+  override def onStop(): Unit = {
     super.onStop()
 
     creature.isAttacking = false

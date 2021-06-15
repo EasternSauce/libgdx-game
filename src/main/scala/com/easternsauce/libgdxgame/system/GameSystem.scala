@@ -1,71 +1,31 @@
-package com.easternsauce.libgdxgame
+package com.easternsauce.libgdxgame.system
 
-import com.badlogic.gdx.assets.AssetManager
-import com.badlogic.gdx.audio.{Music, Sound}
-import com.badlogic.gdx.graphics.Texture.TextureFilter
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator
-import com.badlogic.gdx.graphics.g2d.{BitmapFont, TextureAtlas}
-import com.badlogic.gdx.graphics.{OrthographicCamera, Texture}
+import com.badlogic.gdx.graphics.OrthographicCamera
+import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.maps.tiled.TmxMapLoader
 import com.badlogic.gdx.math.Vector3
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer
 import com.badlogic.gdx.utils.viewport.{FitViewport, Viewport}
 import com.badlogic.gdx.{Game, Gdx, Input}
 import com.easternsauce.libgdxgame.area.{Area, AreaGate}
-import com.easternsauce.libgdxgame.assets.Assets
 import com.easternsauce.libgdxgame.creature.{Creature, Player, Skeleton, Wolf}
 import com.easternsauce.libgdxgame.hud.{InventoryWindow, LootPickupMenu, NotificationText, PlayerInfoHud}
 import com.easternsauce.libgdxgame.items.ItemTemplate
 import com.easternsauce.libgdxgame.saving.SavefileManager
 import com.easternsauce.libgdxgame.screens.{MainMenuScreen, PlayScreen}
+import com.easternsauce.libgdxgame.system.Fonts.EnrichedBitmapFont
 import com.easternsauce.libgdxgame.util.EsDirection
 
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
+import scala.language.implicitConversions
 import scala.util.Random
 
 object GameSystem extends Game {
 
-  val Random: Random = new Random()
+  val randomGenerator: Random = new Random()
 
-  private var assetManager: AssetManager = _
-
-  val PPM = 32
-
-  val WindowWidth = 1360
-  val WindowHeight = 720
-
-  val equipmentTypes = Map(
-    0 -> "weapon",
-    1 -> "weapon",
-    2 -> "helmet",
-    3 -> "body",
-    4 -> "gloves",
-    5 -> "ring",
-    6 -> "boots",
-    7 -> "consumable"
-  )
-  val equipmentTypeNames = Map(
-    0 -> "Primary Weapon",
-    1 -> "Secondary Weapon",
-    2 -> "Helmet",
-    3 -> "Body",
-    4 -> "Gloves",
-    5 -> "Ring",
-    6 -> "Boots",
-    7 -> "Consumable"
-  )
-
-  val primaryWeaponIndex: Int = (for ((k, v) <- equipmentTypeNames) yield (v, k))("Primary Weapon")
-  val secondaryWeaponIndex: Int = (for ((k, v) <- equipmentTypeNames) yield (v, k))("Secondary Weapon")
-  val consumableIndex: Int = (for ((k, v) <- equipmentTypeNames) yield (v, k))("Consumable")
-
-  val TiledMapCellSize: Float = 2f
-
-  var defaultFont: BitmapFont = _
-  var hugeFont: BitmapFont = _
-
-  var savefileManager: SavefileManager = _
+  var savefileManager: SavefileManager = new SavefileManager()
 
   var mainMenuScreen: MainMenuScreen = _
   var playScreen: PlayScreen = _
@@ -76,17 +36,19 @@ object GameSystem extends Game {
 
   var areaMap: mutable.Map[String, Area] = _
 
-  var atlas: TextureAtlas = _
-
   val camera: OrthographicCamera = new OrthographicCamera()
   val hudCamera: OrthographicCamera = new OrthographicCamera()
-  hudCamera.position.set(WindowWidth / 2, WindowHeight / 2, 0)
+  hudCamera.position.set(Constants.WindowWidth / 2f, Constants.WindowHeight / 2f, 0)
 
   val viewport: Viewport =
-    new FitViewport(1650 / PPM, 864 / PPM, camera)
+    new FitViewport(
+      Constants.ViewpointWorldWidth / Constants.PPM,
+      Constants.ViewpointWorldHeight / Constants.PPM,
+      camera
+    )
 
   val hudViewport: Viewport =
-    new FitViewport(WindowWidth, WindowHeight, hudCamera)
+    new FitViewport(Constants.WindowWidth.toFloat, Constants.WindowHeight.toFloat, hudCamera)
 
   var b2DebugRenderer: Box2DDebugRenderer = _
 
@@ -106,37 +68,14 @@ object GameSystem extends Game {
 
   val notificationText: NotificationText = new NotificationText()
 
-  val playerRespawnTime = 3f
-
   val lootPickupMenu = new LootPickupMenu()
 
-  def sound(path: String): Sound = {
-    assetManager.get(path, classOf[Sound])
-  }
-
-  def texture(path: String): Texture = {
-    assetManager.get(path, classOf[Texture])
-  }
-
-  def music(path: String): Music = {
-    assetManager.get(path, classOf[Music])
-  }
+  implicit def bitmapFontToEnrichedBitmapFont(font: BitmapFont): EnrichedBitmapFont = new EnrichedBitmapFont(font)
 
   override def create(): Unit = {
-    assetManager = new AssetManager()
+    Assets.loadAssets()
 
-    savefileManager = new SavefileManager()
-
-    Assets.sounds.foreach(assetManager.load(_, classOf[Sound]))
-    Assets.textures.foreach(assetManager.load(_, classOf[Texture]))
-    Assets.music.foreach(assetManager.load(_, classOf[Music]))
-
-    assetManager.finishLoading()
-
-    atlas = new TextureAtlas("assets/atlas/packed_atlas.atlas")
-
-    defaultFont = loadFont(Assets.youngSerif, 16)
-    hugeFont = loadFont(Assets.youngSerif, 64)
+    Fonts.loadFonts()
 
     playScreen = new PlayScreen()
     mainMenuScreen = new MainMenuScreen()
@@ -190,9 +129,9 @@ object GameSystem extends Game {
   }
 
   private def loadAreas(): Unit = {
-    val area1: Area = new Area(mapLoader, Assets.area1Data, "area1", 4.0f)
-    val area2: Area = new Area(mapLoader, Assets.area2Data, "area2", 4.0f)
-    val area3: Area = new Area(mapLoader, Assets.area3Data, "area3", 4.0f)
+    val area1: Area = new Area(mapLoader, Assets.area1DataLocation, "area1", 4.0f)
+    val area2: Area = new Area(mapLoader, Assets.area2DataLocation, "area2", 4.0f)
+    val area3: Area = new Area(mapLoader, Assets.area3DataLocation, "area3", 4.0f)
 
     areaMap = mutable.Map()
     areaMap += (area1.id -> area1)
@@ -205,7 +144,7 @@ object GameSystem extends Game {
   }
 
   def mousePositionWindowScaled: Vector3 = {
-    val v = new Vector3(Gdx.input.getX, Gdx.input.getY, 0f)
+    val v = new Vector3(Gdx.input.getX.toFloat, Gdx.input.getY.toFloat, 0f)
     hudCamera.unproject(v)
     v
   }
@@ -239,17 +178,6 @@ object GameSystem extends Game {
 
   def moveCreature(creature: Creature, destination: Area, x: Float, y: Float): Unit = {
     creaturesToMove.enqueue((creature, destination, x, y))
-  }
-
-  def loadFont(assetPath: String, size: Int): BitmapFont = {
-    val generator = new FreeTypeFontGenerator(Gdx.files.internal(assetPath))
-    val parameter = new FreeTypeFontGenerator.FreeTypeFontParameter
-    parameter.size = size
-    val font: BitmapFont = generator.generateFont(parameter)
-    font.getRegion.getTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear)
-
-    generator.dispose()
-    font
   }
 
 }

@@ -3,13 +3,14 @@ package com.easternsauce.libgdxgame.area
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.{Color, OrthographicCamera}
 import com.badlogic.gdx.maps.tiled.{TiledMapTileLayer, TmxMapLoader}
-import com.easternsauce.libgdxgame.GameSystem._
 import com.easternsauce.libgdxgame.area.traits._
 import com.easternsauce.libgdxgame.creature.{Creature, Enemy}
 import com.easternsauce.libgdxgame.items.Item
 import com.easternsauce.libgdxgame.pathfinding.AStarNode
 import com.easternsauce.libgdxgame.projectile.Arrow
 import com.easternsauce.libgdxgame.spawns.EnemySpawnPoint
+import com.easternsauce.libgdxgame.system.GameSystem._
+import com.easternsauce.libgdxgame.system.{Constants, InventoryMapping}
 import com.easternsauce.libgdxgame.util.EsBatch
 
 import scala.collection.mutable
@@ -121,7 +122,7 @@ class Area(val mapLoader: TmxMapLoader, val areaFilesLocation: String, val id: S
 
   private def spawnEnemy(spawnPoint: EnemySpawnPoint): Unit = {
     val indexOfDot = spawnPoint.creatureClass.lastIndexOf('.')
-    val creatureId = spawnPoint.creatureClass.substring(indexOfDot + 1) + "_" + Math.abs(Random.nextInt())
+    val creatureId = spawnPoint.creatureClass.substring(indexOfDot + 1) + "_" + Math.abs(randomGenerator.nextInt())
 
     val action = Class
       .forName(spawnPoint.creatureClass)
@@ -134,7 +135,8 @@ class Area(val mapLoader: TmxMapLoader, val areaFilesLocation: String, val id: S
     creature.assignToArea(this, spawnPoint.posX, spawnPoint.posY)
 
     if (spawnPoint.weaponType.nonEmpty) {
-      creature.equipmentItems(primaryWeaponIndex) = Item.generateFromTemplate(spawnPoint.weaponType.get)
+      creature.equipmentItems(InventoryMapping.primaryWeaponIndex) =
+        Item.generateFromTemplate(spawnPoint.weaponType.get)
     }
 
     allAreaCreaturesMap += (creatureId -> creature)
@@ -142,12 +144,12 @@ class Area(val mapLoader: TmxMapLoader, val areaFilesLocation: String, val id: S
 
   def width: Float = {
     val layer = map.getLayers.get(0).asInstanceOf[TiledMapTileLayer]
-    layer.getWidth * TiledMapCellSize
+    layer.getWidth * Constants.TiledMapCellSize
   }
 
   def height: Float = {
     val layer = map.getLayers.get(0).asInstanceOf[TiledMapTileLayer]
-    layer.getHeight * TiledMapCellSize
+    layer.getHeight * Constants.TiledMapCellSize
   }
 
   def resetPathfindingGraph(): Unit = {

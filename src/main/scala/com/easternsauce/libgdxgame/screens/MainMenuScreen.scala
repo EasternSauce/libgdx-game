@@ -2,7 +2,8 @@ package com.easternsauce.libgdxgame.screens
 
 import com.badlogic.gdx.graphics.{Color, GL20}
 import com.badlogic.gdx.{Gdx, Input, Screen}
-import com.easternsauce.libgdxgame.GameSystem._
+import com.easternsauce.libgdxgame.system.GameSystem._
+import com.easternsauce.libgdxgame.system.{Constants, Fonts}
 import com.easternsauce.libgdxgame.util.EsBatch
 
 class MainMenuScreen extends Screen {
@@ -103,34 +104,34 @@ class MainMenuScreen extends Screen {
     val posY = if (currentNode.promptText.nonEmpty) 130 else 100
 
     if (currentNode.promptText.nonEmpty) {
-      defaultFont.draw(batch.spriteBatch, currentNode.promptText.get, posX, WindowHeight - 100)
+      Fonts.defaultFont.draw(batch.spriteBatch, currentNode.promptText.get, posX, Constants.WindowHeight - 100)
     }
 
-    defaultFont.setColor(Color.WHITE)
     for (i <- currentNode.children.indices) {
       val option = currentNode.children(i)
-      defaultFont.draw(
+      Fonts.defaultFont.draw(
         batch.spriteBatch,
         (if (currentSelected == i) ">" else "") + option.name,
         posX,
-        WindowHeight - (posY + 30 * i)
+        Constants.WindowHeight - (posY + 30 * i),
+        Color.WHITE
       )
     }
 
-    defaultFont.setColor(Color.WHITE)
-
-    defaultFont.draw(
+    Fonts.defaultFont.draw(
       batch.spriteBatch,
       controlsCheatsheetEntries.map { case (key, _) => key }.mkString("\n"),
-      WindowWidth - 550,
-      350
+      Constants.WindowWidth - 550,
+      350,
+      Color.WHITE
     )
 
-    defaultFont.draw(
+    Fonts.defaultFont.draw(
       batch.spriteBatch,
       controlsCheatsheetEntries.map { case (_, value) => value }.mkString("\n"),
-      WindowWidth - 350,
-      350
+      Constants.WindowWidth - 350,
+      350,
+      Color.WHITE
     )
 
     batch.spriteBatch.end()

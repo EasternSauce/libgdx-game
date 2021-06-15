@@ -1,9 +1,9 @@
 package com.easternsauce.libgdxgame.creature.traits
 
-import com.easternsauce.libgdxgame.GameSystem.{allAreaCreaturesMap, areaMap, setPlayer}
 import com.easternsauce.libgdxgame.creature.Creature
 import com.easternsauce.libgdxgame.items.Item
 import com.easternsauce.libgdxgame.saving.{CreatureSavedata, ItemSavedata, PlayerSpawnPointSavedata, PositionSavedata}
+import com.easternsauce.libgdxgame.system.GameSystem.{allAreaCreaturesMap, areaMap, setPlayer}
 
 trait SavefileParser {
   this: Creature =>
