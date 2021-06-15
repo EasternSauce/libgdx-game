@@ -1,6 +1,6 @@
 package com.easternsauce.libgdxgame.system
 
-import com.badlogic.gdx.graphics.OrthographicCamera
+import com.badlogic.gdx.graphics.{Color, OrthographicCamera}
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.maps.tiled.TmxMapLoader
 import com.badlogic.gdx.math.Vector3
@@ -14,7 +14,7 @@ import com.easternsauce.libgdxgame.items.ItemTemplate
 import com.easternsauce.libgdxgame.saving.SavefileManager
 import com.easternsauce.libgdxgame.screens.{MainMenuScreen, PlayScreen}
 import com.easternsauce.libgdxgame.system.Fonts.EnrichedBitmapFont
-import com.easternsauce.libgdxgame.util.EsDirection
+import com.easternsauce.libgdxgame.util.{EsBatch, EsDirection}
 
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
@@ -178,6 +178,52 @@ object GameSystem extends Game {
 
   def moveCreature(creature: Creature, destination: Area, x: Float, y: Float): Unit = {
     creaturesToMove.enqueue((creature, destination, x, y))
+  }
+
+  def managePlayerRespawns(player: Player) {
+    if (player.respawning && player.respawnTimer.time > Constants.PlayerRespawnTime) {
+      player.respawning = false
+
+      player.healthPoints = player.maxHealthPoints
+      player.staminaPoints = player.maxStaminaPoints
+      player.isAttacking = false
+      player.staminaOveruse = false
+      player.effectMap("staminaRegenStopped").stop()
+
+      val area = player.playerSpawnPoint.get.area
+      currentArea = Option(area)
+      area.reset()
+
+      player.assignToArea(area, player.playerSpawnPoint.get.posX, player.playerSpawnPoint.get.posY)
+
+      player.setRotation(0f)
+
+      //stopBossBattleMusic()
+    }
+  }
+
+  def renderDeathScreen(batch: EsBatch): Unit = {
+    if (player.respawning) {
+      Fonts.hugeFont.draw(
+        batch.spriteBatch,
+        "YOU DIED",
+        Constants.WindowWidth / 2f - 160,
+        Constants.WindowHeight / 2 + 70,
+        Color.RED
+      )
+    }
+  }
+
+  def handleCreaturesMovingBetweenAreas(): Unit = {
+    if (creaturesToMove.nonEmpty) {
+      creaturesToMove.foreach {
+        case (creature, area, x, y) =>
+          creature.assignToArea(area, x, y)
+          creature.passedGateRecently = true
+      }
+
+      creaturesToMove.clear()
+    }
   }
 
 }

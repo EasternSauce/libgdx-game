@@ -23,15 +23,7 @@ class PlayScreen() extends Screen {
 
     currentArea.get.update()
 
-    if (creaturesToMove.nonEmpty) {
-      creaturesToMove.foreach {
-        case (creature, area, x, y) =>
-          creature.assignToArea(area, x, y)
-          creature.passedGateRecently = true
-      }
-
-      creaturesToMove.clear()
-    }
+    handleCreaturesMovingBetweenAreas()
 
     updateCamera(player)
 
@@ -43,6 +35,7 @@ class PlayScreen() extends Screen {
 
     notificationText.update()
   }
+
 
   override def render(delta: Float): Unit = {
     update(delta)
@@ -116,40 +109,6 @@ class PlayScreen() extends Screen {
   override def dispose(): Unit = {
     areaMap.values.foreach(_.dispose())
     Assets.atlas.dispose()
-  }
-
-  def managePlayerRespawns(player: Player) {
-    if (player.respawning && player.respawnTimer.time > Constants.PlayerRespawnTime) {
-      player.respawning = false
-
-      player.healthPoints = player.maxHealthPoints
-      player.staminaPoints = player.maxStaminaPoints
-      player.isAttacking = false
-      player.staminaOveruse = false
-      player.effectMap("staminaRegenStopped").stop()
-
-      val area = player.playerSpawnPoint.get.area
-      currentArea = Option(area)
-      area.reset()
-
-      player.assignToArea(area, player.playerSpawnPoint.get.posX, player.playerSpawnPoint.get.posY)
-
-      player.setRotation(0f)
-
-      //stopBossBattleMusic()
-    }
-  }
-
-  private def renderDeathScreen(batch: EsBatch): Unit = {
-    if (player.respawning) {
-      Fonts.hugeFont.draw(
-        batch.spriteBatch,
-        "YOU DIED",
-        Constants.WindowWidth / 2f - 160,
-        Constants.WindowHeight / 2 + 70,
-        Color.RED
-      )
-    }
   }
 
   def handleInput(): Unit = {
