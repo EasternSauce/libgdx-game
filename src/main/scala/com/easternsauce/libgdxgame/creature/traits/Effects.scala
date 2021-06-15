@@ -25,7 +25,7 @@ trait Effects {
 
     initEffect("immune")
     initEffect("immobilized")
-    initEffect("staminaRegenStopped")
+    initEffect("staminaRegenerationStopped")
     initEffect("poisoned")
     initEffect("knockedBack")
 
@@ -67,7 +67,7 @@ trait Effects {
   def handlePoison(): Unit = {
     if (effect("poisoned").isActive) {
       if (poisonTickTimer.time > poisonTickTime) {
-        takeHealthDamage(15f, immunityFrames = false)
+        takeLifeDamage(15f, immunityFrames = false)
         poisonTickTimer.restart()
       }
     }

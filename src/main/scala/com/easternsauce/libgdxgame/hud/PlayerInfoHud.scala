@@ -8,25 +8,25 @@ import com.easternsauce.libgdxgame.util.EsBatch
 
 class PlayerInfoHud {
 
-  private var maxHealthRect = new Rectangle(10, 40, 100, 10)
-  private var healthRect =
-    new Rectangle(10, 40, 100 * player.healthPoints / player.maxHealthPoints, 10)
+  private var maxLifeRect = new Rectangle(10, 40, 100, 10)
+  private var lifeRect =
+    new Rectangle(10, 40, 100 * player.life / player.maxLife, 10)
   private var maxStaminaRect = new Rectangle(10, 25, 100, 10)
   private var staminaRect =
     new Rectangle(10, 25, 100 * player.staminaPoints / player.maxStaminaPoints, 10)
 
   private val slotSize = 40f
 
-  val currentWeaponRect = new Rectangle(20f, maxHealthRect.y + 30f, slotSize, slotSize)
+  val currentWeaponRect = new Rectangle(20f, maxLifeRect.y + 30f, slotSize, slotSize)
 
-  val swapWeaponRect = new Rectangle(70f, maxHealthRect.y + 30f, slotSize / 2f, slotSize / 2f)
+  val swapWeaponRect = new Rectangle(70f, maxLifeRect.y + 30f, slotSize / 2f, slotSize / 2f)
 
   val consumableRect =
     new Rectangle(maxStaminaRect.x + maxStaminaRect.width + 20f, maxStaminaRect.y, slotSize, slotSize)
 
   def render(batch: EsBatch): Unit = {
-    batch.shapeDrawer.filledRectangle(maxHealthRect, Color.ORANGE)
-    batch.shapeDrawer.filledRectangle(healthRect, Color.RED)
+    batch.shapeDrawer.filledRectangle(maxLifeRect, Color.ORANGE)
+    batch.shapeDrawer.filledRectangle(lifeRect, Color.RED)
     batch.shapeDrawer.filledRectangle(maxStaminaRect, Color.ORANGE)
     batch.shapeDrawer.filledRectangle(staminaRect, Color.GREEN)
 
@@ -112,12 +112,12 @@ class PlayerInfoHud {
   }
 
   def update(): Unit = {
-    maxHealthRect = new Rectangle(10, 40, 100, 10)
-    healthRect = new Rectangle(
+    maxLifeRect = new Rectangle(10, 40, 100, 10)
+    lifeRect = new Rectangle(
       10,
       40,
-      100 * (if (player.healthPoints > player.maxHealthPoints) 1f
-             else player.healthPoints / player.maxHealthPoints),
+      100 * (if (player.life > player.maxLife) 1f
+             else player.life / player.maxLife),
       10
     )
     maxStaminaRect = new Rectangle(10, 25, 100, 10)

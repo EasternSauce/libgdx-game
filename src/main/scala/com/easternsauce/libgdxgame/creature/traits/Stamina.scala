@@ -10,15 +10,15 @@ trait Stamina {
   val maxStaminaPoints = 100f
   var staminaPoints: Float = maxStaminaPoints
 
-  protected val staminaRegenTimer: EsTimer = EsTimer(true)
+  protected val staminaRegenerationTimer: EsTimer = EsTimer(true)
   protected val staminaOveruseTimer: EsTimer = EsTimer()
 
-  protected val staminaRegen = 0.3f
+  protected val staminaRegeneration = 0.3f
 
   var staminaOveruse = false
   protected val staminaOveruseTime = 1.3f
 
-  protected val staminaRegenTickTime = 0.005f
+  protected val staminaRegenerationTickTime = 0.005f
 
   protected var staminaDrain = 0.0f
 
@@ -44,13 +44,13 @@ trait Stamina {
       staminaDrain += Gdx.graphics.getDeltaTime
     }
 
-    if (!effect("staminaRegenStopped").isActive && !sprinting) {
-      if (staminaRegenTimer.time > staminaRegenTickTime && !abilityActive && !staminaOveruse) {
+    if (!effect("staminaRegenerationStopped").isActive && !sprinting) {
+      if (staminaRegenerationTimer.time > staminaRegenerationTickTime && !abilityActive && !staminaOveruse) {
         if (staminaPoints < maxStaminaPoints) {
-          val afterRegen = staminaPoints + staminaRegen
-          staminaPoints = Math.min(afterRegen, maxStaminaPoints)
+          val afterRegeneration = staminaPoints + staminaRegeneration
+          staminaPoints = Math.min(afterRegeneration, maxStaminaPoints)
         }
-        staminaRegenTimer.restart()
+        staminaRegenerationTimer.restart()
       }
     }
 

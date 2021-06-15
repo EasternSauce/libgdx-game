@@ -182,7 +182,7 @@ object ItemTemplate {
     )
 
     addItemType(
-      ItemTemplate("healingPowder", "Healing Powder", "Quickly regenerates health", icons(20)(5))
+      ItemTemplate("healingPowder", "Healing Powder", "Quickly regenerates life", icons(20)(5))
         .setWorth(45)
         .setEquipable(true)
         .setEquipableType("consumable")

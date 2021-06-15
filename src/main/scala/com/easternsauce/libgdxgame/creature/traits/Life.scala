@@ -8,33 +8,33 @@ import com.easternsauce.libgdxgame.util.{EsBatch, EsTimer}
 trait Life {
   this: Creature =>
 
-  var maxHealthPoints = 100f
-  var healthPoints: Float = maxHealthPoints
+  var maxLife = 100f
+  var life: Float = maxLife
 
-  protected val healthRegenTimer: EsTimer = EsTimer(true)
+  protected val lifeRegenerationTimer: EsTimer = EsTimer(true)
   protected val healingTimer: EsTimer = EsTimer()
   protected val healingTickTimer: EsTimer = EsTimer()
 
-  protected val healthRegen = 0.3f
+  protected val lifeRegeneration = 0.3f
 
   protected var healing = false
   protected val healingTickTime = 0.005f
   protected val healingItemHealTime = 3f
   protected var healingPower = 0f
 
-  def atFullLife: Boolean = healthPoints >= maxHealthPoints
+  def atFullLife: Boolean = life >= maxLife
 
-  def alive: Boolean = healthPoints > 0f
+  def alive: Boolean = life > 0f
 
   def heal(healValue: Float): Unit = {
-    if (healthPoints < maxHealthPoints) {
-      val afterHeal = healthPoints + healValue
-      healthPoints = Math.min(afterHeal, maxHealthPoints)
+    if (life < maxLife) {
+      val afterHeal = life + healValue
+      life = Math.min(afterHeal, maxLife)
 
     }
   }
 
-  def takeHealthDamage(
+  def takeLifeDamage(
     damage: Float,
     immunityFrames: Boolean,
     dealtBy: Option[Creature] = None,
@@ -43,14 +43,14 @@ trait Life {
     sourceY: Float = 0
   ): Unit = {
     if (alive) {
-      val beforeHP = healthPoints
+      val beforeHP = life
 
       val actualDamage = damage * 100f / (100f + totalArmor)
 
-      if (healthPoints - actualDamage > 0) healthPoints -= actualDamage
-      else healthPoints = 0f
+      if (life - actualDamage > 0) life -= actualDamage
+      else life = 0f
 
-      if (beforeHP != healthPoints && healthPoints == 0f) onDeath()
+      if (beforeHP != life && life == 0f) onDeath()
 
       if (immunityFrames) { // immunity frames on hit
         effect("immune").applyEffect(0.75f)
@@ -68,15 +68,15 @@ trait Life {
     }
   }
 
-  def renderHealthBar(batch: EsBatch): Unit = {
-    val healthBarHeight = 0.16f
-    val healthBarWidth = 2.0f
-    val currentHealthBarWidth = healthBarWidth * healthPoints / maxHealthPoints
-    val barPosX = pos.x - healthBarWidth / 2
+  def renderLifeBar(batch: EsBatch): Unit = {
+    val lifeBarHeight = 0.16f
+    val lifeBarWidth = 2.0f
+    val currentLifeBarWidth = lifeBarWidth * life / maxLife
+    val barPosX = pos.x - lifeBarWidth / 2
     val barPosY = pos.y + getWidth / 2 + 0.3125f
-    batch.shapeDrawer.filledRectangle(new Rectangle(barPosX, barPosY, healthBarWidth, healthBarHeight), Color.ORANGE)
+    batch.shapeDrawer.filledRectangle(new Rectangle(barPosX, barPosY, lifeBarWidth, lifeBarHeight), Color.ORANGE)
     batch.shapeDrawer
-      .filledRectangle(new Rectangle(barPosX, barPosY, currentHealthBarWidth, healthBarHeight), Color.RED)
+      .filledRectangle(new Rectangle(barPosX, barPosY, currentLifeBarWidth, lifeBarHeight), Color.RED)
 
   }
 
@@ -93,13 +93,13 @@ trait Life {
         heal(healingPower)
         healingTickTimer.restart()
       }
-      if (healingTimer.time > healingItemHealTime || healthPoints >= maxHealthPoints)
+      if (healingTimer.time > healingItemHealTime || life >= maxLife)
         healing = false
     }
   }
 
-  if (healthRegenTimer.time > 0.5f) {
-    heal(healthRegen)
-    healthRegenTimer.restart()
+  if (lifeRegenerationTimer.time > 0.5f) {
+    heal(lifeRegeneration)
+    lifeRegenerationTimer.restart()
   }
 }

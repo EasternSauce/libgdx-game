@@ -69,7 +69,7 @@ class Player(val id: String) extends Creature {
     respawning = true
     sprinting = false
 
-    //hud.bossHealthBar.hide()
+    //hud.bossLifeBar.hide()
 
     // TODO: add music manager
     //Assets.abandonedPlainsMusic.stop()

@@ -1,7 +1,7 @@
 package com.easternsauce.libgdxgame.system
 
-import com.badlogic.gdx.graphics.{Color, OrthographicCamera}
 import com.badlogic.gdx.graphics.g2d.BitmapFont
+import com.badlogic.gdx.graphics.{Color, OrthographicCamera}
 import com.badlogic.gdx.maps.tiled.TmxMapLoader
 import com.badlogic.gdx.math.Vector3
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer
@@ -62,7 +62,7 @@ object GameSystem extends Game {
 
   var inventoryWindow: InventoryWindow = _
 
-  var healthStaminaBar: PlayerInfoHud = _
+  var lifeStaminaBar: PlayerInfoHud = _
 
   var debugMode = false
 
@@ -116,7 +116,7 @@ object GameSystem extends Game {
     if (!creature.isPlayer) throw new RuntimeException("creature is not a player")
     player = creature.asInstanceOf[Player]
     inventoryWindow = new InventoryWindow()
-    healthStaminaBar = new PlayerInfoHud()
+    lifeStaminaBar = new PlayerInfoHud()
 
     currentArea = player.area
   }
@@ -184,11 +184,11 @@ object GameSystem extends Game {
     if (player.respawning && player.respawnTimer.time > Constants.PlayerRespawnTime) {
       player.respawning = false
 
-      player.healthPoints = player.maxHealthPoints
+      player.life = player.maxLife
       player.staminaPoints = player.maxStaminaPoints
       player.isAttacking = false
       player.staminaOveruse = false
-      player.effectMap("staminaRegenStopped").stop()
+      player.effectMap("staminaRegenerationStopped").stop()
 
       val area = player.playerSpawnPoint.get.area
       currentArea = Option(area)

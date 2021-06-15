@@ -13,7 +13,7 @@ trait SavefileParser {
       creatureClass = creatureType,
       id = id,
       spawnPointId = spawnPointId,
-      healthPoints = healthPoints,
+      life = life,
       area = area.get.id,
       isPlayer = isPlayer,
       position = PositionSavedata(pos.x, pos.y),
@@ -32,7 +32,7 @@ trait SavefileParser {
 
   def loadFromSavedata(creatureData: CreatureSavedata): Unit = {
     setPosition(creatureData.position.x, creatureData.position.y)
-    healthPoints = creatureData.healthPoints
+    life = creatureData.life
     this.area = Some(areaMap(creatureData.area))
 
     spawnPointId = creatureData.spawnPointId

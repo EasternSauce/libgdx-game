@@ -48,9 +48,9 @@ trait Ability {
 
       if (isAttack) { // + 0.01 to ensure regen doesn't start if we hold attack button
         creature
-          .effect("staminaRegenStopped")
+          .effect("staminaRegenerationStopped")
           .applyEffect(channelTime + cooldownTime + 0.01f)
-      } else creature.effect("staminaRegenStopped").applyEffect(1f)
+      } else creature.effect("staminaRegenerationStopped").applyEffect(1f)
     }
   }
 

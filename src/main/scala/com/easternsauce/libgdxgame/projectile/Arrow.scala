@@ -82,7 +82,7 @@ class Arrow private (
     if (!(shooter.isEnemy && creature.isEnemy) && isActive) {
 
       if (shooter != creature && creature.alive && !creature.immune) {
-        creature.takeHealthDamage(damage, immunityFrames = true, Some(shooter), knockbackPower, startX, startY)
+        creature.takeLifeDamage(damage, immunityFrames = true, Some(shooter), knockbackPower, startX, startY)
         markedForDeletion = true
       }
     }

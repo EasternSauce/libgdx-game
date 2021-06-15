@@ -5,7 +5,7 @@
       "id" : "Skeleton_1137151171",
       "spawnPointId" : "2",
       "playerSpawnPoint" : null,
-      "healthPoints" : 100.0,
+      "life" : 100.0,
       "area" : "area1",
       "isPlayer" : false,
       "position" : {
@@ -29,7 +29,7 @@
       "id" : "Skeleton_1696347265",
       "spawnPointId" : "0",
       "playerSpawnPoint" : null,
-      "healthPoints" : 100.0,
+      "life" : 100.0,
       "area" : "area1",
       "isPlayer" : false,
       "position" : {
@@ -53,7 +53,7 @@
       "id" : "Skeleton_615142733",
       "spawnPointId" : "18",
       "playerSpawnPoint" : null,
-      "healthPoints" : 100.0,
+      "life" : 100.0,
       "area" : "area3",
       "isPlayer" : false,
       "position" : {
@@ -77,7 +77,7 @@
       "id" : "Skeleton_644588715",
       "spawnPointId" : "4",
       "playerSpawnPoint" : null,
-      "healthPoints" : 100.0,
+      "life" : 100.0,
       "area" : "area1",
       "isPlayer" : false,
       "position" : {
@@ -101,7 +101,7 @@
       "id" : "Ghost_1064136077",
       "spawnPointId" : "14",
       "playerSpawnPoint" : null,
-      "healthPoints" : 100.0,
+      "life" : 100.0,
       "area" : "area3",
       "isPlayer" : false,
       "position" : {
@@ -118,7 +118,7 @@
       "id" : "Ghost_972743009",
       "spawnPointId" : "2",
       "playerSpawnPoint" : null,
-      "healthPoints" : 100.0,
+      "life" : 100.0,
       "area" : "area3",
       "isPlayer" : false,
       "position" : {
@@ -135,7 +135,7 @@
       "id" : "Wolf_830908182",
       "spawnPointId" : "36",
       "playerSpawnPoint" : null,
-      "healthPoints" : 100.0,
+      "life" : 100.0,
       "area" : "area1",
       "isPlayer" : false,
       "position" : {
@@ -152,7 +152,7 @@
       "id" : "Goblin_425277912",
       "spawnPointId" : "4",
       "playerSpawnPoint" : null,
-      "healthPoints" : 100.0,
+      "life" : 100.0,
       "area" : "area3",
       "isPlayer" : false,
       "position" : {
@@ -176,7 +176,7 @@
       "id" : "Skeleton_775883971",
       "spawnPointId" : "7",
       "playerSpawnPoint" : null,
-      "healthPoints" : 100.0,
+      "life" : 100.0,
       "area" : "area1",
       "isPlayer" : false,
       "position" : {
@@ -200,7 +200,7 @@
       "id" : "Skeleton_916690582",
       "spawnPointId" : "19",
       "playerSpawnPoint" : null,
-      "healthPoints" : 100.0,
+      "life" : 100.0,
       "area" : "area3",
       "isPlayer" : false,
       "position" : {
@@ -224,7 +224,7 @@
       "id" : "Wolf_1939395367",
       "spawnPointId" : "23",
       "playerSpawnPoint" : null,
-      "healthPoints" : 100.0,
+      "life" : 100.0,
       "area" : "area3",
       "isPlayer" : false,
       "position" : {
@@ -241,7 +241,7 @@
       "id" : "Wolf_880257578",
       "spawnPointId" : "26",
       "playerSpawnPoint" : null,
-      "healthPoints" : 100.0,
+      "life" : 100.0,
       "area" : "area1",
       "isPlayer" : false,
       "position" : {
@@ -258,7 +258,7 @@
       "id" : "Skeleton_1893516150",
       "spawnPointId" : "1",
       "playerSpawnPoint" : null,
-      "healthPoints" : 100.0,
+      "life" : 100.0,
       "area" : "area1",
       "isPlayer" : false,
       "position" : {
@@ -282,7 +282,7 @@
       "id" : "Goblin_1044482327",
       "spawnPointId" : "3",
       "playerSpawnPoint" : null,
-      "healthPoints" : 100.0,
+      "life" : 100.0,
       "area" : "area3",
       "isPlayer" : false,
       "position" : {
@@ -306,7 +306,7 @@
       "id" : "Skeleton_695331315",
       "spawnPointId" : "5",
       "playerSpawnPoint" : null,
-      "healthPoints" : 100.0,
+      "life" : 100.0,
       "area" : "area1",
       "isPlayer" : false,
       "position" : {
@@ -330,7 +330,7 @@
       "id" : "Skeleton_905518718",
       "spawnPointId" : "8",
       "playerSpawnPoint" : null,
-      "healthPoints" : 100.0,
+      "life" : 100.0,
       "area" : "area1",
       "isPlayer" : false,
       "position" : {
@@ -354,7 +354,7 @@
       "id" : "Skeleton_326235011",
       "spawnPointId" : "29",
       "playerSpawnPoint" : null,
-      "healthPoints" : 100.0,
+      "life" : 100.0,
       "area" : "area1",
       "isPlayer" : false,
       "position" : {
@@ -378,7 +378,7 @@
       "id" : "Goblin_1137383986",
       "spawnPointId" : "32",
       "playerSpawnPoint" : null,
-      "healthPoints" : 100.0,
+      "life" : 100.0,
       "area" : "area1",
       "isPlayer" : false,
       "position" : {
@@ -405,7 +405,7 @@
         "area" : "area2",
         "id" : "0"
       },
-      "healthPoints" : 100.0,
+      "life" : 100.0,
       "area" : "area1",
       "isPlayer" : true,
       "position" : {
@@ -709,7 +709,7 @@
       "id" : "Skeleton_927139587",
       "spawnPointId" : "31",
       "playerSpawnPoint" : null,
-      "healthPoints" : 100.0,
+      "life" : 100.0,
       "area" : "area1",
       "isPlayer" : false,
       "position" : {
@@ -733,7 +733,7 @@
       "id" : "Wolf_1633663314",
       "spawnPointId" : "27",
       "playerSpawnPoint" : null,
-      "healthPoints" : 100.0,
+      "life" : 100.0,
       "area" : "area1",
       "isPlayer" : false,
       "position" : {
@@ -750,7 +750,7 @@
       "id" : "Skeleton_527959443",
       "spawnPointId" : "30",
       "playerSpawnPoint" : null,
-      "healthPoints" : 100.0,
+      "life" : 100.0,
       "area" : "area1",
       "isPlayer" : false,
       "position" : {
@@ -774,7 +774,7 @@
       "id" : "Skeleton_455532770",
       "spawnPointId" : "25",
       "playerSpawnPoint" : null,
-      "healthPoints" : 100.0,
+      "life" : 100.0,
       "area" : "area1",
       "isPlayer" : false,
       "position" : {
@@ -798,7 +798,7 @@
       "id" : "Goblin_1188210819",
       "spawnPointId" : "5",
       "playerSpawnPoint" : null,
-      "healthPoints" : 100.0,
+      "life" : 100.0,
       "area" : "area3",
       "isPlayer" : false,
       "position" : {
@@ -822,7 +822,7 @@
       "id" : "Skeleton_964462950",
       "spawnPointId" : "6",
       "playerSpawnPoint" : null,
-      "healthPoints" : 100.0,
+      "life" : 100.0,
       "area" : "area1",
       "isPlayer" : false,
       "position" : {
@@ -846,7 +846,7 @@
       "id" : "Goblin_483012458",
       "spawnPointId" : "21",
       "playerSpawnPoint" : null,
-      "healthPoints" : 100.0,
+      "life" : 100.0,
       "area" : "area3",
       "isPlayer" : false,
       "position" : {
@@ -870,7 +870,7 @@
       "id" : "Skeleton_411547259",
       "spawnPointId" : "28",
       "playerSpawnPoint" : null,
-      "healthPoints" : 100.0,
+      "life" : 100.0,
       "area" : "area1",
       "isPlayer" : false,
       "position" : {
@@ -894,7 +894,7 @@
       "id" : "Ghost_1995112674",
       "spawnPointId" : "20",
       "playerSpawnPoint" : null,
-      "healthPoints" : 100.0,
+      "life" : 100.0,
       "area" : "area3",
       "isPlayer" : false,
       "position" : {
@@ -911,7 +911,7 @@
       "id" : "Wolf_263871348",
       "spawnPointId" : "24",
       "playerSpawnPoint" : null,
-      "healthPoints" : 100.0,
+      "life" : 100.0,
       "area" : "area1",
       "isPlayer" : false,
       "position" : {
@@ -928,7 +928,7 @@
       "id" : "Goblin_303494568",
       "spawnPointId" : "34",
       "playerSpawnPoint" : null,
-      "healthPoints" : 100.0,
+      "life" : 100.0,
       "area" : "area1",
       "isPlayer" : false,
       "position" : {
@@ -952,7 +952,7 @@
       "id" : "Skeleton_1055506591",
       "spawnPointId" : "37",
       "playerSpawnPoint" : null,
-      "healthPoints" : 100.0,
+      "life" : 100.0,
       "area" : "area1",
       "isPlayer" : false,
       "position" : {
@@ -976,7 +976,7 @@
       "id" : "Wolf_1830356135",
       "spawnPointId" : "35",
       "playerSpawnPoint" : null,
-      "healthPoints" : 100.0,
+      "life" : 100.0,
       "area" : "area1",
       "isPlayer" : false,
       "position" : {
@@ -993,7 +993,7 @@
       "id" : "Wolf_369388476",
       "spawnPointId" : "23",
       "playerSpawnPoint" : null,
-      "healthPoints" : 100.0,
+      "life" : 100.0,
       "area" : "area1",
       "isPlayer" : false,
       "position" : {
@@ -1010,7 +1010,7 @@
       "id" : "Skeleton_756563448",
       "spawnPointId" : "3",
       "playerSpawnPoint" : null,
-      "healthPoints" : 100.0,
+      "life" : 100.0,
       "area" : "area1",
       "isPlayer" : false,
       "position" : {
@@ -1034,7 +1034,7 @@
       "id" : "Goblin_1294821003",
       "spawnPointId" : "22",
       "playerSpawnPoint" : null,
-      "healthPoints" : 100.0,
+      "life" : 100.0,
       "area" : "area3",
       "isPlayer" : false,
       "position" : {
@@ -1058,7 +1058,7 @@
       "id" : "Skeleton_923073461",
       "spawnPointId" : "6",
       "playerSpawnPoint" : null,
-      "healthPoints" : 100.0,
+      "life" : 100.0,
       "area" : "area3",
       "isPlayer" : false,
       "position" : {
@@ -1082,7 +1082,7 @@
       "id" : "Wolf_331223594",
       "spawnPointId" : "22",
       "playerSpawnPoint" : null,
-      "healthPoints" : 100.0,
+      "life" : 100.0,
       "area" : "area1",
       "isPlayer" : false,
       "position" : {
@@ -1099,7 +1099,7 @@
       "id" : "Goblin_1824172509",
       "spawnPointId" : "33",
       "playerSpawnPoint" : null,
-      "healthPoints" : 100.0,
+      "life" : 100.0,
       "area" : "area1",
       "isPlayer" : false,
       "position" : {

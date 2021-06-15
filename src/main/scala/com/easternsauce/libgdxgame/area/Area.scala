@@ -81,7 +81,7 @@ class Area(val mapLoader: TmxMapLoader, val areaFilesLocation: String, val id: S
 
     for (creature <- creaturesMap.values) {
       if (creature.alive && !creature.atFullLife)
-        creature.renderHealthBar(batch)
+        creature.renderLifeBar(batch)
     }
 
     for (creature <- creaturesMap.values.filter(_.isEnemy)) {

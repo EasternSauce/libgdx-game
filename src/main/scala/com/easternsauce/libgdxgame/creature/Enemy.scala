@@ -24,7 +24,7 @@ abstract class Enemy extends Creature with AggressiveAI {
 
   }
 
-  override def takeHealthDamage(
+  override def takeLifeDamage(
     damage: Float,
     immunityFrames: Boolean,
     dealtBy: Option[Creature] = None,
@@ -32,7 +32,7 @@ abstract class Enemy extends Creature with AggressiveAI {
     sourceX: Float = 0,
     sourceY: Float = 0
   ): Unit = {
-    super.takeHealthDamage(damage, immunityFrames, dealtBy, knockbackPower, sourceX, sourceY)
+    super.takeLifeDamage(damage, immunityFrames, dealtBy, knockbackPower, sourceX, sourceY)
 
     if (aggroedTarget.isEmpty && dealtBy.nonEmpty) {
       aggroOnCreature(dealtBy.get)

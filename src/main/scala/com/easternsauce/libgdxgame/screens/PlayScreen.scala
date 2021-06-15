@@ -3,7 +3,6 @@ package com.easternsauce.libgdxgame.screens
 import com.badlogic.gdx.Input.Buttons
 import com.badlogic.gdx.graphics.{Color, GL20}
 import com.badlogic.gdx.{Gdx, Input, Screen}
-import com.easternsauce.libgdxgame.creature.Player
 import com.easternsauce.libgdxgame.projectile.Arrow
 import com.easternsauce.libgdxgame.system.GameSystem._
 import com.easternsauce.libgdxgame.system.{Assets, Constants, Fonts, InventoryMapping}
@@ -29,13 +28,12 @@ class PlayScreen() extends Screen {
 
     currentArea.get.setView(camera)
 
-    healthStaminaBar.update()
+    lifeStaminaBar.update()
 
     managePlayerRespawns(player)
 
     notificationText.update()
   }
-
 
   override def render(delta: Float): Unit = {
     update(delta)
@@ -70,7 +68,7 @@ class PlayScreen() extends Screen {
 
     inventoryWindow.render(hudBatch)
 
-    healthStaminaBar.render(hudBatch)
+    lifeStaminaBar.render(hudBatch)
 
     Fonts.defaultFont.draw(
       hudBatch.spriteBatch,
