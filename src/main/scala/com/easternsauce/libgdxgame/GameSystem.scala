@@ -11,11 +11,9 @@ import com.badlogic.gdx.math.Vector3
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer
 import com.badlogic.gdx.utils.viewport.{FitViewport, Viewport}
 import com.badlogic.gdx.{Game, Gdx, Input}
-import com.easternsauce.libgdxgame.RpgGame.{defaultFont, hugeFont}
 import com.easternsauce.libgdxgame.area.{Area, AreaGate}
-import com.easternsauce.libgdxgame.assets.AssetPaths
-import com.easternsauce.libgdxgame.creature.traits.Creature
-import com.easternsauce.libgdxgame.creature.{Player, Skeleton, Wolf}
+import com.easternsauce.libgdxgame.assets.Assets
+import com.easternsauce.libgdxgame.creature.{Creature, Player, Skeleton, Wolf}
 import com.easternsauce.libgdxgame.hud.{InventoryWindow, LootPickupMenu, NotificationText, PlayerInfoHud}
 import com.easternsauce.libgdxgame.items.ItemTemplate
 import com.easternsauce.libgdxgame.saving.SavefileManager
@@ -26,7 +24,47 @@ import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
 import scala.util.Random
 
-class RpgGame extends Game {
+object GameSystem extends Game {
+
+  val Random: Random = new Random()
+
+  private var assetManager: AssetManager = _
+
+  val PPM = 32
+
+  val WindowWidth = 1360
+  val WindowHeight = 720
+
+  val equipmentTypes = Map(
+    0 -> "weapon",
+    1 -> "weapon",
+    2 -> "helmet",
+    3 -> "body",
+    4 -> "gloves",
+    5 -> "ring",
+    6 -> "boots",
+    7 -> "consumable"
+  )
+  val equipmentTypeNames = Map(
+    0 -> "Primary Weapon",
+    1 -> "Secondary Weapon",
+    2 -> "Helmet",
+    3 -> "Body",
+    4 -> "Gloves",
+    5 -> "Ring",
+    6 -> "Boots",
+    7 -> "Consumable"
+  )
+
+  val primaryWeaponIndex: Int = (for ((k, v) <- equipmentTypeNames) yield (v, k))("Primary Weapon")
+  val secondaryWeaponIndex: Int = (for ((k, v) <- equipmentTypeNames) yield (v, k))("Secondary Weapon")
+  val consumableIndex: Int = (for ((k, v) <- equipmentTypeNames) yield (v, k))("Consumable")
+
+  val TiledMapCellSize: Float = 2f
+
+  var defaultFont: BitmapFont = _
+  var hugeFont: BitmapFont = _
+
   var savefileManager: SavefileManager = _
 
   var mainMenuScreen: MainMenuScreen = _
@@ -42,13 +80,13 @@ class RpgGame extends Game {
 
   val camera: OrthographicCamera = new OrthographicCamera()
   val hudCamera: OrthographicCamera = new OrthographicCamera()
-  hudCamera.position.set(RpgGame.WindowWidth / 2, RpgGame.WindowHeight / 2, 0)
+  hudCamera.position.set(WindowWidth / 2, WindowHeight / 2, 0)
 
   val viewport: Viewport =
-    new FitViewport(RpgGame.VWidth / RpgGame.PPM, RpgGame.VHeight / RpgGame.PPM, camera)
+    new FitViewport(1650 / PPM, 864 / PPM, camera)
 
   val hudViewport: Viewport =
-    new FitViewport(RpgGame.WindowWidth, RpgGame.WindowHeight, hudCamera)
+    new FitViewport(WindowWidth, WindowHeight, hudCamera)
 
   var b2DebugRenderer: Box2DDebugRenderer = _
 
@@ -70,30 +108,42 @@ class RpgGame extends Game {
 
   val playerRespawnTime = 3f
 
-  val lootPickupMenu = new LootPickupMenu(this)
+  val lootPickupMenu = new LootPickupMenu()
+
+  def sound(path: String): Sound = {
+    assetManager.get(path, classOf[Sound])
+  }
+
+  def texture(path: String): Texture = {
+    assetManager.get(path, classOf[Texture])
+  }
+
+  def music(path: String): Music = {
+    assetManager.get(path, classOf[Music])
+  }
 
   override def create(): Unit = {
-    RpgGame.manager = new AssetManager()
+    assetManager = new AssetManager()
 
-    savefileManager = new SavefileManager(this)
+    savefileManager = new SavefileManager()
 
-    AssetPaths.sounds.foreach(RpgGame.manager.load(_, classOf[Sound]))
-    AssetPaths.textures.foreach(RpgGame.manager.load(_, classOf[Texture]))
-    AssetPaths.music.foreach(RpgGame.manager.load(_, classOf[Music]))
+    Assets.sounds.foreach(assetManager.load(_, classOf[Sound]))
+    Assets.textures.foreach(assetManager.load(_, classOf[Texture]))
+    Assets.music.foreach(assetManager.load(_, classOf[Music]))
 
-    RpgGame.manager.finishLoading()
+    assetManager.finishLoading()
 
     atlas = new TextureAtlas("assets/atlas/packed_atlas.atlas")
 
-    defaultFont = RpgGame.loadFont(AssetPaths.youngSerif, 16)
-    hugeFont = RpgGame.loadFont(AssetPaths.youngSerif, 64)
+    defaultFont = loadFont(Assets.youngSerif, 16)
+    hugeFont = loadFont(Assets.youngSerif, 64)
 
-    playScreen = new PlayScreen(this)
-    mainMenuScreen = new MainMenuScreen(this)
+    playScreen = new PlayScreen()
+    mainMenuScreen = new MainMenuScreen()
 
     b2DebugRenderer = new Box2DDebugRenderer()
 
-    ItemTemplate.loadItemTemplates(this)
+    ItemTemplate.loadItemTemplates()
 
     loadAreas()
 
@@ -111,23 +161,23 @@ class RpgGame extends Game {
 
   def loadCreatures(): Unit = {
 
-    val creature1 = new Player(this, "player")
-    val skeleton = new Skeleton(this, "skellie")
-    val wolf = new Wolf(this, "wolf")
+    val creature = new Player("player")
+    val skeleton = new Skeleton("skellie")
+    val wolf = new Wolf("wolf")
 
     allAreaCreaturesMap = mutable.Map()
-    allAreaCreaturesMap += (creature1.id -> creature1)
+    allAreaCreaturesMap += (creature.id -> creature)
     allAreaCreaturesMap += (skeleton.id -> skeleton)
     allAreaCreaturesMap += (wolf.id -> wolf)
 
-    setPlayer(creature1)
+    setPlayer(creature)
   }
 
   def setPlayer(creature: Creature): Unit = {
     if (!creature.isPlayer) throw new RuntimeException("creature is not a player")
     player = creature.asInstanceOf[Player]
-    inventoryWindow = new InventoryWindow(this)
-    healthStaminaBar = new PlayerInfoHud(this)
+    inventoryWindow = new InventoryWindow()
+    healthStaminaBar = new PlayerInfoHud()
 
     currentArea = player.area
   }
@@ -140,17 +190,17 @@ class RpgGame extends Game {
   }
 
   private def loadAreas(): Unit = {
-    val area1: Area = new Area(this, mapLoader, AssetPaths.area1Data, "area1", 4.0f)
-    val area2: Area = new Area(this, mapLoader, AssetPaths.area2Data, "area2", 4.0f)
-    val area3: Area = new Area(this, mapLoader, AssetPaths.area3Data, "area3", 4.0f)
+    val area1: Area = new Area(mapLoader, Assets.area1Data, "area1", 4.0f)
+    val area2: Area = new Area(mapLoader, Assets.area2Data, "area2", 4.0f)
+    val area3: Area = new Area(mapLoader, Assets.area3Data, "area3", 4.0f)
 
     areaMap = mutable.Map()
     areaMap += (area1.id -> area1)
     areaMap += (area2.id -> area2)
     areaMap += (area3.id -> area3)
 
-    gateList += AreaGate(this, areaMap("area1"), 199.5f, 15f, areaMap("area3"), 17f, 2.5f)
-    gateList += AreaGate(this, areaMap("area1"), 2f, 63f, areaMap("area2"), 58f, 9f)
+    gateList += AreaGate(areaMap("area1"), 199.5f, 15f, areaMap("area3"), 17f, 2.5f)
+    gateList += AreaGate(areaMap("area1"), 2f, 63f, areaMap("area2"), 58f, 9f)
 
   }
 
@@ -190,49 +240,6 @@ class RpgGame extends Game {
   def moveCreature(creature: Creature, destination: Area, x: Float, y: Float): Unit = {
     creaturesToMove.enqueue((creature, destination, x, y))
   }
-}
-
-object RpgGame {
-  val Random: Random = new Random()
-
-  var manager: AssetManager = _
-
-  val VWidth = 1650
-  val VHeight = 864
-  val PPM = 32
-
-  val WindowWidth = 1360
-  val WindowHeight = 720
-
-  val equipmentTypes = Map(
-    0 -> "weapon",
-    1 -> "weapon",
-    2 -> "helmet",
-    3 -> "body",
-    4 -> "gloves",
-    5 -> "ring",
-    6 -> "boots",
-    7 -> "consumable"
-  )
-  val equipmentTypeNames = Map(
-    0 -> "Primary Weapon",
-    1 -> "Secondary Weapon",
-    2 -> "Helmet",
-    3 -> "Body",
-    4 -> "Gloves",
-    5 -> "Ring",
-    6 -> "Boots",
-    7 -> "Consumable"
-  )
-
-  val primaryWeaponIndex: Int = (for ((k, v) <- equipmentTypeNames) yield (v, k))("Primary Weapon")
-  val secondaryWeaponIndex: Int = (for ((k, v) <- equipmentTypeNames) yield (v, k))("Secondary Weapon")
-  val consumableIndex: Int = (for ((k, v) <- equipmentTypeNames) yield (v, k))("Consumable")
-
-  val TiledMapCellSize: Float = 2f
-
-  var defaultFont: BitmapFont = _
-  var hugeFont: BitmapFont = _
 
   def loadFont(assetPath: String, size: Int): BitmapFont = {
     val generator = new FreeTypeFontGenerator(Gdx.files.internal(assetPath))

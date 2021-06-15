@@ -1,14 +1,16 @@
 package com.easternsauce.libgdxgame.creature.traits
 
 import com.badlogic.gdx.math.Vector2
-import com.easternsauce.libgdxgame.RpgGame
+import com.easternsauce.libgdxgame.GameSystem._
 import com.easternsauce.libgdxgame.area.Area
+import com.easternsauce.libgdxgame.creature.{Creature, Enemy}
 import com.easternsauce.libgdxgame.pathfinding.{AStar, AStarNode}
 import com.easternsauce.libgdxgame.util.{EsDirection, EsTimer}
 
 import scala.collection.mutable.ListBuffer
 
 trait AggressiveAI {
+  this: Enemy =>
 
   var aggroedTarget: Option[Creature] = None
   val aggroDistance = 20f
@@ -31,18 +33,18 @@ trait AggressiveAI {
 
   def targetFound: Boolean = aggroedTarget.nonEmpty
 
-  def lookForTarget(creature: Creature): Unit = {
-    if (creature.alive && !targetFound) {
-      creature.area.get.creaturesMap.values
+  def lookForTarget(): Unit = {
+    if (alive && !targetFound) {
+      area.get.creaturesMap.values
         .filter(creature => !creature.isEnemy)
         .foreach(otherCreature => {
-          if (otherCreature.isAlive && creature.distanceTo(otherCreature) < aggroDistance) {
+          if (otherCreature.alive && distanceTo(otherCreature) < aggroDistance) {
 
             if (aggroRecalculatePathTimer.time > 0.3f) {
-              calculatePath(creature.area.get, creature, otherCreature.pos)
+              calculatePath(area.get, otherCreature.pos)
 
               if (path.length < 20) {
-                aggroOnCreature(creature, otherCreature)
+                aggroOnCreature(otherCreature)
               }
               path.clear()
               aggroRecalculatePathTimer.restart()
@@ -52,23 +54,23 @@ trait AggressiveAI {
     }
   }
 
-  def aggroOnCreature(creature: Creature, otherCreature: Creature): Unit = {
+  def aggroOnCreature(otherCreature: Creature): Unit = {
     aggroedTarget = Some(otherCreature)
     circlingDecisionTimer.restart()
     recalculatePathTimer.restart()
-    calculatePath(creature.area.get, creature, aggroedTarget.get.pos)
+    calculatePath(area.get, aggroedTarget.get.pos)
 
   }
 
-  def decideIfCircling(creature: Creature): Unit = {
-    if (creature.isAttacking) {
+  def decideIfCircling(): Unit = {
+    if (isAttacking) {
       circling = false
     } else {
       if (circlingDecisionTimer.time > circlingDecisionMaxTime) {
         circlingDecisionTimer.restart()
-        if (RpgGame.Random.nextFloat() < 0.25f) {
+        if (Random.nextFloat() < 0.25f) {
           circling = true
-          circlingClockwise = RpgGame.Random.nextFloat() < 0.5f
+          circlingClockwise = Random.nextFloat() < 0.5f
         } else {
           circling = false
         }
@@ -77,81 +79,81 @@ trait AggressiveAI {
 
   }
 
-  def walkToTarget(creature: Creature, destination: Vector2): Unit = {
+  def walkToTarget(destination: Vector2): Unit = {
     val dirs: ListBuffer[EsDirection.Value] = ListBuffer()
 
-    if (creature.pos.x < destination.x - 0.1f) dirs += EsDirection.Right
-    if (creature.pos.x > destination.x + 0.1f) dirs += EsDirection.Left
-    if (creature.pos.y > destination.y + 0.1f) dirs += EsDirection.Down
-    if (creature.pos.y < destination.y - 0.1f) dirs += EsDirection.Up
+    if (pos.x < destination.x - 0.1f) dirs += EsDirection.Right
+    if (pos.x > destination.x + 0.1f) dirs += EsDirection.Left
+    if (pos.y > destination.y + 0.1f) dirs += EsDirection.Down
+    if (pos.y < destination.y - 0.1f) dirs += EsDirection.Up
 
-    val horizontalDistance = Math.abs(creature.pos.x - destination.x)
-    val verticalDistance = Math.abs(creature.pos.y - destination.y)
+    val horizontalDistance = Math.abs(pos.x - destination.x)
+    val verticalDistance = Math.abs(pos.y - destination.y)
 
     if (horizontalDistance > verticalDistance + 2f) {
-      creature.moveInDirection(dirs.filter(EsDirection.isHorizontal).toList)
+      moveInDirection(dirs.filter(EsDirection.isHorizontal).toList)
     } else if (verticalDistance > horizontalDistance + 2f) {
-      creature.moveInDirection(dirs.filter(EsDirection.isVertical).toList)
+      moveInDirection(dirs.filter(EsDirection.isVertical).toList)
     } else {
-      creature.moveInDirection(dirs.toList)
+      moveInDirection(dirs.toList)
     }
   }
 
-  def circleTarget(creature: Creature, destination: Vector2): Unit = {
+  def circleTarget(destination: Vector2): Unit = {
 
-    val vector = new Vector2(destination.x - creature.pos.x, destination.y - creature.pos.y)
+    val vector = new Vector2(destination.x - pos.x, destination.y - pos.y)
 
     val perpendicularDestination =
-      if (circlingClockwise) new Vector2(creature.pos.x - vector.y, creature.pos.y + vector.x)
-      else new Vector2(creature.pos.x + vector.y, creature.pos.y - vector.x)
+      if (circlingClockwise) new Vector2(pos.x - vector.y, pos.y + vector.x)
+      else new Vector2(pos.x + vector.y, pos.y - vector.x)
 
-    walkToTarget(creature, perpendicularDestination)
+    walkToTarget(perpendicularDestination)
   }
 
-  def searchForAndAttackTargets(creature: Creature): Unit = {
-    if (creature.isAlive) {
-      lookForTarget(creature)
+  def searchForAndAttackTargets(): Unit = {
+    if (alive) {
+      lookForTarget()
 
-      decideIfCircling(creature)
+      decideIfCircling()
 
       if (targetFound) {
         if (recalculatePathTimer.time > 0.3f) {
-          calculatePath(creature.area.get, creature, aggroedTarget.get.pos)
+          calculatePath(area.get, aggroedTarget.get.pos)
           recalculatePathTimer.restart()
         }
 
-        if (circling && creature.distanceTo(aggroedTarget.get) < circleDistance) {
-          circleTarget(creature, aggroedTarget.get.pos)
-        } else if (creature.distanceTo(aggroedTarget.get) > minimumWalkUpDistance) {
+        if (circling && distanceTo(aggroedTarget.get) < circleDistance) {
+          circleTarget(aggroedTarget.get.pos)
+        } else if (distanceTo(aggroedTarget.get) > minimumWalkUpDistance) {
 
           if (path.nonEmpty && path.size > 3) {
-            val destination = creature.area.get.getTileCenter(path.head.x, path.head.y)
-            if (destination.dst(creature.pos) < 2f) path.dropInPlace(1)
-            walkToTarget(creature, destination)
+            val destination = area.get.getTileCenter(path.head.x, path.head.y)
+            if (destination.dst(pos) < 2f) path.dropInPlace(1)
+            walkToTarget(destination)
           } else {
-            walkToTarget(creature, aggroedTarget.get.pos)
+            walkToTarget(aggroedTarget.get.pos)
           }
 
         }
-        if (creature.distanceTo(aggroedTarget.get) < attackDistance) {
-          creature.currentAttack.perform()
+        if (distanceTo(aggroedTarget.get) < attackDistance) {
+          currentAttack.perform()
         }
 
-        if (!aggroedTarget.get.isAlive || path.size > 10) {
+        if (!aggroedTarget.get.alive || path.size > 10) {
           dropAggro()
         }
       } else {
         if (recalculatePathTimer.time > goToSpawnTime) {
-          calculatePath(creature.area.get, creature, creature.spawnPosition)
+          calculatePath(area.get, spawnPosition)
           recalculatePathTimer.restart()
           recalculatePathTimer.stop()
         }
         if (path.nonEmpty) {
-          val destination = creature.area.get.getTileCenter(path.head.x, path.head.y)
-          if (destination.dst(creature.pos) < 2f) {
+          val destination = area.get.getTileCenter(path.head.x, path.head.y)
+          if (destination.dst(pos) < 2f) {
             path.dropInPlace(1)
           }
-          walkToTarget(creature, destination)
+          walkToTarget(destination)
         }
       }
     }
@@ -160,14 +162,14 @@ trait AggressiveAI {
 
   private def dropAggro(): Unit = {
     aggroedTarget = None
-    goToSpawnTime = 7 * RpgGame.Random.nextFloat()
+    goToSpawnTime = 7 * Random.nextFloat()
     recalculatePathTimer.restart()
   }
 
-  def calculatePath(area: Area, creature: Creature, target: Vector2): Unit = {
+  def calculatePath(area: Area, target: Vector2): Unit = {
     area.resetPathfindingGraph()
 
-    val start: Vector2 = area.getClosestTile(creature.pos.x, creature.pos.y)
+    val start: Vector2 = area.getClosestTile(pos.x, pos.y)
     val end: Vector2 = area.getClosestTile(target.x, target.y)
 
     val node = AStar.aStar(area.aStarNodes(start.y.toInt)(start.x.toInt), area.aStarNodes(end.y.toInt)(end.x.toInt))

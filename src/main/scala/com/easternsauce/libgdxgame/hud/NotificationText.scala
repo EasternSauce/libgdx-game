@@ -1,7 +1,7 @@
 package com.easternsauce.libgdxgame.hud
 
 import com.badlogic.gdx.graphics.Color
-import com.easternsauce.libgdxgame.RpgGame
+import com.easternsauce.libgdxgame.GameSystem._
 import com.easternsauce.libgdxgame.util.{EsBatch, EsTimer}
 
 import scala.collection.mutable.ListBuffer
@@ -13,10 +13,10 @@ class NotificationText {
   val notificationTimeout = 3f
 
   def render(batch: EsBatch): Unit = {
-    RpgGame.defaultFont.setColor(Color.RED)
+    defaultFont.setColor(Color.RED)
     for (i <- notifications.indices) {
       val (_, text) = notifications(i)
-      RpgGame.defaultFont.draw(batch.spriteBatch, text, 20, RpgGame.WindowHeight - (40 + i * 30))
+      defaultFont.draw(batch.spriteBatch, text, 20, WindowHeight - (40 + i * 30))
     }
 
   }

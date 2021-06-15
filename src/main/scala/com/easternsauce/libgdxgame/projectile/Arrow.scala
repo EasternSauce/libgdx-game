@@ -1,14 +1,13 @@
 package com.easternsauce.libgdxgame.projectile
 
-import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.maps.tiled.TiledMap
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.{Body, BodyDef, CircleShape, FixtureDef}
 import com.badlogic.gdx.scenes.scene2d.ui.Image
-import com.easternsauce.libgdxgame.RpgGame
+import com.easternsauce.libgdxgame.GameSystem._
 import com.easternsauce.libgdxgame.area.{Area, TerrainTile}
-import com.easternsauce.libgdxgame.assets.AssetPaths
-import com.easternsauce.libgdxgame.creature.traits.Creature
+import com.easternsauce.libgdxgame.assets.Assets
+import com.easternsauce.libgdxgame.creature.Creature
 import com.easternsauce.libgdxgame.util.{EsBatch, EsTimer}
 
 import scala.collection.mutable
@@ -27,8 +26,7 @@ class Arrow private (
 
   val damage: Float = shooter.weaponDamage
 
-  private val arrowTexture: Texture = RpgGame.manager.get(AssetPaths.arrowTexture, classOf[Texture])
-  private val arrowImage: Image = new Image(arrowTexture)
+  private val arrowImage: Image = new Image(texture(Assets.arrowTexture))
   var markedForDeletion: Boolean = false
   var b2body: Body = _
   var isActive: Boolean = true
@@ -84,7 +82,7 @@ class Arrow private (
   def onCollideWithCreature(creature: Creature): Unit = {
     if (!(shooter.isEnemy && creature.isEnemy) && isActive) {
 
-      if (shooter != creature && creature.isAlive && !creature.isImmune) {
+      if (shooter != creature && creature.alive && !creature.immune) {
         creature.takeHealthDamage(damage, immunityFrames = true, Some(shooter), knockbackPower, startX, startY)
         markedForDeletion = true
       }

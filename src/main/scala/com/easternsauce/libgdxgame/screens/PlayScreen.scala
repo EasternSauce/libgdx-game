@@ -3,12 +3,12 @@ package com.easternsauce.libgdxgame.screens
 import com.badlogic.gdx.Input.Buttons
 import com.badlogic.gdx.graphics.{Color, GL20}
 import com.badlogic.gdx.{Gdx, Input, Screen}
-import com.easternsauce.libgdxgame.RpgGame
+import com.easternsauce.libgdxgame.GameSystem._
 import com.easternsauce.libgdxgame.creature.Player
 import com.easternsauce.libgdxgame.projectile.Arrow
 import com.easternsauce.libgdxgame.util.{EsBatch, EsTimer}
 
-class PlayScreen(val game: RpgGame) extends Screen {
+class PlayScreen() extends Screen {
 
   var worldBatch: EsBatch = new EsBatch()
   var hudBatch: EsBatch = new EsBatch()
@@ -20,34 +20,34 @@ class PlayScreen(val game: RpgGame) extends Screen {
 
     handleInput()
 
-    game.currentArea.get.update()
+    currentArea.get.update()
 
-    if (game.creaturesToMove.nonEmpty) {
-      game.creaturesToMove.foreach {
+    if (creaturesToMove.nonEmpty) {
+      creaturesToMove.foreach {
         case (creature, area, x, y) =>
           creature.assignToArea(area, x, y)
           creature.passedGateRecently = true
       }
 
-      game.creaturesToMove.clear()
+      creaturesToMove.clear()
     }
 
-    game.updateCamera(game.player)
+    updateCamera(player)
 
-    game.currentArea.get.setView(game.camera)
+    currentArea.get.setView(camera)
 
-    game.healthStaminaBar.update()
+    healthStaminaBar.update()
 
-    managePlayerRespawns(game.player)
+    managePlayerRespawns(player)
 
-    game.notificationText.update()
+    notificationText.update()
   }
 
   override def render(delta: Float): Unit = {
     update(delta)
 
-    worldBatch.spriteBatch.setProjectionMatrix(game.camera.combined)
-    hudBatch.spriteBatch.setProjectionMatrix(game.hudCamera.combined)
+    worldBatch.spriteBatch.setProjectionMatrix(camera.combined)
+    hudBatch.spriteBatch.setProjectionMatrix(hudCamera.combined)
 
     Gdx.gl.glClearColor(0, 0, 0, 1)
 
@@ -58,51 +58,46 @@ class PlayScreen(val game: RpgGame) extends Screen {
            else 0)
     )
 
-    game.currentArea.get.renderBottomLayer()
+    currentArea.get.renderBottomLayer()
 
     worldBatch.spriteBatch.begin()
 
-    for (areaGate <- game.gateList) areaGate.render(worldBatch)
+    for (areaGate <- gateList) areaGate.render(worldBatch)
 
-    game.currentArea.get.render(worldBatch)
+    currentArea.get.render(worldBatch)
 
-    game.currentArea.get.arrowList.foreach((arrow: Arrow) => arrow.render(worldBatch))
+    currentArea.get.arrowList.foreach((arrow: Arrow) => arrow.render(worldBatch))
 
     worldBatch.spriteBatch.end()
 
-    game.currentArea.get.renderTopLayer()
+    currentArea.get.renderTopLayer()
 
     hudBatch.spriteBatch.begin()
 
-    game.inventoryWindow.render(hudBatch)
+    inventoryWindow.render(hudBatch)
 
-    game.healthStaminaBar.render(hudBatch)
+    healthStaminaBar.render(hudBatch)
 
-    RpgGame.defaultFont.setColor(Color.WHITE)
-    RpgGame.defaultFont.draw(
-      hudBatch.spriteBatch,
-      Gdx.graphics.getFramesPerSecond + " fps",
-      3,
-      RpgGame.WindowHeight - 3
-    )
+    defaultFont.setColor(Color.WHITE)
+    defaultFont.draw(hudBatch.spriteBatch, Gdx.graphics.getFramesPerSecond + " fps", 3, WindowHeight - 3)
 
     renderDeathScreen(hudBatch)
 
-    game.notificationText.render(hudBatch)
+    notificationText.render(hudBatch)
 
-    game.lootPickupMenu.render(hudBatch)
+    lootPickupMenu.render(hudBatch)
 
     hudBatch.spriteBatch.end()
 
-    if (game.debugMode) {
-      game.b2DebugRenderer.render(game.currentArea.get.world, game.camera.combined)
+    if (debugMode) {
+      b2DebugRenderer.render(currentArea.get.world, camera.combined)
     }
 
   }
 
   override def resize(width: Int, height: Int): Unit = {
-    game.viewport.update(width, height)
-    game.hudViewport.update(width, height)
+    viewport.update(width, height)
+    hudViewport.update(width, height)
 
   }
 
@@ -113,106 +108,101 @@ class PlayScreen(val game: RpgGame) extends Screen {
   override def hide(): Unit = {}
 
   override def dispose(): Unit = {
-    game.areaMap.values.foreach(_.dispose())
-    game.atlas.dispose()
+    areaMap.values.foreach(_.dispose())
+    atlas.dispose()
   }
 
   def managePlayerRespawns(player: Player) {
-    if (player.respawning && player.respawnTimer.time > game.playerRespawnTime) {
+    if (player.respawning && player.respawnTimer.time > playerRespawnTime) {
       player.respawning = false
 
-      player.healthPoints = game.player.maxHealthPoints
-      player.staminaPoints = game.player.maxStaminaPoints
+      player.healthPoints = player.maxHealthPoints
+      player.staminaPoints = player.maxStaminaPoints
       player.isAttacking = false
       player.staminaOveruse = false
       player.effectMap("staminaRegenStopped").stop()
 
-      val area = game.player.playerSpawnPoint.get.area
-      game.currentArea = Option(area)
-      area.reset(game)
+      val area = player.playerSpawnPoint.get.area
+      currentArea = Option(area)
+      area.reset()
 
-      game.player.assignToArea(area, game.player.playerSpawnPoint.get.posX, game.player.playerSpawnPoint.get.posY)
+      player.assignToArea(area, player.playerSpawnPoint.get.posX, player.playerSpawnPoint.get.posY)
 
-      game.player.setRotation(0f)
+      player.setRotation(0f)
 
-      //GameSystem.stopBossBattleMusic()
+      //stopBossBattleMusic()
     }
   }
 
   private def renderDeathScreen(batch: EsBatch) = {
-    if (game.player.respawning) {
-      RpgGame.hugeFont.setColor(Color.RED)
-      RpgGame.hugeFont.draw(
-        batch.spriteBatch,
-        "YOU DIED",
-        RpgGame.WindowWidth / 2f - 160,
-        RpgGame.WindowHeight / 2 + 70
-      )
+    if (player.respawning) {
+      hugeFont.setColor(Color.RED)
+      hugeFont.draw(batch.spriteBatch, "YOU DIED", WindowWidth / 2f - 160, WindowHeight / 2 + 70)
     }
   }
 
   def handleInput(): Unit = {
 
     if (Gdx.input.isKeyJustPressed(Input.Keys.F11)) {
-      if (!game.debugMode) {
-        game.notificationText.showNotification("Debug mode activated")
-        game.debugMode = true
+      if (!debugMode) {
+        notificationText.showNotification("Debug mode activated")
+        debugMode = true
       } else {
-        game.notificationText.showNotification("Debug mode deactivated")
-        game.debugMode = false
+        notificationText.showNotification("Debug mode deactivated")
+        debugMode = false
       }
     }
 
-    if (Gdx.input.isKeyJustPressed(Input.Keys.E)) game.player.interact()
+    if (Gdx.input.isKeyJustPressed(Input.Keys.E)) player.interact()
 
-    if (Gdx.input.isKeyJustPressed(Input.Keys.F5)) game.savefileManager.saveGame()
+    if (Gdx.input.isKeyJustPressed(Input.Keys.F5)) savefileManager.saveGame()
 
-    if (Gdx.input.isKeyJustPressed(Input.Keys.I)) game.inventoryWindow.visible = !game.inventoryWindow.visible
+    if (Gdx.input.isKeyJustPressed(Input.Keys.I)) inventoryWindow.visible = !inventoryWindow.visible
 
     if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE))
-      if (game.inventoryWindow.visible) game.inventoryWindow.visible = false
+      if (inventoryWindow.visible) inventoryWindow.visible = false
       else {
-        game.mainMenuScreen.currentNode = game.mainMenuScreen.pausedOptionTreeRoot
-        game.setScreen(game.mainMenuScreen)
+        mainMenuScreen.currentNode = mainMenuScreen.pausedOptionTreeRoot
+        setScreen(mainMenuScreen)
       }
 
     if (Gdx.input.isButtonJustPressed(Buttons.LEFT)) {
-      if (game.inventoryWindow.visible) {
-        game.inventoryWindow.moveItemClick()
-      } else if (game.lootPickupMenu.visible) {
-        game.lootPickupMenu.pickUpItemClick()
+      if (inventoryWindow.visible) {
+        inventoryWindow.moveItemClick()
+      } else if (lootPickupMenu.visible) {
+        lootPickupMenu.pickUpItemClick()
       } else {
-        game.player.currentAttack.perform()
+        player.currentAttack.perform()
       }
     }
 
     if (Gdx.input.isButtonJustPressed(Buttons.RIGHT)) {
-      if (game.inventoryWindow.visible) {
-        game.inventoryWindow.useItemClick()
+      if (inventoryWindow.visible) {
+        inventoryWindow.useItemClick()
       }
     }
 
     if (Gdx.input.isKeyJustPressed(Input.Keys.ALT_LEFT)) {
-      if (game.inventoryWindow.visible) {
-        game.inventoryWindow.tryDropSelectedItem()
+      if (inventoryWindow.visible) {
+        inventoryWindow.tryDropSelectedItem()
       }
     }
 
     if (Gdx.input.isKeyJustPressed(Input.Keys.TAB)) {
-      game.inventoryWindow.swapPrimaryAndSecondaryWeapons()
+      inventoryWindow.swapPrimaryAndSecondaryWeapons()
     }
 
     if (Gdx.input.isKeyJustPressed(Input.Keys.F)) {
-      if (game.player.equipmentItems.contains(RpgGame.consumableIndex)) {
+      if (player.equipmentItems.contains(consumableIndex)) {
 
-        val consumable = game.player.equipmentItems(RpgGame.consumableIndex)
-        game.player.useItem(consumable)
-        if (consumable.quantity <= 1) game.player.equipmentItems.remove(RpgGame.consumableIndex)
+        val consumable = player.equipmentItems(consumableIndex)
+        player.useItem(consumable)
+        if (consumable.quantity <= 1) player.equipmentItems.remove(consumableIndex)
         else consumable.quantity = consumable.quantity - 1
       }
     }
 
-    game.handlePlayerMovement()
+    handlePlayerMovement()
 
   }
 

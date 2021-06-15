@@ -3,22 +3,21 @@ package com.easternsauce.libgdxgame.creature
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.math.Vector2
-import com.easternsauce.libgdxgame.RpgGame
-import com.easternsauce.libgdxgame.assets.AssetPaths
-import com.easternsauce.libgdxgame.creature.traits.Creature
+import com.easternsauce.libgdxgame.GameSystem._
+import com.easternsauce.libgdxgame.assets.Assets
 import com.easternsauce.libgdxgame.items.Item
 import com.easternsauce.libgdxgame.util.{EsDirection, EsTimer}
 
-class Player(val game: RpgGame, val id: String) extends Creature {
+class Player(val id: String) extends Creature {
 
   override val creatureWidth = 1.85f
   override val creatureHeight = 1.85f
 
   override val isPlayer: Boolean = true
 
-  override val onGettingHitSound: Option[Sound] = Some(RpgGame.manager.get(AssetPaths.painSound, classOf[Sound]))
+  override val onGettingHitSound: Option[Sound] = Some(sound(Assets.painSound))
 
-  override val walkSound: Option[Sound] = Some(RpgGame.manager.get(AssetPaths.runningSound, classOf[Sound]))
+  override val walkSound: Option[Sound] = Some(sound(Assets.runningSound))
 
   var onSpawnPointId: Option[String] = None
 
@@ -29,7 +28,6 @@ class Player(val game: RpgGame, val id: String) extends Creature {
   setOrigin(creatureWidth / 2f, creatureHeight / 2f)
 
   setupAnimation(
-    atlas = game.atlas,
     regionName = "male1",
     textureWidth = 32,
     textureHeight = 32,
@@ -38,8 +36,6 @@ class Player(val game: RpgGame, val id: String) extends Creature {
     neutralStanceFrame = 1,
     dirMap = Map(EsDirection.Up -> 3, EsDirection.Down -> 0, EsDirection.Left -> 1, EsDirection.Right -> 2)
   )
-
-  initParams(300f)
 
   defineEffects()
 
@@ -74,7 +70,7 @@ class Player(val game: RpgGame, val id: String) extends Creature {
     respawning = true
     sprinting = false
 
-    //GameSystem.hud.bossHealthBar.hide()
+    //hud.bossHealthBar.hide()
 
     // TODO: add music manager
     //Assets.abandonedPlainsMusic.stop()

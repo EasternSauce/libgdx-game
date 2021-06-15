@@ -1,11 +1,11 @@
-package com.easternsauce.libgdxgame.creature.traits
+package com.easternsauce.libgdxgame.creature
 
 import com.badlogic.gdx.math.Vector2
+import com.easternsauce.libgdxgame.creature.traits.AggressiveAI
 
 import scala.collection.mutable
 
-trait Enemy extends Creature with AggressiveAI {
-
+abstract class Enemy extends Creature with AggressiveAI {
   override val isEnemy: Boolean = true
 
   protected val dropTable: mutable.Map[String, Float] = mutable.Map()
@@ -20,7 +20,7 @@ trait Enemy extends Creature with AggressiveAI {
   override def update(): Unit = {
     super.update()
 
-    searchForAndAttackTargets(this)
+    searchForAndAttackTargets()
 
   }
 
@@ -35,7 +35,7 @@ trait Enemy extends Creature with AggressiveAI {
     super.takeHealthDamage(damage, immunityFrames, dealtBy, knockbackPower, sourceX, sourceY)
 
     if (aggroedTarget.isEmpty && dealtBy.nonEmpty) {
-      aggroOnCreature(this, dealtBy.get)
+      aggroOnCreature(dealtBy.get)
     }
 
   }
@@ -43,8 +43,13 @@ trait Enemy extends Creature with AggressiveAI {
   override def onDeath(): Unit = {
     super.onDeath()
 
-    area.get.spawnLootPile(area.get, pos.x, pos.y, dropTable)
+    area.get.spawnLootPile(pos.x, pos.y, dropTable)
 
+  }
+
+  def spawnPosition: Vector2 = {
+    val spawnPoint = area.get.enemySpawns.filter(_.id == spawnPointId.get).head
+    new Vector2(spawnPoint.posX, spawnPoint.posY)
   }
 
 }

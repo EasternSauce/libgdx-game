@@ -1,6 +1,6 @@
 package com.easternsauce.libgdxgame.util
 
-import com.easternsauce.libgdxgame.RpgGame
+import com.easternsauce.libgdxgame.GameSystem._
 
 object EsDirection extends Enumeration {
   def isHorizontal(value: EsDirection.Value): Boolean = {
@@ -23,7 +23,7 @@ object EsDirection extends Enumeration {
   val Left, Right, Up, Down = Value
 
   def randomDir(): WalkDirection = {
-    RpgGame.Random.nextInt(4) match {
+    Random.nextInt(4) match {
       case 0 => Left
       case 1 => Right
       case 2 => Up

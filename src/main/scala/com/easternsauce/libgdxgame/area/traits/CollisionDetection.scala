@@ -1,20 +1,18 @@
 package com.easternsauce.libgdxgame.area.traits
 
 import com.badlogic.gdx.physics.box2d._
-import com.easternsauce.libgdxgame.RpgGame
+import com.easternsauce.libgdxgame.GameSystem._
 import com.easternsauce.libgdxgame.ability.traits.Ability
-import com.easternsauce.libgdxgame.area.{AreaGate, TerrainTile}
-import com.easternsauce.libgdxgame.creature.Player
-import com.easternsauce.libgdxgame.creature.traits.Creature
+import com.easternsauce.libgdxgame.area.{Area, AreaGate, TerrainTile}
+import com.easternsauce.libgdxgame.creature.{Creature, Player}
 import com.easternsauce.libgdxgame.items.LootPile
 import com.easternsauce.libgdxgame.projectile.Arrow
 import com.easternsauce.libgdxgame.spawns.PlayerSpawnPoint
 
 trait CollisionDetection {
+  this: Area =>
 
-  val game: RpgGame
-
-  def createContactListener(world: World): Unit = {
+  def createContactListener(): Unit = {
     val contactListener: ContactListener = new ContactListener {
       override def beginContact(contact: Contact): Unit = {
 
@@ -36,7 +34,7 @@ trait CollisionDetection {
             case (player: Player, playerSpawnPoint: PlayerSpawnPoint) =>
               player.onSpawnPointId = Some(playerSpawnPoint.id)
             case (player: Player, lootPile: LootPile) =>
-              game.lootPickupMenu.showLootPile(lootPile)
+              lootPickupMenu.showLootPile(lootPile)
             case _ =>
           }
         }
@@ -56,7 +54,7 @@ trait CollisionDetection {
             case (player: Player, playerSpawnPoint: PlayerSpawnPoint) =>
               player.onSpawnPointId = None
             case (player: Player, lootPile: LootPile) =>
-              game.lootPickupMenu.hideLootPile(lootPile)
+              lootPickupMenu.hideLootPile(lootPile)
             case _ =>
           }
         }

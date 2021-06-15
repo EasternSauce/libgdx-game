@@ -1,11 +1,15 @@
 package com.easternsauce.libgdxgame.creature.traits
 
 import com.badlogic.gdx.graphics.g2d.{Animation, TextureAtlas, TextureRegion}
+import com.easternsauce.libgdxgame.GameSystem._
+import com.easternsauce.libgdxgame.creature.Creature
 import com.easternsauce.libgdxgame.util.{EsDirection, EsTimer}
 
 import scala.collection.mutable.ListBuffer
 
 trait AnimatedWalk {
+  this: Creature =>
+
   protected val standStillImages: Array[TextureRegion] = new Array[TextureRegion](4)
 
   protected val walkAnimation: Array[Animation[TextureRegion]] = new Array[Animation[TextureRegion]](4)
@@ -15,7 +19,6 @@ trait AnimatedWalk {
   var dirMap: Map[EsDirection.Value, Int] = _
 
   def setupAnimation(
-    atlas: TextureAtlas,
     regionName: String,
     textureWidth: Int,
     textureHeight: Int,

@@ -1,9 +1,9 @@
 package com.easternsauce.libgdxgame.ability
 
 import com.badlogic.gdx.audio.Sound
-import com.easternsauce.libgdxgame.RpgGame
-import com.easternsauce.libgdxgame.assets.AssetPaths
-import com.easternsauce.libgdxgame.creature.traits.Creature
+import com.easternsauce.libgdxgame.GameSystem._
+import com.easternsauce.libgdxgame.assets.Assets
+import com.easternsauce.libgdxgame.creature.Creature
 
 class TridentAttack(val creature: Creature) extends MeleeAttack {
 
@@ -27,10 +27,10 @@ class TridentAttack(val creature: Creature) extends MeleeAttack {
   override protected var knockbackPower: Float = 20f
   override protected val cooldownTime: Float = 0.7f
 
-  override protected val abilitySound: Option[Sound] = Some(RpgGame.manager.get(AssetPaths.attackSound, classOf[Sound]))
+  override protected val abilitySound: Option[Sound] = Some(sound(Assets.attackSound))
 
   setupActiveAnimation(
-    atlas = creature.game.atlas,
+    atlas = atlas,
     regionName = "trident_thrust",
     textureWidth = spriteWidth,
     textureHeight = spriteHeight,
@@ -39,7 +39,7 @@ class TridentAttack(val creature: Creature) extends MeleeAttack {
   )
 
   setupWindupAnimation(
-    atlas = creature.game.atlas,
+    atlas = atlas,
     regionName = "trident_thrust_windup",
     textureWidth = spriteWidth,
     textureHeight = spriteHeight,

@@ -3,9 +3,9 @@ package com.easternsauce.libgdxgame.area
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.{Color, OrthographicCamera}
 import com.badlogic.gdx.maps.tiled.{TiledMapTileLayer, TmxMapLoader}
-import com.easternsauce.libgdxgame.RpgGame
+import com.easternsauce.libgdxgame.GameSystem._
 import com.easternsauce.libgdxgame.area.traits._
-import com.easternsauce.libgdxgame.creature.traits.{Creature, Enemy}
+import com.easternsauce.libgdxgame.creature.{Creature, Enemy}
 import com.easternsauce.libgdxgame.items.Item
 import com.easternsauce.libgdxgame.pathfinding.AStarNode
 import com.easternsauce.libgdxgame.projectile.Arrow
@@ -15,13 +15,8 @@ import com.easternsauce.libgdxgame.util.EsBatch
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
 
-class Area(
-  val game: RpgGame,
-  val mapLoader: TmxMapLoader,
-  val areaFilesLocation: String,
-  val id: String,
-  val mapScale: Float
-) extends CollisionDetection
+class Area(val mapLoader: TmxMapLoader, val areaFilesLocation: String, val id: String, val mapScale: Float)
+    extends CollisionDetection
     with EnemySpawns
     with PlayerSpawns
     with PhysicalTerrain
@@ -34,12 +29,12 @@ class Area(
 
   val aStarNodeList: ListBuffer[AStarNode] = ListBuffer()
 
-  initPhysicalTerrain(map, mapScale)
+  initPhysicalTerrain()
 
-  createContactListener(world)
+  createContactListener()
 
-  loadEnemySpawns(this, areaFilesLocation)
-  loadPLayerSpawns(this, areaFilesLocation)
+  loadEnemySpawns()
+  loadPLayerSpawns()
 
   setupPathfindingGraph()
 
@@ -73,25 +68,25 @@ class Area(
   def render(batch: EsBatch): Unit = {
     playerSpawns.foreach(_.draw(batch.spriteBatch))
 
-    creaturesMap.values.filter(!_.isAlive).foreach(_.draw(batch.spriteBatch))
+    creaturesMap.values.filter(!_.alive).foreach(_.draw(batch.spriteBatch))
 
     lootPileList.foreach(_.draw(batch.spriteBatch))
 
-    creaturesMap.values.filter(_.isAlive).foreach(_.draw(batch.spriteBatch))
+    creaturesMap.values.filter(_.alive).foreach(_.draw(batch.spriteBatch))
 
     for (creature <- creaturesMap.values) {
       creature.renderAbilities(batch)
     }
 
     for (creature <- creaturesMap.values) {
-      if (creature.isAlive && !creature.atFullLife)
+      if (creature.alive && !creature.atFullLife)
         creature.renderHealthBar(batch)
     }
 
     for (creature <- creaturesMap.values.filter(_.isEnemy)) {
       val enemy = creature.asInstanceOf[Enemy]
 
-      if (game.debugMode) {
+      if (debugMode) {
         // render debug path
         enemy.path.foreach(node => {
           batch.shapeDrawer.setColor(Color.RED)
@@ -114,24 +109,24 @@ class Area(
     map.dispose()
   }
 
-  def reset(game: RpgGame): Unit = {
+  def reset(): Unit = {
     creaturesMap.values
       .filter(creature => creature.isEnemy)
       .foreach(creature => creature.destroyBody(creature.area.get.world))
-    game.allAreaCreaturesMap.filterInPlace { case (_, creature) => !(creature.isEnemy && creature.area.get == this) }
+    allAreaCreaturesMap.filterInPlace { case (_, creature) => !(creature.isEnemy && creature.area.get == this) }
     creaturesMap.filterInPlace { case (_, creature) => !creature.isEnemy }
-    enemySpawns.foreach(spawnPoint => spawnEnemy(game, spawnPoint))
+    enemySpawns.foreach(spawnPoint => spawnEnemy(spawnPoint))
     arrowList.clear()
   }
 
-  private def spawnEnemy(game: RpgGame, spawnPoint: EnemySpawnPoint): Unit = {
+  private def spawnEnemy(spawnPoint: EnemySpawnPoint): Unit = {
     val indexOfDot = spawnPoint.creatureClass.lastIndexOf('.')
-    val creatureId = spawnPoint.creatureClass.substring(indexOfDot + 1) + "_" + Math.abs(RpgGame.Random.nextInt())
+    val creatureId = spawnPoint.creatureClass.substring(indexOfDot + 1) + "_" + Math.abs(Random.nextInt())
 
     val action = Class
       .forName(spawnPoint.creatureClass)
-      .getDeclaredConstructor(classOf[RpgGame], classOf[String])
-      .newInstance(game, creatureId)
+      .getDeclaredConstructor(classOf[String])
+      .newInstance(creatureId)
     val creature = action.asInstanceOf[Creature]
 
     creature.spawnPointId = Some(spawnPoint.id)
@@ -139,20 +134,20 @@ class Area(
     creature.assignToArea(this, spawnPoint.posX, spawnPoint.posY)
 
     if (spawnPoint.weaponType.nonEmpty) {
-      creature.equipmentItems(RpgGame.primaryWeaponIndex) = Item.generateFromTemplate(spawnPoint.weaponType.get)
+      creature.equipmentItems(primaryWeaponIndex) = Item.generateFromTemplate(spawnPoint.weaponType.get)
     }
 
-    game.allAreaCreaturesMap += (creatureId -> creature)
+    allAreaCreaturesMap += (creatureId -> creature)
   }
 
   def width: Float = {
     val layer = map.getLayers.get(0).asInstanceOf[TiledMapTileLayer]
-    layer.getWidth * RpgGame.TiledMapCellSize
+    layer.getWidth * TiledMapCellSize
   }
 
   def height: Float = {
     val layer = map.getLayers.get(0).asInstanceOf[TiledMapTileLayer]
-    layer.getHeight * RpgGame.TiledMapCellSize
+    layer.getHeight * TiledMapCellSize
   }
 
   def resetPathfindingGraph(): Unit = {

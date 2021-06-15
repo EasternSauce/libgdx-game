@@ -1,22 +1,23 @@
 package com.easternsauce.libgdxgame.creature.traits
 
-import com.easternsauce.libgdxgame.RpgGame
+import com.easternsauce.libgdxgame.GameSystem._
+import com.easternsauce.libgdxgame.creature.Creature
 import com.easternsauce.libgdxgame.items.{Item, ItemTemplate}
 
 import scala.collection.mutable
 
 trait Inventory {
+  this: Creature =>
+
   val equipmentItems: mutable.Map[Int, Item] = mutable.Map()
   val inventoryItems: mutable.Map[Int, Item] = mutable.Map()
 
-  val game: RpgGame
-
   def currentWeapon: Item = {
-    equipmentItems(RpgGame.primaryWeaponIndex)
+    equipmentItems(primaryWeaponIndex)
   }
 
   def isWeaponEquipped: Boolean = {
-    equipmentItems.contains(RpgGame.primaryWeaponIndex)
+    equipmentItems.contains(primaryWeaponIndex)
   }
 
   def tryPickUpItem(item: Item): Boolean = {
@@ -48,7 +49,7 @@ trait Inventory {
           }
       }
     }
-    for (i <- 0 until game.inventoryWindow.inventoryTotalSlots) {
+    for (i <- 0 until inventoryWindow.inventoryTotalSlots) {
       val lootPile = item.lootPile.get
 
       if (!inventoryItems.contains(i)) { // if slot empty
@@ -75,5 +76,13 @@ trait Inventory {
       }
     }
     false
+  }
+
+  def useItem(item: Item): Unit = {
+    item.template.id match {
+      case "healingPowder" =>
+        startHealing(0.14f)
+        onItemConsumeSound.play(0.5f)
+    }
   }
 }

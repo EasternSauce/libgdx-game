@@ -1,15 +1,13 @@
 package com.easternsauce.libgdxgame.area
 
-import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.physics.box2d._
 import com.badlogic.gdx.scenes.scene2d.ui.Image
-import com.easternsauce.libgdxgame.RpgGame
-import com.easternsauce.libgdxgame.assets.AssetPaths
-import com.easternsauce.libgdxgame.creature.traits.Creature
+import com.easternsauce.libgdxgame.GameSystem._
+import com.easternsauce.libgdxgame.assets.Assets
+import com.easternsauce.libgdxgame.creature.Creature
 import com.easternsauce.libgdxgame.util.EsBatch
 
 class AreaGate private (
-  val game: RpgGame,
   val areaFrom: Area,
   val fromPosX: Float,
   val fromPosY: Float,
@@ -21,8 +19,8 @@ class AreaGate private (
   private val width = 1.5f
   private val height = 1.5f
 
-  private val downArrowImageFrom = new Image(RpgGame.manager.get(AssetPaths.downArrowTexture, classOf[Texture]))
-  private val downArrowImageTo = new Image(RpgGame.manager.get(AssetPaths.downArrowTexture, classOf[Texture]))
+  private val downArrowImageFrom = new Image(texture(Assets.downArrowTexture))
+  private val downArrowImageTo = new Image(texture(Assets.downArrowTexture))
 
   downArrowImageFrom.setPosition(fromPosX - width / 2f, fromPosY - height / 2f)
   downArrowImageTo.setPosition(toPosX - width / 2f, toPosY - height / 2f)
@@ -37,7 +35,7 @@ class AreaGate private (
   initBody(areaTo, toPosX, toPosY)
 
   def render(batch: EsBatch): Unit = {
-    val area = game.currentArea.getOrElse {
+    val area = currentArea.getOrElse {
       throw new RuntimeException("current area not specified")
     }
 
@@ -72,10 +70,10 @@ class AreaGate private (
           case Some(`areaTo`)   => (areaFrom, fromPosX, fromPosY)
         }
 
-        game.moveCreature(creature, destination, posX, posY)
+        moveCreature(creature, destination, posX, posY)
 
-        destination.reset(game)
-        game.currentArea = Some(destination)
+        destination.reset()
+        currentArea = Some(destination)
       }
     }
 
@@ -84,14 +82,6 @@ class AreaGate private (
 }
 
 object AreaGate {
-  def apply(
-    game: RpgGame,
-    areaFrom: Area,
-    fromPosX: Float,
-    fromPosY: Float,
-    areaTo: Area,
-    toPosX: Float,
-    toPosY: Float
-  ) =
-    new AreaGate(game, areaFrom, fromPosX, fromPosY, areaTo, toPosX, toPosY)
+  def apply(areaFrom: Area, fromPosX: Float, fromPosY: Float, areaTo: Area, toPosX: Float, toPosY: Float) =
+    new AreaGate(areaFrom, fromPosX, fromPosY, areaTo, toPosX, toPosY)
 }

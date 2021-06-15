@@ -1,6 +1,6 @@
 package com.easternsauce.libgdxgame.assets
 
-object AssetPaths {
+object Assets {
   val area1Data = "assets/areas/area1"
   val area2Data = "assets/areas/area2"
   val area3Data = "assets/areas/area3"

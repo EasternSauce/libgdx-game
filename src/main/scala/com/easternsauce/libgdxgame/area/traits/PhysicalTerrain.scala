@@ -1,13 +1,15 @@
 package com.easternsauce.libgdxgame.area.traits
 
-import com.badlogic.gdx.maps.tiled.{TiledMap, TiledMapTileLayer}
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d._
-import com.easternsauce.libgdxgame.RpgGame
-import com.easternsauce.libgdxgame.area.TerrainTile
+import com.easternsauce.libgdxgame.GameSystem._
+import com.easternsauce.libgdxgame.area.{Area, TerrainTile}
 import com.easternsauce.libgdxgame.pathfinding.AStarNode
 
 trait PhysicalTerrain {
+  this: Area =>
+
   val world: World = new World(new Vector2(0, 0), true)
 
   var traversable: Array[Array[Boolean]] = _
@@ -20,14 +22,14 @@ trait PhysicalTerrain {
   var tileWidth: Float = _
   var tileHeight: Float = _
 
-  def initPhysicalTerrain(map: TiledMap, mapScale: Float): Unit = {
+  def initPhysicalTerrain(): Unit = {
     val layer = map.getLayers.get(0).asInstanceOf[TiledMapTileLayer]
 
     widthInTiles = layer.getWidth
     heightInTiles = layer.getHeight
 
-    tileWidth = layer.getTileWidth * mapScale / RpgGame.PPM
-    tileHeight = layer.getTileHeight * mapScale / RpgGame.PPM
+    tileWidth = layer.getTileWidth * mapScale / PPM
+    tileHeight = layer.getTileHeight * mapScale / PPM
 
     traversable = Array.ofDim(heightInTiles, widthInTiles)
     flyover = Array.ofDim(heightInTiles, widthInTiles)
@@ -41,12 +43,12 @@ trait PhysicalTerrain {
       y <- 0 until heightInTiles
     } flyover(y)(x) = true
 
-    createMapTerrain(map)
+    createMapTerrain()
     createBorders()
 
   }
 
-  private def createMapTerrain(map: TiledMap): Unit = {
+  private def createMapTerrain(): Unit = {
     for (layerNum <- 0 to 1) { // two layers
       val layer: TiledMapTileLayer =
         map.getLayers.get(layerNum).asInstanceOf[TiledMapTileLayer]

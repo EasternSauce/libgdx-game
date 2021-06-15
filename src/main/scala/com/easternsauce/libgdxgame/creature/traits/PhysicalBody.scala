@@ -2,12 +2,15 @@ package com.easternsauce.libgdxgame.creature.traits
 
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d._
+import com.easternsauce.libgdxgame.creature.Creature
 
 trait PhysicalBody {
+  this: Creature =>
+
   var b2Body: Body = _
   var b2fixture: Fixture = _
 
-  var mass: Float = 0f
+  var mass: Float = 300f
   var bodyExists = false
 
   def initCircularBody(world: World, x: Float, y: Float, radius: Float): Unit = {

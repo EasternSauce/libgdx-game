@@ -3,7 +3,7 @@ package com.easternsauce.libgdxgame.ability.traits
 import com.badlogic.gdx.audio.Sound
 import com.easternsauce.libgdxgame.ability.AbilityState
 import com.easternsauce.libgdxgame.ability.AbilityState.{AbilityState, Inactive}
-import com.easternsauce.libgdxgame.creature.traits.Creature
+import com.easternsauce.libgdxgame.creature.Creature
 import com.easternsauce.libgdxgame.util.{EsBatch, EsTimer}
 
 trait Ability {

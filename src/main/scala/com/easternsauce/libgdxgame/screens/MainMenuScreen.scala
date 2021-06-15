@@ -2,10 +2,10 @@ package com.easternsauce.libgdxgame.screens
 
 import com.badlogic.gdx.graphics.{Color, GL20}
 import com.badlogic.gdx.{Gdx, Input, Screen}
-import com.easternsauce.libgdxgame.RpgGame
+import com.easternsauce.libgdxgame.GameSystem._
 import com.easternsauce.libgdxgame.util.EsBatch
 
-class MainMenuScreen(game: RpgGame) extends Screen {
+class MainMenuScreen extends Screen {
   private var currentSelected: Int = 0
 
   var batch: EsBatch = new EsBatch()
@@ -60,7 +60,7 @@ class MainMenuScreen(game: RpgGame) extends Screen {
   val optionTreeRoot: MenuOptionNode = MenuOptionNode(
     "",
     MenuAction.NextMenu,
-    if (game.savefileManager.savefileFound) saveExistsOptions else saveDoesntExistOptions
+    if (savefileManager.savefileFound) saveExistsOptions else saveDoesntExistOptions
   )
 
   val pausedOptionTreeRoot: MenuOptionNode = MenuOptionNode("", MenuAction.NextMenu, pauseOptions)
@@ -103,33 +103,33 @@ class MainMenuScreen(game: RpgGame) extends Screen {
     val posY = if (currentNode.promptText.nonEmpty) 130 else 100
 
     if (currentNode.promptText.nonEmpty) {
-      RpgGame.defaultFont.draw(batch.spriteBatch, currentNode.promptText.get, posX, RpgGame.WindowHeight - 100)
+      defaultFont.draw(batch.spriteBatch, currentNode.promptText.get, posX, WindowHeight - 100)
     }
 
-    RpgGame.defaultFont.setColor(Color.WHITE)
+    defaultFont.setColor(Color.WHITE)
     for (i <- currentNode.children.indices) {
       val option = currentNode.children(i)
-      RpgGame.defaultFont.draw(
+      defaultFont.draw(
         batch.spriteBatch,
         (if (currentSelected == i) ">" else "") + option.name,
         posX,
-        RpgGame.WindowHeight - (posY + 30 * i)
+        WindowHeight - (posY + 30 * i)
       )
     }
 
-    RpgGame.defaultFont.setColor(Color.WHITE)
+    defaultFont.setColor(Color.WHITE)
 
-    RpgGame.defaultFont.draw(
+    defaultFont.draw(
       batch.spriteBatch,
       controlsCheatsheetEntries.map { case (key, _) => key }.mkString("\n"),
-      RpgGame.WindowWidth - 550,
+      WindowWidth - 550,
       350
     )
 
-    RpgGame.defaultFont.draw(
+    defaultFont.draw(
       batch.spriteBatch,
       controlsCheatsheetEntries.map { case (_, value) => value }.mkString("\n"),
-      RpgGame.WindowWidth - 350,
+      WindowWidth - 350,
       350
     )
 
@@ -148,7 +148,7 @@ class MainMenuScreen(game: RpgGame) extends Screen {
     if (Gdx.input.isKeyJustPressed(Input.Keys.S))
       if (currentSelected < currentNode.children.size - 1) currentSelected += 1
     if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
-      if (gameplayStarted) game.setScreen(game.playScreen)
+      if (gameplayStarted) setScreen(playScreen)
 
     }
 
@@ -162,13 +162,13 @@ class MainMenuScreen(game: RpgGame) extends Screen {
       case MenuAction.PreviousMenu =>
         if (previousNode.nonEmpty) currentNode = previousNode.get
       case MenuAction.NewGame =>
-        game.savefileManager.loadGame() // TODO: new game instead of loading save
-        game.setScreen(game.playScreen)
+        savefileManager.loadGame() // TODO: new game instead of loading save
+        setScreen(playScreen)
       case MenuAction.LoadGame =>
-        game.savefileManager.loadGame()
-        game.setScreen(game.playScreen)
+        savefileManager.loadGame()
+        setScreen(playScreen)
       case MenuAction.Continue =>
-        game.setScreen(game.playScreen)
+        setScreen(playScreen)
       case MenuAction.Exit =>
         Gdx.app.exit()
     }

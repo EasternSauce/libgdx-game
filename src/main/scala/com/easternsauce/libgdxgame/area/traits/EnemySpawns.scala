@@ -9,6 +9,7 @@ import io.circe.parser.decode
 import scala.collection.mutable.ListBuffer
 
 trait EnemySpawns {
+  this: Area =>
 
   implicit val decodeEnemySpawnFile: Decoder[EnemySpawnFile] = deriveDecoder[EnemySpawnFile]
   implicit val decodeSpawnSavedata: Decoder[EnemySpawnSavedata] = deriveDecoder[EnemySpawnSavedata]
@@ -16,7 +17,7 @@ trait EnemySpawns {
 
   val enemySpawns: ListBuffer[EnemySpawnPoint] = ListBuffer()
 
-  def loadEnemySpawns(area: Area, areaFilesLocation: String): Unit = {
+  def loadEnemySpawns(): Unit = {
     val source = scala.io.Source.fromFile(areaFilesLocation + "/enemy_spawns.json")
     val lines =
       try source.mkString
@@ -26,7 +27,7 @@ trait EnemySpawns {
 
     val result = decoded.getOrElse(throw new RuntimeException("failed to decode spawns file"))
 
-    enemySpawns.addAll(result.spawnpoints.map(EnemySpawnPoint.loadFromSavedata(area, _)))
+    enemySpawns.addAll(result.spawnpoints.map(EnemySpawnPoint.loadFromSavedata(this, _)))
 
   }
 

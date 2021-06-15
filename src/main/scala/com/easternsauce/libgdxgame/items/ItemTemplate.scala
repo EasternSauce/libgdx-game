@@ -1,7 +1,7 @@
 package com.easternsauce.libgdxgame.items
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion
-import com.easternsauce.libgdxgame.RpgGame
+import com.easternsauce.libgdxgame.GameSystem._
 
 import scala.collection.mutable
 
@@ -102,8 +102,8 @@ object ItemTemplate {
     itemTemplates.put(itemTemplate.id, itemTemplate)
   }
 
-  def loadItemTemplates(game: RpgGame): Unit = {
-    val icons: Array[Array[TextureRegion]] = game.atlas.findRegion("nice_icons").split(32, 32)
+  def loadItemTemplates(): Unit = {
+    val icons: Array[Array[TextureRegion]] = atlas.findRegion("nice_icons").split(32, 32)
 
     addItemType(
       ItemTemplate("leatherArmor", "Leather Armor", "-", icons(7)(8))

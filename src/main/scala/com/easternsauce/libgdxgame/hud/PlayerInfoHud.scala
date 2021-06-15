@@ -2,17 +2,17 @@ package com.easternsauce.libgdxgame.hud
 
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.math.Rectangle
-import com.easternsauce.libgdxgame.RpgGame
+import com.easternsauce.libgdxgame.GameSystem._
 import com.easternsauce.libgdxgame.util.EsBatch
 
-class PlayerInfoHud(val game: RpgGame) {
+class PlayerInfoHud {
 
   private var maxHealthRect = new Rectangle(10, 40, 100, 10)
   private var healthRect =
-    new Rectangle(10, 40, 100 * game.player.healthPoints / game.player.maxHealthPoints, 10)
+    new Rectangle(10, 40, 100 * player.healthPoints / player.maxHealthPoints, 10)
   private var maxStaminaRect = new Rectangle(10, 25, 100, 10)
   private var staminaRect =
-    new Rectangle(10, 25, 100 * game.player.staminaPoints / game.player.maxStaminaPoints, 10)
+    new Rectangle(10, 25, 100 * player.staminaPoints / player.maxStaminaPoints, 10)
 
   private val slotSize = 40
 
@@ -38,9 +38,9 @@ class PlayerInfoHud(val game: RpgGame) {
     )
     batch.shapeDrawer.filledRectangle(currentWeaponRect, Color.BLACK)
 
-    if (game.player.equipmentItems.contains(RpgGame.primaryWeaponIndex)) {
+    if (player.equipmentItems.contains(primaryWeaponIndex)) {
 
-      val weapon = game.player.equipmentItems(RpgGame.primaryWeaponIndex)
+      val weapon = player.equipmentItems(primaryWeaponIndex)
 
       val textureRegion = weapon.template.textureRegion
       batch.spriteBatch.draw(
@@ -62,9 +62,9 @@ class PlayerInfoHud(val game: RpgGame) {
     )
     batch.shapeDrawer.filledRectangle(swapWeaponRect, Color.BLACK)
 
-    if (game.player.equipmentItems.contains(RpgGame.secondaryWeaponIndex)) {
+    if (player.equipmentItems.contains(secondaryWeaponIndex)) {
 
-      val swapWeapon = game.player.equipmentItems(RpgGame.secondaryWeaponIndex)
+      val swapWeapon = player.equipmentItems(secondaryWeaponIndex)
       val swapTextureRegion = swapWeapon.template.textureRegion
       batch.spriteBatch.draw(
         swapTextureRegion,
@@ -85,9 +85,9 @@ class PlayerInfoHud(val game: RpgGame) {
     )
     batch.shapeDrawer.filledRectangle(consumableRect, Color.BLACK)
 
-    if (game.player.equipmentItems.contains(RpgGame.consumableIndex)) {
+    if (player.equipmentItems.contains(consumableIndex)) {
 
-      val consumable = game.player.equipmentItems(RpgGame.consumableIndex)
+      val consumable = player.equipmentItems(consumableIndex)
       val consumableRegion = consumable.template.textureRegion
       batch.spriteBatch.draw(
         consumableRegion,
@@ -98,13 +98,8 @@ class PlayerInfoHud(val game: RpgGame) {
       )
 
       if (consumable.quantity > 1) {
-        RpgGame.defaultFont.setColor(Color.WHITE)
-        RpgGame.defaultFont.draw(
-          batch.spriteBatch,
-          consumable.quantity.toString,
-          consumableRect.x,
-          consumableRect.y + 15
-        )
+        defaultFont.setColor(Color.WHITE)
+        defaultFont.draw(batch.spriteBatch, consumable.quantity.toString, consumableRect.x, consumableRect.y + 15)
       }
     }
 
@@ -115,11 +110,11 @@ class PlayerInfoHud(val game: RpgGame) {
     healthRect = new Rectangle(
       10,
       40,
-      100 * (if (game.player.healthPoints > game.player.maxHealthPoints) 1f
-             else game.player.healthPoints / game.player.maxHealthPoints),
+      100 * (if (player.healthPoints > player.maxHealthPoints) 1f
+             else player.healthPoints / player.maxHealthPoints),
       10
     )
     maxStaminaRect = new Rectangle(10, 25, 100, 10)
-    staminaRect = new Rectangle(10, 25, 100 * game.player.staminaPoints / game.player.maxStaminaPoints, 10)
+    staminaRect = new Rectangle(10, 25, 100 * player.staminaPoints / player.maxStaminaPoints, 10)
   }
 }
