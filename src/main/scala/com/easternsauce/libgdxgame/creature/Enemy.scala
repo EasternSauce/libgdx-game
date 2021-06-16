@@ -13,7 +13,13 @@ abstract class Enemy extends Creature with AggressiveAI {
   override def calculateFacingVector(): Unit = {
     if (aggroedTarget.nonEmpty) {
       val aggroed = aggroedTarget.get
-      facingVector = new Vector2(aggroed.pos.x - pos.x, aggroed.pos.y - pos.y).nor()
+      facingVector.x = aggroed.pos.x - pos.x
+      facingVector.y = aggroed.pos.y - pos.y
+      facingVector.nor()
+    }
+    else {
+      facingVector.x = 0
+      facingVector.y = 0
     }
   }
 
@@ -25,13 +31,13 @@ abstract class Enemy extends Creature with AggressiveAI {
   }
 
   override def takeLifeDamage(
-    damage: Float,
-    immunityFrames: Boolean,
-    dealtBy: Option[Creature] = None,
-    knockbackPower: Float = 0,
-    sourceX: Float = 0,
-    sourceY: Float = 0
-  ): Unit = {
+                               damage: Float,
+                               immunityFrames: Boolean,
+                               dealtBy: Option[Creature] = None,
+                               knockbackPower: Float = 0,
+                               sourceX: Float = 0,
+                               sourceY: Float = 0
+                             ): Unit = {
     super.takeLifeDamage(damage, immunityFrames, dealtBy, knockbackPower, sourceX, sourceY)
 
     if (aggroedTarget.isEmpty && dealtBy.nonEmpty) {
@@ -52,4 +58,7 @@ abstract class Enemy extends Creature with AggressiveAI {
     new Vector2(spawnPoint.posX, spawnPoint.posY)
   }
 
+  override def calculateWalkingVector(): Unit = {
+    walkingVector = facingVector.cpy()
+  }
 }

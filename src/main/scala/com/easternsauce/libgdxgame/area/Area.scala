@@ -69,25 +69,12 @@ class Area(val mapLoader: TmxMapLoader, val areaFilesLocation: String, val id: S
   def render(batch: EsBatch): Unit = {
     playerSpawns.foreach(_.draw(batch.spriteBatch))
 
-    creaturesMap.values.filter(!_.alive).foreach(_.draw(batch.spriteBatch))
-
     lootPileList.foreach(_.draw(batch.spriteBatch))
 
-    creaturesMap.values.filter(_.alive).foreach(_.draw(batch.spriteBatch))
-
-    for (creature <- creaturesMap.values) {
-      creature.renderAbilities(batch)
-    }
-
-    for (creature <- creaturesMap.values) {
-      if (creature.alive && !creature.atFullLife)
-        creature.renderLifeBar(batch)
-    }
-
+    if (debugMode) {
     for (creature <- creaturesMap.values.filter(_.isEnemy)) {
       val enemy = creature.asInstanceOf[Enemy]
 
-      if (debugMode) {
         // render debug path
         enemy.path.foreach(node => {
           batch.shapeDrawer.setColor(Color.RED)
@@ -98,6 +85,27 @@ class Area(val mapLoader: TmxMapLoader, val areaFilesLocation: String, val id: S
 
     }
 
+  }
+
+  def renderCreatureLifeBars(batch: EsBatch): Unit = {
+    for (creature <- creaturesMap.values) {
+      if (creature.alive && !creature.atFullLife)
+        creature.renderLifeBar(batch)
+    }
+  }
+
+  def renderCreatureAbilities(batch: EsBatch): Unit = {
+    for (creature <- creaturesMap.values) {
+      creature.renderAbilities(batch)
+    }
+  }
+
+  def renderAliveCreatures(batch: EsBatch): Unit = {
+    creaturesMap.values.filter(_.alive).foreach(_.draw(batch.spriteBatch))
+  }
+
+  def renderDeadCreatures(batch: EsBatch): Unit = {
+    creaturesMap.values.filter(!_.alive).foreach(_.draw(batch.spriteBatch))
   }
 
   def setView(camera: OrthographicCamera): Unit = {

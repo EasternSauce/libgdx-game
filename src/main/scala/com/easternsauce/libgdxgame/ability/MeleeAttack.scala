@@ -63,11 +63,6 @@ trait MeleeAttack extends Attack with PhysicalHitbox with ActiveAnimation with W
     toRemoveBody = false
   }
 
-  override def onUpdateActive(): Unit = {
-    super.onUpdateActive()
-
-  }
-
   override def render(batch: EsBatch): Unit = {
     super.render(batch)
 
@@ -97,7 +92,7 @@ trait MeleeAttack extends Attack with PhysicalHitbox with ActiveAnimation with W
   }
 
   override def onChannellingStart(): Unit = {
-    creature.attackVector = creature.facingVector
+    creature.attackVector = creature.facingVector.cpy()
     abilityWindupAnimationTimer.restart()
     creature.isAttacking = true
 

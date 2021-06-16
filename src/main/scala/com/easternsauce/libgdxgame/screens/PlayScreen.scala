@@ -58,11 +58,23 @@ class PlayScreen() extends Screen {
 
     currentArea.get.render(worldBatch)
 
-    currentArea.get.arrowList.foreach((arrow: Arrow) => arrow.render(worldBatch))
+    currentArea.get.renderDeadCreatures(worldBatch)
+
+    currentArea.get.renderAliveCreatures(worldBatch)
 
     worldBatch.spriteBatch.end()
 
     currentArea.get.renderTopLayer()
+
+    worldBatch.spriteBatch.begin()
+
+    currentArea.get.renderCreatureAbilities(worldBatch)
+
+    currentArea.get.renderCreatureLifeBars(worldBatch)
+
+    currentArea.get.arrowList.foreach((arrow: Arrow) => arrow.render(worldBatch))
+
+    worldBatch.spriteBatch.end()
 
     hudBatch.spriteBatch.begin()
 
@@ -168,6 +180,10 @@ class PlayScreen() extends Screen {
         if (consumable.quantity <= 1) player.equipmentItems.remove(InventoryMapping.consumableIndex)
         else consumable.quantity = consumable.quantity - 1
       }
+    }
+
+    if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
+      player.dashAbility.perform()
     }
 
     handlePlayerMovement()

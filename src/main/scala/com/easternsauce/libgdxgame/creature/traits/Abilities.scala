@@ -1,7 +1,7 @@
 package com.easternsauce.libgdxgame.creature.traits
 
 import com.easternsauce.libgdxgame.ability.traits.{Ability, Attack}
-import com.easternsauce.libgdxgame.ability.{BowAttack, SwordAttack, TridentAttack, UnarmedAttack}
+import com.easternsauce.libgdxgame.ability._
 import com.easternsauce.libgdxgame.creature.Creature
 import com.easternsauce.libgdxgame.util.EsBatch
 
@@ -18,6 +18,8 @@ trait Abilities {
   var unarmedAttack: UnarmedAttack = _
   var bowAttack: BowAttack = _
   var tridentAttack: TridentAttack = _
+
+  var dashAbility: DashAbility = _
 
   var isAttacking = false
 
@@ -65,8 +67,11 @@ trait Abilities {
     unarmedAttack = new UnarmedAttack(this)
     bowAttack = new BowAttack(this)
     tridentAttack = new TridentAttack(this)
+    dashAbility = new DashAbility(this)
 
-    attackList += swordAttack
+    attackList += swordAttack // TODO ?
+
+    abilityList += dashAbility
   }
 
 }

@@ -44,6 +44,7 @@ abstract class Creature
   var attackVector: Vector2 = new Vector2(0f, 0f)
 
   var facingVector: Vector2 = new Vector2(0f, 0f)
+  var walkingVector: Vector2 = new Vector2(0f, 0f)
 
   var passedGateRecently = false
   var toSetBodyNonInteractive = false
@@ -57,6 +58,7 @@ abstract class Creature
   var playerSpawnPoint: Option[PlayerSpawnPoint] = None
 
   def calculateFacingVector(): Unit
+  def calculateWalkingVector(): Unit
 
   protected def creatureType: String = getClass.getName
 
@@ -67,6 +69,7 @@ abstract class Creature
       updateStaminaDrain()
 
       calculateFacingVector()
+      calculateWalkingVector()
 
       regenerateLife()
       regenerateStamina()
@@ -94,7 +97,9 @@ abstract class Creature
     else setRegion(standStillImage(currentDirection))
 
     if (bodyExists) {
-      setPosition(pos.x - getWidth / 2f, pos.y - getHeight / 2f)
+      val roundedX = (math.floor(pos.x * 100) / 100).toFloat
+      val roundedY = (math.floor(pos.y * 100) / 100).toFloat
+      setPosition(roundedX - getWidth / 2f, roundedY - getHeight / 2f)
     }
 
     if (isMoving && timeSinceMovedTimer.time > 0.25f) {
@@ -132,7 +137,7 @@ abstract class Creature
           if (walkSound.nonEmpty) walkSound.get.loop(0.1f)
         }
 
-        val vector = new Vector2()
+        val vector = new Vector2(0f, 0f)
 
         currentDirection = dirs.last
 

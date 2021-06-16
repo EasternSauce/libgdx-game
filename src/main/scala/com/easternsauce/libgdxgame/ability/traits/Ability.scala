@@ -80,8 +80,6 @@ trait Ability {
 
   def onChannellingStart(): Unit = {}
 
-  def performMovement(): Unit = {}
-
   def active: Boolean = {
     state == AbilityState.Active
   }
