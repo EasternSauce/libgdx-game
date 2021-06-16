@@ -72,8 +72,8 @@ class Area(val mapLoader: TmxMapLoader, val areaFilesLocation: String, val id: S
     lootPileList.foreach(_.draw(batch.spriteBatch))
 
     if (debugMode) {
-    for (creature <- creaturesMap.values.filter(_.isEnemy)) {
-      val enemy = creature.asInstanceOf[Enemy]
+      for (creature <- creaturesMap.values.filter(_.isEnemy)) {
+        val enemy = creature.asInstanceOf[Enemy]
 
         // render debug path
         enemy.path.foreach(node => {
@@ -81,6 +81,13 @@ class Area(val mapLoader: TmxMapLoader, val areaFilesLocation: String, val id: S
           val pos = enemy.area.get.getTileCenter(node.x, node.y)
           batch.shapeDrawer.filledCircle(pos.x, pos.y, 0.1f)
         })
+
+        if (enemy.lineToTarget.nonEmpty) {
+          batch.shapeDrawer.setColor(Color.BLUE)
+          batch.shapeDrawer.setDefaultLineWidth(0.05f)
+          batch.shapeDrawer.filledPolygon(enemy.lineToTarget.get)
+        }
+
       }
 
     }

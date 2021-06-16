@@ -1,6 +1,6 @@
 package com.easternsauce.libgdxgame.creature.traits
 
-import com.badlogic.gdx.math.Vector2
+import com.badlogic.gdx.math.{Polygon, Vector2}
 import com.easternsauce.libgdxgame.area.Area
 import com.easternsauce.libgdxgame.creature.{Creature, Enemy}
 import com.easternsauce.libgdxgame.pathfinding.{AStar, AStarNode}
@@ -14,9 +14,8 @@ trait AggressiveAI {
 
   var aggroedTarget: Option[Creature] = None
   val aggroDistance = 20f
-  val minimumWalkUpDistance = 4f
   val circleDistance = 15f
-  val attackDistance = 6f
+
   val aggroDropDistance = 25f
 
   var circling = false
@@ -31,7 +30,21 @@ trait AggressiveAI {
 
   var path: ListBuffer[AStarNode] = ListBuffer()
 
+  var lineToTarget: Option[Polygon] = None
+
   def targetFound: Boolean = aggroedTarget.nonEmpty
+
+  def attackDistance: Float =
+    if (isWeaponEquipped) {
+      currentWeapon.template.attackType match {
+        case Some("sword")   => 6f
+        case Some("bow")     => 35f
+        case Some("trident") => 6f
+        case _               => throw new RuntimeException("Unrecognized attack type")
+      }
+    } else {
+      6f
+    }
 
   def lookForTarget(): Unit = {
     if (alive && !targetFound) {
@@ -41,6 +54,9 @@ trait AggressiveAI {
           if (otherCreature.alive && distanceTo(otherCreature) < aggroDistance) {
 
             if (aggroRecalculatePathTimer.time > 0.3f) {
+
+              calculateLineToTarget(otherCreature)
+
               calculatePath(area.get, otherCreature.pos)
 
               if (path.length < 20) {
@@ -52,6 +68,23 @@ trait AggressiveAI {
           }
         })
     }
+  }
+
+  def calculateLineToTarget(otherCreature: Creature): Unit = {
+    lineToTarget = Some(
+      new Polygon(
+        Array(
+          pos.x,
+          pos.y,
+          pos.x,
+          pos.y + 0.5f,
+          otherCreature.pos.x,
+          otherCreature.pos.y + 0.5f,
+          otherCreature.pos.x,
+          otherCreature.pos.y
+        )
+      )
+    )
   }
 
   def aggroOnCreature(otherCreature: Creature): Unit = {
@@ -118,17 +151,18 @@ trait AggressiveAI {
 
       if (targetFound) {
         if (recalculatePathTimer.time > 0.3f) {
+          calculateLineToTarget(aggroedTarget.get)
           calculatePath(area.get, aggroedTarget.get.pos)
           recalculatePathTimer.restart()
         }
 
         if (circling && distanceTo(aggroedTarget.get) < circleDistance) {
           circleTarget(aggroedTarget.get.pos)
-        } else if (distanceTo(aggroedTarget.get) > minimumWalkUpDistance) {
+        } else if (distanceTo(aggroedTarget.get) > attackDistance) {
 
           if (path.nonEmpty && path.size > 3) {
             val destination = area.get.getTileCenter(path.head.x, path.head.y)
-            if (destination.dst(pos) < 2f) path.dropInPlace(1)
+            if (destination.dst(pos) < attackDistance) path.dropInPlace(1)
             walkToTarget(destination)
           } else {
             walkToTarget(aggroedTarget.get.pos)
