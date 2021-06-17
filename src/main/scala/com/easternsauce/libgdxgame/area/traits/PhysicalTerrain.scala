@@ -1,7 +1,7 @@
 package com.easternsauce.libgdxgame.area.traits
 
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer
-import com.badlogic.gdx.math.Vector2
+import com.badlogic.gdx.math.{Polygon, Vector2}
 import com.badlogic.gdx.physics.box2d._
 import com.easternsauce.libgdxgame.area.{Area, TerrainTile}
 import com.easternsauce.libgdxgame.pathfinding.AStarNode
@@ -84,7 +84,22 @@ trait PhysicalTerrain {
 
           val body: Body = world.createBody(bodyDef)
 
-          val tile: TerrainTile = TerrainTile((layerNum, x, y), body, flyover(y)(x))
+          val polygon = new Polygon(
+            Array(
+              x * tileWidth,
+              y * tileHeight,
+              x * tileWidth + tileWidth,
+              y * tileHeight,
+              x * tileWidth + tileWidth,
+              y * tileHeight + tileHeight,
+              x * tileWidth,
+              y * tileHeight + tileHeight
+            )
+          )
+
+          val tile: TerrainTile = TerrainTile((layerNum, x, y), body, flyover(y)(x), polygon)
+
+          terrainTiles += tile
 
           body.setUserData(tile)
 

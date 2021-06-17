@@ -128,5 +128,5 @@ object Arrow {
     tiledMap: TiledMap,
     creatures: mutable.Map[String, Creature],
     shooter: Creature
-  ) = new Arrow(startX, startY, area, dirVector, arrowList, tiledMap, creatures, shooter)
+  ) = new Arrow(startX, startY, area, dirVector.cpy(), arrowList, tiledMap, creatures, shooter)
 }

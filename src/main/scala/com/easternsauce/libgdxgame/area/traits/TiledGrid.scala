@@ -2,13 +2,15 @@ package com.easternsauce.libgdxgame.area.traits
 
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer
 import com.badlogic.gdx.maps.tiled.{TiledMap, TmxMapLoader}
-import com.easternsauce.libgdxgame.area.Area
+import com.easternsauce.libgdxgame.area.{Area, TerrainTile}
 import com.easternsauce.libgdxgame.system.Constants
+
+import scala.collection.mutable.ListBuffer
 
 trait TiledGrid {
   this: Area =>
 
-  //val tiles: mutable.Map[(Int, Int, Int), AreaTile] = mutable.Map()
+  val terrainTiles: ListBuffer[TerrainTile] = ListBuffer()
   val mapLoader: TmxMapLoader
 
   val areaFilesLocation: String
@@ -18,5 +20,4 @@ trait TiledGrid {
 
   protected val tiledMapRenderer: OrthogonalTiledMapRenderer =
     new OrthogonalTiledMapRenderer(map, mapScale / Constants.PPM)
-
 }

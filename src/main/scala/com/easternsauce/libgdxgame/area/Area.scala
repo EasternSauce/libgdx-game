@@ -75,19 +75,21 @@ class Area(val mapLoader: TmxMapLoader, val areaFilesLocation: String, val id: S
       for (creature <- creaturesMap.values.filter(_.isEnemy)) {
         val enemy = creature.asInstanceOf[Enemy]
 
-        // render debug path
+        // render debug
         enemy.path.foreach(node => {
           batch.shapeDrawer.setColor(Color.RED)
           val pos = enemy.area.get.getTileCenter(node.x, node.y)
           batch.shapeDrawer.filledCircle(pos.x, pos.y, 0.1f)
         })
 
-        if (enemy.lineToTarget.nonEmpty) {
-          batch.shapeDrawer.setColor(Color.BLUE)
-          batch.shapeDrawer.setDefaultLineWidth(0.05f)
-          batch.shapeDrawer.filledPolygon(enemy.lineToTarget.get)
-        }
+        if (enemy.lineOfSight.nonEmpty) {
 
+          if (enemy.targetVisible) batch.shapeDrawer.setColor(Color.BLUE)
+          else batch.shapeDrawer.setColor(Color.RED)
+
+          batch.shapeDrawer.setDefaultLineWidth(0.05f)
+          batch.shapeDrawer.filledPolygon(enemy.lineOfSight.get)
+        }
       }
 
     }

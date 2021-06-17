@@ -1,6 +1,6 @@
 package com.easternsauce.libgdxgame.creature.traits
 
-import com.badlogic.gdx.math.{Polygon, Vector2}
+import com.badlogic.gdx.math.{Intersector, Polygon, Vector2}
 import com.easternsauce.libgdxgame.area.Area
 import com.easternsauce.libgdxgame.creature.{Creature, Enemy}
 import com.easternsauce.libgdxgame.pathfinding.{AStar, AStarNode}
@@ -30,7 +30,9 @@ trait AggressiveAI {
 
   var path: ListBuffer[AStarNode] = ListBuffer()
 
-  var lineToTarget: Option[Polygon] = None
+  var lineOfSight: Option[Polygon] = None
+
+  var targetVisible = false
 
   def targetFound: Boolean = aggroedTarget.nonEmpty
 
@@ -71,7 +73,7 @@ trait AggressiveAI {
   }
 
   def calculateLineToTarget(otherCreature: Creature): Unit = {
-    lineToTarget = Some(
+    lineOfSight = Some(
       new Polygon(
         Array(
           pos.x,
@@ -85,6 +87,11 @@ trait AggressiveAI {
         )
       )
     )
+
+    targetVisible = currentArea.get.terrainTiles
+      .map(tile => tile.polygon)
+      .forall(!Intersector.overlapConvexPolygons(_, lineOfSight.get))
+
   }
 
   def aggroOnCreature(otherCreature: Creature): Unit = {
