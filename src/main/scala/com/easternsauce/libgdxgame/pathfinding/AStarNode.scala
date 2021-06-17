@@ -19,7 +19,7 @@ class AStarNode(val x: Int, val y: Int, val id: String) extends Comparable[AStar
     (Math.abs(target.x - x) + Math.abs(target.y - y)) * 10
   }
 
-  override def toString() = id
+  override def toString(): String = id
 }
 
 case class AStarEdge(weight: Int, node: AStarNode)

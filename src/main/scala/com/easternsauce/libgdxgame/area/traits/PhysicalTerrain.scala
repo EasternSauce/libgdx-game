@@ -13,9 +13,11 @@ trait PhysicalTerrain {
   val world: World = new World(new Vector2(0, 0), true)
 
   var traversable: Array[Array[Boolean]] = _
+  var traversableWithMargins: Array[Array[Boolean]] = _
   var flyover: Array[Array[Boolean]] = _
 
   var aStarNodes: Array[Array[AStarNode]] = _
+  var aStarNodesWithMargins: Array[Array[AStarNode]] = _
 
   var widthInTiles: Int = _
   var heightInTiles: Int = _
@@ -32,12 +34,19 @@ trait PhysicalTerrain {
     tileHeight = layer.getTileHeight * mapScale / Constants.PPM
 
     traversable = Array.ofDim(heightInTiles, widthInTiles)
+    traversableWithMargins = Array.ofDim(heightInTiles, widthInTiles)
     flyover = Array.ofDim(heightInTiles, widthInTiles)
 
     for {
       x <- 0 until widthInTiles
       y <- 0 until heightInTiles
     } traversable(y)(x) = true
+
+    for {
+      x <- 0 until widthInTiles
+      y <- 0 until heightInTiles
+    } traversableWithMargins(y)(x) = true
+
     for {
       x <- 0 until widthInTiles
       y <- 0 until heightInTiles
@@ -49,6 +58,8 @@ trait PhysicalTerrain {
   }
 
   private def createMapTerrain(): Unit = {
+    def tileExists(x: Int, y: Int) = x >= 0 && x < widthInTiles && y >= 0 && y < heightInTiles
+
     for (layerNum <- 0 to 1) { // two layers
       val layer: TiledMapTileLayer =
         map.getLayers.get(layerNum).asInstanceOf[TiledMapTileLayer]
@@ -65,7 +76,16 @@ trait PhysicalTerrain {
           val isTileFlyover: Boolean =
             cell.getTile.getProperties.get("flyover").asInstanceOf[Boolean]
 
-          if (!isTileTraversable) traversable(y)(x) = false
+          if (!isTileTraversable) {
+            traversable(y)(x) = false
+
+            traversableWithMargins(y)(x) = false
+
+            List((0, 1), (1, 0), (-1, 0), (0, -1), (1, 1), (-1, 1), (-1, -1), (1, -1))
+              .filter(pair => tileExists(x + pair._1, y + pair._2))
+              .foreach(pair => traversableWithMargins(y + pair._2)(x + pair._1) = false)
+          }
+
           if (!isTileFlyover) flyover(y)(x) = false
         }
 

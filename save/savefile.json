@@ -33,8 +33,8 @@
       "area" : "area1",
       "isPlayer" : false,
       "position" : {
-        "x" : 176.67691,
-        "y" : 52.649925
+        "x" : 174.93172,
+        "y" : 53.39146
       },
       "equipmentItems" : [
         {
@@ -57,8 +57,8 @@
       "area" : "area1",
       "isPlayer" : false,
       "position" : {
-        "x" : 189.96884,
-        "y" : 167.71944
+        "x" : 190.30647,
+        "y" : 167.77406
       },
       "equipmentItems" : [
         {
@@ -81,8 +81,8 @@
       "area" : "area1",
       "isPlayer" : false,
       "position" : {
-        "x" : 178.94713,
-        "y" : 91.335144
+        "x" : 180.53401,
+        "y" : 91.35734
       },
       "equipmentItems" : [
       ],
@@ -122,8 +122,8 @@
       "area" : "area1",
       "isPlayer" : false,
       "position" : {
-        "x" : 187.94644,
-        "y" : 164.35121
+        "x" : 188.28987,
+        "y" : 165.73871
       },
       "equipmentItems" : [
         {
@@ -146,8 +146,8 @@
       "area" : "area1",
       "isPlayer" : false,
       "position" : {
-        "x" : 130.63306,
-        "y" : 148.14879
+        "x" : 131.5065,
+        "y" : 146.98456
       },
       "equipmentItems" : [
         {
@@ -187,8 +187,8 @@
       "area" : "area1",
       "isPlayer" : false,
       "position" : {
-        "x" : 102.06253,
-        "y" : 145.50009
+        "x" : 103.9795,
+        "y" : 146.1287
       },
       "equipmentItems" : [
         {
@@ -211,8 +211,8 @@
       "area" : "area1",
       "isPlayer" : false,
       "position" : {
-        "x" : 133.73686,
-        "y" : 33.275394
+        "x" : 133.52716,
+        "y" : 34.678677
       },
       "equipmentItems" : [
         {
@@ -300,8 +300,8 @@
       "area" : "area1",
       "isPlayer" : false,
       "position" : {
-        "x" : 131.1295,
-        "y" : 144.7539
+        "x" : 131.31808,
+        "y" : 143.89207
       },
       "equipmentItems" : [
         {
@@ -365,8 +365,8 @@
       "area" : "area1",
       "isPlayer" : false,
       "position" : {
-        "x" : 132.98624,
-        "y" : 4.5551286
+        "x" : 134.25107,
+        "y" : 4.1158743
       },
       "equipmentItems" : [
         {
@@ -385,15 +385,15 @@
       "id" : "player",
       "spawnPointId" : null,
       "playerSpawnPoint" : {
-        "area" : "area2",
+        "area" : "area1",
         "id" : "0"
       },
-      "life" : 89.932884,
+      "life" : 74.49664,
       "area" : "area1",
       "isPlayer" : true,
       "position" : {
-        "x" : 71.72542,
-        "y" : 142.5342
+        "x" : 88.538216,
+        "y" : 190.40959
       },
       "equipmentItems" : [
         {
@@ -448,7 +448,7 @@
         {
           "index" : 7,
           "template" : "healingPowder",
-          "quantity" : 40,
+          "quantity" : 39,
           "damage" : null,
           "armor" : null
         },
@@ -696,8 +696,8 @@
       "area" : "area1",
       "isPlayer" : false,
       "position" : {
-        "x" : 10.633047,
-        "y" : 191.80444
+        "x" : 11.6031065,
+        "y" : 192.05774
       },
       "equipmentItems" : [
         {
@@ -720,8 +720,8 @@
       "area" : "area1",
       "isPlayer" : false,
       "position" : {
-        "x" : 108.06253,
-        "y" : 183.68759
+        "x" : 82.130516,
+        "y" : 182.50273
       },
       "equipmentItems" : [
         {
@@ -744,8 +744,8 @@
       "area" : "area1",
       "isPlayer" : false,
       "position" : {
-        "x" : 131.9183,
-        "y" : 35.510624
+        "x" : 130.80257,
+        "y" : 35.509754
       },
       "equipmentItems" : [
       ],
@@ -761,8 +761,8 @@
       "area" : "area1",
       "isPlayer" : false,
       "position" : {
-        "x" : 17.659235,
-        "y" : 94.302
+        "x" : 14.770562,
+        "y" : 96.232
       },
       "equipmentItems" : [
       ],
@@ -778,8 +778,8 @@
       "area" : "area1",
       "isPlayer" : false,
       "position" : {
-        "x" : 16.1222,
-        "y" : 29.673965
+        "x" : 16.220196,
+        "y" : 28.87095
       },
       "equipmentItems" : [
         {
@@ -802,8 +802,8 @@
       "area" : "area1",
       "isPlayer" : false,
       "position" : {
-        "x" : 129.73712,
-        "y" : 3.9869356
+        "x" : 129.88962,
+        "y" : 5.5334115
       },
       "equipmentItems" : [
         {
@@ -826,8 +826,8 @@
       "area" : "area1",
       "isPlayer" : false,
       "position" : {
-        "x" : 130.96484,
-        "y" : 6.5680594
+        "x" : 132.56548,
+        "y" : 6.5361605
       },
       "equipmentItems" : [
         {
@@ -874,8 +874,8 @@
       "area" : "area1",
       "isPlayer" : false,
       "position" : {
-        "x" : 175.83955,
-        "y" : 49.77826
+        "x" : 175.34398,
+        "y" : 50.438705
       },
       "equipmentItems" : [
         {
@@ -922,8 +922,8 @@
       "area" : "area1",
       "isPlayer" : false,
       "position" : {
-        "x" : 14.842012,
-        "y" : 95.54633
+        "x" : 12.96207,
+        "y" : 93.995346
       },
       "equipmentItems" : [
       ],
@@ -956,8 +956,8 @@
       "area" : "area1",
       "isPlayer" : false,
       "position" : {
-        "x" : 130.69359,
-        "y" : 32.937622
+        "x" : 131.05397,
+        "y" : 32.592293
       },
       "equipmentItems" : [
       ],
@@ -973,8 +973,8 @@
       "area" : "area1",
       "isPlayer" : false,
       "position" : {
-        "x" : 173.77193,
-        "y" : 51.73245
+        "x" : 172.49194,
+        "y" : 50.862026
       },
       "equipmentItems" : [
         {
@@ -997,8 +997,8 @@
       "area" : "area1",
       "isPlayer" : false,
       "position" : {
-        "x" : 179.63937,
-        "y" : 88.52489
+        "x" : 178.1108,
+        "y" : 89.761375
       },
       "equipmentItems" : [
       ],
@@ -1014,8 +1014,8 @@
       "area" : "area1",
       "isPlayer" : false,
       "position" : {
-        "x" : 191.65634,
-        "y" : 131.68759
+        "x" : 190.38374,
+        "y" : 130.415
       },
       "equipmentItems" : [
         {
@@ -1062,8 +1062,8 @@
       "area" : "area1",
       "isPlayer" : false,
       "position" : {
-        "x" : 13.707605,
-        "y" : 92.93643
+        "x" : 15.581807,
+        "y" : 92.61833
       },
       "equipmentItems" : [
       ],
@@ -1079,8 +1079,8 @@
       "area" : "area1",
       "isPlayer" : false,
       "position" : {
-        "x" : 13.271447,
-        "y" : 30.574821
+        "x" : 13.873979,
+        "y" : 30.570036
       },
       "equipmentItems" : [
         {
@@ -1127,8 +1127,8 @@
       "area" : "area1",
       "isPlayer" : false,
       "position" : {
-        "x" : 12.362852,
-        "y" : 27.738037
+        "x" : 12.775796,
+        "y" : 27.744167
       },
       "equipmentItems" : [
         {
@@ -1151,7 +1151,7 @@
       "area" : "area1",
       "isPlayer" : false,
       "position" : {
-        "x" : 96.78125,
+        "x" : 96.18145,
         "y" : 136.57004
       },
       "equipmentItems" : [
@@ -1175,8 +1175,8 @@
       "area" : "area1",
       "isPlayer" : false,
       "position" : {
-        "x" : 65.69816,
-        "y" : 146.61285
+        "x" : 54.85637,
+        "y" : 157.01567
       },
       "equipmentItems" : [
         {
