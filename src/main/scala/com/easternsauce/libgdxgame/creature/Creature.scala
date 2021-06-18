@@ -182,10 +182,6 @@ abstract class Creature
         recentDirections.dropInPlace(1)
       }
 
-      if (isPlayer) {
-        println(recentDirections)
-      }
-
       if (recentDirections.nonEmpty) {
         currentDirection = recentDirections.groupBy(identity).view.mapValues(_.size).maxBy(_._2)._1
       }

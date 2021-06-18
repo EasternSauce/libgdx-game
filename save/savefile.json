@@ -9,8 +9,8 @@
       "area" : "area3",
       "isPlayer" : false,
       "position" : {
-        "x" : 169.63713,
-        "y" : 181.24956
+        "x" : 164.03827,
+        "y" : 184.69751
       },
       "equipmentItems" : [
         {
@@ -33,8 +33,8 @@
       "area" : "area3",
       "isPlayer" : false,
       "position" : {
-        "x" : 79.5428,
-        "y" : 183.26053
+        "x" : 82.774826,
+        "y" : 183.18977
       },
       "equipmentItems" : [
         {
@@ -81,8 +81,8 @@
       "area" : "area3",
       "isPlayer" : false,
       "position" : {
-        "x" : 69.09895,
-        "y" : 156.42422
+        "x" : 68.833565,
+        "y" : 156.03484
       },
       "equipmentItems" : [
         {
@@ -194,8 +194,8 @@
       "area" : "area3",
       "isPlayer" : false,
       "position" : {
-        "x" : 82.371475,
-        "y" : 182.60504
+        "x" : 81.13584,
+        "y" : 159.12466
       },
       "equipmentItems" : [
       ],
@@ -262,8 +262,8 @@
       "area" : "area3",
       "isPlayer" : true,
       "position" : {
-        "x" : 51.622604,
-        "y" : 101.53035
+        "x" : 24.871838,
+        "y" : 17.636925
       },
       "equipmentItems" : [
         {
@@ -318,7 +318,7 @@
         {
           "index" : 7,
           "template" : "healingPowder",
-          "quantity" : 38,
+          "quantity" : 37,
           "damage" : null,
           "armor" : null
         },
@@ -608,8 +608,8 @@
       "area" : "area3",
       "isPlayer" : false,
       "position" : {
-        "x" : 165.22409,
-        "y" : 93.26578
+        "x" : 163.95134,
+        "y" : 91.99304
       },
       "equipmentItems" : [
       ],
@@ -649,8 +649,8 @@
       "area" : "area3",
       "isPlayer" : false,
       "position" : {
-        "x" : 164.27367,
-        "y" : 181.60269
+        "x" : 139.09659,
+        "y" : 155.1099
       },
       "equipmentItems" : [
         {
@@ -697,8 +697,8 @@
       "area" : "area3",
       "isPlayer" : false,
       "position" : {
-        "x" : 82.33744,
-        "y" : 185.45366
+        "x" : 80.76295,
+        "y" : 185.20126
       },
       "equipmentItems" : [
         {
@@ -738,8 +738,8 @@
       "area" : "area3",
       "isPlayer" : false,
       "position" : {
-        "x" : 99.08544,
-        "y" : 19.575901
+        "x" : 99.08521,
+        "y" : 19.575903
       },
       "equipmentItems" : [
         {
@@ -786,34 +786,10 @@
       "area" : "area3",
       "isPlayer" : false,
       "position" : {
-        "x" : 163.3911,
-        "y" : 157.09895
+        "x" : 162.83136,
+        "y" : 155.86723
       },
       "equipmentItems" : [
-      ],
-      "inventoryItems" : [
-      ]
-    },
-    {
-      "creatureClass" : "com.easternsauce.libgdxgame.creature.Goblin",
-      "id" : "Goblin_1133574560",
-      "spawnPointId" : "3",
-      "playerSpawnPoint" : null,
-      "life" : 100.0,
-      "area" : "area3",
-      "isPlayer" : false,
-      "position" : {
-        "x" : 99.0025,
-        "y" : 65.321434
-      },
-      "equipmentItems" : [
-        {
-          "index" : 0,
-          "template" : "poisonDagger",
-          "quantity" : 1,
-          "damage" : 31,
-          "armor" : null
-        }
       ],
       "inventoryItems" : [
       ]
@@ -838,23 +814,6 @@
           "damage" : 31,
           "armor" : null
         }
-      ],
-      "inventoryItems" : [
-      ]
-    },
-    {
-      "creatureClass" : "com.easternsauce.libgdxgame.creature.Ghost",
-      "id" : "Ghost_386788530",
-      "spawnPointId" : "10",
-      "playerSpawnPoint" : null,
-      "life" : 100.0,
-      "area" : "area3",
-      "isPlayer" : false,
-      "position" : {
-        "x" : 69.09895,
-        "y" : 153.5793
-      },
-      "equipmentItems" : [
       ],
       "inventoryItems" : [
       ]
@@ -885,8 +844,8 @@
       "area" : "area3",
       "isPlayer" : false,
       "position" : {
-        "x" : 127.03125,
-        "y" : 157.52863
+        "x" : 137.64096,
+        "y" : 164.05298
       },
       "equipmentItems" : [
         {
@@ -933,8 +892,8 @@
       "area" : "area3",
       "isPlayer" : false,
       "position" : {
-        "x" : 166.84164,
-        "y" : 180.01308
+        "x" : 175.13089,
+        "y" : 159.1235
       },
       "equipmentItems" : [
         {
@@ -957,8 +916,8 @@
       "area" : "area3",
       "isPlayer" : false,
       "position" : {
-        "x" : 185.0052,
-        "y" : 138.6996
+        "x" : 175.10936,
+        "y" : 152.90884
       },
       "equipmentItems" : [
         {
@@ -981,8 +940,8 @@
       "area" : "area3",
       "isPlayer" : false,
       "position" : {
-        "x" : 99.092926,
-        "y" : 22.420885
+        "x" : 99.093155,
+        "y" : 22.420883
       },
       "equipmentItems" : [
         {
@@ -1046,8 +1005,8 @@
       "area" : "area3",
       "isPlayer" : false,
       "position" : {
-        "x" : 167.07135,
-        "y" : 182.84991
+        "x" : 166.09094,
+        "y" : 182.7277
       },
       "equipmentItems" : [
       ],
@@ -1063,8 +1022,8 @@
       "area" : "area3",
       "isPlayer" : false,
       "position" : {
-        "x" : 127.03125,
-        "y" : 160.37355
+        "x" : 135.44789,
+        "y" : 157.12065
       },
       "equipmentItems" : [
         {
