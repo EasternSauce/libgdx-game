@@ -4,6 +4,7 @@ import com.badlogic.gdx.math.{Intersector, Polygon, Vector2}
 import com.easternsauce.libgdxgame.area.Area
 import com.easternsauce.libgdxgame.creature.{Creature, Enemy}
 import com.easternsauce.libgdxgame.pathfinding.{AStar, AStarNode}
+import com.easternsauce.libgdxgame.system.GameSystem
 import com.easternsauce.libgdxgame.system.GameSystem._
 import com.easternsauce.libgdxgame.util.{EsDirection, EsTimer}
 
@@ -168,15 +169,15 @@ trait AggressiveAI {
 
         if (targetVisible && distanceTo(aggroedTarget.get) < walkUpDistance) {
           if (circling && distanceTo(aggroedTarget.get) < attackDistance) {
-            circleTarget(aggroedTarget.get.pos)
+            circleTarget(aggroedTarget.get.pos.cpy().add(perpendicularNoise(0.7f)))
           } else if (distanceTo(aggroedTarget.get) > attackDistance) {
-            walkToTarget(aggroedTarget.get.pos)
+            walkToTarget(aggroedTarget.get.pos.cpy().add(perpendicularNoise(0.7f)))
           }
         } else {
           if (path.nonEmpty) {
             val destination = area.get.getTileCenter(path.head.x, path.head.y)
-            if (destination.dst(pos) < 1f) path.dropInPlace(1)
-            walkToTarget(destination)
+            if (destination.dst(pos) < 1.5f) path.dropInPlace(1)
+            walkToTarget(destination.add(perpendicularNoise(0.7f)))
           } else if (distanceTo(aggroedTarget.get) < walkUpDistance) {
             walkToTarget(aggroedTarget.get.pos)
           }
@@ -197,7 +198,7 @@ trait AggressiveAI {
         }
         if (path.nonEmpty) {
           val destination = area.get.getTileCenter(path.head.x, path.head.y)
-          if (destination.dst(pos) < 2f) {
+          if (destination.dst(pos) < 1.5f) {
             path.dropInPlace(1)
           }
           walkToTarget(destination)
@@ -205,6 +206,20 @@ trait AggressiveAI {
       }
     }
 
+  }
+
+  private def perpendicularNoise(noiseStrength: Float) = {
+    if (GameSystem.randomGenerator.nextFloat() < 0.5f) {
+      new Vector2(
+        -facingVector.y * GameSystem.randomGenerator.nextFloat() * noiseStrength,
+        facingVector.x * GameSystem.randomGenerator.nextFloat() * noiseStrength
+      )
+    } else {
+      new Vector2(
+        facingVector.y * GameSystem.randomGenerator.nextFloat() * noiseStrength,
+        -facingVector.x * GameSystem.randomGenerator.nextFloat() * noiseStrength
+      )
+    }
   }
 
   private def dropAggro(): Unit = {

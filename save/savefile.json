@@ -9,8 +9,8 @@
       "area" : "area3",
       "isPlayer" : false,
       "position" : {
-        "x" : 168.39944,
-        "y" : 183.27556
+        "x" : 169.63713,
+        "y" : 181.24956
       },
       "equipmentItems" : [
         {
@@ -33,8 +33,8 @@
       "area" : "area3",
       "isPlayer" : false,
       "position" : {
-        "x" : 82.444115,
-        "y" : 182.81566
+        "x" : 79.5428,
+        "y" : 183.26053
       },
       "equipmentItems" : [
         {
@@ -194,8 +194,8 @@
       "area" : "area3",
       "isPlayer" : false,
       "position" : {
-        "x" : 84.73408,
-        "y" : 181.12115
+        "x" : 82.371475,
+        "y" : 182.60504
       },
       "equipmentItems" : [
       ],
@@ -262,8 +262,8 @@
       "area" : "area3",
       "isPlayer" : true,
       "position" : {
-        "x" : 19.992056,
-        "y" : 16.177359
+        "x" : 51.622604,
+        "y" : 101.53035
       },
       "equipmentItems" : [
         {
@@ -608,8 +608,8 @@
       "area" : "area3",
       "isPlayer" : false,
       "position" : {
-        "x" : 163.83449,
-        "y" : 91.87609
+        "x" : 165.22409,
+        "y" : 93.26578
       },
       "equipmentItems" : [
       ],
@@ -649,8 +649,8 @@
       "area" : "area3",
       "isPlayer" : false,
       "position" : {
-        "x" : 165.56297,
-        "y" : 183.05635
+        "x" : 164.27367,
+        "y" : 181.60269
       },
       "equipmentItems" : [
         {
@@ -697,8 +697,8 @@
       "area" : "area3",
       "isPlayer" : false,
       "position" : {
-        "x" : 84.357704,
-        "y" : 184.95433
+        "x" : 82.33744,
+        "y" : 185.45366
       },
       "equipmentItems" : [
         {
@@ -738,7 +738,7 @@
       "area" : "area3",
       "isPlayer" : false,
       "position" : {
-        "x" : 99.08587,
+        "x" : 99.08544,
         "y" : 19.575901
       },
       "equipmentItems" : [
@@ -786,7 +786,7 @@
       "area" : "area3",
       "isPlayer" : false,
       "position" : {
-        "x" : 161.30266,
+        "x" : 163.3911,
         "y" : 157.09895
       },
       "equipmentItems" : [
@@ -803,8 +803,8 @@
       "area" : "area3",
       "isPlayer" : false,
       "position" : {
-        "x" : 99.36217,
-        "y" : 63.881153
+        "x" : 99.0025,
+        "y" : 65.321434
       },
       "equipmentItems" : [
         {
@@ -933,8 +933,8 @@
       "area" : "area3",
       "isPlayer" : false,
       "position" : {
-        "x" : 167.27325,
-        "y" : 179.09308
+        "x" : 166.84164,
+        "y" : 180.01308
       },
       "equipmentItems" : [
         {
@@ -958,7 +958,7 @@
       "isPlayer" : false,
       "position" : {
         "x" : 185.0052,
-        "y" : 140.66495
+        "y" : 138.6996
       },
       "equipmentItems" : [
         {
@@ -981,7 +981,7 @@
       "area" : "area3",
       "isPlayer" : false,
       "position" : {
-        "x" : 99.0925,
+        "x" : 99.092926,
         "y" : 22.420885
       },
       "equipmentItems" : [
@@ -1046,8 +1046,8 @@
       "area" : "area3",
       "isPlayer" : false,
       "position" : {
-        "x" : 166.77705,
-        "y" : 186.19029
+        "x" : 167.07135,
+        "y" : 182.84991
       },
       "equipmentItems" : [
       ],
