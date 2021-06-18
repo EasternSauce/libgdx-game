@@ -30,8 +30,6 @@ class Area(val mapLoader: TmxMapLoader, val areaFilesLocation: String, val id: S
 
   val aStarNodeList: ListBuffer[AStarNode] = ListBuffer()
 
-  val aStarNodeWithMarginsList: ListBuffer[AStarNode] = ListBuffer()
-
   initPhysicalTerrain()
 
   createContactListener()
@@ -40,7 +38,6 @@ class Area(val mapLoader: TmxMapLoader, val areaFilesLocation: String, val id: S
   loadPLayerSpawns()
 
   setupPathfindingGraph()
-  setupPathfindingGraphWithMargins()
 
   def renderBottomLayer(): Unit = tiledMapRenderer.render(Array(0, 1))
 
@@ -172,18 +169,13 @@ class Area(val mapLoader: TmxMapLoader, val areaFilesLocation: String, val id: S
     layer.getHeight * Constants.TiledMapCellSize
   }
 
-  def resetPathfindingGraphs(): Unit = {
+  def resetPathfindingGraph(): Unit = {
     aStarNodeList.foreach(node => {
       node.f = Double.MaxValue
       node.g = Double.MaxValue
       node.parent = None
     })
 
-    aStarNodeWithMarginsList.foreach(node => {
-      node.f = Double.MaxValue
-      node.g = Double.MaxValue
-      node.parent = None
-    })
   }
 
   private def setupPathfindingGraph(): Unit = {
@@ -227,51 +219,6 @@ class Area(val mapLoader: TmxMapLoader, val areaFilesLocation: String, val id: S
         x + 1 < widthInTiles && y + 1 < heightInTiles
         && traversable(y)(x + 1) && traversable(y + 1)(x)
       ) tryAddingEdge(aStarNodes(y)(x), x + 1, y + 1, 14)
-
-    }
-  }
-
-  private def setupPathfindingGraphWithMargins(): Unit = {
-    aStarNodesWithMargins = Array.ofDim[AStarNode](heightInTiles, widthInTiles)
-    for {
-      x <- 0 until widthInTiles
-      y <- 0 until heightInTiles
-    } aStarNodesWithMargins(y)(x) = new AStarNode(x, y, "(" + x + "," + y + ")")
-
-    def tryAddingEdge(node: AStarNode, x: Int, y: Int, weight: Int): Unit = {
-      if (0 <= y && y < heightInTiles && 0 <= x && x < widthInTiles) {
-        if (traversableWithMargins(y)(x)) {
-          val targetNode = aStarNodesWithMargins(y)(x)
-          node.addEdge(weight, targetNode)
-          aStarNodeWithMarginsList += node
-        }
-      }
-    }
-
-    for {
-      x <- 0 until widthInTiles
-      y <- 0 until heightInTiles
-    } {
-      tryAddingEdge(aStarNodesWithMargins(y)(x), x - 1, y, 10) // left
-      tryAddingEdge(aStarNodesWithMargins(y)(x), x + 1, y, 10) // right
-      tryAddingEdge(aStarNodesWithMargins(y)(x), x, y - 1, 10) // bottom
-      tryAddingEdge(aStarNodesWithMargins(y)(x), x, y + 1, 10) // top
-      if (
-        x - 1 >= 0 && y - 1 >= 0
-        && traversableWithMargins(y)(x - 1) && traversableWithMargins(y - 1)(x)
-      ) tryAddingEdge(aStarNodesWithMargins(y)(x), x - 1, y - 1, 14)
-      if (
-        x + 1 < widthInTiles && y - 1 >= 0
-        && traversableWithMargins(y)(x + 1) && traversableWithMargins(y - 1)(x)
-      ) tryAddingEdge(aStarNodesWithMargins(y)(x), x + 1, y - 1, 14)
-      if (
-        x - 1 >= 0 && y + 1 < heightInTiles
-        && traversableWithMargins(y)(x - 1) && traversableWithMargins(y + 1)(x)
-      ) tryAddingEdge(aStarNodesWithMargins(y)(x), x - 1, y + 1, 14)
-      if (
-        x + 1 < widthInTiles && y + 1 < heightInTiles
-        && traversableWithMargins(y)(x + 1) && traversableWithMargins(y + 1)(x)
-      ) tryAddingEdge(aStarNodesWithMargins(y)(x), x + 1, y + 1, 14)
 
     }
   }

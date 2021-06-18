@@ -15,9 +15,7 @@ trait AggressiveAI {
   var aggroedTarget: Option[Creature] = None
   val aggroDistance = 20f
 
-  val walkUpDistance = 10f
-
-  val circleDistance = 10f
+  val walkUpDistance = 15f
 
   val aggroDropDistance = 25f
 
@@ -30,8 +28,6 @@ trait AggressiveAI {
   val recalculatePathTimer: EsTimer = EsTimer(true)
 
   var goToSpawnTime: Float = _
-
-  var pathWithMargins: ListBuffer[AStarNode] = ListBuffer()
 
   var path: ListBuffer[AStarNode] = ListBuffer()
 
@@ -66,12 +62,12 @@ trait AggressiveAI {
 
               calculatePath(area.get, otherCreature.pos)
 
-              if (pathWithMargins.length < 20 || path.length < 20) {
+              if (path.length < 20) {
                 aggroOnCreature(otherCreature)
+                path.clear()
+                aggroRecalculatePathTimer.restart()
               }
-              pathWithMargins.clear()
-              path.clear()
-              aggroRecalculatePathTimer.restart()
+
             }
           }
         })
@@ -79,14 +75,15 @@ trait AggressiveAI {
   }
 
   def calculateLineOfSight(otherCreature: Creature): Unit = {
+
     lineOfSight = Some(
       new Polygon(
         Array(
           pos.x,
           pos.y,
-          pos.x,
+          pos.x + 1f,
           pos.y + 1f,
-          otherCreature.pos.x,
+          otherCreature.pos.x + 1f,
           otherCreature.pos.y + 1f,
           otherCreature.pos.x,
           otherCreature.pos.y
@@ -170,17 +167,13 @@ trait AggressiveAI {
         }
 
         if (targetVisible && distanceTo(aggroedTarget.get) < walkUpDistance) {
-          if (circling && distanceTo(aggroedTarget.get) < circleDistance) {
+          if (circling && distanceTo(aggroedTarget.get) < attackDistance) {
             circleTarget(aggroedTarget.get.pos)
           } else if (distanceTo(aggroedTarget.get) > attackDistance) {
             walkToTarget(aggroedTarget.get.pos)
           }
         } else {
-          if (pathWithMargins.nonEmpty) {
-            val destination = area.get.getTileCenter(pathWithMargins.head.x, pathWithMargins.head.y)
-            if (destination.dst(pos) < 1f) pathWithMargins.dropInPlace(1)
-            walkToTarget(destination)
-          } else if (path.nonEmpty) {
+          if (path.nonEmpty) {
             val destination = area.get.getTileCenter(path.head.x, path.head.y)
             if (destination.dst(pos) < 1f) path.dropInPlace(1)
             walkToTarget(destination)
@@ -193,7 +186,7 @@ trait AggressiveAI {
           currentAttack.perform()
         }
 
-        if (!aggroedTarget.get.alive || pathWithMargins.size > 15 || path.size > 15) {
+        if (!aggroedTarget.get.alive || path.size > 15) {
           dropAggro()
         }
       } else {
@@ -202,13 +195,7 @@ trait AggressiveAI {
           recalculatePathTimer.restart()
           recalculatePathTimer.stop()
         }
-        if (pathWithMargins.nonEmpty) {
-          val destination = area.get.getTileCenter(pathWithMargins.head.x, pathWithMargins.head.y)
-          if (destination.dst(pos) < 2f) {
-            pathWithMargins.dropInPlace(1)
-          }
-          walkToTarget(destination)
-        } else if (path.nonEmpty) {
+        if (path.nonEmpty) {
           val destination = area.get.getTileCenter(path.head.x, path.head.y)
           if (destination.dst(pos) < 2f) {
             path.dropInPlace(1)
@@ -227,19 +214,13 @@ trait AggressiveAI {
   }
 
   def calculatePath(area: Area, target: Vector2): Unit = {
-    area.resetPathfindingGraphs()
+    area.resetPathfindingGraph()
 
     val start: Vector2 = area.getClosestTile(pos.x, pos.y)
     val end: Vector2 = area.getClosestTile(target.x, target.y)
 
     val node = AStar.aStar(area.aStarNodes(start.y.toInt)(start.x.toInt), area.aStarNodes(end.y.toInt)(end.x.toInt))
     path = ListBuffer().addAll(AStar.getPath(node))
-
-    val nodeWithMargins = AStar.aStar(
-      area.aStarNodesWithMargins(start.y.toInt)(start.x.toInt),
-      area.aStarNodesWithMargins(end.y.toInt)(end.x.toInt)
-    )
-    pathWithMargins = ListBuffer().addAll(AStar.getPath(nodeWithMargins))
 
   }
 
