@@ -9,6 +9,8 @@ import com.easternsauce.libgdxgame.spawns.PlayerSpawnPoint
 import com.easternsauce.libgdxgame.system.Assets
 import com.easternsauce.libgdxgame.util.{EsDirection, EsTimer}
 
+import scala.collection.mutable.ListBuffer
+
 abstract class Creature
     extends Sprite
     with PhysicalBody
@@ -56,6 +58,10 @@ abstract class Creature
   var sprinting = false
 
   var playerSpawnPoint: Option[PlayerSpawnPoint] = None
+
+  val recentDirections: ListBuffer[EsDirection.Value] = ListBuffer()
+
+  val updateDirectionTimer: EsTimer = EsTimer(true)
 
   def calculateFacingVector(): Unit
   def calculateWalkingVector(): Unit
@@ -139,7 +145,7 @@ abstract class Creature
 
         val vector = new Vector2(0f, 0f)
 
-        currentDirection = dirs.last
+        updateDirection(dirs.last)
 
         val modifiedSpeed =
           if (isAttacking) directionalSpeed / 3f
@@ -168,6 +174,27 @@ abstract class Creature
       }
     }
 
+  }
+
+  private def updateDirection(dir: EsDirection.Value): Unit = {
+    if (updateDirectionTimer.time > 0.01f) {
+      if (recentDirections.size > 11) {
+        recentDirections.dropInPlace(1)
+      }
+
+      if (isPlayer) {
+        println(recentDirections)
+      }
+
+      if (recentDirections.nonEmpty) {
+        currentDirection = recentDirections.groupBy(identity).view.mapValues(_.size).maxBy(_._2)._1
+      }
+
+      recentDirections += dir
+
+      updateDirectionTimer.restart()
+
+    }
   }
 
   def assignToArea(area: Area, x: Float, y: Float): Unit = {
