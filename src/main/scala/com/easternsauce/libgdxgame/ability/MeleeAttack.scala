@@ -8,7 +8,6 @@ import com.easternsauce.libgdxgame.system.{Constants, GameSystem}
 import com.easternsauce.libgdxgame.util.{EsBatch, EsPolygon}
 
 trait MeleeAttack extends Attack with PhysicalHitbox with ActiveAnimation with WindupAnimation {
-  var scale: Float
   var attackRange: Float
   var hitbox: Option[AttackHitbox] = None
   var toRemoveBody = false
