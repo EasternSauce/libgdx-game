@@ -78,6 +78,7 @@ class MainMenuScreen extends Screen {
     ("Sprint:", "Left Shift"),
     ("Attack:", "Left Mouse Button"),
     ("Inventory:", "I"),
+    ("Drop item:", "Alt"),
     ("Save:", "F5"),
     ("Menu:", "Escape"),
     ("Swap weapons:", "Tab"),

@@ -4,32 +4,24 @@ import com.badlogic.gdx.audio.Sound
 import com.easternsauce.libgdxgame.creature.Creature
 import com.easternsauce.libgdxgame.system.Assets
 
-class SwordAttack(val creature: Creature) extends MeleeAttack {
+class ThrustAttack(val creature: Creature) extends MeleeAttack {
 
-  var weaponSpeed: Float =
-    if (creature.isWeaponEquipped) creature.currentWeapon.template.weaponSpeed.get
-    else 1.0f
+  override protected val baseChannelTime = 0.6f
+  override protected val baseActiveTime = 0.275f
+  private val numOfChannelFrames = 7
+  private val numOfFrames = 11
 
-  private val baseChannelTime = 0.3f
-  private val baseActiveTime = 0.3f
-  private val numOfChannelFrames = 6
-  private val numOfFrames = 6
-
-  override protected val activeTime: Float = baseActiveTime / weaponSpeed
-  override protected val channelTime: Float = baseChannelTime / weaponSpeed
-
-  override var scale: Float = 2.0f
   override var attackRange: Float = 0.9375f
   override protected var aimed: Boolean = false
-  override protected var spriteWidth: Int = 40
-  override protected var spriteHeight: Int = 40
+  override protected var spriteWidth: Int = 64
+  override protected var spriteHeight: Int = 32
   override protected var knockbackPower: Float = 20f
-  override protected val cooldownTime: Float = 0.8f
+  override protected val cooldownTime: Float = 0.7f
 
   override protected val abilitySound: Option[Sound] = Some(Assets.sound(Assets.attackSound))
 
   setupActiveAnimation(
-    regionName = "slash",
+    regionName = "trident_thrust",
     textureWidth = spriteWidth,
     textureHeight = spriteHeight,
     animationFrameCount = numOfFrames,
@@ -37,7 +29,7 @@ class SwordAttack(val creature: Creature) extends MeleeAttack {
   )
 
   setupWindupAnimation(
-    regionName = "slash_windup",
+    regionName = "trident_thrust_windup",
     textureWidth = spriteWidth,
     textureHeight = spriteHeight,
     animationFrameCount = numOfChannelFrames,

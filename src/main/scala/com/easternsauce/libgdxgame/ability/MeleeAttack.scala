@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.math.{Polygon, Rectangle, Vector2}
 import com.easternsauce.libgdxgame.ability.traits.{ActiveAnimation, Attack, PhysicalHitbox, WindupAnimation}
 import com.easternsauce.libgdxgame.creature.Creature
-import com.easternsauce.libgdxgame.system.Constants
+import com.easternsauce.libgdxgame.system.{Constants, GameSystem}
 import com.easternsauce.libgdxgame.util.{EsBatch, EsPolygon}
 
 trait MeleeAttack extends Attack with PhysicalHitbox with ActiveAnimation with WindupAnimation {
@@ -24,6 +24,20 @@ trait MeleeAttack extends Attack with PhysicalHitbox with ActiveAnimation with W
   protected def height: Float = spriteHeight.toFloat / Constants.PPM
   protected var knockbackPower: Float
   override protected val isAttack = true
+
+  protected val baseChannelTime: Float
+  protected val baseActiveTime: Float
+
+  override protected def activeTime: Float = baseActiveTime
+  override protected def channelTime: Float = baseChannelTime / attackSpeed
+
+  def attackSpeed: Float =
+    if (creature.isWeaponEquipped) creature.currentWeapon.template.attackSpeed.get
+    else 1.4f
+
+  def attackScale: Float =
+    if (creature.isWeaponEquipped) creature.currentWeapon.template.attackScale.get
+    else 1.4f
 
   override def onActiveStart(): Unit = {
     super.onActiveStart()
@@ -52,7 +66,7 @@ trait MeleeAttack extends Attack with PhysicalHitbox with ActiveAnimation with W
     poly.setOrigin(0, height / 2)
     poly.setRotation(theta)
     poly.translate(0, -height / 2)
-    poly.setScale(scale, scale)
+    poly.setScale(attackScale, attackScale)
 
     hitbox = Some(AttackHitbox(attackRectX, attackRectY, poly))
 
@@ -79,8 +93,8 @@ trait MeleeAttack extends Attack with PhysicalHitbox with ActiveAnimation with W
           height / 2,
           width,
           height,
-          scale,
-          scale,
+          attackScale,
+          attackScale,
           theta
         )
       }
@@ -114,7 +128,7 @@ trait MeleeAttack extends Attack with PhysicalHitbox with ActiveAnimation with W
     poly.setOrigin(0, height / 2)
     poly.setRotation(theta)
     poly.translate(0, -height / 2)
-    poly.setScale(scale, scale)
+    poly.setScale(attackScale, attackScale)
 
     hitbox = Some(AttackHitbox(attackRectX, attackRectY, poly))
 
@@ -178,6 +192,12 @@ trait MeleeAttack extends Attack with PhysicalHitbox with ActiveAnimation with W
           sourceX = creature.pos.x,
           sourceY = creature.pos.y
         )
+        val random = GameSystem.randomGenerator.nextFloat()
+
+        if (creature.isWeaponEquipped && random < creature.currentWeapon.template.poisonChance.get) {
+          otherCreature.effect("poisoned").applyEffect(10f)
+          otherCreature.poisonTickTimer.restart()
+        }
       }
     }
   }

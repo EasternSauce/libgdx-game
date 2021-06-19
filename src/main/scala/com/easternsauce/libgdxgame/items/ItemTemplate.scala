@@ -16,9 +16,10 @@ class ItemTemplate(val id: String, val name: String, val description: String, va
       "worth" -> ItemParameterValue(0),
       "damage" -> ItemParameterValue(),
       "armor" -> ItemParameterValue(),
-      "weaponSpeed" -> ItemParameterValue(),
-      "poisonChance" -> ItemParameterValue(),
-      "attackType" -> ItemParameterValue()
+      "poisonChance" -> ItemParameterValue(0f),
+      "attackType" -> ItemParameterValue(),
+      "attackScale" -> ItemParameterValue(1.0f),
+      "attackSpeed" -> ItemParameterValue(1.0f)
     )
 
   def worth: Option[Int] = parameters("worth").intValue
@@ -27,13 +28,17 @@ class ItemTemplate(val id: String, val name: String, val description: String, va
 
   def damage: Option[Int] = parameters("damage").intValue
 
-  def weaponSpeed: Option[Float] = parameters("weaponSpeed").floatValue
+  def attackScale: Option[Float] = parameters("attackScale").floatValue
 
   def attackType: Option[String] = parameters("attackType").stringValue
 
   def stackable: Option[Boolean] = parameters("stackable").boolValue
 
   def consumable: Option[Boolean] = parameters("consumable").boolValue
+
+  def poisonChance: Option[Float] = parameters("poisonChance").floatValue
+
+  def attackSpeed: Option[Float] = parameters("attackSpeed").floatValue
 
   def setWorth(worth: Int): ItemTemplate = {
     parameters("worth") = ItemParameterValue(worth)
@@ -67,6 +72,18 @@ class ItemTemplate(val id: String, val name: String, val description: String, va
 
   def setAttackType(attackType: String): ItemTemplate = {
     parameters("attackType") = ItemParameterValue(attackType)
+
+    this
+  }
+
+  def setAttackScale(attackScale: Float): ItemTemplate = {
+    parameters("attackScale") = ItemParameterValue(attackScale)
+
+    this
+  }
+
+  def setAttackSpeed(attackSpeed: Float): ItemTemplate = {
+    parameters("attackSpeed") = ItemParameterValue(attackSpeed)
 
     this
   }
@@ -135,7 +152,7 @@ object ItemTemplate {
         .setEquipable(true)
         .setEquipableType("weapon")
         .setDamage(45)
-        .setAttackType("bow")
+        .setAttackType("shootArrow")
     )
 
     addItemType(
@@ -144,7 +161,9 @@ object ItemTemplate {
         .setEquipable(true)
         .setEquipableType("weapon")
         .setDamage(60)
-        .setAttackType("sword")
+        .setAttackType("slash")
+        .setAttackScale(2.4f)
+        .setAttackSpeed(0.7f)
     )
 
     addItemType(
@@ -153,7 +172,9 @@ object ItemTemplate {
         .setEquipable(true)
         .setEquipableType("weapon")
         .setDamage(45)
-        .setAttackType("sword")
+        .setAttackType("slash")
+        .setAttackScale(1.8f)
+        .setAttackSpeed(1.3f)
     )
 
     addItemType(
@@ -176,9 +197,11 @@ object ItemTemplate {
         .setWorth(500)
         .setEquipable(true)
         .setEquipableType("weapon")
-        .setDamage(40)
-        .setAttackType("sword")
-        .setPoisonChance(0.5f)
+        .setDamage(25)
+        .setAttackType("slash")
+        .setAttackSpeed(3.0f)
+        .setAttackScale(1.2f)
+        .setPoisonChance(0.35f)
     )
 
     addItemType(
@@ -196,7 +219,9 @@ object ItemTemplate {
         .setEquipable(true)
         .setEquipableType("weapon")
         .setDamage(85)
-        .setAttackType("trident")
+        .setAttackType("thrust")
+        .setAttackScale(2.0f)
+        .setAttackSpeed(1.3f)
     )
 
     addItemType(
@@ -232,12 +257,14 @@ object ItemTemplate {
     )
 
     addItemType(
-      ItemTemplate("trident", "Trident", "-", icons(5)(8))
+      ItemTemplate("demonTrident", "Trident", "-", icons(5)(8))
         .setWorth(900)
         .setEquipable(true)
         .setEquipableType("weapon")
         .setDamage(85)
-        .setAttackType("trident")
+        .setAttackType("thrust")
+        .setAttackScale(3.0f)
+        .setAttackSpeed(1.5f)
     )
 
     addItemType(

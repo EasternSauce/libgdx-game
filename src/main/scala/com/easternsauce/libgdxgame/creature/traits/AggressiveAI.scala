@@ -40,11 +40,11 @@ trait AggressiveAI {
 
   def attackDistance: Float =
     if (isWeaponEquipped) {
-      currentWeapon.template.attackType match {
-        case Some("sword")   => 6f
-        case Some("bow")     => 35f
-        case Some("trident") => 6f
-        case _               => throw new RuntimeException("Unrecognized attack type")
+      currentWeapon.template.attackType match { // TODO change for this to work per weapon
+        case Some("slash")      => 4f
+        case Some("shootArrow") => 35f
+        case Some("thrust")     => 6f
+        case _                  => throw new RuntimeException("Unrecognized attack type")
       }
     } else {
       6f

@@ -1,7 +1,7 @@
 package com.easternsauce.libgdxgame.creature.traits
 
-import com.easternsauce.libgdxgame.ability.traits.{Ability, Attack}
 import com.easternsauce.libgdxgame.ability._
+import com.easternsauce.libgdxgame.ability.traits.{Ability, Attack}
 import com.easternsauce.libgdxgame.creature.Creature
 import com.easternsauce.libgdxgame.util.EsBatch
 
@@ -14,10 +14,9 @@ trait Abilities {
   var abilityList: mutable.ListBuffer[Ability] = ListBuffer()
   var attackList: mutable.ListBuffer[Attack] = ListBuffer()
 
-  var swordAttack: SwordAttack = _
-  var unarmedAttack: UnarmedAttack = _
-  var bowAttack: BowAttack = _
-  var tridentAttack: TridentAttack = _
+  var slashAttack: SlashAttack = _
+  var shootArrowAttack: ShootArrowAttack = _
+  var thrustAttack: ThrustAttack = _
 
   var dashAbility: DashAbility = _
 
@@ -52,24 +51,23 @@ trait Abilities {
   def currentAttack: Ability = {
     if (isWeaponEquipped) {
       currentWeapon.template.attackType match {
-        case Some("sword")   => swordAttack
-        case Some("bow")     => bowAttack
-        case Some("trident") => tridentAttack
-        case _               => throw new RuntimeException("Unrecognized attack type")
+        case Some("slash")      => slashAttack
+        case Some("shootArrow") => shootArrowAttack
+        case Some("thrust")     => thrustAttack
+        case _                  => throw new RuntimeException("Unrecognized attack type")
       }
     } else {
-      unarmedAttack
+      slashAttack
     }
   }
 
   def defineStandardAbilities(): Unit = {
-    swordAttack = new SwordAttack(this)
-    unarmedAttack = new UnarmedAttack(this)
-    bowAttack = new BowAttack(this)
-    tridentAttack = new TridentAttack(this)
+    slashAttack = new SlashAttack(this)
+    shootArrowAttack = new ShootArrowAttack(this)
+    thrustAttack = new ThrustAttack(this)
     dashAbility = new DashAbility(this)
 
-    attackList += swordAttack // TODO ?
+    attackList += slashAttack // TODO ?
 
     abilityList += dashAbility
   }

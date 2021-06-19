@@ -8,6 +8,8 @@ class Wolf(val id: String) extends Enemy {
   override val creatureWidth = 2.85f
   override val creatureHeight = 2.85f
 
+  override val maxLife = 65f
+
   override val onGettingHitSound: Option[Sound] = Some(Assets.sound(Assets.dogWhineSound))
 
   setBounds(0, 0, creatureWidth, creatureHeight)

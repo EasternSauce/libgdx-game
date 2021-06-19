@@ -59,10 +59,10 @@ trait Effects {
 
   // poison
 
-  protected val poisonTickTimer: EsTimer = EsTimer()
+  val poisonTickTimer: EsTimer = EsTimer()
 
-  protected val poisonTickTime = 1.5f
-  protected val poisonTime = 20f
+  protected val poisonTickTime = 0.8f
+  protected val poisonTime = 8f
 
   def handlePoison(): Unit = {
     if (effect("poisoned").isActive) {

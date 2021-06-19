@@ -8,6 +8,8 @@ class Skeleton(val id: String) extends Enemy {
   override val creatureWidth = 2.85f
   override val creatureHeight = 2.85f
 
+  override val maxLife = 80f
+
   override val onGettingHitSound: Option[Sound] = Some(Assets.sound(Assets.boneClickSound))
 
   setBounds(0, 0, creatureWidth, creatureHeight)

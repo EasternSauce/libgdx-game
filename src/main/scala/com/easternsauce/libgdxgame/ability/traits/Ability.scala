@@ -14,8 +14,8 @@ trait Ability {
   protected val activeTimer: EsTimer = EsTimer()
   protected val channelTimer: EsTimer = EsTimer()
   protected val cooldownTime: Float
-  protected val activeTime: Float
-  protected val channelTime: Float
+  protected def activeTime: Float
+  protected def channelTime: Float
   protected val isAttack = false
 
   protected val abilitySound: Option[Sound] = None

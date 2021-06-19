@@ -8,7 +8,7 @@ import com.easternsauce.libgdxgame.util.{EsBatch, EsTimer}
 trait Life {
   this: Creature =>
 
-  var maxLife = 100f
+  val maxLife = 100f
   var life: Float = maxLife
 
   protected val lifeRegenerationTimer: EsTimer = EsTimer(true)

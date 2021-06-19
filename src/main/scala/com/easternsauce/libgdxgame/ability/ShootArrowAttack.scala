@@ -10,10 +10,10 @@ import com.easternsauce.libgdxgame.system.Assets
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
 
-class BowAttack(val creature: Creature) extends Attack {
+class ShootArrowAttack(val creature: Creature) extends Attack {
 
-  override protected val channelTime: Float = 0.85f
-  override protected val activeTime: Float = 0.1f
+  override protected def channelTime: Float = 0.85f
+  override protected def activeTime: Float = 0.1f
   override protected val cooldownTime = 0.8f
 
   override def onChannellingStart(): Unit = {
