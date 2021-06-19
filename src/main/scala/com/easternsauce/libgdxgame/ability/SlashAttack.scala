@@ -6,6 +6,8 @@ import com.easternsauce.libgdxgame.system.Assets
 
 class SlashAttack(val creature: Creature) extends MeleeAttack {
 
+  override val id: String = "slash"
+
   override protected val baseChannelTime = 0.3f
   override protected val baseActiveTime = 0.3f
   private val numOfChannelFrames = 6

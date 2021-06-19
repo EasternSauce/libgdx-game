@@ -7,6 +7,7 @@ import com.easternsauce.libgdxgame.creature.Creature
 import com.easternsauce.libgdxgame.util.{EsBatch, EsTimer}
 
 trait Ability {
+  val id: String
   val creature: Creature
   protected val isStoppable: Boolean = true
   var state: AbilityState = Inactive

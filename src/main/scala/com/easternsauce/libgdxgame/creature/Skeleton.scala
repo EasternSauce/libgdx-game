@@ -12,9 +12,6 @@ class Skeleton(val id: String) extends Enemy {
 
   override val onGettingHitSound: Option[Sound] = Some(Assets.sound(Assets.boneClickSound))
 
-  setBounds(0, 0, creatureWidth, creatureHeight)
-  setOrigin(creatureWidth / 2f, creatureHeight / 2f)
-
   setupAnimation(
     regionName = "skeleton",
     textureWidth = 64,
@@ -25,11 +22,7 @@ class Skeleton(val id: String) extends Enemy {
     dirMap = Map(EsDirection.Up -> 0, EsDirection.Down -> 2, EsDirection.Left -> 1, EsDirection.Right -> 3)
   )
 
-  defineEffects()
-
-  defineStandardAbilities()
-
-  setRegion(standStillImage(currentDirection))
+  initCreature()
 
   dropTable.addAll(
     List(

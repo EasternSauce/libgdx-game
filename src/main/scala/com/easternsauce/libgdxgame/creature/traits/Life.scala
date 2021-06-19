@@ -9,7 +9,7 @@ trait Life {
   this: Creature =>
 
   val maxLife = 100f
-  var life: Float = maxLife
+  var life: Float = _
 
   protected val lifeRegenerationTimer: EsTimer = EsTimer(true)
   protected val healingTimer: EsTimer = EsTimer()

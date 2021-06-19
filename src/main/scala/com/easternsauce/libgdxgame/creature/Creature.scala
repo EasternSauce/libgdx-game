@@ -86,7 +86,7 @@ abstract class Creature
 
     updateEffects()
 
-    for (ability <- abilityList) {
+    for (ability <- abilityMap.values) {
       ability.update()
     }
 
@@ -121,7 +121,7 @@ abstract class Creature
     isMoving = false
     if (walkSound.nonEmpty) walkSound.get.stop()
 
-    for (ability <- abilityList) {
+    for (ability <- abilityMap.values) {
       ability.forceStop()
     }
     currentAttack.forceStop()
@@ -215,4 +215,17 @@ abstract class Creature
 
   }
 
+
+  def initCreature(): Unit = {
+    setBounds(0, 0, creatureWidth, creatureHeight)
+    setOrigin(creatureWidth / 2f, creatureHeight / 2f)
+
+    defineEffects()
+
+    defineStandardAbilities()
+
+    setRegion(standStillImage(currentDirection))
+
+    life = maxLife
+  }
 }

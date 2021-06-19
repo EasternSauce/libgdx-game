@@ -6,19 +6,16 @@ import com.easternsauce.libgdxgame.creature.Creature
 import com.easternsauce.libgdxgame.util.EsBatch
 
 import scala.collection.mutable
-import scala.collection.mutable.ListBuffer
 
 trait Abilities {
   this: Creature =>
 
-  var abilityList: mutable.ListBuffer[Ability] = ListBuffer()
-  var attackList: mutable.ListBuffer[Attack] = ListBuffer()
+  var abilityMap: mutable.Map[String, Ability] = mutable.Map()
+  var attackMap: mutable.Map[String, Attack] = mutable.Map()
 
   var slashAttack: SlashAttack = _
   var shootArrowAttack: ShootArrowAttack = _
   var thrustAttack: ThrustAttack = _
-
-  var dashAbility: DashAbility = _
 
   var isAttacking = false
 
@@ -27,7 +24,7 @@ trait Abilities {
   def weaponDamage: Float = if (equipmentItems.contains(0)) equipmentItems(0).damage.get.toFloat else unarmedDamage
 
   def renderAbilities(batch: EsBatch): Unit = {
-    for (ability <- abilityList) {
+    for (ability <- abilityMap.values) {
       ability.render(batch)
     }
     currentAttack.render(batch)
@@ -36,7 +33,7 @@ trait Abilities {
   def abilityActive: Boolean = {
     var abilityActive = false
 
-    for (ability <- abilityList) {
+    for (ability <- abilityMap.values) {
       if (!abilityActive && ability.active) {
         abilityActive = true
 
@@ -65,11 +62,13 @@ trait Abilities {
     slashAttack = new SlashAttack(this)
     shootArrowAttack = new ShootArrowAttack(this)
     thrustAttack = new ThrustAttack(this)
-    dashAbility = new DashAbility(this)
 
-    attackList += slashAttack // TODO ?
+    attackMap += (slashAttack.id -> slashAttack)
+    attackMap += (shootArrowAttack.id -> shootArrowAttack)
+    attackMap += (thrustAttack.id -> thrustAttack)
 
-    abilityList += dashAbility
+    // TODO ?
+
   }
 
 }

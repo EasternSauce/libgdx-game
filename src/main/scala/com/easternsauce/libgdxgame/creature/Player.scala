@@ -3,6 +3,7 @@ package com.easternsauce.libgdxgame.creature
 import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.{Gdx, Input}
+import com.easternsauce.libgdxgame.ability.DashAbility
 import com.easternsauce.libgdxgame.items.Item
 import com.easternsauce.libgdxgame.system.Assets
 import com.easternsauce.libgdxgame.util.{EsDirection, EsTimer}
@@ -17,6 +18,8 @@ class Player(val id: String) extends Creature {
   override val onGettingHitSound: Option[Sound] = Some(Assets.sound(Assets.painSound))
 
   override val walkSound: Option[Sound] = Some(Assets.sound(Assets.runningSound))
+
+  var dashAbility: DashAbility = _
 
   var onSpawnPointId: Option[String] = None
 
@@ -39,6 +42,9 @@ class Player(val id: String) extends Creature {
   defineEffects()
 
   defineStandardAbilities()
+
+  dashAbility = DashAbility(this)
+  abilityMap += (dashAbility.id -> dashAbility)
 
   setRegion(standStillImage(currentDirection))
 

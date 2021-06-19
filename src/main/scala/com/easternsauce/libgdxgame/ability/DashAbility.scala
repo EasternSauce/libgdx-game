@@ -6,6 +6,9 @@ import com.easternsauce.libgdxgame.creature.Creature
 import com.easternsauce.libgdxgame.system.Assets
 
 class DashAbility(val creature: Creature) extends Ability {
+
+  override val id: String = "dash"
+
   override protected val cooldownTime: Float = 1.5f
   override protected def activeTime: Float = 0.2f
   protected var dashVector: Vector2 = new Vector2(0f, 0f)

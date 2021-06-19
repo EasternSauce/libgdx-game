@@ -1,6 +1,7 @@
 package com.easternsauce.libgdxgame.creature.traits
 
 import com.badlogic.gdx.math.{Intersector, Polygon, Vector2}
+import com.easternsauce.libgdxgame.ability.traits.Ability
 import com.easternsauce.libgdxgame.area.Area
 import com.easternsauce.libgdxgame.creature.{Creature, Enemy}
 import com.easternsauce.libgdxgame.pathfinding.{AStar, AStarNode}
@@ -8,6 +9,7 @@ import com.easternsauce.libgdxgame.system.GameSystem
 import com.easternsauce.libgdxgame.system.GameSystem._
 import com.easternsauce.libgdxgame.util.{EsDirection, EsTimer}
 
+import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
 
 trait AggressiveAI {
@@ -35,6 +37,10 @@ trait AggressiveAI {
   var lineOfSight: Option[Polygon] = None
 
   var targetVisible = false
+
+  protected val abilityUsages: mutable.Map[String, AbilityUsage] = mutable.Map()
+
+  val useAbilityTimer: EsTimer = EsTimer()
 
   def targetFound: Boolean = aggroedTarget.nonEmpty
 
@@ -103,6 +109,7 @@ trait AggressiveAI {
     circlingDecisionTimer.restart()
     recalculatePathTimer.restart()
     calculatePath(area.get, aggroedTarget.get.pos)
+    useAbilityTimer.restart()
 
   }
 
@@ -165,6 +172,15 @@ trait AggressiveAI {
           calculateLineOfSight(aggroedTarget.get)
           calculatePath(area.get, aggroedTarget.get.pos)
           recalculatePathTimer.restart()
+        }
+
+        if (useAbilityTimer.time > 1f + 2f * GameSystem.randomGenerator.nextFloat()) {
+          if (abilityUsages.nonEmpty) {
+            val pickedAbility = pickAbilityToUse()
+            pickedAbility.perform()
+          }
+
+          useAbilityTimer.restart()
         }
 
         if (targetVisible && distanceTo(aggroedTarget.get) < walkUpDistance) {
@@ -239,4 +255,21 @@ trait AggressiveAI {
 
   }
 
+  def pickAbilityToUse(): Ability = {
+    var completeWeight = 0.0f
+    for (abilityUsage <- abilityUsages.values) {
+      completeWeight += abilityUsage.weight
+    }
+    val r = Math.random * completeWeight
+    var countWeight = 0.0
+    for (abilityUsage <- abilityUsages) {
+      val (key, value) = abilityUsage
+      countWeight += value.weight
+      if (countWeight > r) return abilityMap(key)
+    }
+    throw new RuntimeException("Should never reach here.")
+  }
+
 }
+
+case class AbilityUsage(weight: Float, distanceToTarget: Float)

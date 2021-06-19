@@ -12,9 +12,6 @@ class Ghost(val id: String) extends Enemy {
 
   override val onGettingHitSound: Option[Sound] = Some(Assets.sound(Assets.evilYellingSound))
 
-  setBounds(0, 0, creatureWidth, creatureHeight)
-  setOrigin(creatureWidth / 2f, creatureHeight / 2f)
-
   setupAnimation(
     regionName = "ghost",
     textureWidth = 32,
@@ -25,11 +22,7 @@ class Ghost(val id: String) extends Enemy {
     dirMap = Map(EsDirection.Up -> 3, EsDirection.Down -> 0, EsDirection.Left -> 1, EsDirection.Right -> 2)
   )
 
-  defineEffects()
-
-  defineStandardAbilities()
-
-  setRegion(standStillImage(currentDirection))
+  initCreature()
 
   dropTable.addAll(
     List(

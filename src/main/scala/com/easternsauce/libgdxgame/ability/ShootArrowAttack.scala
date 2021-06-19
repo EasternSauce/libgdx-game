@@ -12,6 +12,8 @@ import scala.collection.mutable.ListBuffer
 
 class ShootArrowAttack(val creature: Creature) extends Attack {
 
+  override val id: String = "shootArrow"
+
   override protected def channelTime: Float = 0.85f
   override protected def activeTime: Float = 0.1f
   override protected val cooldownTime = 0.8f

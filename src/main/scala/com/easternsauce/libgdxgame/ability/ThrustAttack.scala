@@ -6,6 +6,8 @@ import com.easternsauce.libgdxgame.system.Assets
 
 class ThrustAttack(val creature: Creature) extends MeleeAttack {
 
+  override val id: String = "thrust"
+
   override protected val baseChannelTime = 0.6f
   override protected val baseActiveTime = 0.275f
   private val numOfChannelFrames = 7

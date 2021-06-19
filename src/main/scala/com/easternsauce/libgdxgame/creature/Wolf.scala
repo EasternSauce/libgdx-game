@@ -1,6 +1,8 @@
 package com.easternsauce.libgdxgame.creature
 
 import com.badlogic.gdx.audio.Sound
+import com.easternsauce.libgdxgame.ability.DashAbility
+import com.easternsauce.libgdxgame.creature.traits.AbilityUsage
 import com.easternsauce.libgdxgame.system.Assets
 import com.easternsauce.libgdxgame.util.EsDirection
 
@@ -12,8 +14,7 @@ class Wolf(val id: String) extends Enemy {
 
   override val onGettingHitSound: Option[Sound] = Some(Assets.sound(Assets.dogWhineSound))
 
-  setBounds(0, 0, creatureWidth, creatureHeight)
-  setOrigin(creatureWidth / 2f, creatureHeight / 2f)
+  var dashAbility: DashAbility = _
 
   setupAnimation(
     regionName = "wolf2",
@@ -25,11 +26,10 @@ class Wolf(val id: String) extends Enemy {
     dirMap = Map(EsDirection.Up -> 3, EsDirection.Down -> 0, EsDirection.Left -> 1, EsDirection.Right -> 2)
   )
 
-  defineEffects()
+  initCreature()
 
-  defineStandardAbilities()
-
-  setRegion(standStillImage(currentDirection))
+  dashAbility = DashAbility(this)
+  abilityMap += (dashAbility.id -> dashAbility)
 
   dropTable.addAll(
     List(
@@ -40,5 +40,7 @@ class Wolf(val id: String) extends Enemy {
       "healingPowder" -> 0.5f
     )
   )
+
+  abilityUsages.addAll(List("dash" -> AbilityUsage(100f, 8f)))
 
 }
