@@ -45,8 +45,6 @@ trait MeleeAttack extends Attack with PhysicalHitbox with ActiveAnimation with W
 
     creature.takeStaminaDamage(15f)
 
-    if (abilitySound.nonEmpty) abilitySound.get.play(0.1f)
-
     var attackVector = creature.attackVector
     val theta = new Vector2(attackVector.x, attackVector.y).angleDeg()
 
@@ -105,6 +103,8 @@ trait MeleeAttack extends Attack with PhysicalHitbox with ActiveAnimation with W
   }
 
   override def onChannellingStart(): Unit = {
+    super.onChannellingStart()
+
     creature.attackVector = creature.facingVector.cpy()
     abilityWindupAnimationTimer.restart()
     creature.isAttacking = true
@@ -136,8 +136,8 @@ trait MeleeAttack extends Attack with PhysicalHitbox with ActiveAnimation with W
   override def update(): Unit = {
     super.update()
 
-    if (b2body.nonEmpty && toRemoveBody) {
-      b2body.get.getWorld.destroyBody(b2body.get)
+    if (b2Body.nonEmpty && toRemoveBody) {
+      b2Body.get.getWorld.destroyBody(b2Body.get)
       toRemoveBody = false
       bodyActive = false
     }
@@ -161,7 +161,7 @@ trait MeleeAttack extends Attack with PhysicalHitbox with ActiveAnimation with W
       hitbox.get.y = attackShiftY + creature.pos.y
 
       if (bodyActive) {
-        b2body.get.setTransform(hitbox.get.x, hitbox.get.y, 0f)
+        b2Body.get.setTransform(hitbox.get.x, hitbox.get.y, 0f)
       }
     }
 

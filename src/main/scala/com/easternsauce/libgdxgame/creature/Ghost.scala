@@ -1,6 +1,8 @@
 package com.easternsauce.libgdxgame.creature
 
 import com.badlogic.gdx.audio.Sound
+import com.easternsauce.libgdxgame.ability.ExplodeAbility
+import com.easternsauce.libgdxgame.creature.traits.AbilityUsage
 import com.easternsauce.libgdxgame.system.Assets
 import com.easternsauce.libgdxgame.util.EsDirection
 
@@ -11,6 +13,8 @@ class Ghost(val id: String) extends Enemy {
   override val maxLife = 160f
 
   override val onGettingHitSound: Option[Sound] = Some(Assets.sound(Assets.evilYellingSound))
+
+  var explodeAbility: ExplodeAbility = _
 
   setupAnimation(
     regionName = "ghost",
@@ -24,6 +28,13 @@ class Ghost(val id: String) extends Enemy {
 
   initCreature()
 
+  explodeAbility = new ExplodeAbility(this)
+  explodeAbility.channelSound = Some(Assets.sound(Assets.darkLaughSound))
+  explodeAbility.channelSoundVolume = Some(0.3f)
+  explodeAbility.activeSound = Some(Assets.sound(Assets.explosionSound))
+  explodeAbility.activeSoundVolume = Some(0.7f)
+  abilityMap += (explodeAbility.id -> explodeAbility)
+
   dropTable.addAll(
     List(
       "ironSword" -> 0.03f,
@@ -35,5 +46,7 @@ class Ghost(val id: String) extends Enemy {
       "steelHelmet" -> 0.05f
     )
   )
+
+  abilityUsages.addAll(List("explode" -> AbilityUsage(100f, 6f, 0.5f)))
 
 }

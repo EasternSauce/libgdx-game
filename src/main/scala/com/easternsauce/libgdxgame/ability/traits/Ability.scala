@@ -19,11 +19,16 @@ trait Ability {
   protected def channelTime: Float
   protected val isAttack = false
 
-  protected val abilitySound: Option[Sound] = None
+  var channelSound: Option[Sound] = None
+  var channelSoundVolume: Option[Float] = None
+  var activeSound: Option[Sound] = None
+  var activeSoundVolume: Option[Float] = None
 
   def updateHitbox(): Unit = {}
 
-  protected def onActiveStart(): Unit = {}
+  protected def onActiveStart(): Unit = {
+    if (activeSound.nonEmpty) activeSound.get.play(activeSoundVolume.get)
+  }
 
   protected def onUpdateActive(): Unit = {}
 
@@ -79,7 +84,12 @@ trait Ability {
       if (activeTimer.time > cooldownTime) onCooldown = false
   }
 
-  def onChannellingStart(): Unit = {}
+  def onChannellingStart(): Unit = {
+    if (channelSound.nonEmpty) {
+      channelSound.get.play(channelSoundVolume.get)
+    }
+
+  }
 
   def active: Boolean = {
     state == AbilityState.Active

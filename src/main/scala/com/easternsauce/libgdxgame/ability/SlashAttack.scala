@@ -1,6 +1,5 @@
 package com.easternsauce.libgdxgame.ability
 
-import com.badlogic.gdx.audio.Sound
 import com.easternsauce.libgdxgame.creature.Creature
 import com.easternsauce.libgdxgame.system.Assets
 
@@ -20,7 +19,8 @@ class SlashAttack(val creature: Creature) extends MeleeAttack {
   override protected var knockbackPower: Float = 20f
   override protected val cooldownTime: Float = 0.8f
 
-  override protected val abilitySound: Option[Sound] = Some(Assets.sound(Assets.attackSound))
+  activeSound = Some(Assets.sound(Assets.attackSound))
+  activeSoundVolume = Some(0.1f)
 
   setupActiveAnimation(
     regionName = "slash",

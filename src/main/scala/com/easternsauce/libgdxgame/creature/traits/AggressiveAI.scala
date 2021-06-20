@@ -180,7 +180,10 @@ trait AggressiveAI {
         if (useAbilityTimer.time > useAbilityTimeout) {
           if (abilityUsages.nonEmpty) {
             val pickedAbility = pickAbilityToUse()
-            pickedAbility.perform()
+
+            if (life / maxLife < abilityUsages(pickedAbility.id).lifeThreshold) {
+              pickedAbility.perform()
+            }
           }
 
           useAbilityTimeout = 1f + 2f * GameSystem.randomGenerator.nextFloat()
@@ -276,4 +279,4 @@ trait AggressiveAI {
 
 }
 
-case class AbilityUsage(weight: Float, distanceToTarget: Float)
+case class AbilityUsage(weight: Float, distanceToTarget: Float, lifeThreshold: Float = 1.0f)
