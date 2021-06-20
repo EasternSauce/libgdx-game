@@ -38,7 +38,7 @@ trait Life {
     damage: Float,
     immunityFrames: Boolean,
     dealtBy: Option[Creature] = None,
-    knockbackPower: Float = 0,
+    attackKnockbackVelocity: Float = 0,
     sourceX: Float = 0,
     sourceY: Float = 0
   ): Unit = {
@@ -60,8 +60,10 @@ trait Life {
 
       if (knockbackable) {
         knockbackVector = new Vector2(pos.x - sourceX, pos.y - sourceY).nor()
-        knockbackSpeed = knockbackPower
-        effect("knockedBack").applyEffect(0.15f)
+        if (attackKnockbackVelocity > 0f) {
+          knockbackVelocity = attackKnockbackVelocity
+          effect("knockedBack").applyEffect(0.15f)
+        }
       }
 
       if (onGettingHitSound.nonEmpty) onGettingHitSound.get.play(0.1f)

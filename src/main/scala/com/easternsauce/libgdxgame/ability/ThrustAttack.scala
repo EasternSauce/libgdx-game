@@ -16,7 +16,7 @@ class ThrustAttack(val creature: Creature) extends MeleeAttack {
   override protected var aimed: Boolean = false
   override protected var spriteWidth: Int = 64
   override protected var spriteHeight: Int = 32
-  override protected var knockbackPower: Float = 20f
+  override protected var knockbackVelocity: Float = 20f
   override protected val cooldownTime: Float = 0.7f
 
   activeSound = Some(Assets.sound(Assets.attackSound))

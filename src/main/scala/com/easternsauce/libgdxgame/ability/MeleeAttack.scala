@@ -21,7 +21,7 @@ trait MeleeAttack extends Attack with PhysicalHitbox with ActiveAnimation with W
   protected var spriteHeight: Int
   protected def width: Float = spriteWidth.toFloat / Constants.PPM
   protected def height: Float = spriteHeight.toFloat / Constants.PPM
-  protected var knockbackPower: Float
+  protected var knockbackVelocity: Float
   override protected val isAttack = true
 
   protected val baseChannelTime: Float
@@ -187,7 +187,7 @@ trait MeleeAttack extends Attack with PhysicalHitbox with ActiveAnimation with W
           damage = creature.weaponDamage,
           immunityFrames = true,
           dealtBy = Some(creature),
-          knockbackPower = knockbackPower,
+          attackKnockbackVelocity = knockbackVelocity,
           sourceX = creature.pos.x,
           sourceY = creature.pos.y
         )

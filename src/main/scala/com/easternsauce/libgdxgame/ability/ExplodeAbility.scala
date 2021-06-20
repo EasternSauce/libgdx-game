@@ -79,7 +79,6 @@ class ExplodeAbility(val creature: Creature) extends Ability with ActiveAnimatio
     }
 
     if (state == AbilityState.Active) {
-      println("rendering")
       renderFrame(currentActiveAnimationFrame)
     }
 

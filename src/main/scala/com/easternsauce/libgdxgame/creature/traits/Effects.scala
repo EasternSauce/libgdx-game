@@ -48,12 +48,11 @@ trait Effects {
   val knockbackable = true
   var knockbackVector = new Vector2(0f, 0f)
 
-  protected var knockbackSpeed: Float = 0f
-  protected val knockbackPower = 0f
+  protected var knockbackVelocity: Float = 0f
 
   def handleKnockback(): Unit = {
     if (effect("knockedBack").isActive) {
-      sustainVelocity(new Vector2(knockbackVector.x * knockbackSpeed, knockbackVector.y * knockbackSpeed))
+      sustainVelocity(new Vector2(knockbackVector.x * knockbackVelocity, knockbackVector.y * knockbackVelocity))
     }
   }
 
@@ -67,7 +66,8 @@ trait Effects {
   def handlePoison(): Unit = {
     if (effect("poisoned").isActive) {
       if (poisonTickTimer.time > poisonTickTime) {
-        takeLifeDamage(15f, immunityFrames = false)
+        val poisonDamage = 10f
+        takeLifeDamage(poisonDamage, immunityFrames = false)
         poisonTickTimer.restart()
       }
     }
