@@ -10,12 +10,11 @@ class Wolf(val id: String) extends Enemy {
   override val creatureWidth = 2.85f
   override val creatureHeight = 2.85f
 
-  override val maxLife = 65f
+  override val maxLife = 110f
 
   override val onGettingHitSound: Option[Sound] = Some(Assets.sound(Assets.dogWhineSound))
 
   override val activeSound: Option[Sound] = Some(Assets.sound(Assets.dogBarkSound))
-
 
   var dashAbility: DashAbility = _
 

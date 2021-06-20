@@ -13,7 +13,7 @@ trait Stamina {
   protected val staminaRegenerationTimer: EsTimer = EsTimer(true)
   protected val staminaOveruseTimer: EsTimer = EsTimer()
 
-  protected val staminaRegeneration = 0.3f
+  protected val staminaRegeneration = 0.8f
 
   var staminaOveruse = false
   protected val staminaOveruseTime = 1.3f

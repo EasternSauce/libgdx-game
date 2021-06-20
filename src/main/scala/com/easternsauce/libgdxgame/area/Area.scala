@@ -66,12 +66,13 @@ class Area(val mapLoader: TmxMapLoader, val areaFilesLocation: String, val id: S
 
   }
 
-  def render(batch: EsBatch): Unit = {
-    playerSpawns.foreach(_.draw(batch.spriteBatch))
-
+  def renderLootPiles(batch: EsBatch): Unit = {
     lootPileList.foreach(_.draw(batch.spriteBatch))
+  }
 
+  def renderAiDebug(batch: EsBatch): Unit = {
     if (debugMode) {
+
       for (creature <- creaturesMap.values.filter(_.isEnemy)) {
         val enemy = creature.asInstanceOf[Enemy]
 
@@ -91,9 +92,11 @@ class Area(val mapLoader: TmxMapLoader, val areaFilesLocation: String, val id: S
           batch.shapeDrawer.filledPolygon(enemy.lineOfSight.get)
         }
       }
-
     }
+  }
 
+  def renderPlayerSpawns(batch: EsBatch): Unit = {
+    playerSpawns.foreach(_.draw(batch.spriteBatch))
   }
 
   def renderCreatureLifeBars(batch: EsBatch): Unit = {

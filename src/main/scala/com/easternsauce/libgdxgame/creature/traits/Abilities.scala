@@ -19,7 +19,7 @@ trait Abilities {
 
   var isAttacking = false
 
-  var unarmedDamage = 15f
+  var unarmedDamage = 30f
 
   def weaponDamage: Float = if (equipmentItems.contains(0)) equipmentItems(0).damage.get.toFloat else unarmedDamage
 

@@ -3,7 +3,7 @@ package com.easternsauce.libgdxgame.screens
 import com.badlogic.gdx.graphics.{Color, GL20}
 import com.badlogic.gdx.{Gdx, Input, Screen}
 import com.easternsauce.libgdxgame.system.GameSystem._
-import com.easternsauce.libgdxgame.system.{Constants, Fonts}
+import com.easternsauce.libgdxgame.system.{Constants, Fonts, GameSystem}
 import com.easternsauce.libgdxgame.util.EsBatch
 
 class MainMenuScreen extends Screen {
@@ -164,7 +164,7 @@ class MainMenuScreen extends Screen {
       case MenuAction.PreviousMenu =>
         if (previousNode.nonEmpty) currentNode = previousNode.get
       case MenuAction.NewGame =>
-        savefileManager.loadGame() // TODO: new game instead of loading save
+        GameSystem.setupNewGame()
         setScreen(playScreen)
       case MenuAction.LoadGame =>
         savefileManager.loadGame()

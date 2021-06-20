@@ -12,7 +12,7 @@ import com.easternsauce.libgdxgame.util.{EsDirection, EsTimer}
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
 
-trait AggressiveAI {
+trait AggressiveAi {
   this: Enemy =>
 
   var aggroedTarget: Option[Creature] = None
@@ -85,15 +85,16 @@ trait AggressiveAI {
 
   def calculateLineOfSight(otherCreature: Creature): Unit = {
 
+    val lineWidth = 1f
     lineOfSight = Some(
       new Polygon(
         Array(
           pos.x,
           pos.y,
-          pos.x + 1f,
-          pos.y + 1f,
-          otherCreature.pos.x + 1f,
-          otherCreature.pos.y + 1f,
+          pos.x + lineWidth,
+          pos.y + lineWidth,
+          otherCreature.pos.x + lineWidth,
+          otherCreature.pos.y + lineWidth,
           otherCreature.pos.x,
           otherCreature.pos.y
         )

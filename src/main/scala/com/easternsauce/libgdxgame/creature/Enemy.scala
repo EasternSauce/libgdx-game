@@ -2,13 +2,13 @@ package com.easternsauce.libgdxgame.creature
 
 import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.math.Vector2
-import com.easternsauce.libgdxgame.creature.traits.AggressiveAI
+import com.easternsauce.libgdxgame.creature.traits.AggressiveAi
 import com.easternsauce.libgdxgame.system.GameSystem
 import com.easternsauce.libgdxgame.util.EsTimer
 
 import scala.collection.mutable
 
-abstract class Enemy extends Creature with AggressiveAI {
+abstract class Enemy extends Creature with AggressiveAi {
   override val isEnemy: Boolean = true
 
   val activeSoundTimer: EsTimer = EsTimer()
@@ -47,12 +47,12 @@ abstract class Enemy extends Creature with AggressiveAI {
   }
 
   override def takeLifeDamage(
-                               damage: Float,
-                               immunityFrames: Boolean,
-                               dealtBy: Option[Creature] = None,
-                               attackKnockbackVelocity: Float = 0,
-                               sourceX: Float = 0,
-                               sourceY: Float = 0
+    damage: Float,
+    immunityFrames: Boolean,
+    dealtBy: Option[Creature] = None,
+    attackKnockbackVelocity: Float = 0,
+    sourceX: Float = 0,
+    sourceY: Float = 0
   ): Unit = {
     super.takeLifeDamage(damage, immunityFrames, dealtBy, attackKnockbackVelocity, sourceX, sourceY)
 

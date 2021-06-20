@@ -8,7 +8,7 @@ import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer
 import com.badlogic.gdx.utils.viewport.{FitViewport, Viewport}
 import com.badlogic.gdx.{Game, Gdx, Input}
 import com.easternsauce.libgdxgame.area.{Area, AreaGate}
-import com.easternsauce.libgdxgame.creature.{Creature, Player, Skeleton, Wolf}
+import com.easternsauce.libgdxgame.creature.{Creature, Player}
 import com.easternsauce.libgdxgame.hud.{InventoryWindow, LootPickupMenu, NotificationText, PlayerInfoHud}
 import com.easternsauce.libgdxgame.items.ItemTemplate
 import com.easternsauce.libgdxgame.saving.SavefileManager
@@ -98,20 +98,6 @@ object GameSystem extends Game {
 
   }
 
-  def loadCreatures(): Unit = {
-
-    val creature = new Player("player")
-    val skeleton = new Skeleton("skellie")
-    val wolf = new Wolf("wolf")
-
-    allAreaCreaturesMap = mutable.Map()
-    allAreaCreaturesMap += (creature.id -> creature)
-    allAreaCreaturesMap += (skeleton.id -> skeleton)
-    allAreaCreaturesMap += (wolf.id -> wolf)
-
-    setPlayer(creature)
-  }
-
   def setPlayer(creature: Creature): Unit = {
     if (!creature.isPlayer) throw new RuntimeException("creature is not a player")
     player = creature.asInstanceOf[Player]
@@ -119,13 +105,6 @@ object GameSystem extends Game {
     lifeStaminaBar = new PlayerInfoHud()
 
     currentArea = player.area
-  }
-
-  def assignCreaturesToAreas(): Unit = {
-    allAreaCreaturesMap("player").assignToArea(areaMap("area1"), 30, 30)
-    allAreaCreaturesMap("skellie").assignToArea(areaMap("area3"), 34, 42)
-    allAreaCreaturesMap("wolf").assignToArea(areaMap("area1"), 34, 42)
-
   }
 
   private def loadAreas(): Unit = {
@@ -224,6 +203,26 @@ object GameSystem extends Game {
 
       creaturesToMove.clear()
     }
+  }
+
+  def setupNewGame(): Unit = {
+    val creature = new Player("player")
+
+    // TODO: npcs?
+
+    allAreaCreaturesMap = mutable.Map()
+    allAreaCreaturesMap += (creature.id -> creature)
+
+    setPlayer(creature)
+
+    allAreaCreaturesMap("player").assignToArea(areaMap("area1"), 82f, 194f)
+
+    player.playerSpawnPoint = Some(areaMap("area1").playerSpawns.head)
+
+    currentArea = Some(areaMap("area1"))
+
+    areaMap("area1").reset()
+
   }
 
 }

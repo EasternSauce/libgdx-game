@@ -82,7 +82,7 @@ trait Inventory {
   def useItem(item: Item): Unit = {
     item.template.id match {
       case "healingPowder" =>
-        startHealing(0.14f)
+        startHealing(0.7f)
         onItemConsumeSound.play(0.5f)
     }
   }

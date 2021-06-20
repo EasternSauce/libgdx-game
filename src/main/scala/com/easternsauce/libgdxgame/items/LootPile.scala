@@ -1,7 +1,7 @@
 package com.easternsauce.libgdxgame.items
 
 import com.badlogic.gdx.graphics.g2d.Sprite
-import com.badlogic.gdx.physics.box2d.{Body, BodyDef, CircleShape, FixtureDef, World}
+import com.badlogic.gdx.physics.box2d._
 import com.easternsauce.libgdxgame.area.Area
 import com.easternsauce.libgdxgame.system.Assets
 

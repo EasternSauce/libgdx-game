@@ -56,9 +56,13 @@ class PlayScreen() extends Screen {
 
     for (areaGate <- gateList) areaGate.render(worldBatch)
 
-    currentArea.get.render(worldBatch)
+    currentArea.get.renderPlayerSpawns(worldBatch)
+
+    currentArea.get.renderAiDebug(worldBatch)
 
     currentArea.get.renderDeadCreatures(worldBatch)
+
+    currentArea.get.renderLootPiles(worldBatch)
 
     currentArea.get.renderAliveCreatures(worldBatch)
 

@@ -1,7 +1,5 @@
 package com.easternsauce.libgdxgame.saving
 
-import java.io.{File, PrintWriter}
-
 import com.easternsauce.libgdxgame.creature.Creature
 import com.easternsauce.libgdxgame.system.GameSystem._
 import io.circe.generic.semiauto._
@@ -9,6 +7,7 @@ import io.circe.parser._
 import io.circe.syntax.EncoderOps
 import io.circe.{Decoder, Encoder}
 
+import java.io.{File, PrintWriter}
 import scala.collection.mutable
 
 class SavefileManager {

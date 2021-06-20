@@ -8,7 +8,7 @@ class Goblin(val id: String) extends Enemy {
   override val creatureWidth = 2.85f
   override val creatureHeight = 2.85f
 
-  override val maxLife = 120f
+  override val maxLife = 190f
 
   override val onGettingHitSound: Option[Sound] = Some(Assets.sound(Assets.evilYellingSound))
 
