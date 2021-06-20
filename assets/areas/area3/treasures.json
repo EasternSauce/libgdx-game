@@ -1,0 +1,26 @@
+{
+  "treasures" : [
+    {
+      "id" : "0",
+      "location": {
+        "x": 82.8125,
+        "y": 195.9375
+      },
+      "template" : "woodenSword",
+      "quantity" : 1,
+      "damage" : 37,
+      "armor" : null
+    },
+    {
+      "id" : "1",
+      "location": {
+        "x": 82.8125,
+        "y": 195.9375
+      },
+      "template" : "woodenSword",
+      "quantity" : 1,
+      "damage" : 37,
+      "armor" : null
+    }
+  ]
+}

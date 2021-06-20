@@ -9,6 +9,7 @@ import io.circe.{Decoder, Encoder}
 
 import java.io.{File, PrintWriter}
 import scala.collection.mutable
+import scala.collection.mutable.ListBuffer
 
 class SavefileManager {
 
@@ -17,19 +18,30 @@ class SavefileManager {
   implicit val decodeCreatureSave: Decoder[CreatureSavedata] = deriveDecoder[CreatureSavedata]
   implicit val decodeSaveFile: Decoder[SaveFile] = deriveDecoder[SaveFile]
   implicit val decodePositionSave: Decoder[PositionSavedata] = deriveDecoder[PositionSavedata]
+  implicit val decodeTreasureLootedSave: Decoder[TreasureLootedSavedata] = deriveDecoder[TreasureLootedSavedata]
 
   implicit val encodePlayerSpawnPointSave: Encoder[PlayerSpawnPointSavedata] = deriveEncoder[PlayerSpawnPointSavedata]
   implicit val encodeItemSave: Encoder[ItemSavedata] = deriveEncoder[ItemSavedata]
   implicit val encodeCreatureSave: Encoder[CreatureSavedata] = deriveEncoder[CreatureSavedata]
   implicit val encodeSaveFile: Encoder[SaveFile] = deriveEncoder[SaveFile]
   implicit val encodePositionSave: Encoder[PositionSavedata] = deriveEncoder[PositionSavedata]
+  implicit val encodeTreasureLootedSave: Encoder[TreasureLootedSavedata] = deriveEncoder[TreasureLootedSavedata]
 
   val saveFileLocation = "save/savefile.json"
 
   def savefileFound: Boolean = new File(saveFileLocation).exists
 
   def saveGame(): Unit = {
-    val saveFile = SaveFile(allAreaCreaturesMap.values.filter(c => c.isPlayer || c.alive).map(_.saveToData()).toList)
+    val treasureLootedData: ListBuffer[TreasureLootedSavedata] = ListBuffer()
+    treasureLootedList.foreach(treasureLooted => {
+      val (areaId, treasureId) = treasureLooted
+      treasureLootedData += TreasureLootedSavedata(areaId, treasureId)
+    })
+
+    val saveFile = SaveFile(
+      allAreaCreaturesMap.values.filter(c => c.isPlayer || c.alive).map(_.saveToData()).toList,
+      treasureLootedData.toList
+    )
 
     val writer = new PrintWriter(new File(saveFileLocation))
 
@@ -52,6 +64,14 @@ class SavefileManager {
 
     allAreaCreaturesMap = mutable.Map()
     result.creatures.foreach(creatureData => recreateCreatureFromSavedata(creatureData))
+    result.treasuresLooted.foreach(
+      treasureData => treasureLootedList += (treasureData.areaId -> treasureData.treasureId)
+    )
+
+    currentArea.get.lootPileList.addAll(
+      currentArea.get.treasuresList
+        .filterNot(treasure => treasureLootedList.contains((currentArea.get.id, treasure.treasureId.get)))
+    )
 
   }
 
@@ -83,4 +103,5 @@ case class CreatureSavedata(
   inventoryItems: List[ItemSavedata]
 )
 case class PositionSavedata(x: Float, y: Float)
-case class SaveFile(creatures: List[CreatureSavedata])
+case class TreasureLootedSavedata(areaId: String, treasureId: String)
+case class SaveFile(creatures: List[CreatureSavedata], treasuresLooted: List[TreasureLootedSavedata])

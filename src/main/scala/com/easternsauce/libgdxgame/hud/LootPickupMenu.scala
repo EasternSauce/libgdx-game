@@ -65,7 +65,11 @@ class LootPickupMenu {
 
       if (rect.contains(mouseX, mouseY)) {
         val success = player.tryPickUpItem(item)
-        if (success) scheduledToRemove += (item -> lootPile)
+        if (success) {
+          if (lootPile.isTreasure && !treasureLootedList.contains(currentArea.get.id -> lootPile.treasureId.get))
+            treasureLootedList += (currentArea.get.id -> lootPile.treasureId.get)
+          scheduledToRemove += (item -> lootPile)
+        }
       }
       i += 1
     }

@@ -33,5 +33,5 @@ trait PlayerSpawns {
 }
 
 case class PlayerSpawnFile(spawnpoints: List[PlayerSpawnSavedata])
-case class PlayerSpawnSavedata(id: String, location: PlayerSpawnLocation)
+case class PlayerSpawnSavedata(id: String, location: TreasureLocation)
 case class PlayerSpawnLocation(x: Float, y: Float)

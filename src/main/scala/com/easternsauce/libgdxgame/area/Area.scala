@@ -36,6 +36,7 @@ class Area(val mapLoader: TmxMapLoader, val areaFilesLocation: String, val id: S
 
   loadEnemySpawns()
   loadPLayerSpawns()
+  loadTreasures()
 
   setupPathfindingGraph()
 
@@ -141,6 +142,10 @@ class Area(val mapLoader: TmxMapLoader, val areaFilesLocation: String, val id: S
 
     lootPileList.foreach(_.destroyBody(world))
     lootPileList.clear()
+
+    lootPileList.addAll(
+      treasuresList.filterNot(treasure => treasureLootedList.contains((this.id, treasure.treasureId.get)))
+    )
   }
 
   private def spawnEnemy(spawnPoint: EnemySpawnPoint): Unit = {

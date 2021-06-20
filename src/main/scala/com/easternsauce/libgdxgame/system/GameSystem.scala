@@ -32,6 +32,8 @@ object GameSystem extends Game {
 
   var allAreaCreaturesMap: mutable.Map[String, Creature] = mutable.Map()
 
+  val treasureLootedList: ListBuffer[(String, String)] = ListBuffer()
+
   var player: Player = _
 
   var areaMap: mutable.Map[String, Area] = _

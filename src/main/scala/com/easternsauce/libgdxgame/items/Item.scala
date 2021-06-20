@@ -1,5 +1,6 @@
 package com.easternsauce.libgdxgame.items
 
+import com.easternsauce.libgdxgame.area.traits.TreasureSavedata
 import com.easternsauce.libgdxgame.saving.ItemSavedata
 import com.easternsauce.libgdxgame.system.GameSystem._
 
@@ -53,6 +54,10 @@ object Item {
   }
 
   def loadFromSavedata(savedata: ItemSavedata): Item = {
+    new Item(ItemTemplate.getItemTemplate(savedata.template), savedata.quantity, savedata.damage, savedata.armor)
+  }
+
+  def loadFromSavedata(savedata: TreasureSavedata): Item = {
     new Item(ItemTemplate.getItemTemplate(savedata.template), savedata.quantity, savedata.damage, savedata.armor)
   }
 }
