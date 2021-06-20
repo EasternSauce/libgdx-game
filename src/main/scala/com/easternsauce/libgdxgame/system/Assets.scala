@@ -35,6 +35,7 @@ object Assets {
   val coinBagSound = "assets/sounds/coinbag.wav"
   val matchIgniteSound = "assets/sounds/match-ignite.wav"
   val appleCrunchSound = "assets/sounds/apple-crunch.wav"
+  val boneRattleSound = "assets/sounds/bone-rattle.wav"
 
   val sounds = List(
     attackSound,
@@ -62,7 +63,8 @@ object Assets {
     chestOpeningSound,
     coinBagSound,
     matchIgniteSound,
-    appleCrunchSound
+    appleCrunchSound,
+    boneRattleSound
   )
 
   val abandonedPlainsMusic = "assets/music/abandoned_plains.wav"

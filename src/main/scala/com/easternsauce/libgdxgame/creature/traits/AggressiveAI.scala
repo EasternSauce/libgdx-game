@@ -41,6 +41,7 @@ trait AggressiveAI {
   protected val abilityUsages: mutable.Map[String, AbilityUsage] = mutable.Map()
 
   val useAbilityTimer: EsTimer = EsTimer()
+  var useAbilityTimeout: Float = 1f + 2f * GameSystem.randomGenerator.nextFloat()
 
   def targetFound: Boolean = aggroedTarget.nonEmpty
 
@@ -76,6 +77,7 @@ trait AggressiveAI {
               }
 
             }
+
           }
         })
     }
@@ -110,6 +112,7 @@ trait AggressiveAI {
     recalculatePathTimer.restart()
     calculatePath(area.get, aggroedTarget.get.pos)
     useAbilityTimer.restart()
+    activeSoundTimer.restart()
 
   }
 
@@ -174,12 +177,13 @@ trait AggressiveAI {
           recalculatePathTimer.restart()
         }
 
-        if (useAbilityTimer.time > 1f + 2f * GameSystem.randomGenerator.nextFloat()) {
+        if (useAbilityTimer.time > useAbilityTimeout) {
           if (abilityUsages.nonEmpty) {
             val pickedAbility = pickAbilityToUse()
             pickedAbility.perform()
           }
 
+          useAbilityTimeout = 1f + 2f * GameSystem.randomGenerator.nextFloat()
           useAbilityTimer.restart()
         }
 

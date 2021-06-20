@@ -135,6 +135,8 @@ class Area(val mapLoader: TmxMapLoader, val areaFilesLocation: String, val id: S
     creaturesMap.filterInPlace { case (_, creature) => !creature.isEnemy }
     enemySpawns.foreach(spawnPoint => spawnEnemy(spawnPoint))
     arrowList.clear()
+
+    lootPileList.foreach(_.destroyBody(world))
     lootPileList.clear()
   }
 

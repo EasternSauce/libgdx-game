@@ -1,9 +1,9 @@
 package com.easternsauce.libgdxgame.ability
 
+import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.math.Vector2
 import com.easternsauce.libgdxgame.ability.traits.Ability
 import com.easternsauce.libgdxgame.creature.Creature
-import com.easternsauce.libgdxgame.system.Assets
 
 class DashAbility(val creature: Creature) extends Ability {
 
@@ -16,13 +16,15 @@ class DashAbility(val creature: Creature) extends Ability {
 
   val speed = 60f
 
+  var dashSound: Option[Sound] = None
+
   override def onActiveStart(): Unit = {
     dashVector = new Vector2(creature.walkingVector.x * speed, creature.walkingVector.y * speed)
 
     creature.effect("immobilized").applyEffect(channelTime + activeTime)
     creature.takeStaminaDamage(35f)
 
-    Assets.sound(Assets.flybySound).play(0.1f)
+    if (dashSound.nonEmpty) dashSound.get.play(0.1f)
 
   }
 

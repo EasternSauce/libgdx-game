@@ -14,6 +14,9 @@ class Wolf(val id: String) extends Enemy {
 
   override val onGettingHitSound: Option[Sound] = Some(Assets.sound(Assets.dogWhineSound))
 
+  override val activeSound: Option[Sound] = Some(Assets.sound(Assets.dogBarkSound))
+
+
   var dashAbility: DashAbility = _
 
   setupAnimation(

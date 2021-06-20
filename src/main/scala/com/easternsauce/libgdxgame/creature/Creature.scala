@@ -102,7 +102,7 @@ abstract class Creature
     if (isMoving) setRegion(walkAnimationFrame(currentDirection))
     else setRegion(standStillImage(currentDirection))
 
-    if (bodyExists) {
+    if (bodyCreated) {
       val roundedX = (math.floor(pos.x * 100) / 100).toFloat
       val roundedY = (math.floor(pos.y * 100) / 100).toFloat
       setPosition(roundedX - getWidth / 2f, roundedY - getHeight / 2f)
@@ -214,7 +214,6 @@ abstract class Creature
     }
 
   }
-
 
   def initCreature(): Unit = {
     setBounds(0, 0, creatureWidth, creatureHeight)

@@ -44,6 +44,7 @@ class Player(val id: String) extends Creature {
   defineStandardAbilities()
 
   dashAbility = DashAbility(this)
+  dashAbility.dashSound = Some(Assets.sound(Assets.flybySound))
   abilityMap += (dashAbility.id -> dashAbility)
 
   setRegion(standStillImage(currentDirection))

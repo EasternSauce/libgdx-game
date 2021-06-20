@@ -1,7 +1,7 @@
 package com.easternsauce.libgdxgame.items
 
 import com.badlogic.gdx.graphics.g2d.Sprite
-import com.badlogic.gdx.physics.box2d.{Body, BodyDef, CircleShape, FixtureDef}
+import com.badlogic.gdx.physics.box2d.{Body, BodyDef, CircleShape, FixtureDef, World}
 import com.easternsauce.libgdxgame.area.Area
 import com.easternsauce.libgdxgame.system.Assets
 
@@ -14,7 +14,7 @@ class LootPile protected (val area: Area, x: Float, y: Float) extends Sprite {
 
   setRegion(Assets.atlas.findRegion("bag"))
 
-  var b2body: Body = _
+  var b2Body: Body = _
   var bodyCreated = false
 
   val itemList: ListBuffer[Item] = ListBuffer()
@@ -26,8 +26,8 @@ class LootPile protected (val area: Area, x: Float, y: Float) extends Sprite {
     bodyDef.position
       .set(x + spriteWidth / 2, y + spriteHeight / 2)
     bodyDef.`type` = BodyDef.BodyType.StaticBody
-    b2body = area.world.createBody(bodyDef)
-    b2body.setUserData(this)
+    b2Body = area.world.createBody(bodyDef)
+    b2Body.setUserData(this)
 
     val fixtureDef: FixtureDef = new FixtureDef()
     val shape: CircleShape = new CircleShape()
@@ -36,8 +36,17 @@ class LootPile protected (val area: Area, x: Float, y: Float) extends Sprite {
     fixtureDef.shape = shape
     fixtureDef.isSensor = true
 
-    b2body.createFixture(fixtureDef)
+    b2Body.createFixture(fixtureDef)
 
+    bodyCreated = true
+
+  }
+
+  def destroyBody(world: World): Unit = {
+    if (bodyCreated) {
+      world.destroyBody(b2Body)
+      bodyCreated = false
+    }
   }
 }
 

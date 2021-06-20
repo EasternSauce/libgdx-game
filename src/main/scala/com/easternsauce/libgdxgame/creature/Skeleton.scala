@@ -12,6 +12,8 @@ class Skeleton(val id: String) extends Enemy {
 
   override val onGettingHitSound: Option[Sound] = Some(Assets.sound(Assets.boneClickSound))
 
+  override val activeSound: Option[Sound] = Some(Assets.sound(Assets.boneRattleSound))
+
   setupAnimation(
     regionName = "skeleton",
     textureWidth = 64,

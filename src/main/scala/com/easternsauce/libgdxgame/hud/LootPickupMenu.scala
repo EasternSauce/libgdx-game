@@ -75,8 +75,8 @@ class LootPickupMenu {
         Assets.sound(Assets.coinBagSound).play(0.3f)
 
         if (lootPile.itemList.size == 1) {
-          val world = lootPile.b2body.getWorld
-          world.destroyBody(lootPile.b2body)
+          val world = lootPile.b2Body.getWorld
+          world.destroyBody(lootPile.b2Body)
 
           lootPile.area.lootPileList -= lootPile
         }

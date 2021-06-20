@@ -11,10 +11,10 @@ trait PhysicalBody {
   var b2fixture: Fixture = _
 
   var mass: Float = 300f
-  var bodyExists = false
+  var bodyCreated = false
 
   def initCircularBody(world: World, x: Float, y: Float, radius: Float): Unit = {
-    if (!bodyExists) {
+    if (!bodyCreated) {
       val bodyDef = new BodyDef()
       bodyDef.position
         .set(x, y)
@@ -33,32 +33,32 @@ trait PhysicalBody {
       b2Body.setMassData(massData)
       b2Body.setLinearDamping(10f)
 
-      bodyExists = true
+      bodyCreated = true
     }
 
   }
 
   def destroyBody(world: World): Unit = {
-    if (bodyExists) {
+    if (bodyCreated) {
       world.destroyBody(b2Body)
-      bodyExists = false
+      bodyCreated = false
     }
   }
 
   def sustainVelocity(velocity: Vector2): Unit = {
-    if (bodyExists) {
+    if (bodyCreated) {
       b2Body.setLinearVelocity(velocity)
     }
   }
 
   def distanceTo(otherCreature: Creature): Float = {
-    if (bodyExists) {
+    if (bodyCreated) {
       b2Body.getPosition.dst(otherCreature.b2Body.getPosition)
     } else ???
   }
 
   def pos: Vector2 = {
-    if (bodyExists) {
+    if (bodyCreated) {
       b2Body.getPosition
     } else ???
   }
