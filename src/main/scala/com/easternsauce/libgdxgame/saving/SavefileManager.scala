@@ -27,9 +27,12 @@ class SavefileManager {
   implicit val encodePositionSave: Encoder[PositionSavedata] = deriveEncoder[PositionSavedata]
   implicit val encodeTreasureLootedSave: Encoder[TreasureLootedSavedata] = deriveEncoder[TreasureLootedSavedata]
 
-  val saveFileLocation = "save/savefile.json"
+  val saveFileLocation = "save"
+  val saveFileName = "savefile.json"
 
-  def savefileFound: Boolean = new File(saveFileLocation).exists
+  val saveFilePath = saveFileLocation + "/" + saveFileName
+
+  def savefileFound: Boolean = new File(saveFilePath).exists
 
   def saveGame(): Unit = {
     val treasureLootedData: ListBuffer[TreasureLootedSavedata] = ListBuffer()
@@ -43,7 +46,9 @@ class SavefileManager {
       treasureLootedData.toList
     )
 
-    val writer = new PrintWriter(new File(saveFileLocation))
+    new File(saveFileLocation).mkdir()
+
+    val writer = new PrintWriter(new File(saveFilePath))
 
     writer.write(saveFile.asJson.toString())
 
@@ -53,7 +58,7 @@ class SavefileManager {
   }
 
   def loadGame(): Unit = {
-    val source = scala.io.Source.fromFile(saveFileLocation)
+    val source = scala.io.Source.fromFile(saveFilePath)
     val lines =
       try source.mkString
       finally source.close()
