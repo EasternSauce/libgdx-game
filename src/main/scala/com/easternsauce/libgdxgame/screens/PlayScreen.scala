@@ -153,7 +153,11 @@ class PlayScreen() extends Screen {
     if (Gdx.input.isButtonJustPressed(Buttons.LEFT)) {
       if (inventoryWindow.visible) {
         inventoryWindow.moveItemClick()
-      } else if (lootPickupMenu.visible) {
+      } else if (
+        lootPickupMenu.visible && lootPickupMenu.pickUpOptionRects.exists(
+          _.contains(mousePositionWindowScaled.x, mousePositionWindowScaled.y)
+        )
+      ) {
         lootPickupMenu.pickUpItemClick()
       } else {
         player.currentAttack.perform()

@@ -66,7 +66,7 @@ trait Effects {
   def handlePoison(): Unit = {
     if (effect("poisoned").isActive) {
       if (poisonTickTimer.time > poisonTickTime) {
-        val poisonDamage = 10f
+        val poisonDamage = 16f
         takeLifeDamage(poisonDamage, immunityFrames = false)
         poisonTickTimer.restart()
       }

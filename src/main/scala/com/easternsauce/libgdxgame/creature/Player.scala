@@ -1,10 +1,10 @@
 package com.easternsauce.libgdxgame.creature
 
+import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.math.Vector2
-import com.badlogic.gdx.{Gdx, Input}
 import com.easternsauce.libgdxgame.ability.DashAbility
-import com.easternsauce.libgdxgame.system.Assets
+import com.easternsauce.libgdxgame.system.{Assets, GameSystem}
 import com.easternsauce.libgdxgame.util.{EsDirection, EsTimer}
 
 class Player(val id: String) extends Creature {
@@ -77,14 +77,7 @@ class Player(val id: String) extends Creature {
   }
 
   override def calculateWalkingVector(): Unit = {
-    val dirs: List[EsDirection.Value] = List(Input.Keys.D, Input.Keys.A, Input.Keys.W, Input.Keys.S)
-      .filter(dir => Gdx.input.isKeyPressed(dir))
-      .map {
-        case Input.Keys.D => EsDirection.Right
-        case Input.Keys.A => EsDirection.Left
-        case Input.Keys.W => EsDirection.Up
-        case Input.Keys.S => EsDirection.Down
-      }
+    val dirs: List[EsDirection.Value] = GameSystem.playerMovementDirections
 
     val vector = new Vector2(0f, 0f)
 
@@ -100,4 +93,5 @@ class Player(val id: String) extends Creature {
     walkingVector = vector
 
   }
+
 }

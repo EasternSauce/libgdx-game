@@ -26,13 +26,11 @@ class LootPickupMenu {
         item <- lootPile.itemList
       } {
 
-        val x = Constants.WindowWidth / 2 - 100f
-        val y = 150f - i * 30f
-
-        val rect = new Rectangle(x - 25f, y - 20f, 300f, 25)
+        val rect: Rectangle = optionRect(i)
 
         batch.shapeDrawer.filledRectangle(rect, Color.DARK_GRAY)
-        Fonts.defaultFont.draw(batch.spriteBatch, "> " + item.name, x, y, Color.WHITE)
+        val text = "> " + item.name + (if (item.quantity > 1) " (" + item.quantity + ")" else "")
+        Fonts.defaultFont.draw(batch.spriteBatch, text, optionPosX(i), optionPosY(i), Color.WHITE)
 
         if (rect.contains(mouseX, mouseY)) batch.shapeDrawer.rectangle(rect, Color.RED)
 
@@ -49,29 +47,37 @@ class LootPickupMenu {
     lootPiles -= lootPile
   }
 
+  def pickUpOptionRects: IndexedSeq[Rectangle] = {
+    for {
+      i <- lootPiles.flatMap(_.itemList).indices
+      x = optionPosX(i)
+      y = optionPosY(i)
+      rect = new Rectangle(x - 25f, y - 20f, 300f, 25)
+    } yield rect
+  }
+
   def pickUpItemClick(): Unit = {
     val mouseX: Float = mousePositionWindowScaled.x
     val mouseY: Float = mousePositionWindowScaled.y
 
-    var i = 0
-    for {
-      lootPile <- lootPiles
-      item <- lootPile.itemList
-    } {
+    val itemOptions = lootPiles.flatMap(_.itemList)
 
-      val x = Constants.WindowWidth / 2 - 100f
-      val y = 150f - i * 30f
-      val rect = new Rectangle(x - 25f, y - 20f, 300f, 25)
+    for {
+      item <- itemOptions
+    } {
+      val i = itemOptions.indexOf(item)
+
+      val rect: Rectangle = optionRect(i)
 
       if (rect.contains(mouseX, mouseY)) {
         val success = player.tryPickUpItem(item)
         if (success) {
+          val lootPile = item.lootPile.get
           if (lootPile.isTreasure && !treasureLootedList.contains(currentArea.get.id -> lootPile.treasureId.get))
             treasureLootedList += (currentArea.get.id -> lootPile.treasureId.get)
           scheduledToRemove += (item -> lootPile)
         }
       }
-      i += 1
     }
 
     scheduledToRemove.foreach {
@@ -89,6 +95,20 @@ class LootPickupMenu {
         item.lootPile = None
     }
     scheduledToRemove.clear()
+  }
+
+  private def optionRect(i: Int): Rectangle = {
+    val x = optionPosX(i)
+    val y = optionPosY(i)
+    new Rectangle(x - 25f, y - 20f, 300f, 25)
+  }
+
+  private def optionPosX(i: Int): Float = {
+    Constants.WindowWidth / 2 - 100f
+  }
+
+  private def optionPosY(i: Int): Float = {
+    150f - i * 30f
   }
 
   def visible: Boolean = lootPiles.nonEmpty && !inventoryWindow.visible

@@ -3,23 +3,12 @@
     {
       "id" : "0",
       "location": {
-        "x": 82.8125,
-        "y": 195.9375
+        "x": 5.926711,
+        "y": 57.294647
       },
-      "template" : "woodenSword",
-      "quantity" : 1,
-      "damage" : 37,
-      "armor" : null
-    },
-    {
-      "id" : "1",
-      "location": {
-        "x": 82.8125,
-        "y": 195.9375
-      },
-      "template" : "woodenSword",
-      "quantity" : 1,
-      "damage" : 37,
+      "template" : "healingPowder",
+      "quantity" : 3,
+      "damage" : null,
       "armor" : null
     }
   ]

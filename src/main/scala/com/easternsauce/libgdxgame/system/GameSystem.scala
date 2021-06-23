@@ -130,8 +130,8 @@ object GameSystem extends Game {
     v
   }
 
-  def handlePlayerMovement(): Unit = {
-    val dirs: List[EsDirection.Value] = List(Input.Keys.D, Input.Keys.A, Input.Keys.W, Input.Keys.S)
+  def playerMovementDirections: List[EsDirection.Value] = {
+    List(Input.Keys.D, Input.Keys.A, Input.Keys.W, Input.Keys.S)
       .filter(dir => Gdx.input.isKeyPressed(dir))
       .map {
         case Input.Keys.D => EsDirection.Right
@@ -139,6 +139,10 @@ object GameSystem extends Game {
         case Input.Keys.W => EsDirection.Up
         case Input.Keys.S => EsDirection.Down
       }
+  }
+
+  def handlePlayerMovement(): Unit = {
+    val dirs: List[EsDirection.Value] = playerMovementDirections
 
     if (dirs.nonEmpty) player.moveInDirection(dirs)
 
