@@ -60,8 +60,10 @@ class ExplodeAbility(val creature: Creature) extends Ability with ActiveAnimatio
 
       val scale = explosionRange * 2 / image.getRegionWidth
 
-      val scaledWidth = image.getRegionWidth * scale
-      val scaledHeight = image.getRegionHeight * scale
+      val scaledWidth = explosionRange * 2
+      val scaledHeight = explosionRange * 2
+
+      println("scaled width = " + image.getRegionWidth + " * " + scale)
 
       batch.spriteBatch.draw(
         image,

@@ -1,6 +1,7 @@
 package com.easternsauce.libgdxgame.area.traits
 
 import com.badlogic.gdx.physics.box2d._
+import com.easternsauce.libgdxgame.ability.components.AbilityComponent
 import com.easternsauce.libgdxgame.ability.traits.Ability
 import com.easternsauce.libgdxgame.area.{Area, AreaGate, TerrainTile}
 import com.easternsauce.libgdxgame.creature.{Creature, Player}
@@ -25,8 +26,8 @@ trait CollisionDetection {
               areaGate.activate(creature)
             case (creature: Creature, ability: Ability) =>
               ability.onCollideWithCreature(creature)
-//            case (creature: Creature, abilityComponent: AbilityComponent) =>
-//              abilityComponent.onCollideWithCreature(creature)
+            case (creature: Creature, abilityComponent: AbilityComponent) =>
+              abilityComponent.onCollideWithCreature(creature)
             case (creature: Creature, arrow: Arrow) =>
               arrow.onCollideWithCreature(creature)
             case (areaTile: TerrainTile, arrow: Arrow) =>

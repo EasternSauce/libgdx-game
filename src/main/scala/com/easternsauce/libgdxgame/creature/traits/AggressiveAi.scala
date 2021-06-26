@@ -180,10 +180,14 @@ trait AggressiveAi {
 
         if (useAbilityTimer.time > useAbilityTimeout) {
           if (abilityUsages.nonEmpty) {
+            println("looking for ability to use")
             val pickedAbility = pickAbilityToUse()
+            println("found " + pickedAbility.id)
 
-            if (life / maxLife < abilityUsages(pickedAbility.id).lifeThreshold) {
+            println(" is " + life / maxLife + " less rhan " + abilityUsages(pickedAbility.id).lifeThreshold)
+            if (life / maxLife <= abilityUsages(pickedAbility.id).lifeThreshold) {
               pickedAbility.perform()
+              println("performing")
             }
           }
 

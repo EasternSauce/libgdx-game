@@ -1,6 +1,8 @@
 package com.easternsauce.libgdxgame.creature
 
 import com.badlogic.gdx.audio.Sound
+import com.easternsauce.libgdxgame.ability.FistSlamAbility
+import com.easternsauce.libgdxgame.creature.traits.AbilityUsage
 import com.easternsauce.libgdxgame.system.Assets
 import com.easternsauce.libgdxgame.util.EsDirection
 
@@ -14,6 +16,8 @@ class Skeleton(val id: String) extends Enemy {
 
   override val activeSound: Option[Sound] = Some(Assets.sound(Assets.boneRattleSound))
 
+  var fistSlamAbility = new FistSlamAbility(this)
+
   setupAnimation(
     regionName = "skeleton",
     textureWidth = 64,
@@ -26,6 +30,9 @@ class Skeleton(val id: String) extends Enemy {
 
   initCreature()
 
+  fistSlamAbility = new FistSlamAbility(this)
+  abilityMap += (fistSlamAbility.id -> fistSlamAbility)
+
   dropTable.addAll(
     List(
       "ringmailGreaves" -> 0.1f,
@@ -36,5 +43,7 @@ class Skeleton(val id: String) extends Enemy {
       "healingPowder" -> 0.5f
     )
   )
+
+  abilityUsages.addAll(List("fistSlam" -> AbilityUsage(100f, 6f)))
 
 }
