@@ -43,6 +43,6 @@ class Wolf(val id: String) extends Enemy {
     )
   )
 
-  abilityUsages.addAll(List("dash" -> AbilityUsage(100f, 8f)))
+  abilityUsages.addAll(List("dash" -> AbilityUsage(weight = 100f, minimumDistance = 8f)))
 
 }

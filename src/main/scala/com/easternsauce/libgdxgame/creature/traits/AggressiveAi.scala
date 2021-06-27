@@ -41,7 +41,7 @@ trait AggressiveAi {
   protected val abilityUsages: mutable.Map[String, AbilityUsage] = mutable.Map()
 
   val useAbilityTimer: EsTimer = EsTimer()
-  var useAbilityTimeout: Float = 1f + 2f * GameSystem.randomGenerator.nextFloat()
+  var useAbilityTimeout: Float = 1f + 3f * GameSystem.randomGenerator.nextFloat()
 
   def targetFound: Boolean = aggroedTarget.nonEmpty
 
@@ -85,7 +85,7 @@ trait AggressiveAi {
 
   def calculateLineOfSight(otherCreature: Creature): Unit = {
 
-    val lineWidth = 1f
+    val lineWidth = 0.5f
     lineOfSight = Some(
       new Polygon(
         Array(
@@ -212,7 +212,7 @@ trait AggressiveAi {
           currentAttack.perform()
         }
 
-        if (!aggroedTarget.get.isAlive || path.size > 15) {
+        if (!aggroedTarget.get.isAlive || (path.size > 15 && !isBoss)) {
           dropAggro()
         }
       } else {
@@ -267,8 +267,10 @@ trait AggressiveAi {
   def pickAbilityToUse(): Option[Ability] = {
 
     val filteredAbilityUsages = abilityUsages.filter {
-      case (_, usage) =>
-        life / maxLife <= usage.lifeThreshold && pos.dst(aggroedTarget.get.pos) > usage.distanceToTarget
+      case (abilityId, usage) =>
+        life / maxLife <= usage.lifeThreshold && pos.dst(aggroedTarget.get.pos) > usage.minimumDistance && pos.dst(
+          aggroedTarget.get.pos
+        ) < usage.maximumDistance && !abilityMap(abilityId).onCooldown
     }
 
     var completeWeight = 0.0f
@@ -287,4 +289,9 @@ trait AggressiveAi {
 
 }
 
-case class AbilityUsage(weight: Float, distanceToTarget: Float, lifeThreshold: Float = 1.0f)
+case class AbilityUsage(
+  weight: Float,
+  minimumDistance: Float = 0f,
+  maximumDistance: Float = 999f,
+  lifeThreshold: Float = 1.0f
+)

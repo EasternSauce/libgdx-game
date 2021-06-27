@@ -18,25 +18,14 @@ class FireDemon(val id: String) extends Boss {
 
   override val onGettingHitSound: Option[Sound] = Some(Assets.sound(Assets.roarSound))
 
-  //override val scale: Float = 3.0f
-  //override val hitbox = new Rectangle(0, 0, 80 * scale, 80 * scale)
-  //override val baseSpeed: Float = 16f
+  override val aggroDropDistance = 999f
+
+  override val directionalSpeed: Float = 25f
+
   protected var meteorRainAbility: MeteorRainAbility = _
   protected var fistSlamAbility: FistSlamAbility = _
   protected var meteorCrashAbility: MeteorCrashAbility = _
   protected var dashAbility: DashAbility = _
-
-//
-//  loadSprites(Assets.fireDemonSpriteSheet, Map(Left -> 3, Right -> 1, Up -> 0, Down -> 2), 0)
-
-//  maxHealthPoints = 4000f
-//  healthPoints = maxHealthPoints
-
-//  name = "Magma Stalker"
-
-//  aggroDistance = 800f
-//  attackDistance = 200f
-//  walkUpDistance = 800f
 
   setupAnimation(
     regionName = "taurus",
@@ -81,8 +70,8 @@ class FireDemon(val id: String) extends Boss {
 //    }
 //  }
 
-  abilityUsages.addAll(List("dash" -> AbilityUsage(70f, 30f)))
-  abilityUsages.addAll(List("meteorRain" -> AbilityUsage(30f, 20f, 0.6f)))
-  abilityUsages.addAll(List("fistSlam" -> AbilityUsage(30f, 8f)))
-  abilityUsages.addAll(List("meteorCrash" -> AbilityUsage(30f, 20f)))
+  abilityUsages.addAll(List("dash" -> AbilityUsage(weight = 70f, minimumDistance = 15f)))
+  abilityUsages.addAll(List("meteorRain" -> AbilityUsage(weight = 30f, minimumDistance = 4f, lifeThreshold = 0.6f)))
+  abilityUsages.addAll(List("fistSlam" -> AbilityUsage(weight = 30f, minimumDistance = 4f, maximumDistance = 10f)))
+  abilityUsages.addAll(List("meteorCrash" -> AbilityUsage(weight = 30f, minimumDistance = 6f)))
 }

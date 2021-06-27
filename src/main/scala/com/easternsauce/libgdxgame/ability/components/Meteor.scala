@@ -138,7 +138,7 @@ class Meteor(
 
   override def onCollideWithCreature(creature: Creature): Unit = {
     if (!(mainAbility.creature.isEnemy && creature.isEnemy) && creature.isAlive) {
-      if (!creature.isImmune) creature.takeLifeDamage(40f, immunityFrames = true)
+      if (!creature.isImmune) creature.takeLifeDamage(70f, immunityFrames = true)
     }
   }
 }

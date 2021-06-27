@@ -12,8 +12,8 @@ class FistSlamAbility(val creature: Creature) extends Ability {
   override val id: String = "fistSlam"
 
   override protected val cooldownTime: Float = 6.5f
-  override protected val activeTime: Float = 3.0f
-  override protected val channelTime: Float = 0.35f
+  override protected val activeTime: Float = 0.1f * 19 + 0.2f + 0.4f + 0.1f
+  override protected val channelTime: Float = 0.15f
 
   protected var fists: ListBuffer[Fist] = ListBuffer()
 

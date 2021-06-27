@@ -47,7 +47,7 @@ trait Ability {
   protected def onStop(): Unit = {}
 
   def perform(): Unit = {
-    if (creature.staminaPoints > 0 && (state == AbilityState.Inactive) && !onCooldown) {
+    if (creature.staminaPoints > 0 && (state == AbilityState.Inactive) && !onCooldown && !creature.abilityActive) {
       channelTimer.restart()
       state = AbilityState.Channeling
       onChannellingStart()

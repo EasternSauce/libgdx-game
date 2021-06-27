@@ -47,6 +47,6 @@ class Ghost(val id: String) extends Enemy {
     )
   )
 
-  abilityUsages.addAll(List("explode" -> AbilityUsage(100f, 6f, 0.5f)))
+  abilityUsages.addAll(List("explode" -> AbilityUsage(weight = 100f, minimumDistance = 6f, lifeThreshold = 0.5f)))
 
 }

@@ -11,7 +11,7 @@ import scala.collection.mutable.ListBuffer
 class MeteorCrashAbility(val creature: Creature) extends Ability {
   val id = "meteorCrash"
   override protected val channelTime: Float = 0.05f
-  override protected val activeTime: Float = 1.8f
+  override protected val activeTime: Float = 0.1f * 9 + (1.2f + 1.8f) / 2.5f + 0.1f
   override protected val cooldownTime: Float = 6.5f
   protected var meteors: ListBuffer[Meteor] = ListBuffer()
 

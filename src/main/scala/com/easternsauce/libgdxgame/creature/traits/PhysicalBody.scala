@@ -21,6 +21,7 @@ trait PhysicalBody {
       bodyDef.`type` = BodyDef.BodyType.DynamicBody
       b2Body = world.createBody(bodyDef)
       b2Body.setUserData(this)
+      b2Body.setSleepingAllowed(false)
 
       val fixtureDef: FixtureDef = new FixtureDef()
       val shape: CircleShape = new CircleShape()

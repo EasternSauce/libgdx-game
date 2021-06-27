@@ -139,7 +139,7 @@ class Fist(val mainAbility: Ability, val startTime: Float, posX: Float, posY: Fl
 
   override def onCollideWithCreature(creature: Creature): Unit = {
     if (!(mainAbility.creature.isEnemy && creature.isEnemy) && creature.isAlive && activeTimer.time < 0.15f) {
-      if (!creature.isImmune) creature.takeLifeDamage(50f, immunityFrames = true)
+      if (!creature.isImmune) creature.takeLifeDamage(100f, immunityFrames = true)
     }
   }
 
