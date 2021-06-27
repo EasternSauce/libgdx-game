@@ -11,7 +11,7 @@ import scala.collection.mutable.ListBuffer
 class FistSlamAbility(val creature: Creature) extends Ability {
   override val id: String = "fistSlam"
 
-  override protected val cooldownTime: Float = 6.5f
+  override protected val cooldownTime: Float = 10f
   override protected val activeTime: Float = 0.1f * 19 + 0.2f + 0.4f + 0.1f
   override protected val channelTime: Float = 0.15f
 
@@ -32,7 +32,7 @@ class FistSlamAbility(val creature: Creature) extends Ability {
     fists = new ListBuffer[Fist]
     for (i <- 0 until 20) {
       val range: Float = 7.8125f
-      val aggroedCreature = creature.asInstanceOf[Enemy].aggroedTarget.get // TODO?
+      val aggroedCreature = creature.asInstanceOf[Enemy].aggroedTarget.get // TODO targeting?
       fists += new Fist(
         this,
         0.1f * i,

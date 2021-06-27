@@ -3,6 +3,7 @@ package com.easternsauce.libgdxgame.creature.traits
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.math.{Rectangle, Vector2}
 import com.easternsauce.libgdxgame.creature.Creature
+import com.easternsauce.libgdxgame.system.GameSystem
 import com.easternsauce.libgdxgame.util.{EsBatch, EsTimer}
 
 trait Life {
@@ -57,6 +58,7 @@ trait Life {
         effect("immune").applyEffect(0.75f)
         // stagger on hit
         effect("immobilized").applyEffect(0.35f)
+        if (isBoss) println("hit stagger")
       }
 
       if (isKnockbackable) {
@@ -67,7 +69,7 @@ trait Life {
         }
       }
 
-      if (onGettingHitSound.nonEmpty) onGettingHitSound.get.play(0.1f)
+      if (onGettingHitSound.nonEmpty && GameSystem.randomGenerator.nextFloat() < 0.3f) onGettingHitSound.get.play(0.1f)
     }
   }
 

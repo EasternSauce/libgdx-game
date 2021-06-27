@@ -14,7 +14,7 @@ class FireDemon(val id: String) extends Boss {
   val spriteWidth = 80
   val spriteHeight = 80
 
-  override val maxLife = 4000f
+  override val maxLife = 5500f
 
   override val onGettingHitSound: Option[Sound] = Some(Assets.sound(Assets.roarSound))
 
