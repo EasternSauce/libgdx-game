@@ -81,7 +81,7 @@ class Arrow private (
   def onCollideWithCreature(creature: Creature): Unit = {
     if (!(shooter.isEnemy && creature.isEnemy) && isActive) {
 
-      if (shooter != creature && creature.alive && !creature.immune) {
+      if (shooter != creature && creature.isAlive && !creature.isImmune) {
         creature.takeLifeDamage(damage, immunityFrames = true, Some(shooter), knockbackPower, startX, startY)
         markedForDeletion = true
       }

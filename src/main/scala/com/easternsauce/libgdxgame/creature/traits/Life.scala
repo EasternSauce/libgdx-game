@@ -24,7 +24,7 @@ trait Life {
 
   def atFullLife: Boolean = life >= maxLife
 
-  def alive: Boolean = life > 0f
+  def isAlive: Boolean = life > 0f
 
   def heal(healValue: Float): Unit = {
     if (life < maxLife) {
@@ -34,6 +34,7 @@ trait Life {
     }
   }
 
+  // TODO move?
   def takeLifeDamage(
     damage: Float,
     immunityFrames: Boolean,
@@ -42,7 +43,7 @@ trait Life {
     sourceX: Float = 0,
     sourceY: Float = 0
   ): Unit = {
-    if (alive) {
+    if (isAlive) {
       val beforeHP = life
 
       val actualDamage = damage * 100f / (100f + totalArmor)
@@ -58,7 +59,7 @@ trait Life {
         effect("immobilized").applyEffect(0.35f)
       }
 
-      if (knockbackable) {
+      if (isKnockbackable) {
         knockbackVector = new Vector2(pos.x - sourceX, pos.y - sourceY).nor()
         if (attackKnockbackVelocity > 0f) {
           knockbackVelocity = attackKnockbackVelocity

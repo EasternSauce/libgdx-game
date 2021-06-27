@@ -209,12 +209,12 @@
     },
     {
       "id": "23",
-      "creatureClass": "com.easternsauce.libgdxgame.creature.Wolf",
+      "creatureClass": "com.easternsauce.libgdxgame.creature.FireDemon",
       "location": {
         "x": 164.46875,
         "y": 93.25
       },
-      "weaponType": null
+      "weaponType": "demonTrident"
     }
   ]
 }

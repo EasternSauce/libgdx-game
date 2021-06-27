@@ -7,7 +7,7 @@ import com.easternsauce.libgdxgame.area.Area
 import com.easternsauce.libgdxgame.creature.traits._
 import com.easternsauce.libgdxgame.spawns.PlayerSpawnPoint
 import com.easternsauce.libgdxgame.system.Assets
-import com.easternsauce.libgdxgame.util.{EsDirection, EsTimer}
+import com.easternsauce.libgdxgame.util.{EsBatch, EsDirection, EsTimer}
 
 import scala.collection.mutable.ListBuffer
 
@@ -25,6 +25,7 @@ abstract class Creature
   val isEnemy = false
   val isPlayer = false
   val isNPC = false
+  val isBoss = false
 
   val id: String
 
@@ -71,7 +72,7 @@ abstract class Creature
   def totalArmor: Float = equipmentItems.values.map(item => item.armor.getOrElse(0)).sum.toFloat
 
   def update(): Unit = {
-    if (alive) {
+    if (isAlive) {
       updateStaminaDrain()
 
       calculateFacingVector()
@@ -134,7 +135,7 @@ abstract class Creature
   def moveInDirection(dirs: List[EsDirection.Value]): Unit = {
 
     if (dirs.nonEmpty) {
-      if (alive) {
+      if (isAlive) {
         timeSinceMovedTimer.restart()
 
         if (!isMoving) {
@@ -226,5 +227,19 @@ abstract class Creature
     setRegion(standStillImage(currentDirection))
 
     life = maxLife
+  }
+
+  def render(batch: EsBatch): Unit = {
+
+    if (isAlive && isImmune) {
+      val alpha = effectMap("immune").getRemainingTime * 35f
+      val colorComponent = 0.3f + 0.7f * (Math.sin(alpha).toFloat + 1f) / 2f
+
+      setColor(1f, colorComponent, colorComponent, 1f)
+    }
+
+    draw(batch.spriteBatch)
+    setColor(1, 1, 1, 1)
+
   }
 }

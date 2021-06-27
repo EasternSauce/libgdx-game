@@ -56,7 +56,7 @@ abstract class Enemy extends Creature with AggressiveAi {
   ): Unit = {
     super.takeLifeDamage(damage, immunityFrames, dealtBy, attackKnockbackVelocity, sourceX, sourceY)
 
-    if (alive && aggroedTarget.isEmpty && dealtBy.nonEmpty) {
+    if (isAlive && aggroedTarget.isEmpty && dealtBy.nonEmpty) {
       aggroOnCreature(dealtBy.get)
     }
 

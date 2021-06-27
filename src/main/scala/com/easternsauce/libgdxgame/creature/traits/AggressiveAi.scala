@@ -58,11 +58,11 @@ trait AggressiveAi {
     }
 
   def lookForTarget(): Unit = {
-    if (alive && !targetFound) {
+    if (isAlive && !targetFound) {
       area.get.creaturesMap.values
         .filter(creature => !creature.isEnemy)
         .foreach(otherCreature => {
-          if (otherCreature.alive && distanceTo(otherCreature) < aggroDistance) {
+          if (otherCreature.isAlive && distanceTo(otherCreature) < aggroDistance) {
 
             if (aggroRecalculatePathTimer.time > 0.3f) {
 
@@ -166,7 +166,7 @@ trait AggressiveAi {
   }
 
   def searchForAndAttackTargets(): Unit = {
-    if (alive) {
+    if (isAlive) {
       lookForTarget()
 
       decideIfCircling()
@@ -180,15 +180,12 @@ trait AggressiveAi {
 
         if (useAbilityTimer.time > useAbilityTimeout) {
           if (abilityUsages.nonEmpty) {
-            println("looking for ability to use")
             val pickedAbility = pickAbilityToUse()
-            println("found " + pickedAbility.id)
 
-            println(" is " + life / maxLife + " less rhan " + abilityUsages(pickedAbility.id).lifeThreshold)
-            if (life / maxLife <= abilityUsages(pickedAbility.id).lifeThreshold) {
-              pickedAbility.perform()
-              println("performing")
+            if (pickedAbility.nonEmpty) {
+              pickedAbility.get.perform()
             }
+
           }
 
           useAbilityTimeout = 1f + 2f * GameSystem.randomGenerator.nextFloat()
@@ -215,7 +212,7 @@ trait AggressiveAi {
           currentAttack.perform()
         }
 
-        if (!aggroedTarget.get.alive || path.size > 15) {
+        if (!aggroedTarget.get.isAlive || path.size > 15) {
           dropAggro()
         }
       } else {
@@ -267,19 +264,25 @@ trait AggressiveAi {
 
   }
 
-  def pickAbilityToUse(): Ability = {
+  def pickAbilityToUse(): Option[Ability] = {
+
+    val filteredAbilityUsages = abilityUsages.filter {
+      case (_, usage) =>
+        life / maxLife <= usage.lifeThreshold && pos.dst(aggroedTarget.get.pos) > usage.distanceToTarget
+    }
+
     var completeWeight = 0.0f
-    for (abilityUsage <- abilityUsages.values) {
+    for (abilityUsage <- filteredAbilityUsages.values) {
       completeWeight += abilityUsage.weight
     }
     val r = Math.random * completeWeight
     var countWeight = 0.0
-    for (abilityUsage <- abilityUsages) {
+    for (abilityUsage <- filteredAbilityUsages) {
       val (key, value) = abilityUsage
       countWeight += value.weight
-      if (countWeight > r) return abilityMap(key)
+      if (countWeight > r) return Some(abilityMap(key))
     }
-    throw new RuntimeException("Should never reach here.")
+    None
   }
 
 }

@@ -102,7 +102,7 @@ class Area(val mapLoader: TmxMapLoader, val areaFilesLocation: String, val id: S
 
   def renderCreatureLifeBars(batch: EsBatch): Unit = {
     for (creature <- creaturesMap.values) {
-      if (creature.alive && !creature.atFullLife)
+      if (creature.isAlive && !creature.atFullLife)
         creature.renderLifeBar(batch)
     }
   }
@@ -114,11 +114,11 @@ class Area(val mapLoader: TmxMapLoader, val areaFilesLocation: String, val id: S
   }
 
   def renderAliveCreatures(batch: EsBatch): Unit = {
-    creaturesMap.values.filter(_.alive).foreach(_.draw(batch.spriteBatch))
+    creaturesMap.values.filter(_.isAlive).foreach(_.render(batch))
   }
 
   def renderDeadCreatures(batch: EsBatch): Unit = {
-    creaturesMap.values.filter(!_.alive).foreach(_.draw(batch.spriteBatch))
+    creaturesMap.values.filter(!_.isAlive).foreach(_.render(batch))
   }
 
   def setView(camera: OrthographicCamera): Unit = {

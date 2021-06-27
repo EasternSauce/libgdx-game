@@ -42,7 +42,7 @@ class SavefileManager {
     })
 
     val saveFile = SaveFile(
-      allAreaCreaturesMap.values.filter(c => c.isPlayer || c.alive).map(_.saveToData()).toList,
+      allAreaCreaturesMap.values.filter(c => c.isPlayer || c.isAlive).map(_.saveToData()).toList,
       treasureLootedData.toList
     )
 

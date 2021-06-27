@@ -63,8 +63,6 @@ class ExplodeAbility(val creature: Creature) extends Ability with ActiveAnimatio
       val scaledWidth = explosionRange * 2
       val scaledHeight = explosionRange * 2
 
-      println("scaled width = " + image.getRegionWidth + " * " + scale)
-
       batch.spriteBatch.draw(
         image,
         creature.pos.x - scaledWidth / 2f,
@@ -112,8 +110,8 @@ class ExplodeAbility(val creature: Creature) extends Ability with ActiveAnimatio
   override def onCollideWithCreature(otherCreature: Creature): Unit = {
     super.onCollideWithCreature(creature)
 
-    if (!(creature.isEnemy && otherCreature.isEnemy) && otherCreature.alive) { // mob can't hurt a mob?
-      if (!otherCreature.immune) otherCreature.takeLifeDamage(700f, immunityFrames = true, Some(creature), 0, 0, 0)
+    if (!(creature.isEnemy && otherCreature.isEnemy) && otherCreature.isAlive) { // mob can't hurt a mob?
+      if (!otherCreature.isImmune) otherCreature.takeLifeDamage(700f, immunityFrames = true, Some(creature), 0, 0, 0)
     }
   }
 

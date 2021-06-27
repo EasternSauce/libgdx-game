@@ -39,13 +39,13 @@ trait Effects {
     }
   }
 
-  def immune: Boolean = effect("immune").isActive
+  def isImmune: Boolean = effect("immune").isActive
 
   def ableToMove: Boolean = !effect("immobilized").isActive && !effect("knockedBack").isActive
 
   // knockbacks
 
-  val knockbackable = true
+  val isKnockbackable = true
   var knockbackVector = new Vector2(0f, 0f)
 
   protected var knockbackVelocity: Float = 0f

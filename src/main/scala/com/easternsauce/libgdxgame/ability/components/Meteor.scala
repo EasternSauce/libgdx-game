@@ -8,38 +8,44 @@ import com.easternsauce.libgdxgame.creature.Creature
 import com.easternsauce.libgdxgame.system.Assets
 import com.easternsauce.libgdxgame.util.EsBatch
 
-class Fist(val mainAbility: Ability, val startTime: Float, posX: Float, posY: Float, radius: Float)
-    extends AbilityComponent
+class Meteor(
+  val mainAbility: Ability,
+  val startTime: Float,
+  val posX: Float,
+  val posY: Float,
+  val radius: Float,
+  speed: Float
+) extends AbilityComponent
     with WindupAnimation
     with ActiveAnimation {
 
-  override protected val activeTime: Float = 0.2f
-  override protected val channelTime: Float = 0.4f
+  override protected val activeTime: Float = 1.8f / speed
+  override protected val channelTime: Float = 1.2f / speed
 
   override var state: AbilityState = AbilityState.Inactive
-  override var started: Boolean = false
+  override var started = false
   override var body: Body = _
-  override var destroyed: Boolean = false
+  override var destroyed = false
 
-  val spriteWidth = 40
-  val spriteHeight = 80
-
-  val numOfFrames = 5
+  val spriteWidth = 64
+  val spriteHeight = 64
+  val numOfActiveFrames = 21
+  val numOfChannelingFrames = 7
 
   setupActiveAnimation(
-    regionName = "fist_slam",
-    textureWidth = spriteWidth,
+    regionName = "explosion",
+    textureWidth = spriteHeight,
     textureHeight = spriteHeight,
-    animationFrameCount = numOfFrames,
-    frameDuration = activeTime / numOfFrames
+    animationFrameCount = numOfActiveFrames,
+    frameDuration = activeTime / numOfActiveFrames
   )
 
   setupWindupAnimation(
-    regionName = "fist_slam_windup",
-    textureWidth = spriteWidth,
+    regionName = "explosion_windup",
+    textureWidth = spriteHeight,
     textureHeight = spriteHeight,
-    animationFrameCount = numOfFrames,
-    frameDuration = channelTime / numOfFrames
+    animationFrameCount = numOfChannelingFrames,
+    frameDuration = channelTime / numOfChannelingFrames
   )
 
   def start(): Unit = {
@@ -51,19 +57,11 @@ class Fist(val mainAbility: Ability, val startTime: Float, posX: Float, posY: Fl
 
   override def onUpdateActive(): Unit = {
     if (started) {
-      if (state == AbilityState.Channeling) {
+      if (state == AbilityState.Channeling)
         if (channelTimer.time > channelTime) {
-          state = AbilityState.Active
-          Assets.sound(Assets.glassBreakSound).play(0.1f)
-          abilityActiveAnimationTimer.restart()
-          activeTimer.restart()
-          initBody(posX, posY)
+          onActiveStart()
         }
-      }
       if (state == AbilityState.Active) {
-        if (activeTimer.time > activeTime) {
-          state = AbilityState.Inactive
-        }
         if (!destroyed && activeTimer.time >= 0.2f) {
           body.getWorld.destroyBody(body)
           destroyed = true
@@ -74,6 +72,15 @@ class Fist(val mainAbility: Ability, val startTime: Float, posX: Float, posY: Fl
         }
       }
     }
+
+  }
+
+  private def onActiveStart(): Unit = {
+    state = AbilityState.Active
+    Assets.sound(Assets.explosionSound).play(0.01f)
+    abilityActiveAnimationTimer.restart()
+    activeTimer.restart()
+    initBody(posX, posY)
   }
 
   def initBody(x: Float, y: Float): Unit = {
@@ -93,18 +100,14 @@ class Fist(val mainAbility: Ability, val startTime: Float, posX: Float, posY: Fl
   }
 
   override def render(batch: EsBatch): Unit = {
-
     if (state == AbilityState.Channeling) {
-
+      val spriteWidth = 64
+      val scale = radius * 2 / spriteWidth
       val image = currentWindupAnimationFrame
-
-      val scale = radius * 2f / image.getRegionWidth
-
-      val shift = radius
       batch.spriteBatch.draw(
         image,
-        posX - shift,
-        posY - shift,
+        posX - radius,
+        posY - radius,
         0,
         0,
         image.getRegionWidth,
@@ -115,17 +118,13 @@ class Fist(val mainAbility: Ability, val startTime: Float, posX: Float, posY: Fl
       )
     }
     if (state == AbilityState.Active) {
-
+      val spriteWidth = 64
+      val scale = radius * 2 / spriteWidth
       val image = currentActiveAnimationFrame
-
-      val scale = radius * 2f / image.getRegionWidth
-
-      val shift = radius
-
       batch.spriteBatch.draw(
         image,
-        posX - shift,
-        posY - shift,
+        posX - radius,
+        posY - radius,
         0,
         0,
         image.getRegionWidth,
@@ -138,9 +137,8 @@ class Fist(val mainAbility: Ability, val startTime: Float, posX: Float, posY: Fl
   }
 
   override def onCollideWithCreature(creature: Creature): Unit = {
-    if (!(mainAbility.creature.isEnemy && creature.isEnemy) && creature.isAlive && activeTimer.time < 0.15f) {
-      if (!creature.isImmune) creature.takeLifeDamage(50f, immunityFrames = true)
+    if (!(mainAbility.creature.isEnemy && creature.isEnemy) && creature.isAlive) {
+      if (!creature.isImmune) creature.takeLifeDamage(40f, immunityFrames = true)
     }
   }
-
 }

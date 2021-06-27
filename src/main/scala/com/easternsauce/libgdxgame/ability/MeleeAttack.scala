@@ -182,7 +182,7 @@ trait MeleeAttack extends Attack with PhysicalHitbox with ActiveAnimation with W
     super.onCollideWithCreature(otherCreature)
 
     if (!(creature.isEnemy && otherCreature.isEnemy)) {
-      if (creature != otherCreature && state == AbilityState.Active && !otherCreature.immune) {
+      if (creature != otherCreature && state == AbilityState.Active && !otherCreature.isImmune) {
         otherCreature.takeLifeDamage(
           damage = creature.weaponDamage,
           immunityFrames = true,
