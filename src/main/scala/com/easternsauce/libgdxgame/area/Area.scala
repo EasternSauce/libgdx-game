@@ -1,6 +1,7 @@
 package com.easternsauce.libgdxgame.area
 
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.audio.Music
 import com.badlogic.gdx.graphics.{Color, OrthographicCamera}
 import com.badlogic.gdx.maps.tiled.{TiledMapTileLayer, TmxMapLoader}
 import com.easternsauce.libgdxgame.area.traits._
@@ -29,6 +30,8 @@ class Area(val mapLoader: TmxMapLoader, val areaFilesLocation: String, val id: S
   val arrowList: ListBuffer[Arrow] = ListBuffer()
 
   val aStarNodeList: ListBuffer[AStarNode] = ListBuffer()
+
+  var music: Option[Music] = None
 
   initPhysicalTerrain()
 

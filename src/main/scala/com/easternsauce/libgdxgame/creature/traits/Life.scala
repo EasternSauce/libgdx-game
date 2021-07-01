@@ -58,7 +58,6 @@ trait Life {
         effect("immune").applyEffect(0.75f)
         // stagger on hit
         effect("immobilized").applyEffect(0.35f)
-        if (isBoss) println("hit stagger")
       }
 
       if (isKnockbackable) {

@@ -71,10 +71,16 @@ class AreaGate private (
           case _                => throw new RuntimeException("should never reach here")
         }
 
+        musicManager.stopMusic()
+
         moveCreature(creature, destination, posX, posY)
 
         destination.reset()
+
+        if (destination.music.nonEmpty) musicManager.playMusic(destination.music.get, 0.2f)
+
         currentArea = Some(destination)
+
       }
     }
 

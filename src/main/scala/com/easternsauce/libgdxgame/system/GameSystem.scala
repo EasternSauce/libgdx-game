@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.Vector3
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer
 import com.badlogic.gdx.utils.viewport.{FitViewport, Viewport}
 import com.badlogic.gdx.{Game, Gdx, Input}
+import com.easternsauce.libgdxgame.ability.music.MusicManager
 import com.easternsauce.libgdxgame.area.{Area, AreaGate}
 import com.easternsauce.libgdxgame.creature.{Creature, Player}
 import com.easternsauce.libgdxgame.hud.{InventoryWindow, LootPickupMenu, NotificationText, PlayerInfoHud}
@@ -37,6 +38,8 @@ object GameSystem extends Game {
   var player: Player = _
 
   var areaMap: mutable.Map[String, Area] = _
+
+  val musicManager: MusicManager = new MusicManager()
 
   val camera: OrthographicCamera = new OrthographicCamera()
   val hudCamera: OrthographicCamera = new OrthographicCamera()
@@ -107,6 +110,8 @@ object GameSystem extends Game {
     lifeStaminaBar = new PlayerInfoHud()
 
     currentArea = player.area
+
+    if (currentArea.get.music.nonEmpty) musicManager.playMusic(currentArea.get.music.get, 0.2f)
   }
 
   private def loadAreas(): Unit = {
@@ -121,6 +126,8 @@ object GameSystem extends Game {
 
     gateList += AreaGate(areaMap("area1"), 199.5f, 15f, areaMap("area3"), 17f, 2.5f)
     gateList += AreaGate(areaMap("area1"), 2f, 63f, areaMap("area2"), 58f, 9f)
+
+    area2.music = Some(Assets.music(Assets.abandonedPlainsMusic))
 
   }
 
@@ -175,15 +182,18 @@ object GameSystem extends Game {
       player.staminaOveruse = false
       player.effectMap("staminaRegenerationStopped").stop()
 
+      musicManager.stopMusic()
+
       val area = player.playerSpawnPoint.get.area
       currentArea = Option(area)
       area.reset()
+
+      if (area.music.nonEmpty) musicManager.playMusic(area.music.get, 0.2f)
 
       player.assignToArea(area, player.playerSpawnPoint.get.posX, player.playerSpawnPoint.get.posY)
 
       player.setRotation(0f)
 
-      //stopBossBattleMusic()
     }
   }
 
