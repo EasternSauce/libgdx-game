@@ -1,6 +1,6 @@
 package com.easternsauce.libgdxgame.creature
 
-import com.badlogic.gdx.audio.Sound
+import com.badlogic.gdx.audio.{Music, Sound}
 import com.easternsauce.libgdxgame.ability.{DashAbility, FistSlamAbility, MeteorCrashAbility, MeteorRainAbility}
 import com.easternsauce.libgdxgame.creature.traits.{AbilityUsage, Boss}
 import com.easternsauce.libgdxgame.system.Assets
@@ -26,6 +26,10 @@ class FireDemon(val id: String) extends Boss {
   protected var fistSlamAbility: FistSlamAbility = _
   protected var meteorCrashAbility: MeteorCrashAbility = _
   protected var dashAbility: DashAbility = _
+
+  override val bossMusic: Option[Music] = Some(Assets.music(Assets.fireDemonMusic))
+
+  override val name = "Magma Stalker"
 
   setupAnimation(
     regionName = "taurus",
@@ -55,20 +59,6 @@ class FireDemon(val id: String) extends Boss {
   dropTable.addAll(
     List("ironSword" -> 0.3f, "poisonDagger" -> 0.3f, "steelArmor" -> 0.8f, "steelHelmet" -> 0.5f, "thiefRing" -> 1.0f)
   )
-
-//  override def onAggroed(): Unit = {
-//    if (!bossBattleStarted) {
-//      bossBattleStarted = true
-//
-//      bossMusic.setVolume(0.1f)
-//      bossMusic.setLooping(true)
-//      bossMusic.play()
-//
-//      GameSystem.hud.bossHealthBar.onBossBattleStart(this)
-//      mobSpawnPoint.blockade.active = true
-//      Assets.monsterGrowlSound.play(0.1f)
-//    }
-//  }
 
   abilityUsages.addAll(List("dash" -> AbilityUsage(weight = 70f, minimumDistance = 15f)))
   abilityUsages.addAll(List("meteorRain" -> AbilityUsage(weight = 30f, minimumDistance = 4f, lifeThreshold = 0.6f)))

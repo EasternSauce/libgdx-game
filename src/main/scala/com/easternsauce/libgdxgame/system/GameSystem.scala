@@ -10,7 +10,7 @@ import com.badlogic.gdx.{Game, Gdx, Input}
 import com.easternsauce.libgdxgame.ability.music.MusicManager
 import com.easternsauce.libgdxgame.area.{Area, AreaGate}
 import com.easternsauce.libgdxgame.creature.{Creature, Player}
-import com.easternsauce.libgdxgame.hud.{InventoryWindow, LootPickupMenu, NotificationText, PlayerInfoHud}
+import com.easternsauce.libgdxgame.hud._
 import com.easternsauce.libgdxgame.items.ItemTemplate
 import com.easternsauce.libgdxgame.saving.SavefileManager
 import com.easternsauce.libgdxgame.screens.{MainMenuScreen, PlayScreen}
@@ -72,6 +72,8 @@ object GameSystem extends Game {
   var debugMode = false
 
   val notificationText: NotificationText = new NotificationText()
+
+  val bossLifeBar = new BossLifeBar()
 
   val lootPickupMenu = new LootPickupMenu()
 

@@ -33,6 +33,8 @@ class PlayScreen() extends Screen {
     managePlayerRespawns(player)
 
     notificationText.update()
+
+    bossLifeBar.update()
   }
 
   override def render(delta: Float): Unit = {
@@ -97,6 +99,8 @@ class PlayScreen() extends Screen {
     renderDeathScreen(hudBatch)
 
     notificationText.render(hudBatch)
+
+    bossLifeBar.render(hudBatch)
 
     lootPickupMenu.render(hudBatch)
 
