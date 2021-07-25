@@ -60,6 +60,8 @@ class PlayScreen() extends Screen {
 
     currentArea.get.renderPlayerSpawns(worldBatch)
 
+    currentArea.get.renderBossArenaBlockades(worldBatch)
+
     currentArea.get.renderAiDebug(worldBatch)
 
     currentArea.get.renderDeadCreatures(worldBatch)

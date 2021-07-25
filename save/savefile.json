@@ -9,8 +9,8 @@
       "area" : "area3",
       "isPlayer" : false,
       "position" : {
-        "x" : 166.23643,
-        "y" : 91.48227
+        "x" : 157.06392,
+        "y" : 122.39573
       },
       "equipmentItems" : [
         {
@@ -67,8 +67,8 @@
       "area" : "area3",
       "isPlayer" : false,
       "position" : {
-        "x" : 127.03125,
-        "y" : 160.60997
+        "x" : 166.2479,
+        "y" : 139.11253
       },
       "equipmentItems" : [
         {
@@ -108,8 +108,8 @@
       "area" : "area3",
       "isPlayer" : false,
       "position" : {
-        "x" : 167.9586,
-        "y" : 186.39906
+        "x" : 166.98671,
+        "y" : 182.80487
       },
       "equipmentItems" : [
         {
@@ -132,8 +132,8 @@
       "area" : "area3",
       "isPlayer" : false,
       "position" : {
-        "x" : 48.466675,
-        "y" : 41.498543
+        "x" : 47.869583,
+        "y" : 43.198822
       },
       "equipmentItems" : [
         {
@@ -156,8 +156,8 @@
       "area" : "area3",
       "isPlayer" : false,
       "position" : {
-        "x" : 163.27274,
-        "y" : 156.19601
+        "x" : 167.36824,
+        "y" : 141.72705
       },
       "equipmentItems" : [
         {
@@ -228,8 +228,8 @@
       "area" : "area3",
       "isPlayer" : false,
       "position" : {
-        "x" : 68.196,
-        "y" : 153.64003
+        "x" : 69.23824,
+        "y" : 156.05844
       },
       "equipmentItems" : [
         {
@@ -300,8 +300,8 @@
       "area" : "area3",
       "isPlayer" : false,
       "position" : {
-        "x" : 98.3835,
-        "y" : 66.054
+        "x" : 99.026764,
+        "y" : 64.591995
       },
       "equipmentItems" : [
         {
@@ -389,8 +389,8 @@
       "area" : "area3",
       "isPlayer" : false,
       "position" : {
-        "x" : 56.17162,
-        "y" : 118.068146
+        "x" : 38.895733,
+        "y" : 132.91287
       },
       "equipmentItems" : [
         {
@@ -413,8 +413,8 @@
       "area" : "area3",
       "isPlayer" : false,
       "position" : {
-        "x" : 166.76355,
-        "y" : 182.89587
+        "x" : 163.94035,
+        "y" : 182.55305
       },
       "equipmentItems" : [
         {
@@ -454,8 +454,8 @@
       "area" : "area3",
       "isPlayer" : false,
       "position" : {
-        "x" : 84.56827,
-        "y" : 180.93517
+        "x" : 83.98774,
+        "y" : 181.13316
       },
       "equipmentItems" : [
         {
@@ -478,8 +478,8 @@
       "area" : "area3",
       "isPlayer" : false,
       "position" : {
-        "x" : 184.10226,
-        "y" : 140.14774
+        "x" : 167.28429,
+        "y" : 144.50598
       },
       "equipmentItems" : [
         {
@@ -502,7 +502,7 @@
       "area" : "area3",
       "isPlayer" : false,
       "position" : {
-        "x" : 12.106252,
+        "x" : 13.906253,
         "y" : 84.96875
       },
       "equipmentItems" : [
@@ -591,8 +591,8 @@
       "area" : "area3",
       "isPlayer" : false,
       "position" : {
-        "x" : 167.1017,
-        "y" : 179.98265
+        "x" : 167.25153,
+        "y" : 178.39693
       },
       "equipmentItems" : [
         {
@@ -639,8 +639,8 @@
       "area" : "area3",
       "isPlayer" : false,
       "position" : {
-        "x" : 169.59805,
-        "y" : 182.65234
+        "x" : 169.03287,
+        "y" : 180.7266
       },
       "equipmentItems" : [
         {
@@ -752,8 +752,8 @@
       "area" : "area3",
       "isPlayer" : false,
       "position" : {
-        "x" : 99.734985,
-        "y" : 18.455795
+        "x" : 98.98525,
+        "y" : 21.28085
       },
       "equipmentItems" : [
         {
@@ -776,8 +776,8 @@
       "area" : "area3",
       "isPlayer" : false,
       "position" : {
-        "x" : 83.14354,
-        "y" : 184.71971
+        "x" : 83.17402,
+        "y" : 184.8477
       },
       "equipmentItems" : [
         {
@@ -824,8 +824,8 @@
       "area" : "area3",
       "isPlayer" : false,
       "position" : {
-        "x" : 51.993607,
-        "y" : 42.11619
+        "x" : 51.21463,
+        "y" : 42.16082
       },
       "equipmentItems" : [
         {
@@ -889,8 +889,8 @@
       "area" : "area3",
       "isPlayer" : false,
       "position" : {
-        "x" : 68.196,
-        "y" : 156.48497
+        "x" : 67.2257,
+        "y" : 158.06926
       },
       "equipmentItems" : [
         {
@@ -937,8 +937,8 @@
       "area" : "area3",
       "isPlayer" : false,
       "position" : {
-        "x" : 55.33459,
-        "y" : 113.1007
+        "x" : 55.245296,
+        "y" : 113.55026
       },
       "equipmentItems" : [
         {
@@ -1073,12 +1073,12 @@
         "area" : "area2",
         "id" : "0"
       },
-      "life" : 44.800003,
+      "life" : 28.000004,
       "area" : "area3",
       "isPlayer" : true,
       "position" : {
-        "x" : 25.064505,
-        "y" : 11.735566
+        "x" : 169.30692,
+        "y" : 143.04427
       },
       "equipmentItems" : [
         {
@@ -1219,8 +1219,8 @@
       "area" : "area3",
       "isPlayer" : false,
       "position" : {
-        "x" : 127.03125,
-        "y" : 157.76503
+        "x" : 164.83545,
+        "y" : 143.17505
       },
       "equipmentItems" : [
         {
@@ -1267,8 +1267,8 @@
       "area" : "area3",
       "isPlayer" : false,
       "position" : {
-        "x" : 80.9748,
-        "y" : 182.87842
+        "x" : 81.15368,
+        "y" : 182.84471
       },
       "equipmentItems" : [
         {
@@ -1349,8 +1349,8 @@
       "area" : "area3",
       "isPlayer" : false,
       "position" : {
-        "x" : 7.710291,
-        "y" : 51.64778
+        "x" : 6.4375052,
+        "y" : 50.375
       },
       "equipmentItems" : [
         {
@@ -1445,8 +1445,8 @@
       "area" : "area3",
       "isPlayer" : false,
       "position" : {
-        "x" : 51.83754,
-        "y" : 114.0312
+        "x" : 52.857857,
+        "y" : 115.097595
       },
       "equipmentItems" : [
         {
@@ -1469,8 +1469,8 @@
       "area" : "area3",
       "isPlayer" : false,
       "position" : {
-        "x" : 100.06493,
-        "y" : 21.292433
+        "x" : 100.79618,
+        "y" : 23.49756
       },
       "equipmentItems" : [
         {

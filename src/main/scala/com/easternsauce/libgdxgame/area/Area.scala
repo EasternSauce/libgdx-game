@@ -103,6 +103,10 @@ class Area(val mapLoader: TmxMapLoader, val areaFilesLocation: String, val id: S
     playerSpawns.foreach(_.draw(batch.spriteBatch))
   }
 
+  def renderBossArenaBlockades(batch: EsBatch): Unit = {
+    bossArenaBlockades.foreach(_.draw(batch.spriteBatch))
+  }
+
   def renderCreatureLifeBars(batch: EsBatch): Unit = {
     for (creature <- creaturesMap.values) {
       if (creature.isAlive && !creature.atFullLife)

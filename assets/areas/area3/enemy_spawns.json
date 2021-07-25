@@ -214,7 +214,13 @@
         "x": 164.46875,
         "y": 93.25
       },
-      "weaponType": "demonTrident"
+      "weaponType": "demonTrident",
+      "blockades": [
+        {
+          "x": 164.46875,
+          "y": 100
+        }
+      ]
     }
   ]
 }

@@ -34,14 +34,14 @@ bag
   index: -1
 cursor
   rotate: false
-  xy: 324, 428
+  xy: 422, 558
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 downarrow
   rotate: false
-  xy: 1718, 1618
+  xy: 1206, 940
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
@@ -130,6 +130,13 @@ nice_icons
   orig: 510, 704
   offset: 0, 0
   index: -1
+pillar
+  rotate: false
+  xy: 1718, 1600
+  size: 25, 50
+  orig: 25, 50
+  offset: 0, 0
+  index: -1
 skeleton
   rotate: false
   xy: 514, 1040
@@ -160,7 +167,7 @@ taurus
   index: -1
 treasure
   rotate: false
-  xy: 1206, 940
+  xy: 324, 428
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
