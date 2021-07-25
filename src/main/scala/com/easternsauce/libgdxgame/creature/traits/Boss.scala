@@ -11,8 +11,6 @@ trait Boss extends Enemy {
 
   val encounterMusic: Option[Music] = None
 
-  var bossBattleStarted: Boolean = false
-
   val name: String
 
   val bossMusic: Option[Music]
@@ -20,25 +18,13 @@ trait Boss extends Enemy {
   override def aggroOnCreature(otherCreature: Creature): Unit = {
     super.aggroOnCreature(otherCreature)
 
-    if (!bossBattleStarted) {
-      bossBattleStarted = true
-
-      bossMusic.get.setVolume(0.1f)
-      bossMusic.get.setLooping(true)
-      bossMusic.get.play()
-
-      GameSystem.bossLifeBar.onBossBattleStart(this)
-      //mobSpawnPoint.blockade.active = true
-      //Assets.monsterGrowlSound.play(0.1f)
-    }
+    if (otherCreature.isPlayer) GameSystem.bossfightManager.startBossfight(this)
   }
 
   override def onDeath(): Unit = {
     super.onDeath()
 
-    bossMusic.get.stop()
-    if (GameSystem.bossLifeBar.boss == this)
-      GameSystem.bossLifeBar.hide()
-    //mobSpawnPoint.blockade.active = false
+    GameSystem.bossfightManager.stopBossfight()
+
   }
 }

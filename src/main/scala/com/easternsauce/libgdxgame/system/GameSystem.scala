@@ -9,6 +9,7 @@ import com.badlogic.gdx.utils.viewport.{FitViewport, Viewport}
 import com.badlogic.gdx.{Game, Gdx, Input}
 import com.easternsauce.libgdxgame.ability.music.MusicManager
 import com.easternsauce.libgdxgame.area.{Area, AreaGate}
+import com.easternsauce.libgdxgame.bossfight.BossfightManager
 import com.easternsauce.libgdxgame.creature.{Creature, Player}
 import com.easternsauce.libgdxgame.hud._
 import com.easternsauce.libgdxgame.items.ItemTemplate
@@ -73,9 +74,9 @@ object GameSystem extends Game {
 
   val notificationText: NotificationText = new NotificationText()
 
-  val bossLifeBar = new BossLifeBar()
-
   val lootPickupMenu = new LootPickupMenu()
+
+  val bossfightManager = new BossfightManager()
 
   implicit def bitmapFontToEnrichedBitmapFont(font: BitmapFont): EnrichedBitmapFont = new EnrichedBitmapFont(font)
 
@@ -178,11 +179,14 @@ object GameSystem extends Game {
     if (player.respawning && player.respawnTimer.time > Constants.PlayerRespawnTime) {
       player.respawning = false
 
+      player.onRespawn()
+
       player.life = player.maxLife
       player.staminaPoints = player.maxStaminaPoints
       player.isAttacking = false
       player.staminaOveruse = false
       player.effectMap("staminaRegenerationStopped").stop()
+      player.effectMap("poisoned").stop()
 
       musicManager.stopMusic()
 

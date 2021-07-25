@@ -62,13 +62,10 @@ class Player(val id: String) extends Creature {
     respawning = true
     sprinting = false
 
-    // TODO: current boss fight manager???
-    GameSystem.bossLifeBar.hide()
-    GameSystem.bossLifeBar.boss.bossMusic.get.stop()
+  }
 
-    // TODO: add music manager
-    //Assets.abandonedPlainsMusic.stop()
-    //Assets.fireDemonMusic.stop()
+  def onRespawn(): Unit = {
+    GameSystem.bossfightManager.stopBossfight()
   }
 
   def interact(): Unit = {

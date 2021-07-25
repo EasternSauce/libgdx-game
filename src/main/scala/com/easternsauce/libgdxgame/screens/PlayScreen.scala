@@ -34,7 +34,7 @@ class PlayScreen() extends Screen {
 
     notificationText.update()
 
-    bossLifeBar.update()
+    bossfightManager.update()
   }
 
   override def render(delta: Float): Unit = {
@@ -100,7 +100,7 @@ class PlayScreen() extends Screen {
 
     notificationText.render(hudBatch)
 
-    bossLifeBar.render(hudBatch)
+    bossfightManager.render(hudBatch)
 
     lootPickupMenu.render(hudBatch)
 

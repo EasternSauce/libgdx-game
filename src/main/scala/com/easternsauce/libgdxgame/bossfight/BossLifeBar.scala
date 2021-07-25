@@ -1,4 +1,4 @@
-package com.easternsauce.libgdxgame.hud
+package com.easternsauce.libgdxgame.bossfight
 
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.math.Rectangle
