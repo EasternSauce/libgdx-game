@@ -72,10 +72,9 @@ trait AggressiveAi {
 
               if (path.length < 20) {
                 aggroOnCreature(otherCreature)
-                path.clear()
-                aggroRecalculatePathTimer.restart()
               }
 
+              aggroRecalculatePathTimer.restart()
             }
 
           }
@@ -111,6 +110,7 @@ trait AggressiveAi {
     aggroedTarget = Some(otherCreature)
     circlingDecisionTimer.restart()
     recalculatePathTimer.restart()
+
     calculatePath(area.get, aggroedTarget.get.pos)
     useAbilityTimer.restart()
     activeSoundTimer.restart()
