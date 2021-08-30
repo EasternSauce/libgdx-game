@@ -5,7 +5,7 @@ import com.badlogic.gdx.physics.box2d.{Body, BodyDef, CircleShape, FixtureDef}
 import com.easternsauce.libgdxgame.ability.AbilityState
 import com.easternsauce.libgdxgame.ability.AbilityState.AbilityState
 import com.easternsauce.libgdxgame.ability.traits.{Ability, ActiveAnimation}
-import com.easternsauce.libgdxgame.creature.Creature
+import com.easternsauce.libgdxgame.creature.{Creature, Enemy}
 import com.easternsauce.libgdxgame.util.EsBatch
 
 class Bubble(
@@ -22,7 +22,7 @@ class Bubble(
 
   val loopTime = 0.2f
 
-  var dirVector = new Vector2(0, 0)
+  var dirVector = new Vector2(1, 0)
 
   override var state: AbilityState = AbilityState.Inactive
   override var started = false
@@ -46,7 +46,6 @@ class Bubble(
     started = true
     state = AbilityState.Channeling
     channelTimer.restart()
-    println("starting component (channel)")
   }
 
   override def onUpdateActive(): Unit = {
@@ -56,10 +55,13 @@ class Bubble(
           onActiveStart()
         }
       if (state == AbilityState.Active) {
+        if (!destroyed && activeTimer.time >= activeTime) {
+          body.getWorld.destroyBody(body)
+          destroyed = true
+        }
         if (activeTimer.time > activeTime) {
           // on active stop
           state = AbilityState.Inactive
-          println("stopping component")
         }
         if (!destroyed) {
           body.setLinearVelocity(dirVector.x * speed, dirVector.y * speed)
@@ -75,7 +77,11 @@ class Bubble(
     abilityActiveAnimationTimer.restart()
     activeTimer.restart()
     initBody(startX, startY)
-    dirVector = mainAbility.creature.facingVector.cpy
+    if (mainAbility.creature.asInstanceOf[Enemy].aggroedTarget.nonEmpty) {
+      dirVector = mainAbility.creature.facingVector.cpy
+    } else {
+      dirVector = new Vector2(1.0f, 0.0f)
+    }
   }
 
   def initBody(x: Float, y: Float): Unit = {

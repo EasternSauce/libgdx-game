@@ -12,12 +12,7 @@ trait ComposedAbility extends Ability {
 
   protected def activeTime: Float = 0
 
-  def lastComponentFinishTime: Float = {
-    val lastComponent =
-      components.maxBy(component => component.startTime + component.channelTime + component.activeTime)
-    lastComponent.startTime + lastComponent.channelTime + lastComponent.activeTime
-
-  }
+  var lastComponentFinishTime: Float = 0
 
   override def update(): Unit = {
     if ((state == AbilityState.Channeling) && channelTimer.time > channelTime) {
@@ -33,8 +28,6 @@ trait ComposedAbility extends Ability {
         onStop()
 
         state = AbilityState.Inactive
-
-        println("stopping ability")
       }
 
     }

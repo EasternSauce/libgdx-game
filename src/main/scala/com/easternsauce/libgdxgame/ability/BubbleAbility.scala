@@ -21,10 +21,14 @@ class BubbleAbility(val creature: Creature) extends ComposedAbility {
       components += bubble
     }
 
+    val lastComponent =
+      components.maxBy(component => component.startTime + component.channelTime + component.activeTime)
+    lastComponentFinishTime =
+      lastComponent.startTime + lastComponent.channelTime + lastComponent.activeTime + 0.05f // with buffer
+
     creature
       .effect("immobilized")
       .applyEffect(lastComponentFinishTime)
-    println("immobilize for + " + lastComponentFinishTime)
   }
 
   override def render(batch: EsBatch): Unit = {
@@ -37,8 +41,6 @@ class BubbleAbility(val creature: Creature) extends ComposedAbility {
 
   override protected def onActiveStart(): Unit = {
     creature.takeStaminaDamage(25f)
-
-    println("starting...")
   }
 
   override protected def onUpdateActive(): Unit = {
