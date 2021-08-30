@@ -2,7 +2,7 @@
   "spawnpoints": [
     {
       "id": "0",
-      "creatureClass": "com.easternsauce.libgdxgame.creature.Skeleton",
+      "creatureClass": "com.easternsauce.libgdxgame.creature.Serpent",
       "location": {
         "x": 108.0625,
         "y": 183.6875

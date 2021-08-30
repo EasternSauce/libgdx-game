@@ -9,8 +9,9 @@ trait AbilityComponent {
 
   protected val activeTimer: EsTimer = EsTimer()
   protected val channelTimer: EsTimer = EsTimer()
-  protected val activeTime: Float
-  protected val channelTime: Float
+  val activeTime: Float
+  val channelTime: Float
+  val startTime: Float
 
   var state: AbilityState
   var started: Boolean
@@ -23,4 +24,5 @@ trait AbilityComponent {
 
   def onCollideWithCreature(creature: Creature): Unit
 
+  def start(): Unit
 }

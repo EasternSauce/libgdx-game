@@ -10,12 +10,15 @@ trait ActiveAnimation {
   protected var abilityActiveAnimation: Animation[TextureRegion] = _
   protected val abilityActiveAnimationTimer: EsTimer = EsTimer()
 
+  var loop = false
+
   def setupActiveAnimation(
     regionName: String,
     textureWidth: Int,
     textureHeight: Int,
     animationFrameCount: Int,
-    frameDuration: Float
+    frameDuration: Float,
+    loop: Boolean = false
   ): Unit = {
     val frames = new ListBuffer[TextureRegion]()
 
@@ -27,9 +30,11 @@ trait ActiveAnimation {
 
     abilityActiveAnimation = new Animation[TextureRegion](frameDuration, frames.toArray: _*)
 
+    this.loop = loop
+
   }
 
   def currentActiveAnimationFrame: TextureRegion = {
-    abilityActiveAnimation.getKeyFrame(abilityActiveAnimationTimer.time, false)
+    abilityActiveAnimation.getKeyFrame(abilityActiveAnimationTimer.time, loop)
   }
 }
