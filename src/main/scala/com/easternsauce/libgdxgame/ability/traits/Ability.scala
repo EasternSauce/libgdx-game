@@ -53,35 +53,37 @@ trait Ability {
       onChannellingStart()
 
       if (isAttack) { // + 0.01 to ensure regen doesn't start if we hold attack button
-        creature
-          .effect("staminaRegenerationStopped")
-          .applyEffect(channelTime + cooldownTime + 0.01f)
-      } else creature.effect("staminaRegenerationStopped").applyEffect(1f)
+        creature.activateEffect("staminaRegenerationStopped", channelTime + cooldownTime + 0.01f)
+      } else {
+        creature.activateEffect("staminaRegenerationStopped", 1f)
+      }
     }
   }
 
   def update(): Unit = {
-    if ((state == AbilityState.Channeling) && channelTimer.time > channelTime) {
-      state = AbilityState.Active
-      onActiveStart()
-      activeTimer.restart()
-      onCooldown = true
+
+    import com.easternsauce.libgdxgame.ability.AbilityState._
+    state match {
+      case Channeling =>
+        if (channelTimer.time > channelTime) {
+          state = AbilityState.Active
+          onActiveStart()
+          activeTimer.restart()
+          onCooldown = true
+        }
+        updateHitbox()
+        onUpdateChanneling()
+      case Active =>
+        if (activeTimer.time > activeTime) {
+          onStop()
+
+          state = AbilityState.Inactive
+        }
+        updateHitbox()
+        onUpdateActive()
+      case Inactive =>
+        if (onCooldown && activeTimer.time > cooldownTime) onCooldown = false
     }
-    if ((state == AbilityState.Active) && activeTimer.time > activeTime) {
-      onStop()
-
-      state = AbilityState.Inactive
-    }
-
-    if (state == AbilityState.Channeling || state == AbilityState.Active) {
-      updateHitbox()
-    }
-
-    if (state == AbilityState.Channeling) onUpdateChanneling()
-    else if (state == AbilityState.Active) onUpdateActive()
-
-    if ((state == AbilityState.Inactive) && onCooldown)
-      if (activeTimer.time > cooldownTime) onCooldown = false
   }
 
   def onChannellingStart(): Unit = {

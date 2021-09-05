@@ -197,7 +197,7 @@ abstract class Creature
   def assignToArea(area: Area, x: Float, y: Float): Unit = {
     if (this.area.isEmpty) {
       this.area = Some(area)
-      initCircularBody(area.world, x, y, creatureWidth / 2f)
+      initBody(area.world, x, y, creatureWidth / 2f)
 
       area.creaturesMap += (id -> this)
 
@@ -208,7 +208,7 @@ abstract class Creature
       oldArea.creaturesMap -= id
 
       this.area = Some(area)
-      initCircularBody(area.world, x, y, creatureWidth / 2f)
+      initBody(area.world, x, y, creatureWidth / 2f)
 
       area.creaturesMap += (id -> this)
 

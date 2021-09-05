@@ -105,7 +105,7 @@ class MainMenuScreen extends Screen {
     val posY = if (currentNode.promptText.nonEmpty) 130 else 100
 
     if (currentNode.promptText.nonEmpty) {
-      Fonts.defaultFont.draw(batch.spriteBatch, currentNode.promptText.get, posX, Constants.WindowHeight - 100)
+      Fonts.defaultFont.draw(batch.spriteBatch, currentNode.promptText.get, posX.toFloat, Constants.WindowHeight - 100)
     }
 
     for (i <- currentNode.children.indices) {
@@ -113,8 +113,8 @@ class MainMenuScreen extends Screen {
       Fonts.defaultFont.draw(
         batch.spriteBatch,
         (if (currentSelected == i) ">" else "") + option.name,
-        posX,
-        Constants.WindowHeight - (posY + 30 * i),
+        posX.toFloat,
+        Constants.WindowHeight.toFloat - (posY + 30 * i),
         Color.WHITE
       )
     }

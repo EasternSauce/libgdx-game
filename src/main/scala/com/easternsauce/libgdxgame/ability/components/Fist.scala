@@ -13,8 +13,8 @@ class Fist(val mainAbility: Ability, val startTime: Float, posX: Float, posY: Fl
     with WindupAnimation
     with ActiveAnimation {
 
-  override protected val activeTime: Float = 0.2f
-  override protected val channelTime: Float = 0.4f
+  override val activeTime: Float = 0.2f
+  override val channelTime: Float = 0.4f
 
   override var state: AbilityState = AbilityState.Inactive
   override var started: Boolean = false
@@ -107,8 +107,8 @@ class Fist(val mainAbility: Ability, val startTime: Float, posX: Float, posY: Fl
         posY - shift,
         0,
         0,
-        image.getRegionWidth,
-        image.getRegionHeight,
+        image.getRegionWidth.toFloat,
+        image.getRegionHeight.toFloat,
         scale,
         scale,
         0.0f
@@ -128,8 +128,8 @@ class Fist(val mainAbility: Ability, val startTime: Float, posX: Float, posY: Fl
         posY - shift,
         0,
         0,
-        image.getRegionWidth,
-        image.getRegionHeight,
+        image.getRegionWidth.toFloat,
+        image.getRegionHeight.toFloat,
         scale,
         scale,
         0.0f

@@ -1,58 +1,35 @@
 package com.easternsauce.libgdxgame.ability.components
 
+import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.{Body, BodyDef, CircleShape, FixtureDef}
 import com.easternsauce.libgdxgame.ability.AbilityState
 import com.easternsauce.libgdxgame.ability.AbilityState.AbilityState
-import com.easternsauce.libgdxgame.ability.traits.{Ability, ActiveAnimation, WindupAnimation}
-import com.easternsauce.libgdxgame.creature.Creature
+import com.easternsauce.libgdxgame.ability.traits.Ability
+import com.easternsauce.libgdxgame.creature.{Creature, Enemy}
 import com.easternsauce.libgdxgame.system.Assets
 import com.easternsauce.libgdxgame.util.EsBatch
 
-class Meteor(
-  val mainAbility: Ability,
-  val startTime: Float,
-  val posX: Float,
-  val posY: Float,
-  val radius: Float,
-  speed: Float
-) extends AbilityComponent
-    with WindupAnimation
-    with ActiveAnimation {
+class IceShard(val mainAbility: Ability, var startX: Float, var startY: Float, val speed: Float, val startTime: Float)
+    extends AbilityComponent {
+  override val activeTime: Float = 1.5f
+  override val channelTime: Float = 0.6f
 
-  override val activeTime: Float = 1.8f / speed
-  override val channelTime: Float = 1.2f / speed
+  var dirVector = new Vector2(1, 0)
 
   override var state: AbilityState = AbilityState.Inactive
   override var started = false
   override var body: Body = _
   override var destroyed = false
 
-  val spriteWidth = 64
-  val spriteHeight = 64
-  val numOfActiveFrames = 21
-  val numOfChannelingFrames = 7
+  val radius = 1f
 
-  setupActiveAnimation(
-    regionName = "explosion",
-    textureWidth = spriteHeight,
-    textureHeight = spriteHeight,
-    animationFrameCount = numOfActiveFrames,
-    frameDuration = activeTime / numOfActiveFrames
-  )
-
-  setupWindupAnimation(
-    regionName = "explosion_windup",
-    textureWidth = spriteHeight,
-    textureHeight = spriteHeight,
-    animationFrameCount = numOfChannelingFrames,
-    frameDuration = channelTime / numOfChannelingFrames
-  )
+  val spriteWidth = 152
+  val spriteHeight = 72
 
   def start(): Unit = {
     started = true
     state = AbilityState.Channeling
     channelTimer.restart()
-    abilityWindupAnimationTimer.restart()
   }
 
   override def onUpdateActive(): Unit = {
@@ -62,13 +39,16 @@ class Meteor(
           onActiveStart()
         }
       if (state == AbilityState.Active) {
-        if (!destroyed && activeTimer.time >= 0.2f) {
+        if (!destroyed && activeTimer.time >= activeTime) {
           body.getWorld.destroyBody(body)
           destroyed = true
         }
         if (activeTimer.time > activeTime) {
           // on active stop
           state = AbilityState.Inactive
+        }
+        if (!destroyed) {
+          body.setLinearVelocity(dirVector.x * speed, dirVector.y * speed)
         }
       }
     }
@@ -77,17 +57,21 @@ class Meteor(
 
   private def onActiveStart(): Unit = {
     state = AbilityState.Active
-    Assets.sound(Assets.explosionSound).play(0.01f)
-    abilityActiveAnimationTimer.restart()
+    //Assets.sound(Assets.explosionSound).play(0.01f)
     activeTimer.restart()
-    initBody(posX, posY)
+    initBody(startX, startY)
+    if (mainAbility.creature.asInstanceOf[Enemy].aggroedTarget.nonEmpty) {
+      dirVector = mainAbility.creature.facingVector.cpy
+    } else {
+      dirVector = new Vector2(1.0f, 0.0f)
+    }
   }
 
   def initBody(x: Float, y: Float): Unit = {
     val bodyDef = new BodyDef()
     bodyDef.position.set(x, y)
 
-    bodyDef.`type` = BodyDef.BodyType.StaticBody
+    bodyDef.`type` = BodyDef.BodyType.DynamicBody
     body = mainAbility.creature.area.get.world.createBody(bodyDef)
     body.setUserData(this)
 
@@ -100,38 +84,20 @@ class Meteor(
   }
 
   override def render(batch: EsBatch): Unit = {
-    if (state == AbilityState.Channeling) {
-      val spriteWidth = 64
-      val scale = radius * 2 / spriteWidth
-      val image = currentWindupAnimationFrame
-      batch.spriteBatch.draw(
-        image,
-        posX - radius,
-        posY - radius,
-        0,
-        0,
-        image.getRegionWidth.toFloat,
-        image.getRegionHeight.toFloat,
-        scale,
-        scale,
-        0.0f
-      )
-    }
     if (state == AbilityState.Active) {
-      val spriteWidth = 64
       val scale = radius * 2 / spriteWidth
-      val image = currentActiveAnimationFrame
+      val image = Assets.atlas.findRegion("ice_shard")
       batch.spriteBatch.draw(
         image,
-        posX - radius,
-        posY - radius,
+        body.getPosition.x - radius,
+        body.getPosition.y - radius,
         0,
         0,
         image.getRegionWidth.toFloat,
         image.getRegionHeight.toFloat,
         scale,
         scale,
-        0.0f
+        dirVector.angleDeg()
       )
     }
   }

@@ -9,7 +9,7 @@ import com.easternsauce.libgdxgame.util.EsBatch
 import scala.collection.mutable.ListBuffer
 
 class MeteorRainAbility(val creature: Creature) extends Ability {
-  val id = "meteorRain"
+  val id = "meteor_rain"
   override protected val channelTime: Float = 0.05f
   override protected val activeTime: Float = 0.15f * 59 + (1.2f + 1.8f) / 1.5f + 0.1f
   override protected val cooldownTime = 35f
@@ -17,9 +17,8 @@ class MeteorRainAbility(val creature: Creature) extends Ability {
   protected var meteors: ListBuffer[Meteor] = _
 
   override def onChannellingStart(): Unit = {
-    creature
-      .effect("immobilized")
-      .applyEffect(channelTime + activeTime)
+    creature.activateEffect("immobilized", channelTime + activeTime)
+
     meteors = ListBuffer[Meteor]()
     for (i <- 0 until 60) {
       val range = 34.375f

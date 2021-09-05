@@ -29,10 +29,8 @@ class AreaGate private (
   downArrowImageTo.setWidth(width)
   downArrowImageTo.setHeight(height)
 
-  private var body: Body = _
-
-  initBody(areaFrom, fromPosX, fromPosY)
-  initBody(areaTo, toPosX, toPosY)
+  private val bodyFrom: Body = initBody(areaFrom, fromPosX, fromPosY)
+  private val bodyTo: Body = initBody(areaTo, toPosX, toPosY)
 
   def render(batch: EsBatch): Unit = {
     val area = currentArea.getOrElse {
@@ -43,11 +41,11 @@ class AreaGate private (
     if (area == areaTo) downArrowImageTo.draw(batch.spriteBatch, 1.0f)
   }
 
-  def initBody(area: Area, x: Float, y: Float): Unit = {
+  def initBody(area: Area, x: Float, y: Float): Body = {
     val bodyDef = new BodyDef()
     bodyDef.position.set(x, y)
     bodyDef.`type` = BodyDef.BodyType.StaticBody
-    body = area.world.createBody(bodyDef)
+    val body = area.world.createBody(bodyDef)
     body.setUserData(this)
 
     val fixtureDef: FixtureDef = new FixtureDef()
@@ -60,6 +58,7 @@ class AreaGate private (
     fixtureDef.shape = shape
     body.createFixture(fixtureDef)
 
+    body
   }
 
   def activate(creature: Creature): Unit = {
@@ -86,6 +85,10 @@ class AreaGate private (
 
   }
 
+  def destroy(): Unit = {
+    bodyFrom.getWorld.destroyBody(bodyFrom)
+    bodyTo.getWorld.destroyBody(bodyTo)
+  }
 }
 
 object AreaGate {

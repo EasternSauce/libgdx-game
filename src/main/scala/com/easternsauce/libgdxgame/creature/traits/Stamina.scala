@@ -44,7 +44,7 @@ trait Stamina {
       staminaDrain += Gdx.graphics.getDeltaTime
     }
 
-    if (!effect("staminaRegenerationStopped").isActive && !sprinting) {
+    if (!isEffectActive("staminaRegenerationStopped") && !sprinting) {
       if (staminaRegenerationTimer.time > staminaRegenerationTickTime && !abilityActive && !staminaOveruse) {
         if (staminaPoints < maxStaminaPoints) {
           val afterRegeneration = staminaPoints + staminaRegeneration

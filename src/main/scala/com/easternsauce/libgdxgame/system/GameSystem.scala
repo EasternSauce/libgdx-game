@@ -27,7 +27,7 @@ object GameSystem extends Game {
 
   val randomGenerator: Random = new Random()
 
-  var savefileManager: SavefileManager = new SavefileManager()
+  val savefileManager: SavefileManager = new SavefileManager()
 
   var mainMenuScreen: MainMenuScreen = _
   var playScreen: PlayScreen = _
@@ -175,7 +175,7 @@ object GameSystem extends Game {
     creaturesToMove.enqueue((creature, destination, x, y))
   }
 
-  def managePlayerRespawns(player: Player) {
+  def managePlayerRespawns(player: Player): Unit = {
     if (player.respawning && player.respawnTimer.time > Constants.PlayerRespawnTime) {
       player.respawning = false
 

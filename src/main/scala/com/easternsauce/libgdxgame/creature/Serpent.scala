@@ -1,7 +1,7 @@
 package com.easternsauce.libgdxgame.creature
 
 import com.badlogic.gdx.audio.Sound
-import com.easternsauce.libgdxgame.ability.BubbleAbility
+import com.easternsauce.libgdxgame.ability.{BubbleAbility, IceShardAbility}
 import com.easternsauce.libgdxgame.creature.traits.AbilityUsage
 import com.easternsauce.libgdxgame.system.Assets
 import com.easternsauce.libgdxgame.util.EsDirection
@@ -17,6 +17,7 @@ class Serpent(val id: String) extends Enemy {
   override val activeSound: Option[Sound] = Some(Assets.sound(Assets.boneRattleSound))
 
   val bubbleAbility = new BubbleAbility(this)
+  val iceShardAbility = new IceShardAbility(this)
 
   setupAnimation(
     regionName = "serpent",
@@ -31,6 +32,7 @@ class Serpent(val id: String) extends Enemy {
   initCreature()
 
   abilityMap += (bubbleAbility.id -> bubbleAbility)
+  abilityMap += (iceShardAbility.id -> iceShardAbility)
 
   dropTable.addAll(
     List(
@@ -44,5 +46,6 @@ class Serpent(val id: String) extends Enemy {
   )
 
   abilityUsages.addAll(List("bubble" -> AbilityUsage(weight = 100f, minimumDistance = 2f)))
+  abilityUsages.addAll(List("ice_shard" -> AbilityUsage(weight = 100f, minimumDistance = 2f)))
 
 }

@@ -55,16 +55,16 @@ trait Life {
       if (beforeHP != life && life == 0f) onDeath()
 
       if (immunityFrames) { // immunity frames on hit
-        effect("immune").applyEffect(0.75f)
+        activateEffect("immune", 0.75f)
         // stagger on hit
-        effect("immobilized").applyEffect(0.35f)
+        activateEffect("immobilized", 0.35f)
       }
 
       if (isKnockbackable) {
         knockbackVector = new Vector2(pos.x - sourceX, pos.y - sourceY).nor()
         if (attackKnockbackVelocity > 0f) {
           knockbackVelocity = attackKnockbackVelocity
-          effect("knockedBack").applyEffect(0.15f)
+          activateEffect("knockedBack", 0.15f)
         }
       }
 

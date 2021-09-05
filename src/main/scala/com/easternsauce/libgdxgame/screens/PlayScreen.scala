@@ -90,13 +90,8 @@ class PlayScreen() extends Screen {
 
     lifeStaminaBar.render(hudBatch)
 
-    Fonts.defaultFont.draw(
-      hudBatch.spriteBatch,
-      Gdx.graphics.getFramesPerSecond + " fps",
-      3,
-      Constants.WindowHeight - 3,
-      Color.WHITE
-    )
+    val fps = Gdx.graphics.getFramesPerSecond
+    Fonts.defaultFont.draw(hudBatch.spriteBatch, s"$fps fps", 3, Constants.WindowHeight - 3, Color.WHITE)
 
     renderDeathScreen(hudBatch)
 

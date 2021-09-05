@@ -20,7 +20,7 @@ class DashAbility(val creature: Creature) extends Ability {
 
     dashVector = new Vector2(creature.walkingVector.x * speed, creature.walkingVector.y * speed)
 
-    creature.effect("immobilized").applyEffect(channelTime + activeTime)
+    creature.activateEffect("immobilized", channelTime + activeTime)
     creature.takeStaminaDamage(35f)
   }
 

@@ -10,7 +10,7 @@ class Effect {
 
   protected var effectActive: Boolean = false
 
-  def applyEffect(effectTime: Float): Unit = {
+  def activate(effectTime: Float): Unit = {
     if (effectActive) {
       effectEndTime = Math.max(getRemainingTime, effectTime)
       effectTimer.restart()

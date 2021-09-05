@@ -40,9 +40,14 @@ class BossLifeBar {
 
   def update(): Unit = {
     if (visible && boss != null) {
-      maxLifeRect = new Rectangle(Constants.WindowWidth / 2f - 250, Constants.WindowHeight - 35, 500, 10)
-      lifeRect =
-        new Rectangle(Constants.WindowWidth / 2f - 250, Constants.WindowHeight - 35, 500 * boss.life / boss.maxLife, 10)
+      maxLifeRect =
+        new Rectangle(Constants.WindowWidth.toFloat / 2f - 250f, Constants.WindowHeight.toFloat - 35f, 500, 10)
+      lifeRect = new Rectangle(
+        Constants.WindowWidth / 2f - 250,
+        Constants.WindowHeight.toFloat - 35f,
+        500 * boss.life / boss.maxLife,
+        10
+      )
     }
   }
 }

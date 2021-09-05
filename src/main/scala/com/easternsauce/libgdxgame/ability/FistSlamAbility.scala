@@ -9,7 +9,7 @@ import com.easternsauce.libgdxgame.util.EsBatch
 import scala.collection.mutable.ListBuffer
 
 class FistSlamAbility(val creature: Creature) extends Ability {
-  override val id: String = "fistSlam"
+  override val id: String = "fist_slam"
 
   override protected val cooldownTime: Float = 10f
   override protected val activeTime: Float = 0.1f * 19 + 0.2f + 0.4f + 0.1f
@@ -26,10 +26,10 @@ class FistSlamAbility(val creature: Creature) extends Ability {
   }
 
   override def onChannellingStart(): Unit = {
-    creature
-      .effect("immobilized")
-      .applyEffect(channelTime + activeTime)
+    creature.activateEffect("immobilized", channelTime + activeTime)
+
     fists = new ListBuffer[Fist]
+
     for (i <- 0 until 20) {
       val range: Float = 7.8125f
       val aggroedCreature = creature.asInstanceOf[Enemy].aggroedTarget.get // TODO targeting?

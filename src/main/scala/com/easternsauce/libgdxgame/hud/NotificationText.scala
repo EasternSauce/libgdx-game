@@ -16,7 +16,7 @@ class NotificationText {
   def render(batch: EsBatch): Unit = {
     for (i <- notifications.indices) {
       val (_, text) = notifications(i)
-      Fonts.defaultFont.draw(batch.spriteBatch, text, 20, Constants.WindowHeight - (40 + i * 30), Color.RED)
+      Fonts.defaultFont.draw(batch.spriteBatch, text, 20, Constants.WindowHeight.toFloat - (40f + i * 30f), Color.RED)
     }
 
   }

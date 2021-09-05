@@ -6,13 +6,13 @@ import scala.collection.mutable
 
 class EsPolygon private extends com.badlogic.gdx.math.Polygon {
 
-  def this(vertices: Array[Float]) {
+  def this(vertices: Array[Float]) = {
     this()
 
     setVertices(vertices)
   }
 
-  def this(rect: Rectangle) {
+  def this(rect: Rectangle) = {
     this()
 
     val vertices: mutable.ArrayBuffer[Float] = mutable.ArrayBuffer()

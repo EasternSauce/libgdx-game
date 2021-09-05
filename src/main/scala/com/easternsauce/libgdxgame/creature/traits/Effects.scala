@@ -31,12 +31,20 @@ trait Effects {
 
   }
 
-  def effect(effectName: String): Effect = {
+  private def effect(effectName: String): Effect = {
     effectMap.get(effectName) match {
       case Some(effect) => effect
       case _ =>
         throw new RuntimeException("tried to access non-existing effect: " + effectName)
     }
+  }
+
+  def activateEffect(effectName: String, time: Float): Unit = {
+    effect(effectName).activate(time)
+  }
+
+  def isEffectActive(effectName: String): Boolean = {
+    effect(effectName).isActive
   }
 
   def isImmune: Boolean = effect("immune").isActive

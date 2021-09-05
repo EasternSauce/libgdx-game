@@ -1,14 +1,14 @@
 package com.easternsauce.libgdxgame.ability
 
-import com.easternsauce.libgdxgame.ability.components.{AbilityComponent, Bubble}
+import com.easternsauce.libgdxgame.ability.components.{AbilityComponent, IceShard}
 import com.easternsauce.libgdxgame.ability.traits.ComposedAbility
 import com.easternsauce.libgdxgame.creature.Creature
 import com.easternsauce.libgdxgame.util.EsBatch
 
 import scala.collection.mutable.ListBuffer
 
-class BubbleAbility(val creature: Creature) extends ComposedAbility {
-  val id = "bubble"
+class IceShardAbility(val creature: Creature) extends ComposedAbility {
+  val id = "ice_shard"
   override protected val channelTime: Float = 0.05f
   override protected val cooldownTime = 5f
 
@@ -16,7 +16,7 @@ class BubbleAbility(val creature: Creature) extends ComposedAbility {
 
     components = ListBuffer[AbilityComponent]()
     for (i <- 0 until 3) {
-      val bubble = new Bubble(this, creature.pos.x, creature.pos.y, radius = 4f, speed = 30f, startTime = 0.4f * i)
+      val bubble = new IceShard(this, creature.pos.x, creature.pos.y, speed = 30f, startTime = 0.4f * i)
 
       components += bubble
     }

@@ -13,7 +13,7 @@ trait PhysicalBody {
   var mass: Float = 300f
   var bodyCreated = false
 
-  def initCircularBody(world: World, x: Float, y: Float, radius: Float): Unit = {
+  def initBody(world: World, x: Float, y: Float, radius: Float): Unit = {
     if (!bodyCreated) {
       val bodyDef = new BodyDef()
       bodyDef.position

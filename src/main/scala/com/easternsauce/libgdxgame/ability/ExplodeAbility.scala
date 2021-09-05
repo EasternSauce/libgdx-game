@@ -69,8 +69,8 @@ class ExplodeAbility(val creature: Creature) extends Ability with ActiveAnimatio
         creature.pos.y - scaledHeight / 2f,
         0,
         0,
-        image.getRegionWidth,
-        image.getRegionHeight,
+        image.getRegionWidth.toFloat,
+        image.getRegionHeight.toFloat,
         scale,
         scale,
         0f

@@ -194,7 +194,7 @@ trait MeleeAttack extends Attack with PhysicalHitbox with ActiveAnimation with W
         val random = GameSystem.randomGenerator.nextFloat()
 
         if (creature.isWeaponEquipped && random < creature.currentWeapon.template.poisonChance.get) {
-          otherCreature.effect("poisoned").applyEffect(10f)
+          otherCreature.activateEffect("poisoned", 10f)
           otherCreature.poisonTickTimer.restart()
         }
       }
