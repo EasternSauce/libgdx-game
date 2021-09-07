@@ -8,11 +8,11 @@ import com.easternsauce.libgdxgame.util.EsBatch
 
 import scala.collection.mutable.ListBuffer
 
-class MeteorRainAbility(val creature: Creature) extends Ability {
+class MeteorRainAbility private (val creature: Creature) extends Ability {
   val id = "meteor_rain"
-  override protected val channelTime: Float = 0.05f
-  override protected val activeTime: Float = 0.15f * 59 + (1.2f + 1.8f) / 1.5f + 0.1f
-  override protected val cooldownTime = 35f
+  protected val channelTime: Float = 0.05f
+  protected val activeTime: Float = 0.15f * 59 + (1.2f + 1.8f) / 1.5f + 0.1f
+  protected val cooldownTime = 35f
   protected val explosionRange: Float = 9.375f
   protected var meteors: ListBuffer[Meteor] = _
 
@@ -55,5 +55,11 @@ class MeteorRainAbility(val creature: Creature) extends Ability {
 
       meteor.onUpdateActive()
     }
+  }
+}
+
+object MeteorRainAbility {
+  def apply(abilityCreature: Creature): MeteorRainAbility = {
+    new MeteorRainAbility(abilityCreature)
   }
 }

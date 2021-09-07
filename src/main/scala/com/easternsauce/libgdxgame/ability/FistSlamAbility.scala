@@ -8,12 +8,12 @@ import com.easternsauce.libgdxgame.util.EsBatch
 
 import scala.collection.mutable.ListBuffer
 
-class FistSlamAbility(val creature: Creature) extends Ability {
-  override val id: String = "fist_slam"
+class FistSlamAbility private (val creature: Creature) extends Ability {
+  val id: String = "fist_slam"
 
-  override protected val cooldownTime: Float = 10f
-  override protected val activeTime: Float = 0.1f * 19 + 0.2f + 0.4f + 0.1f
-  override protected val channelTime: Float = 0.15f
+  protected val cooldownTime: Float = 10f
+  protected val activeTime: Float = 0.1f * 19 + 0.2f + 0.4f + 0.1f
+  protected val channelTime: Float = 0.15f
 
   protected var fists: ListBuffer[Fist] = ListBuffer()
 
@@ -56,4 +56,10 @@ class FistSlamAbility(val creature: Creature) extends Ability {
     }
   }
 
+}
+
+object FistSlamAbility {
+  def apply(abilityCreature: Creature): FistSlamAbility = {
+    new FistSlamAbility(abilityCreature)
+  }
 }

@@ -25,4 +25,7 @@ trait AbilityComponent {
   def onCollideWithCreature(creature: Creature): Unit
 
   def start(): Unit
+
+  def totalTime: Float = startTime + channelTime + activeTime + 0.05f // with buffer
+
 }

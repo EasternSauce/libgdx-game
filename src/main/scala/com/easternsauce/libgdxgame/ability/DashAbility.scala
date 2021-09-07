@@ -4,14 +4,14 @@ import com.badlogic.gdx.math.Vector2
 import com.easternsauce.libgdxgame.ability.traits.Ability
 import com.easternsauce.libgdxgame.creature.Creature
 
-class DashAbility(val creature: Creature) extends Ability {
+class DashAbility private (val creature: Creature) extends Ability {
 
-  override val id: String = "dash"
+  val id: String = "dash"
 
-  override protected val cooldownTime: Float = 1.5f
-  override protected def activeTime: Float = 0.2f
+  protected val cooldownTime: Float = 1.5f
+  protected def activeTime: Float = 0.2f
   protected var dashVector: Vector2 = new Vector2(0f, 0f)
-  override protected def channelTime: Float = 0f
+  protected def channelTime: Float = 0f
 
   val speed = 60f
 

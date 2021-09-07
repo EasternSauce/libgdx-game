@@ -1,6 +1,7 @@
 package com.easternsauce.libgdxgame.creature
 
 import com.badlogic.gdx.audio.Sound
+import com.easternsauce.libgdxgame.ability.traits.Ability
 import com.easternsauce.libgdxgame.ability.{BubbleAbility, IceShardAbility}
 import com.easternsauce.libgdxgame.creature.traits.AbilityUsage
 import com.easternsauce.libgdxgame.system.Assets
@@ -16,8 +17,18 @@ class Serpent(val id: String) extends Enemy {
 
   override val activeSound: Option[Sound] = Some(Assets.sound(Assets.boneRattleSound))
 
-  val bubbleAbility = new BubbleAbility(this)
-  val iceShardAbility = new IceShardAbility(this)
+  override val dropTable = Map(
+    "ringmailGreaves" -> 0.1f,
+    "leatherArmor" -> 0.05f,
+    "hideGloves" -> 0.1f,
+    "leatherHelmet" -> 0.1f,
+    "woodenSword" -> 0.1f,
+    "healingPowder" -> 0.5f
+  )
+
+  override val abilityMap: Map[String, Ability] =
+    standardAbilities ++
+      Map(BubbleAbility(this).asMapEntry, IceShardAbility(this).asMapEntry)
 
   setupAnimation(
     regionName = "serpent",
@@ -30,20 +41,6 @@ class Serpent(val id: String) extends Enemy {
   )
 
   initCreature()
-
-  abilityMap += (bubbleAbility.id -> bubbleAbility)
-  abilityMap += (iceShardAbility.id -> iceShardAbility)
-
-  dropTable.addAll(
-    List(
-      "ringmailGreaves" -> 0.1f,
-      "leatherArmor" -> 0.05f,
-      "hideGloves" -> 0.1f,
-      "leatherHelmet" -> 0.1f,
-      "woodenSword" -> 0.1f,
-      "healingPowder" -> 0.5f
-    )
-  )
 
   abilityUsages.addAll(List("bubble" -> AbilityUsage(weight = 100f, minimumDistance = 2f)))
   abilityUsages.addAll(List("ice_shard" -> AbilityUsage(weight = 100f, minimumDistance = 2f)))

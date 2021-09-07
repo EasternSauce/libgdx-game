@@ -10,13 +10,13 @@ import com.easternsauce.libgdxgame.system.Assets
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
 
-class ShootArrowAttack(val creature: Creature) extends Attack {
+class ShootArrowAttack private (val creature: Creature) extends Attack {
 
-  override val id: String = "shoot_arrow"
+  val id: String = "shoot_arrow"
 
-  override protected def channelTime: Float = 0.85f
-  override protected def activeTime: Float = 0.1f
-  override protected val cooldownTime = 0.8f
+  protected def channelTime: Float = 0.85f
+  protected def activeTime: Float = 0.1f
+  protected val cooldownTime = 0.8f
 
   override def onChannellingStart(): Unit = {
     super.onChannellingStart()
@@ -58,4 +58,10 @@ class ShootArrowAttack(val creature: Creature) extends Attack {
     creature.takeStaminaDamage(20f)
   }
 
+}
+
+object ShootArrowAttack {
+  def apply(abilityCreature: Creature): ShootArrowAttack = {
+    new ShootArrowAttack(abilityCreature)
+  }
 }

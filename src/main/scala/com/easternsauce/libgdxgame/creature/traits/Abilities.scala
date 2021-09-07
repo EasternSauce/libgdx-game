@@ -1,21 +1,14 @@
 package com.easternsauce.libgdxgame.creature.traits
 
 import com.easternsauce.libgdxgame.ability._
-import com.easternsauce.libgdxgame.ability.traits.{Ability, Attack}
+import com.easternsauce.libgdxgame.ability.traits.Ability
 import com.easternsauce.libgdxgame.creature.Creature
 import com.easternsauce.libgdxgame.util.EsBatch
-
-import scala.collection.mutable
 
 trait Abilities {
   this: Creature =>
 
-  var abilityMap: mutable.Map[String, Ability] = mutable.Map()
-  var attackMap: mutable.Map[String, Attack] = mutable.Map()
-
-  var slashAttack: SlashAttack = _
-  var shootArrowAttack: ShootArrowAttack = _
-  var thrustAttack: ThrustAttack = _
+  val abilityMap: Map[String, Ability] = standardAbilities
 
   var isAttacking = false
 
@@ -48,27 +41,15 @@ trait Abilities {
   def currentAttack: Ability = {
     if (isWeaponEquipped) {
       currentWeapon.template.attackType match {
-        case Some("slash")      => slashAttack
-        case Some("shootArrow") => shootArrowAttack
-        case Some("thrust")     => thrustAttack
-        case _                  => throw new RuntimeException("Unrecognized attack type")
+        case Some(id) => abilityMap(id)
+        case None     => throw new RuntimeException("Unrecognized attack type")
       }
     } else {
-      slashAttack
+      abilityMap("slash")
     }
   }
 
-  def defineStandardAbilities(): Unit = {
-    slashAttack = new SlashAttack(this)
-    shootArrowAttack = new ShootArrowAttack(this)
-    thrustAttack = new ThrustAttack(this)
-
-    attackMap += (slashAttack.id -> slashAttack)
-    attackMap += (shootArrowAttack.id -> shootArrowAttack)
-    attackMap += (thrustAttack.id -> thrustAttack)
-
-    // TODO ?
-
-  }
+  def standardAbilities: Map[String, Ability] =
+    Map(SlashAttack(this).asMapEntry, ShootArrowAttack(this).asMapEntry, ThrustAttack(this).asMapEntry)
 
 }

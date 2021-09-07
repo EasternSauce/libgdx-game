@@ -7,10 +7,10 @@ import com.easternsauce.libgdxgame.util.EsBatch
 
 import scala.collection.mutable.ListBuffer
 
-class BubbleAbility(val creature: Creature) extends ComposedAbility {
+class BubbleAbility private (val creature: Creature) extends ComposedAbility {
   val id = "bubble"
-  override protected val channelTime: Float = 0.05f
-  override protected val cooldownTime = 5f
+  protected val channelTime: Float = 0.05f
+  protected val cooldownTime = 5f
 
   override def onChannellingStart(): Unit = {
 
@@ -21,10 +21,8 @@ class BubbleAbility(val creature: Creature) extends ComposedAbility {
       components += bubble
     }
 
-    val lastComponent =
-      components.maxBy(component => component.startTime + component.channelTime + component.activeTime)
-    lastComponentFinishTime =
-      lastComponent.startTime + lastComponent.channelTime + lastComponent.activeTime + 0.05f // with buffer
+    val lastComponent = components.maxBy(_.totalTime)
+    lastComponentFinishTime = lastComponent.totalTime
 
     creature.activateEffect("immobilized", lastComponentFinishTime)
   }
@@ -50,5 +48,11 @@ class BubbleAbility(val creature: Creature) extends ComposedAbility {
 
       bubble.onUpdateActive()
     }
+  }
+}
+
+object BubbleAbility {
+  def apply(creature: Creature): BubbleAbility = {
+    new BubbleAbility(creature)
   }
 }

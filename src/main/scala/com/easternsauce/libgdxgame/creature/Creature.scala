@@ -32,6 +32,8 @@ abstract class Creature
   val creatureWidth: Float
   val creatureHeight: Float
 
+  var isInitialized = false
+
   var currentDirection: EsDirection.Value = EsDirection.Down
 
   var isMoving = false
@@ -72,7 +74,7 @@ abstract class Creature
   def totalArmor: Float = equipmentItems.values.map(item => item.armor.getOrElse(0)).sum.toFloat
 
   def update(): Unit = {
-    if (isAlive) {
+    if (isInitialized && isAlive) {
       updateStaminaDrain()
 
       calculateFacingVector()
@@ -222,11 +224,11 @@ abstract class Creature
 
     defineEffects()
 
-    defineStandardAbilities()
-
     setRegion(standStillImage(currentDirection))
 
     life = maxLife
+
+    isInitialized = true
   }
 
   def render(batch: EsBatch): Unit = {

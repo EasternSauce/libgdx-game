@@ -12,6 +12,16 @@ class Goblin(val id: String) extends Enemy {
 
   override val onGettingHitSound: Option[Sound] = Some(Assets.sound(Assets.evilYellingSound))
 
+  override val dropTable = Map(
+    "ironSword" -> 0.03f,
+    "poisonDagger" -> 0.07f,
+    "healingPowder" -> 0.3f,
+    "steelArmor" -> 0.03f,
+    "steelGreaves" -> 0.05f,
+    "steelGloves" -> 0.05f,
+    "steelHelmet" -> 0.05f
+  )
+
   setupAnimation(
     regionName = "goblin",
     textureWidth = 32,
@@ -23,17 +33,5 @@ class Goblin(val id: String) extends Enemy {
   )
 
   initCreature()
-
-  dropTable.addAll(
-    List(
-      "ironSword" -> 0.03f,
-      "poisonDagger" -> 0.07f,
-      "healingPowder" -> 0.3f,
-      "steelArmor" -> 0.03f,
-      "steelGreaves" -> 0.05f,
-      "steelGloves" -> 0.05f,
-      "steelHelmet" -> 0.05f
-    )
-  )
 
 }

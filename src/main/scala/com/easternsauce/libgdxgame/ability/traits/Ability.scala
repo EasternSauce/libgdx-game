@@ -47,16 +47,13 @@ trait Ability {
   protected def onStop(): Unit = {}
 
   def perform(): Unit = {
-    if (creature.staminaPoints > 0 && (state == AbilityState.Inactive) && !onCooldown && !creature.abilityActive) {
+    if (creature.staminaPoints > 0 && state == AbilityState.Inactive && !onCooldown && !creature.abilityActive) {
       channelTimer.restart()
       state = AbilityState.Channeling
       onChannellingStart()
 
-      if (isAttack) { // + 0.01 to ensure regen doesn't start if we hold attack button
-        creature.activateEffect("staminaRegenerationStopped", channelTime + cooldownTime + 0.01f)
-      } else {
-        creature.activateEffect("staminaRegenerationStopped", 1f)
-      }
+      // + 0.01 to ensure regen doesn't start if we hold attack button
+      creature.activateEffect("staminaRegenerationStopped", if (isAttack) channelTime + cooldownTime + 0.01f else 1f)
     }
   }
 
@@ -98,4 +95,6 @@ trait Ability {
   }
 
   def onCollideWithCreature(creature: Creature): Unit = {}
+
+  def asMapEntry: (String, Ability) = id -> this
 }

@@ -7,9 +7,9 @@ import com.easternsauce.libgdxgame.creature.Creature
 import com.easternsauce.libgdxgame.system.Assets
 import com.easternsauce.libgdxgame.util.EsBatch
 
-class ExplodeAbility(val creature: Creature) extends Ability with ActiveAnimation {
-  override val id: String = "explode"
-  override protected val cooldownTime: Float = 0.8f
+class ExplodeAbility private (val creature: Creature) extends Ability with ActiveAnimation {
+  val id: String = "explode"
+  protected val cooldownTime: Float = 0.8f
 
   protected var explosionRange: Float = 10f
 
@@ -115,4 +115,10 @@ class ExplodeAbility(val creature: Creature) extends Ability with ActiveAnimatio
     }
   }
 
+}
+
+object ExplodeAbility {
+  def apply(abilityCreature: Creature): ExplodeAbility = {
+    new ExplodeAbility(abilityCreature)
+  }
 }

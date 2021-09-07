@@ -6,8 +6,6 @@ import com.easternsauce.libgdxgame.creature.traits.AggressiveAi
 import com.easternsauce.libgdxgame.system.GameSystem
 import com.easternsauce.libgdxgame.util.EsTimer
 
-import scala.collection.mutable
-
 abstract class Enemy extends Creature with AggressiveAi {
   override val isEnemy: Boolean = true
 
@@ -15,7 +13,7 @@ abstract class Enemy extends Creature with AggressiveAi {
   val activeSound: Option[Sound] = None
   var activeSoundTimeout: Float = 3f + GameSystem.randomGenerator.nextFloat() * 8f
 
-  protected val dropTable: mutable.Map[String, Float] = mutable.Map()
+  protected val dropTable: Map[String, Float] = Map()
 
   override def calculateFacingVector(): Unit = {
     if (aggroedTarget.nonEmpty) {

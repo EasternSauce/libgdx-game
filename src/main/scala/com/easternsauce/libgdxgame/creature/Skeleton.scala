@@ -14,6 +14,15 @@ class Skeleton(val id: String) extends Enemy {
 
   override val activeSound: Option[Sound] = Some(Assets.sound(Assets.boneRattleSound))
 
+  override val dropTable = Map(
+    "ringmailGreaves" -> 0.1f,
+    "leatherArmor" -> 0.05f,
+    "hideGloves" -> 0.1f,
+    "leatherHelmet" -> 0.1f,
+    "woodenSword" -> 0.1f,
+    "healingPowder" -> 0.5f
+  )
+
   setupAnimation(
     regionName = "skeleton",
     textureWidth = 64,
@@ -25,16 +34,5 @@ class Skeleton(val id: String) extends Enemy {
   )
 
   initCreature()
-
-  dropTable.addAll(
-    List(
-      "ringmailGreaves" -> 0.1f,
-      "leatherArmor" -> 0.05f,
-      "hideGloves" -> 0.1f,
-      "leatherHelmet" -> 0.1f,
-      "woodenSword" -> 0.1f,
-      "healingPowder" -> 0.5f
-    )
-  )
 
 }

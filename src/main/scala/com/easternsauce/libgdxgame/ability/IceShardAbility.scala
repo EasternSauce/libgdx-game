@@ -1,30 +1,45 @@
 package com.easternsauce.libgdxgame.ability
 
+import com.badlogic.gdx.math.Vector2
 import com.easternsauce.libgdxgame.ability.components.{AbilityComponent, IceShard}
 import com.easternsauce.libgdxgame.ability.traits.ComposedAbility
-import com.easternsauce.libgdxgame.creature.Creature
+import com.easternsauce.libgdxgame.creature.{Creature, Enemy}
 import com.easternsauce.libgdxgame.util.EsBatch
 
 import scala.collection.mutable.ListBuffer
 
-class IceShardAbility(val creature: Creature) extends ComposedAbility {
+class IceShardAbility private (val creature: Creature) extends ComposedAbility {
   val id = "ice_shard"
-  override protected val channelTime: Float = 0.05f
-  override protected val cooldownTime = 5f
+  protected val channelTime: Float = 0.05f
+  protected val cooldownTime = 5f
+
+  val numOfShards = 9
 
   override def onChannellingStart(): Unit = {
 
     components = ListBuffer[AbilityComponent]()
-    for (i <- 0 until 3) {
-      val bubble = new IceShard(this, creature.pos.x, creature.pos.y, speed = 30f, startTime = 0.4f * i)
 
-      components += bubble
-    }
+    val facingVector =
+      if (creature.asInstanceOf[Enemy].aggroedTarget.nonEmpty) {
+        creature.facingVector.cpy
+      } else {
+        new Vector2(1.0f, 0.0f)
+      }
 
-    val lastComponent =
-      components.maxBy(component => component.startTime + component.channelTime + component.activeTime)
-    lastComponentFinishTime =
-      lastComponent.startTime + lastComponent.channelTime + lastComponent.activeTime + 0.05f // with buffer
+    val iceShards =
+      for (i <- 0 until numOfShards)
+        yield new IceShard(
+          this,
+          creature.pos.x,
+          creature.pos.y,
+          speed = 30f,
+          startTime = 0.05f * i,
+          facingVector.cpy.rotateDeg(20f * (i - 5))
+        )
+    components.addAll(iceShards)
+
+    val lastComponent = components.maxBy(_.totalTime)
+    lastComponentFinishTime = lastComponent.totalTime
 
     creature.activateEffect("immobilized", lastComponentFinishTime)
   }
@@ -50,5 +65,11 @@ class IceShardAbility(val creature: Creature) extends ComposedAbility {
 
       bubble.onUpdateActive()
     }
+  }
+}
+
+object IceShardAbility {
+  def apply(creature: Creature): IceShardAbility = {
+    new IceShardAbility(creature)
   }
 }

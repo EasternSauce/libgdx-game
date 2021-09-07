@@ -5,16 +5,20 @@ import com.badlogic.gdx.physics.box2d.{Body, BodyDef, CircleShape, FixtureDef}
 import com.easternsauce.libgdxgame.ability.AbilityState
 import com.easternsauce.libgdxgame.ability.AbilityState.AbilityState
 import com.easternsauce.libgdxgame.ability.traits.Ability
-import com.easternsauce.libgdxgame.creature.{Creature, Enemy}
+import com.easternsauce.libgdxgame.creature.Creature
 import com.easternsauce.libgdxgame.system.Assets
 import com.easternsauce.libgdxgame.util.EsBatch
 
-class IceShard(val mainAbility: Ability, var startX: Float, var startY: Float, val speed: Float, val startTime: Float)
-    extends AbilityComponent {
+class IceShard(
+  val mainAbility: Ability,
+  var startX: Float,
+  var startY: Float,
+  val speed: Float,
+  val startTime: Float,
+  val dirVector: Vector2
+) extends AbilityComponent {
   override val activeTime: Float = 1.5f
   override val channelTime: Float = 0.6f
-
-  var dirVector = new Vector2(1, 0)
 
   override var state: AbilityState = AbilityState.Inactive
   override var started = false
@@ -60,11 +64,7 @@ class IceShard(val mainAbility: Ability, var startX: Float, var startY: Float, v
     //Assets.sound(Assets.explosionSound).play(0.01f)
     activeTimer.restart()
     initBody(startX, startY)
-    if (mainAbility.creature.asInstanceOf[Enemy].aggroedTarget.nonEmpty) {
-      dirVector = mainAbility.creature.facingVector.cpy
-    } else {
-      dirVector = new Vector2(1.0f, 0.0f)
-    }
+
   }
 
   def initBody(x: Float, y: Float): Unit = {

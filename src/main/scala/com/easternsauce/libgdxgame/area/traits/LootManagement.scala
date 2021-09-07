@@ -7,7 +7,6 @@ import io.circe.Decoder
 import io.circe.generic.semiauto.deriveDecoder
 import io.circe.jawn.decode
 
-import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
 
 trait LootManagement {
@@ -21,7 +20,7 @@ trait LootManagement {
 
   var lootPileList: ListBuffer[LootPile] = ListBuffer()
 
-  def spawnLootPile(x: Float, y: Float, dropTable: mutable.Map[String, Float]): Unit = {
+  def spawnLootPile(x: Float, y: Float, dropTable: Map[String, Float]): Unit = {
     val lootPile = LootPile(this, x, y)
     for ((key, value) <- dropTable) {
       if (randomGenerator.nextFloat() < value) {

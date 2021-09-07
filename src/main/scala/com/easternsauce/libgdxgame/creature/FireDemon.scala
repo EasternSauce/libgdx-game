@@ -1,7 +1,8 @@
 package com.easternsauce.libgdxgame.creature
 
 import com.badlogic.gdx.audio.{Music, Sound}
-import com.easternsauce.libgdxgame.ability.{DashAbility, FistSlamAbility, MeteorCrashAbility, MeteorRainAbility}
+import com.easternsauce.libgdxgame.ability.traits.Ability
+import com.easternsauce.libgdxgame.ability._
 import com.easternsauce.libgdxgame.creature.traits.{AbilityUsage, Boss}
 import com.easternsauce.libgdxgame.system.Assets
 import com.easternsauce.libgdxgame.util.EsDirection
@@ -22,14 +23,21 @@ class FireDemon(val id: String) extends Boss {
 
   override val directionalSpeed: Float = 25f
 
-  protected var meteorRainAbility: MeteorRainAbility = _
-  protected var fistSlamAbility: FistSlamAbility = _
-  protected var meteorCrashAbility: MeteorCrashAbility = _
-  protected var dashAbility: DashAbility = _
-
   override val bossMusic: Option[Music] = Some(Assets.music(Assets.fireDemonMusic))
 
   override val name = "Magma Stalker"
+
+  override val dropTable =
+    Map("ironSword" -> 0.3f, "poisonDagger" -> 0.3f, "steelArmor" -> 0.8f, "steelHelmet" -> 0.5f, "thiefRing" -> 1.0f)
+
+  override val abilityMap: Map[String, Ability] =
+    standardAbilities ++
+      Map(
+        MeteorRainAbility(this).asMapEntry,
+        FistSlamAbility(this).asMapEntry,
+        MeteorCrashAbility(this).asMapEntry,
+        DashAbility(this).asMapEntry
+      )
 
   setupAnimation(
     regionName = "taurus",
@@ -45,20 +53,8 @@ class FireDemon(val id: String) extends Boss {
 
   mass = 10000f
 
-  meteorRainAbility = new MeteorRainAbility(this)
-  fistSlamAbility = new FistSlamAbility(this)
-  meteorCrashAbility = new MeteorCrashAbility(this)
-  dashAbility = new DashAbility(this)
-  abilityMap += (meteorRainAbility.id -> meteorRainAbility)
-  abilityMap += (fistSlamAbility.id -> fistSlamAbility)
-  abilityMap += (meteorCrashAbility.id -> meteorCrashAbility)
-  abilityMap += (dashAbility.id -> dashAbility)
-
-  thrustAttack.attackRange = 1.5f
-
-  dropTable.addAll(
-    List("ironSword" -> 0.3f, "poisonDagger" -> 0.3f, "steelArmor" -> 0.8f, "steelHelmet" -> 0.5f, "thiefRing" -> 1.0f)
-  )
+  // TODO: how to get rid of casting?
+  abilityMap("thrust").asInstanceOf[ThrustAttack].attackRange = 1.5f
 
   abilityUsages.addAll(List("dash" -> AbilityUsage(weight = 70f, minimumDistance = 15f)))
   abilityUsages.addAll(List("meteorRain" -> AbilityUsage(weight = 30f, minimumDistance = 4f, lifeThreshold = 0.6f)))

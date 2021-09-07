@@ -152,7 +152,7 @@ object ItemTemplate {
         .setEquipable(true)
         .setEquipableType("weapon")
         .setDamage(45)
-        .setAttackType("shootArrow")
+        .setAttackType("shoot_arrow")
     )
 
     addItemType(

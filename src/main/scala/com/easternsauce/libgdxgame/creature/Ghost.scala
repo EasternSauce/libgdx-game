@@ -2,6 +2,7 @@ package com.easternsauce.libgdxgame.creature
 
 import com.badlogic.gdx.audio.Sound
 import com.easternsauce.libgdxgame.ability.ExplodeAbility
+import com.easternsauce.libgdxgame.ability.traits.Ability
 import com.easternsauce.libgdxgame.creature.traits.AbilityUsage
 import com.easternsauce.libgdxgame.system.Assets
 import com.easternsauce.libgdxgame.util.EsDirection
@@ -14,7 +15,27 @@ class Ghost(val id: String) extends Enemy {
 
   override val onGettingHitSound: Option[Sound] = Some(Assets.sound(Assets.evilYellingSound))
 
-  var explodeAbility: ExplodeAbility = _
+  override val dropTable = Map(
+    "ironSword" -> 0.03f,
+    "poisonDagger" -> 0.005f,
+    "healingPowder" -> 0.3f,
+    "steelArmor" -> 0.03f,
+    "steelGreaves" -> 0.05f,
+    "steelGloves" -> 0.05f,
+    "steelHelmet" -> 0.05f
+  )
+
+  override val abilityMap: Map[String, Ability] =
+    standardAbilities ++
+      Map({
+        // TODO: refactor this?
+        val explodeAbility = ExplodeAbility(this)
+        explodeAbility.channelSound = Some(Assets.sound(Assets.darkLaughSound))
+        explodeAbility.channelSoundVolume = Some(0.2f)
+        explodeAbility.activeSound = Some(Assets.sound(Assets.explosionSound))
+        explodeAbility.activeSoundVolume = Some(0.5f)
+        explodeAbility
+      }.asMapEntry)
 
   setupAnimation(
     regionName = "ghost",
@@ -27,25 +48,6 @@ class Ghost(val id: String) extends Enemy {
   )
 
   initCreature()
-
-  explodeAbility = new ExplodeAbility(this)
-  explodeAbility.channelSound = Some(Assets.sound(Assets.darkLaughSound))
-  explodeAbility.channelSoundVolume = Some(0.3f)
-  explodeAbility.activeSound = Some(Assets.sound(Assets.explosionSound))
-  explodeAbility.activeSoundVolume = Some(0.7f)
-  abilityMap += (explodeAbility.id -> explodeAbility)
-
-  dropTable.addAll(
-    List(
-      "ironSword" -> 0.03f,
-      "poisonDagger" -> 0.005f,
-      "healingPowder" -> 0.3f,
-      "steelArmor" -> 0.03f,
-      "steelGreaves" -> 0.05f,
-      "steelGloves" -> 0.05f,
-      "steelHelmet" -> 0.05f
-    )
-  )
 
   abilityUsages.addAll(List("explode" -> AbilityUsage(weight = 100f, minimumDistance = 6f, lifeThreshold = 0.5f)))
 

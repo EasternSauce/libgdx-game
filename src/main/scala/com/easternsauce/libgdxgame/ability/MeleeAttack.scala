@@ -27,8 +27,8 @@ trait MeleeAttack extends Attack with PhysicalHitbox with ActiveAnimation with W
   protected val baseChannelTime: Float
   protected val baseActiveTime: Float
 
-  override protected def activeTime: Float = baseActiveTime
-  override protected def channelTime: Float = baseChannelTime / attackSpeed
+  protected def activeTime: Float = baseActiveTime
+  protected def channelTime: Float = baseChannelTime / attackSpeed
 
   def attackSpeed: Float =
     if (creature.isWeaponEquipped) creature.currentWeapon.template.attackSpeed.get

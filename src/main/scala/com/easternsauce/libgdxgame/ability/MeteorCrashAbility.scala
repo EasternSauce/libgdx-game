@@ -8,11 +8,12 @@ import com.easternsauce.libgdxgame.util.EsBatch
 
 import scala.collection.mutable.ListBuffer
 
-class MeteorCrashAbility(val creature: Creature) extends Ability {
+class MeteorCrashAbility private (val creature: Creature) extends Ability {
   val id = "meteor_crash"
-  override protected val channelTime: Float = 0.05f
-  override protected val activeTime: Float = 0.1f * 9 + (1.2f + 1.8f) / 2.5f + 0.1f
-  override protected val cooldownTime: Float = 12f
+  protected val channelTime: Float = 0.05f
+  protected val activeTime: Float = 0.1f * 9 + (1.2f + 1.8f) / 2.5f + 0.1f
+  protected val cooldownTime: Float = 12f
+
   protected var meteors: ListBuffer[Meteor] = ListBuffer()
 
   override def onChannellingStart(): Unit = {
@@ -75,5 +76,11 @@ class MeteorCrashAbility(val creature: Creature) extends Ability {
 
       meteor.onUpdateActive()
     }
+  }
+}
+
+object MeteorCrashAbility {
+  def apply(abilityCreature: Creature): MeteorCrashAbility = {
+    new MeteorCrashAbility(abilityCreature)
   }
 }
