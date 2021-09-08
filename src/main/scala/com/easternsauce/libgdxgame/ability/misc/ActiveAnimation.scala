@@ -1,4 +1,4 @@
-package com.easternsauce.libgdxgame.ability.traits
+package com.easternsauce.libgdxgame.ability.misc
 
 import com.badlogic.gdx.graphics.g2d.{Animation, TextureAtlas, TextureRegion}
 import com.easternsauce.libgdxgame.system.Assets
@@ -6,16 +6,19 @@ import com.easternsauce.libgdxgame.util.EsTimer
 
 import scala.collection.mutable.ListBuffer
 
-trait WindupAnimation {
-  protected var abilityWindupAnimation: Animation[TextureRegion] = _
-  protected val abilityWindupAnimationTimer: EsTimer = EsTimer()
+trait ActiveAnimation {
+  protected var abilityActiveAnimation: Animation[TextureRegion] = _
+  protected val abilityActiveAnimationTimer: EsTimer = EsTimer()
 
-  def setupWindupAnimation(
+  var loop = false
+
+  def setupActiveAnimation(
     regionName: String,
     textureWidth: Int,
     textureHeight: Int,
     animationFrameCount: Int,
-    frameDuration: Float
+    frameDuration: Float,
+    loop: Boolean = false
   ): Unit = {
     val frames = new ListBuffer[TextureRegion]()
 
@@ -25,11 +28,13 @@ trait WindupAnimation {
       frames += new TextureRegion(spriteTextureRegion, i * textureWidth, 0, textureWidth, textureHeight)
     }
 
-    abilityWindupAnimation = new Animation[TextureRegion](frameDuration, frames.toArray: _*)
+    abilityActiveAnimation = new Animation[TextureRegion](frameDuration, frames.toArray: _*)
+
+    this.loop = loop
 
   }
 
-  def currentWindupAnimationFrame: TextureRegion = {
-    abilityWindupAnimation.getKeyFrame(abilityWindupAnimationTimer.time, false)
+  def currentActiveAnimationFrame: TextureRegion = {
+    abilityActiveAnimation.getKeyFrame(abilityActiveAnimationTimer.time, loop)
   }
 }

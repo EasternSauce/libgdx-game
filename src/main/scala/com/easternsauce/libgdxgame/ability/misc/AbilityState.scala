@@ -1,4 +1,4 @@
-package com.easternsauce.libgdxgame.ability
+package com.easternsauce.libgdxgame.ability.misc
 
 object AbilityState extends Enumeration {
   type AbilityState = Value

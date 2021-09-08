@@ -1,7 +1,7 @@
-package com.easternsauce.libgdxgame.ability.components
+package com.easternsauce.libgdxgame.ability.composed.components
 
 import com.badlogic.gdx.physics.box2d.Body
-import com.easternsauce.libgdxgame.ability.AbilityState.AbilityState
+import com.easternsauce.libgdxgame.ability.misc.AbilityState.AbilityState
 import com.easternsauce.libgdxgame.creature.Creature
 import com.easternsauce.libgdxgame.util.{EsBatch, EsTimer}
 

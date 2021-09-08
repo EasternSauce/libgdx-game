@@ -1,28 +1,25 @@
-package com.easternsauce.libgdxgame.ability.components
+package com.easternsauce.libgdxgame.ability.composed.components
 
-import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.{Body, BodyDef, CircleShape, FixtureDef}
-import com.easternsauce.libgdxgame.ability.AbilityState
-import com.easternsauce.libgdxgame.ability.AbilityState.AbilityState
-import com.easternsauce.libgdxgame.ability.traits.{Ability, ActiveAnimation}
-import com.easternsauce.libgdxgame.creature.{Creature, Enemy}
+import com.easternsauce.libgdxgame.ability.misc.AbilityState.AbilityState
+import com.easternsauce.libgdxgame.ability.misc.{Ability, AbilityState, ActiveAnimation, WindupAnimation}
+import com.easternsauce.libgdxgame.creature.Creature
+import com.easternsauce.libgdxgame.system.Assets
 import com.easternsauce.libgdxgame.util.EsBatch
 
-class Bubble(
+class Meteor(
   val mainAbility: Ability,
-  var startX: Float,
-  var startY: Float,
+  val startTime: Float,
+  val posX: Float,
+  val posY: Float,
   val radius: Float,
-  val speed: Float,
-  val startTime: Float
+  speed: Float
 ) extends AbilityComponent
+    with WindupAnimation
     with ActiveAnimation {
-  override val activeTime: Float = 1.5f
-  override val channelTime: Float = 0.6f
 
-  val loopTime = 0.2f
-
-  var dirVector = new Vector2(1, 0)
+  override val activeTime: Float = 1.8f / speed
+  override val channelTime: Float = 1.2f / speed
 
   override var state: AbilityState = AbilityState.Inactive
   override var started = false
@@ -31,21 +28,30 @@ class Bubble(
 
   val spriteWidth = 64
   val spriteHeight = 64
-  val numOfActiveFrames = 2
+  val numOfActiveFrames = 21
+  val numOfChannelingFrames = 7
 
   setupActiveAnimation(
-    regionName = "bubble",
+    regionName = "explosion",
     textureWidth = spriteHeight,
     textureHeight = spriteHeight,
     animationFrameCount = numOfActiveFrames,
-    frameDuration = loopTime / numOfActiveFrames,
-    loop = true
+    frameDuration = activeTime / numOfActiveFrames
+  )
+
+  setupWindupAnimation(
+    regionName = "explosion_windup",
+    textureWidth = spriteHeight,
+    textureHeight = spriteHeight,
+    animationFrameCount = numOfChannelingFrames,
+    frameDuration = channelTime / numOfChannelingFrames
   )
 
   def start(): Unit = {
     started = true
     state = AbilityState.Channeling
     channelTimer.restart()
+    abilityWindupAnimationTimer.restart()
   }
 
   override def onUpdateActive(): Unit = {
@@ -55,16 +61,13 @@ class Bubble(
           onActiveStart()
         }
       if (state == AbilityState.Active) {
-        if (!destroyed && activeTimer.time >= activeTime) {
+        if (!destroyed && activeTimer.time >= 0.2f) {
           body.getWorld.destroyBody(body)
           destroyed = true
         }
         if (activeTimer.time > activeTime) {
           // on active stop
           state = AbilityState.Inactive
-        }
-        if (!destroyed) {
-          body.setLinearVelocity(dirVector.x * speed, dirVector.y * speed)
         }
       }
     }
@@ -73,22 +76,17 @@ class Bubble(
 
   private def onActiveStart(): Unit = {
     state = AbilityState.Active
-    //Assets.sound(Assets.explosionSound).play(0.01f)
+    Assets.sound(Assets.explosionSound).play(0.01f)
     abilityActiveAnimationTimer.restart()
     activeTimer.restart()
-    initBody(startX, startY)
-    if (mainAbility.creature.asInstanceOf[Enemy].aggroedTarget.nonEmpty) {
-      dirVector = mainAbility.creature.facingVector.cpy
-    } else {
-      dirVector = new Vector2(1.0f, 0.0f)
-    }
+    initBody(posX, posY)
   }
 
   def initBody(x: Float, y: Float): Unit = {
     val bodyDef = new BodyDef()
     bodyDef.position.set(x, y)
 
-    bodyDef.`type` = BodyDef.BodyType.DynamicBody
+    bodyDef.`type` = BodyDef.BodyType.StaticBody
     body = mainAbility.creature.area.get.world.createBody(bodyDef)
     body.setUserData(this)
 
@@ -101,14 +99,31 @@ class Bubble(
   }
 
   override def render(batch: EsBatch): Unit = {
+    if (state == AbilityState.Channeling) {
+      val spriteWidth = 64
+      val scale = radius * 2 / spriteWidth
+      val image = currentWindupAnimationFrame
+      batch.spriteBatch.draw(
+        image,
+        posX - radius,
+        posY - radius,
+        0,
+        0,
+        image.getRegionWidth.toFloat,
+        image.getRegionHeight.toFloat,
+        scale,
+        scale,
+        0.0f
+      )
+    }
     if (state == AbilityState.Active) {
       val spriteWidth = 64
       val scale = radius * 2 / spriteWidth
       val image = currentActiveAnimationFrame
       batch.spriteBatch.draw(
         image,
-        body.getPosition.x - radius,
-        body.getPosition.y - radius,
+        posX - radius,
+        posY - radius,
         0,
         0,
         image.getRegionWidth.toFloat,

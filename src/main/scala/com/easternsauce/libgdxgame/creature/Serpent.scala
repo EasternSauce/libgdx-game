@@ -1,8 +1,8 @@
 package com.easternsauce.libgdxgame.creature
 
 import com.badlogic.gdx.audio.Sound
-import com.easternsauce.libgdxgame.ability.traits.Ability
-import com.easternsauce.libgdxgame.ability.{BubbleAbility, IceShardAbility}
+import com.easternsauce.libgdxgame.ability.composed.{BubbleAbility, IceShardAbility}
+import com.easternsauce.libgdxgame.ability.misc.Ability
 import com.easternsauce.libgdxgame.creature.traits.AbilityUsage
 import com.easternsauce.libgdxgame.system.Assets
 import com.easternsauce.libgdxgame.util.EsDirection
@@ -44,5 +44,4 @@ class Serpent(val id: String) extends Enemy {
 
   abilityUsages.addAll(List("bubble" -> AbilityUsage(weight = 100f, minimumDistance = 2f)))
   abilityUsages.addAll(List("ice_shard" -> AbilityUsage(weight = 100f, minimumDistance = 2f)))
-
 }

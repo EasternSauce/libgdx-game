@@ -1,7 +1,7 @@
 package com.easternsauce.libgdxgame.creature.traits
 
 import com.badlogic.gdx.math.{Intersector, Polygon, Vector2}
-import com.easternsauce.libgdxgame.ability.traits.Ability
+import com.easternsauce.libgdxgame.ability.misc.Ability
 import com.easternsauce.libgdxgame.area.Area
 import com.easternsauce.libgdxgame.creature.{Creature, Enemy}
 import com.easternsauce.libgdxgame.pathfinding.{AStar, AStarNode}

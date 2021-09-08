@@ -1,4 +1,6 @@
-package com.easternsauce.libgdxgame.ability.traits
+package com.easternsauce.libgdxgame.ability.attack
+
+import com.easternsauce.libgdxgame.ability.misc.Ability
 
 trait Attack extends Ability {
 

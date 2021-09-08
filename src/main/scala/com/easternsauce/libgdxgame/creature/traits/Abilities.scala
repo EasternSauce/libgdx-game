@@ -1,7 +1,7 @@
 package com.easternsauce.libgdxgame.creature.traits
 
-import com.easternsauce.libgdxgame.ability._
-import com.easternsauce.libgdxgame.ability.traits.Ability
+import com.easternsauce.libgdxgame.ability.attack.{ShootArrowAttack, SlashAttack, ThrustAttack}
+import com.easternsauce.libgdxgame.ability.misc.Ability
 import com.easternsauce.libgdxgame.creature.Creature
 import com.easternsauce.libgdxgame.util.EsBatch
 

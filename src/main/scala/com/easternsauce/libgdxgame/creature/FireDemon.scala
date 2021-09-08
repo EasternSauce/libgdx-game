@@ -1,8 +1,10 @@
 package com.easternsauce.libgdxgame.creature
 
 import com.badlogic.gdx.audio.{Music, Sound}
-import com.easternsauce.libgdxgame.ability.traits.Ability
-import com.easternsauce.libgdxgame.ability._
+import com.easternsauce.libgdxgame.ability.attack.ThrustAttack
+import com.easternsauce.libgdxgame.ability.composed.{FistSlamAbility, MeteorCrashAbility, MeteorRainAbility}
+import com.easternsauce.libgdxgame.ability.misc.Ability
+import com.easternsauce.libgdxgame.ability.other.DashAbility
 import com.easternsauce.libgdxgame.creature.traits.{AbilityUsage, Boss}
 import com.easternsauce.libgdxgame.system.Assets
 import com.easternsauce.libgdxgame.util.EsDirection

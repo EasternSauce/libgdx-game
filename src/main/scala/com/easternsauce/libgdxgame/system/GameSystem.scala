@@ -7,12 +7,12 @@ import com.badlogic.gdx.math.Vector3
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer
 import com.badlogic.gdx.utils.viewport.{FitViewport, Viewport}
 import com.badlogic.gdx.{Game, Gdx, Input}
-import com.easternsauce.libgdxgame.ability.music.MusicManager
 import com.easternsauce.libgdxgame.area.{Area, AreaGate}
 import com.easternsauce.libgdxgame.bossfight.BossfightManager
 import com.easternsauce.libgdxgame.creature.{Creature, Player}
 import com.easternsauce.libgdxgame.hud._
 import com.easternsauce.libgdxgame.items.ItemTemplate
+import com.easternsauce.libgdxgame.music.MusicManager
 import com.easternsauce.libgdxgame.saving.SavefileManager
 import com.easternsauce.libgdxgame.screens.{MainMenuScreen, PlayScreen}
 import com.easternsauce.libgdxgame.system.Fonts.EnrichedBitmapFont

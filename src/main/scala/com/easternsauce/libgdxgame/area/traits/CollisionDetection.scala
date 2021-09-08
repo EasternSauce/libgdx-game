@@ -1,8 +1,8 @@
 package com.easternsauce.libgdxgame.area.traits
 
 import com.badlogic.gdx.physics.box2d._
-import com.easternsauce.libgdxgame.ability.components.AbilityComponent
-import com.easternsauce.libgdxgame.ability.traits.Ability
+import com.easternsauce.libgdxgame.ability.composed.components.AbilityComponent
+import com.easternsauce.libgdxgame.ability.misc.Ability
 import com.easternsauce.libgdxgame.area.{Area, AreaGate, TerrainTile}
 import com.easternsauce.libgdxgame.creature.{Creature, Player}
 import com.easternsauce.libgdxgame.items.LootPile

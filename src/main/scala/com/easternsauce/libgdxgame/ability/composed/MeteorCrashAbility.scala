@@ -1,38 +1,22 @@
-package com.easternsauce.libgdxgame.ability
+package com.easternsauce.libgdxgame.ability.composed
 
 import com.badlogic.gdx.math.Vector2
-import com.easternsauce.libgdxgame.ability.components.Meteor
-import com.easternsauce.libgdxgame.ability.traits.Ability
+import com.easternsauce.libgdxgame.ability.composed.components.{AbilityComponent, Meteor}
 import com.easternsauce.libgdxgame.creature.Creature
-import com.easternsauce.libgdxgame.util.EsBatch
 
 import scala.collection.mutable.ListBuffer
 
-class MeteorCrashAbility private (val creature: Creature) extends Ability {
+class MeteorCrashAbility private (val creature: Creature) extends ComposedAbility {
   val id = "meteor_crash"
   protected val channelTime: Float = 0.05f
-  protected val activeTime: Float = 0.1f * 9 + (1.2f + 1.8f) / 2.5f + 0.1f
   protected val cooldownTime: Float = 12f
 
-  protected var meteors: ListBuffer[Meteor] = ListBuffer()
+  override protected val numOfComponents = 30
 
   override def onChannellingStart(): Unit = {
-    creature.activateEffect("immobilized", channelTime + activeTime)
-  }
-
-  override def render(batch: EsBatch): Unit = {
-    if (state == AbilityState.Active) {
-      for (meteor <- meteors) {
-        meteor.render(batch)
-      }
-    }
-  }
-
-  override protected def onActiveStart(): Unit = {
-    creature.takeStaminaDamage(25f)
-    meteors = ListBuffer[Meteor]()
+    val meteors = ListBuffer[Meteor]()
     val facingVector: Vector2 = creature.facingVector.nor()
-    for (i <- 0 until 10) {
+    for (i <- 0 until numOfComponents / 3) {
       meteors += new Meteor(
         this,
         0.1f * i,
@@ -42,7 +26,7 @@ class MeteorCrashAbility private (val creature: Creature) extends Ability {
         2.5f
       )
     }
-    for (i <- 0 until 10) {
+    for (i <- 0 until numOfComponents / 3) {
       val vector: Vector2 = facingVector.cpy()
       vector.setAngleDeg(vector.angleDeg() + 50)
       meteors += new Meteor(
@@ -54,7 +38,7 @@ class MeteorCrashAbility private (val creature: Creature) extends Ability {
         2.5f
       )
     }
-    for (i <- 0 until 10) {
+    for (i <- 0 until numOfComponents / 3) {
       val vector: Vector2 = facingVector.cpy()
       vector.setAngleDeg(vector.angleDeg() - 50)
       meteors += new Meteor(
@@ -66,16 +50,34 @@ class MeteorCrashAbility private (val creature: Creature) extends Ability {
         2.5f
       )
     }
+    components.addAll(meteors)
+
+    val lastComponent = components.maxBy(_.totalTime)
+    lastComponentFinishTime = lastComponent.totalTime
+
+    creature.activateEffect("immobilized", lastComponentFinishTime)
   }
 
-  override protected def onUpdateActive(): Unit = {
-    for (meteor <- meteors) {
-      if (!meteor.started && activeTimer.time > meteor.startTime) {
-        meteor.start()
-      }
+  override protected def onActiveStart(): Unit = {
+    creature.takeStaminaDamage(25f)
 
-      meteor.onUpdateActive()
-    }
+  }
+
+  override def createComponent(index: Int): AbilityComponent = {
+    val facingVector: Vector2 = creature.facingVector.nor()
+
+    val vector: Vector2 = facingVector.cpy()
+    // TODO: change angle based on index?
+    vector.setAngleDeg(vector.angleDeg() + 50)
+
+    new Meteor(
+      this,
+      0.1f * index,
+      creature.pos.x + (3.125f * (index + 1)) * vector.x,
+      creature.pos.y + (3.125f * (index + 1)) * vector.y,
+      1.5625f + 0.09375f * index * index,
+      2.5f
+    )
   }
 }
 

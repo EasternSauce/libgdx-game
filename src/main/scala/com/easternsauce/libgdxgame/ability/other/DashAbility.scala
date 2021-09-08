@@ -1,7 +1,7 @@
-package com.easternsauce.libgdxgame.ability
+package com.easternsauce.libgdxgame.ability.other
 
 import com.badlogic.gdx.math.Vector2
-import com.easternsauce.libgdxgame.ability.traits.Ability
+import com.easternsauce.libgdxgame.ability.misc.Ability
 import com.easternsauce.libgdxgame.creature.Creature
 
 class DashAbility private (val creature: Creature) extends Ability {

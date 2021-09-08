@@ -1,51 +1,44 @@
-package com.easternsauce.libgdxgame.ability.components
+package com.easternsauce.libgdxgame.ability.composed.components
 
 import com.badlogic.gdx.physics.box2d.{Body, BodyDef, CircleShape, FixtureDef}
-import com.easternsauce.libgdxgame.ability.AbilityState
-import com.easternsauce.libgdxgame.ability.AbilityState.AbilityState
-import com.easternsauce.libgdxgame.ability.traits.{Ability, ActiveAnimation, WindupAnimation}
+import com.easternsauce.libgdxgame.ability.misc.AbilityState.AbilityState
+import com.easternsauce.libgdxgame.ability.misc.{Ability, AbilityState, ActiveAnimation, WindupAnimation}
 import com.easternsauce.libgdxgame.creature.Creature
 import com.easternsauce.libgdxgame.system.Assets
 import com.easternsauce.libgdxgame.util.EsBatch
 
-class Meteor(
-  val mainAbility: Ability,
-  val startTime: Float,
-  val posX: Float,
-  val posY: Float,
-  val radius: Float,
-  speed: Float
-) extends AbilityComponent
+class Fist(val mainAbility: Ability, val startTime: Float, posX: Float, posY: Float, radius: Float)
+    extends AbilityComponent
     with WindupAnimation
     with ActiveAnimation {
 
-  override val activeTime: Float = 1.8f / speed
-  override val channelTime: Float = 1.2f / speed
+  override val activeTime: Float = 0.2f
+  override val channelTime: Float = 0.4f
 
   override var state: AbilityState = AbilityState.Inactive
-  override var started = false
+  override var started: Boolean = false
   override var body: Body = _
-  override var destroyed = false
+  override var destroyed: Boolean = false
 
-  val spriteWidth = 64
-  val spriteHeight = 64
-  val numOfActiveFrames = 21
-  val numOfChannelingFrames = 7
+  val spriteWidth = 40
+  val spriteHeight = 80
+
+  val numOfFrames = 5
 
   setupActiveAnimation(
-    regionName = "explosion",
-    textureWidth = spriteHeight,
+    regionName = "fist_slam",
+    textureWidth = spriteWidth,
     textureHeight = spriteHeight,
-    animationFrameCount = numOfActiveFrames,
-    frameDuration = activeTime / numOfActiveFrames
+    animationFrameCount = numOfFrames,
+    frameDuration = activeTime / numOfFrames
   )
 
   setupWindupAnimation(
-    regionName = "explosion_windup",
-    textureWidth = spriteHeight,
+    regionName = "fist_slam_windup",
+    textureWidth = spriteWidth,
     textureHeight = spriteHeight,
-    animationFrameCount = numOfChannelingFrames,
-    frameDuration = channelTime / numOfChannelingFrames
+    animationFrameCount = numOfFrames,
+    frameDuration = channelTime / numOfFrames
   )
 
   def start(): Unit = {
@@ -57,11 +50,19 @@ class Meteor(
 
   override def onUpdateActive(): Unit = {
     if (started) {
-      if (state == AbilityState.Channeling)
+      if (state == AbilityState.Channeling) {
         if (channelTimer.time > channelTime) {
-          onActiveStart()
+          state = AbilityState.Active
+          Assets.sound(Assets.glassBreakSound).play(0.1f)
+          abilityActiveAnimationTimer.restart()
+          activeTimer.restart()
+          initBody(posX, posY)
         }
+      }
       if (state == AbilityState.Active) {
+        if (activeTimer.time > activeTime) {
+          state = AbilityState.Inactive
+        }
         if (!destroyed && activeTimer.time >= 0.2f) {
           body.getWorld.destroyBody(body)
           destroyed = true
@@ -72,15 +73,6 @@ class Meteor(
         }
       }
     }
-
-  }
-
-  private def onActiveStart(): Unit = {
-    state = AbilityState.Active
-    Assets.sound(Assets.explosionSound).play(0.01f)
-    abilityActiveAnimationTimer.restart()
-    activeTimer.restart()
-    initBody(posX, posY)
   }
 
   def initBody(x: Float, y: Float): Unit = {
@@ -100,14 +92,18 @@ class Meteor(
   }
 
   override def render(batch: EsBatch): Unit = {
+
     if (state == AbilityState.Channeling) {
-      val spriteWidth = 64
-      val scale = radius * 2 / spriteWidth
+
       val image = currentWindupAnimationFrame
+
+      val scale = radius * 2f / image.getRegionWidth
+
+      val shift = radius
       batch.spriteBatch.draw(
         image,
-        posX - radius,
-        posY - radius,
+        posX - shift,
+        posY - shift,
         0,
         0,
         image.getRegionWidth.toFloat,
@@ -118,13 +114,17 @@ class Meteor(
       )
     }
     if (state == AbilityState.Active) {
-      val spriteWidth = 64
-      val scale = radius * 2 / spriteWidth
+
       val image = currentActiveAnimationFrame
+
+      val scale = radius * 2f / image.getRegionWidth
+
+      val shift = radius
+
       batch.spriteBatch.draw(
         image,
-        posX - radius,
-        posY - radius,
+        posX - shift,
+        posY - shift,
         0,
         0,
         image.getRegionWidth.toFloat,
@@ -137,8 +137,9 @@ class Meteor(
   }
 
   override def onCollideWithCreature(creature: Creature): Unit = {
-    if (!(mainAbility.creature.isEnemy && creature.isEnemy) && creature.isAlive) {
-      if (!creature.isImmune) creature.takeLifeDamage(70f, immunityFrames = true)
+    if (!(mainAbility.creature.isEnemy && creature.isEnemy) && creature.isAlive && activeTimer.time < 0.15f) {
+      if (!creature.isImmune) creature.takeLifeDamage(100f, immunityFrames = true)
     }
   }
+
 }

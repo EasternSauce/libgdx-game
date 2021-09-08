@@ -1,4 +1,4 @@
-package com.easternsauce.libgdxgame.ability.music
+package com.easternsauce.libgdxgame.music
 
 import com.badlogic.gdx.audio.Music
 

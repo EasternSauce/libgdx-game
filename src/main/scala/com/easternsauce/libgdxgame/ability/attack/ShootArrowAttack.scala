@@ -1,8 +1,7 @@
-package com.easternsauce.libgdxgame.ability
+package com.easternsauce.libgdxgame.ability.attack
 
 import com.badlogic.gdx.maps.tiled.TiledMap
 import com.badlogic.gdx.math.Vector2
-import com.easternsauce.libgdxgame.ability.traits.Attack
 import com.easternsauce.libgdxgame.creature.Creature
 import com.easternsauce.libgdxgame.projectile.Arrow
 import com.easternsauce.libgdxgame.system.Assets

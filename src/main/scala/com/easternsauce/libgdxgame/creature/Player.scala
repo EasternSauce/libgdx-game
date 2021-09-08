@@ -3,8 +3,8 @@ package com.easternsauce.libgdxgame.creature
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.math.Vector2
-import com.easternsauce.libgdxgame.ability.DashAbility
-import com.easternsauce.libgdxgame.ability.traits.Ability
+import com.easternsauce.libgdxgame.ability.misc.Ability
+import com.easternsauce.libgdxgame.ability.other.DashAbility
 import com.easternsauce.libgdxgame.system.{Assets, GameSystem}
 import com.easternsauce.libgdxgame.util.{EsDirection, EsTimer}
 

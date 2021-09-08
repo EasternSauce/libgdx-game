@@ -1,7 +1,7 @@
-package com.easternsauce.libgdxgame.ability.traits
+package com.easternsauce.libgdxgame.ability.misc
 
 import com.badlogic.gdx.physics.box2d._
-import com.easternsauce.libgdxgame.ability.AttackHitbox
+import com.easternsauce.libgdxgame.ability.attack.AttackHitbox
 
 trait PhysicalHitbox {
   var b2Body: Option[Body] = None
