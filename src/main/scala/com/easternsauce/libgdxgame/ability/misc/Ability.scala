@@ -57,7 +57,6 @@ trait Ability {
   }
 
   def update(): Unit = {
-
     import AbilityState._
     state match {
       case Channeling =>

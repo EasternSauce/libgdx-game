@@ -192,7 +192,7 @@ class PlayScreen() extends Screen {
     }
 
     if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
-      player.dashAbility.perform()
+      player.abilityMap("dash").perform()
     }
 
     handlePlayerMovement()

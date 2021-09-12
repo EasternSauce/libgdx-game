@@ -22,8 +22,6 @@ class Player private (val id: String) extends Creature {
 
   override val walkSound: Option[Sound] = Some(Assets.sound(Assets.runningSound))
 
-  var dashAbility: DashAbility = _
-
   var onSpawnPointId: Option[String] = None
 
   var respawning: Boolean = false
@@ -39,12 +37,13 @@ class Player private (val id: String) extends Creature {
     dirMap = Map(EsDirection.Up -> 3, EsDirection.Down -> 0, EsDirection.Left -> 1, EsDirection.Right -> 2)
   )
 
-  dashAbility = DashAbility(this)
-  dashAbility.activeSound = Some(Assets.sound(Assets.flybySound))
-  dashAbility.activeSoundVolume = Some(0.2f)
-
   override val additionalAbilities: Map[String, Ability] =
-    Map(DashAbility(this).asMapEntry)
+    Map({
+      val dashAbility = DashAbility(this)
+      dashAbility.activeSound = Some(Assets.sound(Assets.flybySound))
+      dashAbility.activeSoundVolume = Some(0.2f)
+      dashAbility
+    }.asMapEntry)
 
   override def calculateFacingVector(): Unit = {
     val mouseX = Gdx.input.getX
