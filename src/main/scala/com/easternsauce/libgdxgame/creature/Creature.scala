@@ -218,7 +218,9 @@ abstract class Creature
 
   }
 
-  def initCreature(): Unit = {
+  def init(): Unit = {
+    setupAnimation()
+
     setBounds(0, 0, creatureWidth, creatureHeight)
     setOrigin(creatureWidth / 2f, creatureHeight / 2f)
 

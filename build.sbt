@@ -11,7 +11,7 @@ resolvers += "jitpack" at "https://jitpack.io"
 libraryDependencies += "com.badlogicgames.gdx" % "gdx" % "1.9.14"
 libraryDependencies += "com.badlogicgames.gdx" % "gdx-box2d" % "1.9.14"
 libraryDependencies += "com.badlogicgames.gdx" % "gdx-backend-lwjgl3" % "1.9.14"
-libraryDependencies += "com.badlogicgames.gdx" % "gdx-freetype"  % "1.9.14"
+libraryDependencies += "com.badlogicgames.gdx" % "gdx-freetype" % "1.9.14"
 
 libraryDependencies += "com.badlogicgames.gdx" % "gdx-platform" % "1.9.14" classifier "natives-desktop"
 libraryDependencies += "com.badlogicgames.gdx" % "gdx-box2d-platform" % "1.9.14" classifier "natives-desktop"

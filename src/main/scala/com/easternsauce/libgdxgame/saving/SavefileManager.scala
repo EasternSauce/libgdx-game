@@ -84,8 +84,9 @@ class SavefileManager {
   private def recreateCreatureFromSavedata(creatureData: CreatureSavedata): Unit = {
     val action = Class
       .forName(creatureData.creatureClass)
-      .getDeclaredConstructor(classOf[String])
-      .newInstance(creatureData.id)
+      .getMethod("apply", classOf[String])
+      .invoke(null, creatureData.id)
+
     val creature = action.asInstanceOf[Creature]
 
     creature.loadFromSavedata(creatureData)

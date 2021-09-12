@@ -5,10 +5,11 @@ import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.math.Vector2
 import com.easternsauce.libgdxgame.ability.misc.Ability
 import com.easternsauce.libgdxgame.ability.other.DashAbility
+import com.easternsauce.libgdxgame.creature.traits.AnimationParams
 import com.easternsauce.libgdxgame.system.{Assets, GameSystem}
 import com.easternsauce.libgdxgame.util.{EsDirection, EsTimer}
 
-class Player(val id: String) extends Creature {
+class Player private (val id: String) extends Creature {
 
   override val creatureWidth = 1.85f
   override val creatureHeight = 1.85f
@@ -28,7 +29,7 @@ class Player(val id: String) extends Creature {
   var respawning: Boolean = false
   val respawnTimer: EsTimer = EsTimer()
 
-  setupAnimation(
+  override val animationParams: AnimationParams = AnimationParams(
     regionName = "male1",
     textureWidth = 32,
     textureHeight = 32,
@@ -38,15 +39,12 @@ class Player(val id: String) extends Creature {
     dirMap = Map(EsDirection.Up -> 3, EsDirection.Down -> 0, EsDirection.Left -> 1, EsDirection.Right -> 2)
   )
 
-  initCreature()
-
   dashAbility = DashAbility(this)
   dashAbility.activeSound = Some(Assets.sound(Assets.flybySound))
   dashAbility.activeSoundVolume = Some(0.2f)
 
-  override val abilityMap: Map[String, Ability] =
-    standardAbilities ++
-      Map(DashAbility(this).asMapEntry)
+  override val additionalAbilities: Map[String, Ability] =
+    Map(DashAbility(this).asMapEntry)
 
   override def calculateFacingVector(): Unit = {
     val mouseX = Gdx.input.getX
@@ -97,4 +95,12 @@ class Player(val id: String) extends Creature {
 
   }
 
+}
+
+object Player {
+  def apply(id: String): Player = {
+    val obj = new Player(id)
+    obj.init()
+    obj
+  }
 }

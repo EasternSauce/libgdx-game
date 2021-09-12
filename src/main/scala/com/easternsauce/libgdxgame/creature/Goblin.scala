@@ -1,10 +1,11 @@
 package com.easternsauce.libgdxgame.creature
 
 import com.badlogic.gdx.audio.Sound
+import com.easternsauce.libgdxgame.creature.traits.AnimationParams
 import com.easternsauce.libgdxgame.system.Assets
 import com.easternsauce.libgdxgame.util.EsDirection
 
-class Goblin(val id: String) extends Enemy {
+class Goblin private (val id: String) extends Enemy {
   override val creatureWidth = 2.85f
   override val creatureHeight = 2.85f
 
@@ -22,7 +23,7 @@ class Goblin(val id: String) extends Enemy {
     "steelHelmet" -> 0.05f
   )
 
-  setupAnimation(
+  override val animationParams: AnimationParams = AnimationParams(
     regionName = "goblin",
     textureWidth = 32,
     textureHeight = 32,
@@ -32,6 +33,12 @@ class Goblin(val id: String) extends Enemy {
     dirMap = Map(EsDirection.Up -> 3, EsDirection.Down -> 0, EsDirection.Left -> 1, EsDirection.Right -> 2)
   )
 
-  initCreature()
+}
 
+object Goblin {
+  def apply(id: String): Goblin = {
+    val obj = new Goblin(id)
+    obj.init()
+    obj
+  }
 }

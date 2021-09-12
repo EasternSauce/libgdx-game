@@ -9,7 +9,6 @@ import com.easternsauce.libgdxgame.system.GameSystem
 import com.easternsauce.libgdxgame.system.GameSystem._
 import com.easternsauce.libgdxgame.util.{EsDirection, EsTimer}
 
-import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
 
 trait AggressiveAi {
@@ -38,8 +37,6 @@ trait AggressiveAi {
 
   var targetVisible = false
 
-  protected val abilityUsages: mutable.Map[String, AbilityUsage] = mutable.Map()
-
   val useAbilityTimer: EsTimer = EsTimer()
   var useAbilityTimeout: Float = 1f + 3f * GameSystem.randomGenerator.nextFloat()
 
@@ -56,6 +53,8 @@ trait AggressiveAi {
     } else {
       6f
     }
+
+  val abilityUsages: Map[String, AbilityUsage] = Map()
 
   def lookForTarget(): Unit = {
     if (isAlive && !targetFound) {

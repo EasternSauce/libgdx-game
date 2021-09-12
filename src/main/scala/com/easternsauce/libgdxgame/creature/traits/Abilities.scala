@@ -8,11 +8,17 @@ import com.easternsauce.libgdxgame.util.EsBatch
 trait Abilities {
   this: Creature =>
 
-  val abilityMap: Map[String, Ability] = standardAbilities
-
   var isAttacking = false
 
   var unarmedDamage = 30f
+
+  val standardAbilities: Map[String, Ability] =
+    Map(SlashAttack(this).asMapEntry, ShootArrowAttack(this).asMapEntry, ThrustAttack(this).asMapEntry)
+
+  val additionalAbilities: Map[String, Ability] =
+    Map()
+
+  def abilityMap: Map[String, Ability] = standardAbilities ++ additionalAbilities
 
   def weaponDamage: Float = if (equipmentItems.contains(0)) equipmentItems(0).damage.get.toFloat else unarmedDamage
 
@@ -48,8 +54,5 @@ trait Abilities {
       abilityMap("slash")
     }
   }
-
-  def standardAbilities: Map[String, Ability] =
-    Map(SlashAttack(this).asMapEntry, ShootArrowAttack(this).asMapEntry, ThrustAttack(this).asMapEntry)
 
 }

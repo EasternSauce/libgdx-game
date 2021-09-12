@@ -161,8 +161,9 @@ class Area(val mapLoader: TmxMapLoader, val areaFilesLocation: String, val id: S
 
     val action = Class
       .forName(spawnPoint.creatureClass)
-      .getDeclaredConstructor(classOf[String])
-      .newInstance(creatureId)
+      .getMethod("apply", classOf[String])
+      .invoke(null, creatureId)
+
     val creature = action.asInstanceOf[Creature]
 
     creature.spawnPointId = Some(spawnPoint.id)

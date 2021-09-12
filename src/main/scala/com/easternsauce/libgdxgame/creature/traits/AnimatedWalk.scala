@@ -18,42 +18,36 @@ trait AnimatedWalk {
 
   var dirMap: Map[EsDirection.Value, Int] = _
 
-  def setupAnimation(
-    regionName: String,
-    textureWidth: Int,
-    textureHeight: Int,
-    animationFrameCount: Int,
-    frameDuration: Float,
-    neutralStanceFrame: Int,
-    dirMap: Map[EsDirection.Value, Int]
-  ): Unit = {
-    this.dirMap = dirMap
+  val animationParams: AnimationParams
+
+  protected def setupAnimation(): Unit = {
+    dirMap = animationParams.dirMap
 
     val frames = new ListBuffer[TextureRegion]()
 
-    val spriteTextureRegion: TextureAtlas.AtlasRegion = Assets.atlas.findRegion(regionName)
+    val spriteTextureRegion: TextureAtlas.AtlasRegion = Assets.atlas.findRegion(animationParams.regionName)
 
     for (i <- 0 until 4) {
       standStillImages(i) = new TextureRegion(
         spriteTextureRegion,
-        neutralStanceFrame * textureWidth,
-        i * textureHeight,
-        textureWidth,
-        textureHeight
+        animationParams.neutralStanceFrame * animationParams.textureWidth,
+        i * animationParams.textureHeight,
+        animationParams.textureWidth,
+        animationParams.textureHeight
       )
     }
 
     for (i <- 0 until 4) {
-      for (j <- 0 until animationFrameCount) {
+      for (j <- 0 until animationParams.animationFrameCount) {
         frames += new TextureRegion(
           spriteTextureRegion,
-          j * textureWidth,
-          i * textureHeight,
-          textureWidth,
-          textureHeight
+          j * animationParams.textureWidth,
+          i * animationParams.textureHeight,
+          animationParams.textureWidth,
+          animationParams.textureHeight
         )
       }
-      walkAnimation(i) = new Animation[TextureRegion](frameDuration, frames.toArray: _*)
+      walkAnimation(i) = new Animation[TextureRegion](animationParams.frameDuration, frames.toArray: _*)
       frames.clear()
     }
 
@@ -68,3 +62,13 @@ trait AnimatedWalk {
   }
 
 }
+
+case class AnimationParams(
+  regionName: String,
+  textureWidth: Int,
+  textureHeight: Int,
+  animationFrameCount: Int,
+  frameDuration: Float,
+  neutralStanceFrame: Int,
+  dirMap: Map[EsDirection.Value, Int]
+)

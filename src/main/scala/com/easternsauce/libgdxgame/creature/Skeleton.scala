@@ -1,10 +1,11 @@
 package com.easternsauce.libgdxgame.creature
 
 import com.badlogic.gdx.audio.Sound
+import com.easternsauce.libgdxgame.creature.traits.AnimationParams
 import com.easternsauce.libgdxgame.system.Assets
 import com.easternsauce.libgdxgame.util.EsDirection
 
-class Skeleton(val id: String) extends Enemy {
+class Skeleton private (val id: String) extends Enemy {
   override val creatureWidth = 2.85f
   override val creatureHeight = 2.85f
 
@@ -23,16 +24,24 @@ class Skeleton(val id: String) extends Enemy {
     "healingPowder" -> 0.5f
   )
 
-  setupAnimation(
-    regionName = "skeleton",
-    textureWidth = 64,
-    textureHeight = 64,
-    animationFrameCount = 9,
-    frameDuration = 0.05f,
-    neutralStanceFrame = 0,
-    dirMap = Map(EsDirection.Up -> 0, EsDirection.Down -> 2, EsDirection.Left -> 1, EsDirection.Right -> 3)
-  )
+  override val animationParams: AnimationParams = {
+    AnimationParams(
+      regionName = "skeleton",
+      textureWidth = 64,
+      textureHeight = 64,
+      animationFrameCount = 9,
+      frameDuration = 0.05f,
+      neutralStanceFrame = 0,
+      dirMap = Map(EsDirection.Up -> 0, EsDirection.Down -> 2, EsDirection.Left -> 1, EsDirection.Right -> 3)
+    )
+  }
 
-  initCreature()
+}
 
+object Skeleton {
+  def apply(id: String): Skeleton = {
+    val obj = new Skeleton(id)
+    obj.init()
+    obj
+  }
 }
