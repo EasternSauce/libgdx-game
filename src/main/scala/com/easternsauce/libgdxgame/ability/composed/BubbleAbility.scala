@@ -1,26 +1,62 @@
 package com.easternsauce.libgdxgame.ability.composed
 
+import com.badlogic.gdx.audio.Sound
 import com.easternsauce.libgdxgame.ability.composed.components.{AbilityComponent, Bubble}
+import com.easternsauce.libgdxgame.ability.misc.Ability
+import com.easternsauce.libgdxgame.ability.misc.AbilityState.{AbilityState, Inactive}
+import com.easternsauce.libgdxgame.ability.parameters.{AbilityParameters, SoundParameters}
 import com.easternsauce.libgdxgame.creature.Creature
 
-class BubbleAbility private (val creature: Creature) extends ComposedAbility {
+case class BubbleAbility private (
+  creature: Creature,
+  state: AbilityState = Inactive,
+  onCooldown: Boolean = false,
+  soundParameters: SoundParameters = SoundParameters(),
+  lastComponentFinishTime: Float = 0f,
+  components: List[AbilityComponent] = List()
+) extends ComposedAbility {
   val id = "bubble"
-  protected val channelTime: Float = 0.05f
-  protected val cooldownTime = 5f
+  override protected val channelTime: Float = 0.05f
+  override protected val cooldownTime = 5f
 
   override protected val numOfComponents = 3
 
-  override protected def onActiveStart(): Unit = {
+  override protected def onActiveStart(): AbilityParameters = {
+
+    // TODO: sideeffects
     creature.takeStaminaDamage(25f)
+
+    AbilityParameters()
   }
 
   override def createComponent(index: Int): AbilityComponent = {
+    // TODO: factory method
     new Bubble(this, creature.pos.x, creature.pos.y, radius = 4f, speed = 30f, startTime = 0.4f * index)
   }
-}
 
-object BubbleAbility {
-  def apply(creature: Creature): BubbleAbility = {
-    new BubbleAbility(creature)
+  override def applyParams(params: AbilityParameters): Ability = {
+    copy(
+      creature = params.creature.getOrElse(creature),
+      state = params.state.getOrElse(state),
+      onCooldown = params.onCooldown.getOrElse(onCooldown),
+      lastComponentFinishTime = params.lastComponentFinishTime.getOrElse(lastComponentFinishTime),
+      components = params.components.getOrElse(components)
+    )
+  }
+
+  override def updateHitbox(): AbilityParameters = {
+    AbilityParameters()
+  }
+
+  override protected def onUpdateChanneling(): AbilityParameters = {
+    AbilityParameters()
+  }
+
+  override protected def onStop(): AbilityParameters = {
+    AbilityParameters()
+  }
+
+  override def onCollideWithCreature(creature: Creature): AbilityParameters = {
+    AbilityParameters()
   }
 }

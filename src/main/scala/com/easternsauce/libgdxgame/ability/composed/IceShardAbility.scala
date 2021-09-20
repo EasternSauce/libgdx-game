@@ -1,18 +1,30 @@
 package com.easternsauce.libgdxgame.ability.composed
 
+import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.math.Vector2
 import com.easternsauce.libgdxgame.ability.composed.components.{AbilityComponent, IceShard}
+import com.easternsauce.libgdxgame.ability.misc.Ability
+import com.easternsauce.libgdxgame.ability.misc.AbilityState.{AbilityState, Inactive}
+import com.easternsauce.libgdxgame.ability.parameters.{AbilityParameters, SoundParameters}
 import com.easternsauce.libgdxgame.creature.{Creature, Enemy}
 
-class IceShardAbility private (val creature: Creature) extends ComposedAbility {
+case class IceShardAbility private (
+  creature: Creature,
+  state: AbilityState = Inactive,
+  onCooldown: Boolean = false,
+  soundParameters: SoundParameters = SoundParameters(),
+  lastComponentFinishTime: Float = 0f,
+  components: List[AbilityComponent] = List()
+) extends ComposedAbility {
   val id = "ice_shard"
-  protected val channelTime: Float = 0.05f
-  protected val cooldownTime = 5f
+  override protected val channelTime: Float = 0.05f
+  override protected val cooldownTime = 5f
 
   override protected val numOfComponents = 9
 
-  override protected def onActiveStart(): Unit = {
+  override protected def onActiveStart(): AbilityParameters = {
     creature.takeStaminaDamage(25f)
+    AbilityParameters()
   }
 
   override def createComponent(index: Int): AbilityComponent = {
@@ -32,10 +44,30 @@ class IceShardAbility private (val creature: Creature) extends ComposedAbility {
       facingVector.cpy.rotateDeg(20f * (index - 5))
     )
   }
-}
 
-object IceShardAbility {
-  def apply(creature: Creature): IceShardAbility = {
-    new IceShardAbility(creature)
+  override def applyParams(params: AbilityParameters): IceShardAbility = {
+    copy(
+      creature = params.creature.getOrElse(creature),
+      state = params.state.getOrElse(state),
+      onCooldown = params.onCooldown.getOrElse(onCooldown),
+      lastComponentFinishTime = params.lastComponentFinishTime.getOrElse(lastComponentFinishTime),
+      components = params.components.getOrElse(components)
+    )
+  }
+
+  override def updateHitbox(): AbilityParameters = {
+    AbilityParameters()
+  }
+
+  override protected def onUpdateChanneling(): AbilityParameters = {
+    AbilityParameters()
+  }
+
+  override protected def onStop(): AbilityParameters = {
+    AbilityParameters()
+  }
+
+  override def onCollideWithCreature(creature: Creature): AbilityParameters = {
+    AbilityParameters()
   }
 }

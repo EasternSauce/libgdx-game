@@ -19,7 +19,9 @@ class EsTimer private (var isStarted: Boolean = false) {
   }
 
   private def update(delta: Float): Unit = {
-    if (isStarted) time = time + delta
+    if (isStarted) {
+      time = time + delta
+    }
   }
 
 }

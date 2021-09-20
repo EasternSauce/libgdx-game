@@ -1,58 +1,77 @@
 package com.easternsauce.libgdxgame.ability.composed
 
 import com.easternsauce.libgdxgame.ability.composed.components.AbilityComponent
+import com.easternsauce.libgdxgame.ability.misc.AbilityState.AbilityState
 import com.easternsauce.libgdxgame.ability.misc.{Ability, AbilityState}
+import com.easternsauce.libgdxgame.ability.parameters.AbilityParameters
+import com.easternsauce.libgdxgame.creature.Creature
 import com.easternsauce.libgdxgame.util.EsBatch
 
 import scala.collection.mutable.ListBuffer
 
 trait ComposedAbility extends Ability {
-  protected var components: ListBuffer[AbilityComponent] = ListBuffer()
+  val components: List[AbilityComponent]
+  val lastComponentFinishTime: Float
 
   protected val numOfComponents = 0
 
-  protected def activeTime: Float = 0
+  override protected val activeTime: Float = 0
 
-  var lastComponentFinishTime: Float = 0
+  override def update(): AbilityParameters = {
+    import AbilityState._
 
-  override def update(): Unit = {
-    if ((state == AbilityState.Channeling) && channelTimer.time > channelTime) {
-      state = AbilityState.Active
-      onActiveStart()
-      activeTimer.restart()
-      onCooldown = true
+    state match {
+      case Channeling =>
+        val params = if (channelTimer.time > channelTime) {
+          activeTimer.restart()
+
+          AbilityParameters(state = Some(AbilityState.Active), onCooldown = Some(true))
+            .add(onActiveStart())
+
+        } else
+          AbilityParameters()
+
+        params
+          .add(updateHitbox())
+          .add(onUpdateChanneling())
+
+      case Active =>
+        // stop when all components are stopped
+        val params =
+          if (activeTimer.time > lastComponentFinishTime)
+            AbilityParameters(state = Some(AbilityState.Inactive))
+              .add(onStop())
+          else
+            AbilityParameters()
+
+        params
+          .add(updateHitbox())
+          .add(onUpdateActive())
+
+      case Inactive if onCooldown =>
+        if (activeTimer.time > cooldownTime) {
+          AbilityParameters(onCooldown = Some(false))
+        } else
+          AbilityParameters()
+      case _ => AbilityParameters()
     }
-    // stop when all components are stopped
 
-    if (state == AbilityState.Active) {
-      if (activeTimer.time > lastComponentFinishTime) {
-        onStop()
-
-        state = AbilityState.Inactive
-      }
-
-    }
-
-    if (state == AbilityState.Channeling || state == AbilityState.Active) {
-      updateHitbox()
-    }
-
-    if (state == AbilityState.Channeling) onUpdateChanneling()
-    else if (state == AbilityState.Active) onUpdateActive()
-
-    if ((state == AbilityState.Inactive) && onCooldown)
-      if (activeTimer.time > cooldownTime) onCooldown = false
   }
 
-  override def render(batch: EsBatch): Unit = {
+  override def render(batch: EsBatch): AbilityParameters = {
     if (state == AbilityState.Active) {
+      // TODO: remove sideeffect
       for (component <- components) {
         component.render(batch)
       }
     }
+
+    AbilityParameters()
   }
 
-  override protected def onUpdateActive(): Unit = {
+  override protected def onUpdateActive(): AbilityParameters = {
+    // TODO: remove sideeffect
+
     for (component <- components) {
       if (!component.started && activeTimer.time > component.startTime) {
         component.start()
@@ -60,21 +79,21 @@ trait ComposedAbility extends Ability {
 
       component.onUpdateActive()
     }
+
+    AbilityParameters()
   }
 
-  override def onChannellingStart(): Unit = {
-    components = ListBuffer[AbilityComponent]()
+  override def onChannellingStart(): AbilityParameters = {
 
-    for (i <- 0 until numOfComponents) {
-      val component = createComponent(i)
-
-      components += component
-    }
+    val components = for (i <- 0 until numOfComponents) yield createComponent(i)
 
     val lastComponent = components.maxBy(_.totalTime)
-    lastComponentFinishTime = lastComponent.totalTime
+    val lastComponentFinishTime = lastComponent.totalTime
 
+    // TODO: remove side effect
     creature.activateEffect("immobilized", lastComponentFinishTime)
+
+    AbilityParameters(components = Some(components.toList), lastComponentFinishTime = Some(lastComponentFinishTime))
   }
 
   def createComponent(index: Int): AbilityComponent

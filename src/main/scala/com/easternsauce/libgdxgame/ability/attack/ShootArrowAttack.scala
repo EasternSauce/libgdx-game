@@ -1,32 +1,50 @@
 package com.easternsauce.libgdxgame.ability.attack
 
+import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.maps.tiled.TiledMap
 import com.badlogic.gdx.math.Vector2
+import com.easternsauce.libgdxgame.ability.misc.{Ability, AbilityState}
+import com.easternsauce.libgdxgame.ability.misc.AbilityState.{AbilityState, Inactive}
+import com.easternsauce.libgdxgame.ability.other.DashAbility
+import com.easternsauce.libgdxgame.ability.parameters.{AbilityParameters, SoundParameters}
 import com.easternsauce.libgdxgame.creature.Creature
 import com.easternsauce.libgdxgame.projectile.Arrow
 import com.easternsauce.libgdxgame.system.Assets
+import com.easternsauce.libgdxgame.util.EsBatch
 
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
 
-class ShootArrowAttack private (val creature: Creature) extends Attack {
+case class ShootArrowAttack private (
+  creature: Creature,
+  state: AbilityState = AbilityState.Inactive,
+  onCooldown: Boolean = false,
+  soundParameters: SoundParameters = SoundParameters()
+) extends Ability {
 
   val id: String = "shoot_arrow"
 
-  protected def channelTime: Float = 0.85f
-  protected def activeTime: Float = 0.1f
-  protected val cooldownTime = 0.8f
+  override protected val channelTime: Float = 0.85f
+  override protected val activeTime: Float = 0.1f
+  override protected val cooldownTime = 0.8f
 
-  override def onChannellingStart(): Unit = {
+  override protected val isAttack = true
+
+  override def onChannellingStart(): AbilityParameters = {
     super.onChannellingStart()
 
+    // TODO: remove side effects
     creature.isAttacking = true
 
     Assets.sound(Assets.bowPullSound).play(0.1f)
+
+    AbilityParameters()
   }
 
-  override def onActiveStart(): Unit = {
-    super.onActiveStart()
+  override def onActiveStart(): AbilityParameters = {
+    val result = super.onActiveStart()
+
+    // TODO: remove side effects
 
     Assets.sound(Assets.bowReleaseSound).play(0.1f)
 
@@ -55,12 +73,40 @@ class ShootArrowAttack private (val creature: Creature) extends Attack {
     }
 
     creature.takeStaminaDamage(20f)
+
+    AbilityParameters()
   }
 
-}
-
-object ShootArrowAttack {
-  def apply(abilityCreature: Creature): ShootArrowAttack = {
-    new ShootArrowAttack(abilityCreature)
+  override def updateHitbox(): AbilityParameters = {
+    AbilityParameters()
   }
+
+  override protected def onUpdateActive(): AbilityParameters = {
+    AbilityParameters()
+  }
+
+  override protected def onUpdateChanneling(): AbilityParameters = {
+    AbilityParameters()
+  }
+
+  override def render(esBatch: EsBatch): AbilityParameters = {
+    AbilityParameters()
+  }
+
+  override protected def onStop(): AbilityParameters = {
+    AbilityParameters()
+  }
+
+  override def onCollideWithCreature(creature: Creature): AbilityParameters = {
+    AbilityParameters()
+  }
+
+  override def applyParams(params: AbilityParameters): ShootArrowAttack = {
+    copy(
+      creature = params.creature.getOrElse(creature),
+      state = params.state.getOrElse(state),
+      onCooldown = params.onCooldown.getOrElse(onCooldown)
+    )
+  }
+
 }

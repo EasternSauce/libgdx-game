@@ -26,7 +26,7 @@ class Serpent private (val id: String) extends Enemy {
     "healingPowder" -> 0.5f
   )
 
-  override val additionalAbilities: Map[String, Ability] =
+  override lazy val additionalAbilities: Map[String, Ability] =
     Map(BubbleAbility(this).asMapEntry, IceShardAbility(this).asMapEntry)
 
   override val abilityUsages: Map[String, AbilityUsage] =

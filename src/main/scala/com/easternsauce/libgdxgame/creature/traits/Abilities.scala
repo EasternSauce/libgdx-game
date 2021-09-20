@@ -5,6 +5,8 @@ import com.easternsauce.libgdxgame.ability.misc.Ability
 import com.easternsauce.libgdxgame.creature.Creature
 import com.easternsauce.libgdxgame.util.EsBatch
 
+import scala.collection.mutable
+
 trait Abilities {
   this: Creature =>
 
@@ -12,13 +14,6 @@ trait Abilities {
 
   var unarmedDamage = 30f
 
-  val standardAbilities: Map[String, Ability] =
-    Map(SlashAttack(this).asMapEntry, ShootArrowAttack(this).asMapEntry, ThrustAttack(this).asMapEntry)
-
-  val additionalAbilities: Map[String, Ability] =
-    Map()
-
-  def abilityMap: Map[String, Ability] = standardAbilities ++ additionalAbilities
 
   def weaponDamage: Float = if (equipmentItems.contains(0)) equipmentItems(0).damage.get.toFloat else unarmedDamage
 

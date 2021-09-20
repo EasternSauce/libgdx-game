@@ -1,17 +1,28 @@
 package com.easternsauce.libgdxgame.ability.composed
 
+import com.badlogic.gdx.audio.Sound
 import com.easternsauce.libgdxgame.ability.composed.components.{AbilityComponent, Meteor}
+import com.easternsauce.libgdxgame.ability.misc.AbilityState.{AbilityState, Inactive}
+import com.easternsauce.libgdxgame.ability.parameters.{AbilityParameters, SoundParameters}
 import com.easternsauce.libgdxgame.creature.Creature
 import com.easternsauce.libgdxgame.system.GameSystem
 
-class MeteorRainAbility private (val creature: Creature) extends ComposedAbility {
+case class MeteorRainAbility private (
+  creature: Creature,
+  state: AbilityState = Inactive,
+  onCooldown: Boolean = false,
+  soundParameters: SoundParameters = SoundParameters(),
+  components: List[AbilityComponent] = List(),
+  lastComponentFinishTime: Float = 0f
+) extends ComposedAbility {
   val id = "meteor_rain"
-  protected val channelTime: Float = 0.05f
-  protected val cooldownTime = 35f
+  override protected val channelTime: Float = 0.05f
+  override protected val cooldownTime = 35f
   protected val explosionRange: Float = 9.375f
 
-  override protected def onActiveStart(): Unit = {
+  override protected def onActiveStart(): AbilityParameters = {
     creature.takeStaminaDamage(25f)
+    AbilityParameters()
   }
 
   override def createComponent(index: Int): AbilityComponent = {
@@ -26,10 +37,30 @@ class MeteorRainAbility private (val creature: Creature) extends ComposedAbility
       1.5f
     )
   }
-}
 
-object MeteorRainAbility {
-  def apply(abilityCreature: Creature): MeteorRainAbility = {
-    new MeteorRainAbility(abilityCreature)
+  override def applyParams(params: AbilityParameters): MeteorRainAbility = {
+    copy(
+      creature = params.creature.getOrElse(creature),
+      state = params.state.getOrElse(state),
+      onCooldown = params.onCooldown.getOrElse(onCooldown),
+      lastComponentFinishTime = params.lastComponentFinishTime.getOrElse(lastComponentFinishTime),
+      components = params.components.getOrElse(components)
+    )
+  }
+
+  override def updateHitbox(): AbilityParameters = {
+    AbilityParameters()
+  }
+
+  override protected def onUpdateChanneling(): AbilityParameters = {
+    AbilityParameters()
+  }
+
+  override protected def onStop(): AbilityParameters = {
+    AbilityParameters()
+  }
+
+  override def onCollideWithCreature(creature: Creature): AbilityParameters = {
+    AbilityParameters()
   }
 }

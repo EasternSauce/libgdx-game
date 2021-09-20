@@ -32,7 +32,7 @@ class FireDemon private (val id: String) extends Boss {
   override val dropTable =
     Map("ironSword" -> 0.3f, "poisonDagger" -> 0.3f, "steelArmor" -> 0.8f, "steelHelmet" -> 0.5f, "thiefRing" -> 1.0f)
 
-  override val additionalAbilities: Map[String, Ability] =
+  override lazy val additionalAbilities: Map[String, Ability] =
     Map(
       MeteorRainAbility(this).asMapEntry,
       FistSlamAbility(this).asMapEntry,
@@ -61,7 +61,8 @@ class FireDemon private (val id: String) extends Boss {
   mass = 10000f
 
   // TODO: how to get rid of casting?
-  abilityMap("thrust").asInstanceOf[ThrustAttack].attackRange = 1.5f
+  // TODO: refactor this before uncommenting!
+  // abilityMap("thrust").asInstanceOf[ThrustAttack].attackRange = 1.5f
 }
 
 object FireDemon {

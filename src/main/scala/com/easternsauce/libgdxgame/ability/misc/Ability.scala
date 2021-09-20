@@ -1,98 +1,125 @@
 package com.easternsauce.libgdxgame.ability.misc
 
 import com.badlogic.gdx.audio.Sound
-import com.easternsauce.libgdxgame.ability.misc.AbilityState.{AbilityState, Inactive}
+import com.easternsauce.libgdxgame.ability.misc.AbilityState.AbilityState
+import com.easternsauce.libgdxgame.ability.parameters.{AbilityParameters, SoundParameters}
 import com.easternsauce.libgdxgame.creature.Creature
 import com.easternsauce.libgdxgame.util.{EsBatch, EsTimer}
 
 trait Ability {
   val id: String
+
   val creature: Creature
+  val state: AbilityState
+  val onCooldown: Boolean
+  val soundParameters: SoundParameters
+
   protected val isStoppable: Boolean = true
-  var state: AbilityState = Inactive
-  var onCooldown = false
   protected val activeTimer: EsTimer = EsTimer()
   protected val channelTimer: EsTimer = EsTimer()
-  protected val cooldownTime: Float
-  protected def activeTime: Float
-  protected def channelTime: Float
+  protected val cooldownTime: Float = 0f
+  protected val activeTime: Float = 0f
+  protected val channelTime: Float = 0f
   protected val isAttack = false
 
-  var channelSound: Option[Sound] = None
-  var channelSoundVolume: Option[Float] = None
-  var activeSound: Option[Sound] = None
-  var activeSoundVolume: Option[Float] = None
+  val channelSound: Option[Sound] = None
+  val channelSoundVolume: Option[Float] = None
 
-  def updateHitbox(): Unit = {}
+  def updateHitbox(): AbilityParameters
 
-  protected def onActiveStart(): Unit = {
+  protected def onActiveStart(): AbilityParameters = {
+    // TODO: remove side effect
+    val activeSound = soundParameters.activeSound
+    val activeSoundVolume = soundParameters.activeSoundVolume
     if (activeSound.nonEmpty) activeSound.get.play(activeSoundVolume.get)
+
+    AbilityParameters()
   }
 
-  protected def onUpdateActive(): Unit = {}
+  protected def onUpdateActive(): AbilityParameters
 
-  protected def onUpdateChanneling(): Unit = {}
+  protected def onUpdateChanneling(): AbilityParameters
 
-  def render(esBatch: EsBatch): Unit = {}
+  def render(esBatch: EsBatch): AbilityParameters
 
-  def forceStop(): Unit = {
+  def forceStop(): AbilityParameters = {
+
     if (isStoppable && state != AbilityState.Inactive) {
-      onStop()
-
-      state = AbilityState.Inactive
+      onStop().copy(state = Some(AbilityState.Inactive))
+    } else {
+      AbilityParameters()
     }
+
   }
 
-  protected def onStop(): Unit = {}
+  protected def onStop(): AbilityParameters
 
-  def perform(): Unit = {
+  def perform(): AbilityParameters = {
     if (creature.staminaPoints > 0 && state == AbilityState.Inactive && !onCooldown && !creature.abilityActive) {
-      channelTimer.restart()
-      state = AbilityState.Channeling
-      onChannellingStart()
 
+      // TODO: remove side effect
+      channelTimer.restart()
+
+      // TODO: remove side effect
       // + 0.01 to ensure regen doesn't start if we hold attack button
       creature.activateEffect("staminaRegenerationStopped", if (isAttack) channelTime + cooldownTime + 0.01f else 1f)
-    }
+
+      onChannellingStart().copy(state = Some(AbilityState.Channeling))
+    } else
+      AbilityParameters()
   }
 
-  def update(): Unit = {
+  def update(): AbilityParameters = {
+
     import AbilityState._
     state match {
       case Channeling =>
-        if (channelTimer.time > channelTime) {
-          state = AbilityState.Active
-          onActiveStart()
+        val params = if (channelTimer.time > channelTime) {
           activeTimer.restart()
-          onCooldown = true
-        }
-        updateHitbox()
-        onUpdateChanneling()
-      case Active =>
-        if (activeTimer.time > activeTime) {
-          onStop()
 
-          state = AbilityState.Inactive
-        }
-        updateHitbox()
-        onUpdateActive()
+          onActiveStart().copy(state = Some(AbilityState.Active), onCooldown = Some(true))
+        } else
+          AbilityParameters()
+
+        params
+          .add(updateHitbox())
+          .add(onUpdateChanneling())
+
+      case Active =>
+        val params = if (activeTimer.time > activeTime) {
+          AbilityParameters(state = Some(AbilityState.Inactive))
+            .add(onStop())
+        } else
+          AbilityParameters()
+
+        params
+          .add(updateHitbox())
+          .add(onUpdateActive())
+
       case Inactive =>
-        if (onCooldown && activeTimer.time > cooldownTime) onCooldown = false
+        if (onCooldown && activeTimer.time > cooldownTime) {
+          AbilityParameters(onCooldown = Some(false))
+        } else
+          AbilityParameters()
+
+      case _ => AbilityParameters()
     }
   }
 
-  def onChannellingStart(): Unit = {
+  def onChannellingStart(): AbilityParameters = {
     if (channelSound.nonEmpty) {
+      // TODO: remove side effect
       channelSound.get.play(channelSoundVolume.get)
     }
 
+    AbilityParameters()
   }
 
-  def active: Boolean = {
-    state == AbilityState.Active
-  }
+  def active: Boolean = state == AbilityState.Active
 
-  def onCollideWithCreature(creature: Creature): Unit = {}
+  def onCollideWithCreature(creature: Creature): AbilityParameters
 
   def asMapEntry: (String, Ability) = id -> this
+
+  def applyParams(params: AbilityParameters): Ability
 }

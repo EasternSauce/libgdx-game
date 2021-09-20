@@ -1,17 +1,28 @@
 package com.easternsauce.libgdxgame.ability.other
 
+import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.physics.box2d._
+import com.easternsauce.libgdxgame.ability.misc.AbilityState.{AbilityState, Inactive}
 import com.easternsauce.libgdxgame.ability.misc.{Ability, AbilityState, ActiveAnimation}
+import com.easternsauce.libgdxgame.ability.parameters.{AbilityParameters, SoundParameters}
 import com.easternsauce.libgdxgame.creature.Creature
 import com.easternsauce.libgdxgame.system.Assets
 import com.easternsauce.libgdxgame.util.EsBatch
 
-class ExplodeAbility private (val creature: Creature) extends Ability with ActiveAnimation {
+case class ExplodeAbility private (
+  creature: Creature,
+  state: AbilityState = Inactive,
+  onCooldown: Boolean = false,
+  soundParameters: SoundParameters = SoundParameters(),
+  b2Body: Body = null, // TODO: body wrapper
+  bodyCreated: Boolean = false
+) extends Ability
+    with ActiveAnimation {
   val id: String = "explode"
-  protected val cooldownTime: Float = 0.8f
+  override protected val cooldownTime: Float = 0.8f
 
-  protected var explosionRange: Float = 10f
+  protected val explosionRange: Float = 10f
 
   val spriteWidth: Int = 64
   val spriteHeight: Int = 64
@@ -19,12 +30,9 @@ class ExplodeAbility private (val creature: Creature) extends Ability with Activ
 
   override protected val isStoppable: Boolean = false
 
-  var b2Body: Body = _
-  var bodyCreated = false
+  override protected val activeTime: Float = 0.9f
 
-  override protected def activeTime: Float = 0.9f
-
-  override protected def channelTime: Float = 1.3f
+  override protected val channelTime: Float = 1.3f
 
   setupActiveAnimation(
     regionName = "explosion",
@@ -34,28 +42,27 @@ class ExplodeAbility private (val creature: Creature) extends Ability with Activ
     frameDuration = activeTime / numOfFrames
   )
 
-  override protected def onActiveStart(): Unit = {
+  override protected def onActiveStart(): AbilityParameters = {
     super.onActiveStart()
 
     abilityActiveAnimationTimer.restart()
 
+    // TODO: side effects
     creature.takeStaminaDamage(25f)
     creature.takeLifeDamage(700f, immunityFrames = false, Some(creature), 0, 0, 0)
     Assets.sound(Assets.explosionSound).play(0.07f)
 
     initBody(creature.pos.x, creature.pos.y)
-    bodyCreated = true
   }
 
-  override protected def onUpdateActive(): Unit = {
+  override protected def onUpdateActive(): AbilityParameters = {
     if (bodyCreated && activeTimer.time > 0.1f) {
       destroyBody(creature.area.get.world)
-    }
+    } else
+      AbilityParameters()
   }
 
-  override def render(batch: EsBatch): Unit = {
-    super.render(batch)
-
+  override def render(batch: EsBatch): AbilityParameters = {
     def renderFrame(image: TextureRegion): Unit = {
 
       val scale = explosionRange * 2 / image.getRegionWidth
@@ -78,18 +85,22 @@ class ExplodeAbility private (val creature: Creature) extends Ability with Activ
 
     }
 
+    // TODO: remove side effect
     if (state == AbilityState.Active) {
       renderFrame(currentActiveAnimationFrame)
     }
 
+    AbilityParameters()
   }
 
-  def initBody(x: Float, y: Float): Unit = {
+  def initBody(x: Float, y: Float): AbilityParameters = {
+    // TODO: side effects
+
     val bodyDef = new BodyDef()
     bodyDef.position.set(x, y)
 
     bodyDef.`type` = BodyDef.BodyType.StaticBody
-    b2Body = creature.area.get.world.createBody(bodyDef)
+    val b2Body = creature.area.get.world.createBody(bodyDef)
     b2Body.setUserData(this)
 
     val fixtureDef: FixtureDef = new FixtureDef()
@@ -98,27 +109,50 @@ class ExplodeAbility private (val creature: Creature) extends Ability with Activ
     fixtureDef.shape = shape
     fixtureDef.isSensor = true
     b2Body.createFixture(fixtureDef)
+
+    copy(b2Body = b2Body, bodyCreated = true)
+
+    AbilityParameters()
   }
 
-  def destroyBody(world: World): Unit = {
+  def destroyBody(world: World): AbilityParameters = {
     if (bodyCreated) {
+      // TODO: sideeffect?
       world.destroyBody(b2Body)
-      bodyCreated = false
-    }
+      AbilityParameters(bodyCreated = Some(false))
+    } else
+      AbilityParameters()
   }
 
-  override def onCollideWithCreature(otherCreature: Creature): Unit = {
-    super.onCollideWithCreature(creature)
-
+  override def onCollideWithCreature(otherCreature: Creature): AbilityParameters = {
+    // TODO: side effect
     if (!(creature.isEnemy && otherCreature.isEnemy) && otherCreature.isAlive) { // mob can't hurt a mob?
       if (!otherCreature.isImmune) otherCreature.takeLifeDamage(700f, immunityFrames = true, Some(creature), 0, 0, 0)
     }
+
+    AbilityParameters()
   }
 
-}
-
-object ExplodeAbility {
-  def apply(abilityCreature: Creature): ExplodeAbility = {
-    new ExplodeAbility(abilityCreature)
+  override def applyParams(params: AbilityParameters): ExplodeAbility = {
+    copy(
+      creature = params.creature.getOrElse(creature),
+      state = params.state.getOrElse(state),
+      onCooldown = params.onCooldown.getOrElse(onCooldown),
+      b2Body = params.b2Body.getOrElse(b2Body),
+      bodyCreated = params.bodyCreated.getOrElse(bodyCreated)
+    )
   }
+
+  override def updateHitbox(): AbilityParameters = {
+    AbilityParameters()
+  }
+
+  override protected def onUpdateChanneling(): AbilityParameters = {
+    AbilityParameters()
+  }
+
+  override protected def onStop(): AbilityParameters = {
+    AbilityParameters()
+  }
+
 }

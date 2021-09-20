@@ -1,8 +1,10 @@
 package com.easternsauce.libgdxgame.creature
 
+import com.badlogic.gdx.assets.loaders.SoundLoader.SoundParameter
 import com.badlogic.gdx.audio.Sound
 import com.easternsauce.libgdxgame.ability.misc.Ability
 import com.easternsauce.libgdxgame.ability.other.ExplodeAbility
+import com.easternsauce.libgdxgame.ability.parameters.SoundParameters
 import com.easternsauce.libgdxgame.creature.traits.{AbilityUsage, AnimationParams}
 import com.easternsauce.libgdxgame.system.Assets
 import com.easternsauce.libgdxgame.util.EsDirection
@@ -25,14 +27,18 @@ class Ghost private (val id: String) extends Enemy {
     "steelHelmet" -> 0.05f
   )
 
-  override val additionalAbilities: Map[String, Ability] =
+  override lazy val additionalAbilities: Map[String, Ability] =
     Map({
-      // TODO: refactor this?
-      val explodeAbility = ExplodeAbility(this)
-      explodeAbility.channelSound = Some(Assets.sound(Assets.darkLaughSound))
-      explodeAbility.channelSoundVolume = Some(0.2f)
-      explodeAbility.activeSound = Some(Assets.sound(Assets.explosionSound))
-      explodeAbility.activeSoundVolume = Some(0.5f)
+      val explodeAbility = ExplodeAbility(
+        creature = this,
+        soundParameters = SoundParameters(
+          channelSound = Some(Assets.sound(Assets.darkLaughSound)),
+          channelSoundVolume = Some(0.2f),
+          activeSound = Some(Assets.sound(Assets.explosionSound)),
+          activeSoundVolume = Some(0.5f)
+        )
+      )
+
       explodeAbility
     }.asMapEntry)
 

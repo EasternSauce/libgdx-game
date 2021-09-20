@@ -1,24 +1,40 @@
 package com.easternsauce.libgdxgame.ability.composed
 
+import com.badlogic.gdx.audio.Sound
 import com.easternsauce.libgdxgame.ability.composed.components.{AbilityComponent, Fist}
+import com.easternsauce.libgdxgame.ability.misc.Ability
+import com.easternsauce.libgdxgame.ability.misc.AbilityState.{AbilityState, Inactive}
+import com.easternsauce.libgdxgame.ability.parameters.{AbilityParameters, SoundParameters}
 import com.easternsauce.libgdxgame.creature.{Creature, Enemy}
 import com.easternsauce.libgdxgame.system.GameSystem
 
-class FistSlamAbility private (val creature: Creature) extends ComposedAbility {
+case class FistSlamAbility private (
+   creature: Creature,
+   state: AbilityState = Inactive,
+   onCooldown: Boolean = false,
+  soundParameters: SoundParameters = SoundParameters(),
+   components: List[AbilityComponent] = List(),
+   lastComponentFinishTime: Float = 0f
+) extends ComposedAbility {
   val id: String = "fist_slam"
 
-  protected val cooldownTime: Float = 10f
-  protected val channelTime: Float = 0.15f
+  override protected val cooldownTime: Float = 10f
+  override protected val channelTime: Float = 0.15f
 
   override protected val numOfComponents = 20
 
-  override protected def onActiveStart(): Unit = {
+  override protected def onActiveStart(): AbilityParameters = {
+
+    // TODO: sideeffect
     creature.takeStaminaDamage(25f)
+
+    AbilityParameters()
   }
 
   override def createComponent(index: Int): AbilityComponent = {
     val range: Float = 7.8125f
     val aggroedCreature = creature.asInstanceOf[Enemy].aggroedTarget.get // TODO targeting?
+    // TODO: factory method
     new Fist(
       this,
       0.1f * index,
@@ -28,10 +44,29 @@ class FistSlamAbility private (val creature: Creature) extends ComposedAbility {
     )
   }
 
-}
+  override def applyParams(params: AbilityParameters): FistSlamAbility = {
+    copy(
+      creature = params.creature.getOrElse(creature),
+      state = params.state.getOrElse(state),
+      onCooldown = params.onCooldown.getOrElse(onCooldown),
+      lastComponentFinishTime = params.lastComponentFinishTime.getOrElse(lastComponentFinishTime),
+      components = params.components.getOrElse(components)
+    )
+  }
 
-object FistSlamAbility {
-  def apply(abilityCreature: Creature): FistSlamAbility = {
-    new FistSlamAbility(abilityCreature)
+  override def updateHitbox(): AbilityParameters = {
+    AbilityParameters()
+  }
+
+  override protected def onUpdateChanneling(): AbilityParameters = {
+    AbilityParameters()
+  }
+
+  override protected def onStop(): AbilityParameters = {
+    AbilityParameters()
+  }
+
+  override def onCollideWithCreature(creature: Creature): AbilityParameters = {
+    AbilityParameters()
   }
 }

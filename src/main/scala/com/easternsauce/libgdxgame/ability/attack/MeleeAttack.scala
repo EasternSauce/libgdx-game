@@ -2,33 +2,40 @@ package com.easternsauce.libgdxgame.ability.attack
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.math.{Polygon, Rectangle, Vector2}
-import com.easternsauce.libgdxgame.ability.misc.{AbilityState, ActiveAnimation, PhysicalHitbox, WindupAnimation}
+import com.easternsauce.libgdxgame.ability.misc.{
+  Ability,
+  AbilityState,
+  ActiveAnimation,
+  PhysicalHitbox,
+  WindupAnimation
+}
+import com.easternsauce.libgdxgame.ability.parameters.AbilityParameters
 import com.easternsauce.libgdxgame.creature.Creature
 import com.easternsauce.libgdxgame.system.{Constants, GameSystem}
 import com.easternsauce.libgdxgame.util.{EsBatch, EsPolygon}
 
-trait MeleeAttack extends Attack with PhysicalHitbox with ActiveAnimation with WindupAnimation {
-  var attackRange: Float
-  var hitbox: Option[AttackHitbox] = None
-  var toRemoveBody = false
+trait MeleeAttack extends Ability with PhysicalHitbox with ActiveAnimation with WindupAnimation {
+  val attackRange: Float
+  val hitbox: Option[AttackHitbox] = None
+  val toRemoveBody: Boolean = false
 
-  var bodyActive = false
+  val bodyActive = false
   // IMPORTANT: do NOT use body after already destroyed (otherwise weird behavior occurs, because, for some reason,
   // the reference can STILL be attached to some other random body after destruction, like arrow bodies)
 
-  protected var aimed: Boolean
-  protected var spriteWidth: Int
-  protected var spriteHeight: Int
+  protected val aimed: Boolean
+  protected val spriteWidth: Int
+  protected val spriteHeight: Int
   protected def width: Float = spriteWidth.toFloat / Constants.PPM
   protected def height: Float = spriteHeight.toFloat / Constants.PPM
-  protected var knockbackVelocity: Float
+  protected val knockbackVelocity: Float
   override protected val isAttack = true
 
   protected val baseChannelTime: Float
   protected val baseActiveTime: Float
 
-  protected def activeTime: Float = baseActiveTime
-  protected def channelTime: Float = baseChannelTime / attackSpeed
+  override protected val activeTime: Float = baseActiveTime
+  override protected val channelTime: Float = baseChannelTime / attackSpeed
 
   def attackSpeed: Float =
     if (creature.isWeaponEquipped) creature.currentWeapon.template.attackSpeed.get
@@ -38,22 +45,24 @@ trait MeleeAttack extends Attack with PhysicalHitbox with ActiveAnimation with W
     if (creature.isWeaponEquipped) creature.currentWeapon.template.attackScale.get
     else 1.4f
 
-  override def onActiveStart(): Unit = {
+  override def onActiveStart(): AbilityParameters = {
     super.onActiveStart()
 
     abilityActiveAnimationTimer.restart()
 
     creature.takeStaminaDamage(15f)
 
-    var attackVector = creature.attackVector
+    val attackVector = creature.attackVector
+
+    val normalizedAttackVector =
+      if (attackVector.len() > 0f) {
+        new Vector2(attackVector.x / attackVector.len(), attackVector.y / attackVector.len())
+      } else attackVector
+
     val theta = new Vector2(attackVector.x, attackVector.y).angleDeg()
 
-    if (attackVector.len() > 0f) {
-      attackVector = new Vector2(attackVector.x / attackVector.len(), attackVector.y / attackVector.len())
-    }
-
-    val attackShiftX = attackVector.x * attackRange
-    val attackShiftY = attackVector.y * attackRange
+    val attackShiftX = normalizedAttackVector.x * attackRange
+    val attackShiftY = normalizedAttackVector.y * attackRange
 
     val attackRectX = attackShiftX + creature.pos.x
     val attackRectY = attackShiftY + creature.pos.y
@@ -65,18 +74,15 @@ trait MeleeAttack extends Attack with PhysicalHitbox with ActiveAnimation with W
     poly.translate(0, -height / 2)
     poly.setScale(attackScale, attackScale)
 
-    hitbox = Some(AttackHitbox(attackRectX, attackRectY, poly))
+    val hitbox = Some(AttackHitbox(attackRectX, attackRectY, poly))
 
     if (creature.area.nonEmpty) initHitboxBody(creature.area.get.world, hitbox.get)
 
-    bodyActive = true
-
-    toRemoveBody = false
+    AbilityParameters(hitbox = Some(hitbox), toRemoveBody = Some(false), bodyActive = Some(true))
   }
 
-  override def render(batch: EsBatch): Unit = {
-    super.render(batch)
-
+  override def render(batch: EsBatch): AbilityParameters = {
+    // TODO: remove side effect
     def renderFrame(image: TextureRegion): Unit = {
       val attackVector = creature.attackVector
       val theta = new Vector2(attackVector.x, attackVector.y).angleDeg()
@@ -100,24 +106,27 @@ trait MeleeAttack extends Attack with PhysicalHitbox with ActiveAnimation with W
     if (state == AbilityState.Channeling) renderFrame(currentWindupAnimationFrame)
     if (state == AbilityState.Active) renderFrame(currentActiveAnimationFrame)
 
+    AbilityParameters()
+
   }
 
-  override def onChannellingStart(): Unit = {
+  override def onChannellingStart(): AbilityParameters = {
     super.onChannellingStart()
 
     creature.attackVector = creature.facingVector.cpy()
     abilityWindupAnimationTimer.restart()
     creature.isAttacking = true
 
-    var attackVector = creature.attackVector
+    val attackVector = creature.attackVector
     val theta = new Vector2(attackVector.x, attackVector.y).angleDeg()
 
-    if (attackVector.len() > 0f) {
-      attackVector = new Vector2(attackVector.x / attackVector.len(), attackVector.y / attackVector.len())
-    }
+    val normalizedAttackVector =
+      if (attackVector.len() > 0f) {
+        new Vector2(attackVector.x / attackVector.len(), attackVector.y / attackVector.len())
+      } else attackVector
 
-    val attackShiftX = attackVector.x * attackRange
-    val attackShiftY = attackVector.y * attackRange
+    val attackShiftX = normalizedAttackVector.x * attackRange
+    val attackShiftY = normalizedAttackVector.y * attackRange
 
     val attackRectX = attackShiftX + creature.pos.x
     val attackRectY = attackShiftY + creature.pos.y
@@ -129,58 +138,65 @@ trait MeleeAttack extends Attack with PhysicalHitbox with ActiveAnimation with W
     poly.translate(0, -height / 2)
     poly.setScale(attackScale, attackScale)
 
-    hitbox = Some(AttackHitbox(attackRectX, attackRectY, poly))
+    val hitbox = Some(AttackHitbox(attackRectX, attackRectY, poly))
+
+    AbilityParameters(hitbox = Some(hitbox))
 
   }
 
-  override def update(): Unit = {
+  override def update(): AbilityParameters = {
     super.update()
 
     if (b2Body.nonEmpty && toRemoveBody) {
       b2Body.get.getWorld.destroyBody(b2Body.get)
-      toRemoveBody = false
-      bodyActive = false
-    }
+
+      AbilityParameters(toRemoveBody = Some(false), bodyActive = Some(false))
+    } else
+          AbilityParameters()
   }
 
-  override def updateHitbox(): Unit = {
-    super.updateHitbox()
-
+  override def updateHitbox(): AbilityParameters = {
     if (hitbox.nonEmpty) {
 
-      var attackVector = creature.attackVector
+      val attackVector = creature.attackVector
 
-      if (attackVector.len() > 0f) {
-        attackVector = new Vector2(attackVector.x / attackVector.len(), attackVector.y / attackVector.len())
-      }
+      val normalizedAttackVector =
+        if (attackVector.len() > 0f) {
+          new Vector2(attackVector.x / attackVector.len(), attackVector.y / attackVector.len())
+        } else attackVector
 
-      val attackShiftX = attackVector.x * attackRange
-      val attackShiftY = attackVector.y * attackRange
+      val attackShiftX = normalizedAttackVector.x * attackRange
+      val attackShiftY = normalizedAttackVector.y * attackRange
 
-      hitbox.get.x = attackShiftX + creature.pos.x
-      hitbox.get.y = attackShiftY + creature.pos.y
+      val newHitbox = Some(
+        AttackHitbox(attackShiftX + creature.pos.x, attackShiftY + creature.pos.y, hitbox.get.polygon)
+      )
 
+      // TODO: remove sideeffect
       if (bodyActive) {
         b2Body.get.setTransform(hitbox.get.x, hitbox.get.y, 0f)
       }
-    }
+
+      AbilityParameters(hitbox = Some(newHitbox))
+    } else
+          AbilityParameters()
 
   }
 
-  override def onStop(): Unit = {
-    super.onStop()
-
+  override def onStop(): AbilityParameters = {
     creature.isAttacking = false
 
-    if (state == AbilityState.Active)
-      toRemoveBody = true // IMPORTANT: ability has to be active
+    // IMPORTANT: ability has to be active
     // if we remove during channeling we could remove it before body is created, causing BOX2D crash
-
+    if (state == AbilityState.Active)
+      AbilityParameters(toRemoveBody = Some(true))
+    else
+      AbilityParameters()
   }
 
-  override def onCollideWithCreature(otherCreature: Creature): Unit = {
-    super.onCollideWithCreature(otherCreature)
+  override def onCollideWithCreature(otherCreature: Creature): AbilityParameters = {
 
+    // TODO: remove sideeffect
     if (!(creature.isEnemy && otherCreature.isEnemy)) {
       if (creature != otherCreature && state == AbilityState.Active && !otherCreature.isImmune) {
         otherCreature.takeLifeDamage(
@@ -199,7 +215,9 @@ trait MeleeAttack extends Attack with PhysicalHitbox with ActiveAnimation with W
         }
       }
     }
+
+    AbilityParameters()
   }
 }
 
-case class AttackHitbox private (var x: Float, var y: Float, polygon: Polygon)
+case class AttackHitbox private (x: Float, y: Float, polygon: Polygon)

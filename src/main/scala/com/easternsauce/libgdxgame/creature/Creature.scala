@@ -3,12 +3,15 @@ package com.easternsauce.libgdxgame.creature
 import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.graphics.g2d.Sprite
 import com.badlogic.gdx.math.Vector2
+import com.easternsauce.libgdxgame.ability.attack.{ShootArrowAttack, SlashAttack, ThrustAttack}
+import com.easternsauce.libgdxgame.ability.misc.Ability
 import com.easternsauce.libgdxgame.area.Area
 import com.easternsauce.libgdxgame.creature.traits._
 import com.easternsauce.libgdxgame.spawns.PlayerSpawnPoint
 import com.easternsauce.libgdxgame.system.Assets
 import com.easternsauce.libgdxgame.util.{EsBatch, EsDirection, EsTimer}
 
+import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
 
 abstract class Creature
@@ -66,6 +69,21 @@ abstract class Creature
 
   val updateDirectionTimer: EsTimer = EsTimer(true)
 
+
+  lazy val standardAbilities: Map[String, Ability] =
+    Map(SlashAttack(this).asMapEntry, ShootArrowAttack(this).asMapEntry, ThrustAttack(this).asMapEntry)
+
+  lazy val additionalAbilities: Map[String, Ability] = Map()
+
+  // TODO: refactor this
+  lazy val abilityMap: mutable.Map[String, Ability] = {
+    val map = mutable.Map[String, Ability]()
+    map.addAll(standardAbilities)
+    map.addAll(additionalAbilities)
+
+    map
+  }
+
   def calculateFacingVector(): Unit
   def calculateWalkingVector(): Unit
 
@@ -89,8 +107,10 @@ abstract class Creature
 
     updateEffects()
 
-    for (ability <- abilityMap.values) {
-      ability.update()
+    val params = for (ability <- abilityMap.values) yield (ability, ability.update())
+
+    for ((ability, params) <- params) {
+      abilityMap.update(ability.id, ability.applyParams(params))
     }
 
     currentAttack.update()

@@ -161,7 +161,22 @@ class PlayScreen() extends Screen {
       ) {
         lootPickupMenu.pickUpItemClick()
       } else {
-        player.currentAttack.perform()
+        val params = player.currentAttack.perform()
+
+        // TODO: temp workaround
+        val currentAttack = player.abilityMap(player.currentAttack.id)
+
+        val updatedInstance = currentAttack.applyParams(params)
+
+        val zzzzz = player.abilityMap
+
+        player.abilityMap.update(currentAttack.id, updatedInstance)
+
+        val stuff = player.abilityMap(player.currentAttack.id)
+
+        val zzzzzzzzzz2 = player.abilityMap
+
+        val zzz = stuff.id
       }
     }
 
