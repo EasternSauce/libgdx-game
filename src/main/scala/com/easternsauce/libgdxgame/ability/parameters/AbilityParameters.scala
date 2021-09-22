@@ -14,7 +14,7 @@ case class AbilityParameters(
   dashVector: Option[Vector2] = None,
   components: Option[List[AbilityComponent]] = None,
   lastComponentFinishTime: Option[Float] = None,
-  b2Body: Option[Body] = None,
+  b2Body: Option[Option[Body]] = None,
   bodyCreated: Option[Boolean] = None,
   hitbox: Option[Option[AttackHitbox]] = None,
   toRemoveBody: Option[Boolean] = None,

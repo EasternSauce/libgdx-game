@@ -11,7 +11,7 @@ import com.easternsauce.libgdxgame.util.{EsBatch, EsPolygon}
 trait MeleeAttack extends Ability with PhysicalHitbox with ActiveAnimation with WindupAnimation {
   val attackRange: Float
   val hitbox: Option[AttackHitbox]
-  val toRemoveBody: Boolean = false
+  val toRemoveBody: Boolean
 
   val bodyActive = false
   // IMPORTANT: do NOT use body after already destroyed (otherwise weird behavior occurs, because, for some reason,
@@ -70,9 +70,12 @@ trait MeleeAttack extends Ability with PhysicalHitbox with ActiveAnimation with 
 
     val hitbox = Some(AttackHitbox(attackRectX, attackRectY, poly))
 
-    if (creature.area.nonEmpty) initHitboxBody(creature.area.get.world, hitbox.get)
+    val params = if (creature.area.nonEmpty) {
+      initBody(creature.area.get.world, hitbox.get)
+    } else AbilityParameters()
 
-    AbilityParameters(hitbox = Some(hitbox), toRemoveBody = Some(false), bodyActive = Some(true))
+    params
+      .add(AbilityParameters(hitbox = Some(hitbox), toRemoveBody = Some(false), bodyActive = Some(true)))
   }
 
   override def render(batch: EsBatch): AbilityParameters = {
@@ -190,16 +193,9 @@ trait MeleeAttack extends Ability with PhysicalHitbox with ActiveAnimation with 
 
   override def onCollideWithCreature(otherCreature: Creature): AbilityParameters = {
 
-    println("collision!!!")
     // TODO: remove sideeffect
     if (!(creature.isEnemy && otherCreature.isEnemy)) {
-      println("colliding, state = " + state)
-      if (
-        creature != otherCreature
-        //&& state == AbilityState.Active TODO: ??? collision box created before ability is active?
-        && !otherCreature.isImmune
-      ) {
-        println("inside")
+      if (creature != otherCreature && !otherCreature.isImmune) {
         otherCreature.takeLifeDamage(
           damage = creature.weaponDamage,
           immunityFrames = true,

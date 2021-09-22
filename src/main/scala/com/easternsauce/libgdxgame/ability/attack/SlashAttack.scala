@@ -1,5 +1,6 @@
 package com.easternsauce.libgdxgame.ability.attack
 
+import com.badlogic.gdx.physics.box2d.Body
 import com.easternsauce.libgdxgame.ability.misc.AbilityState.{AbilityState, Inactive}
 import com.easternsauce.libgdxgame.ability.parameters.{AbilityParameters, SoundParameters, TimerParameters}
 import com.easternsauce.libgdxgame.creature.Creature
@@ -10,7 +11,9 @@ case class SlashAttack private (
   state: AbilityState = Inactive,
   onCooldown: Boolean = false,
   timerParameters: TimerParameters = TimerParameters(),
-  hitbox: Option[AttackHitbox] = None
+  hitbox: Option[AttackHitbox] = None,
+  b2Body: Option[Body] = None,
+  toRemoveBody: Boolean = false,
 ) extends MeleeAttack {
 
   val id: String = "slash"
@@ -52,7 +55,9 @@ case class SlashAttack private (
       state = params.state.getOrElse(state),
       onCooldown = params.onCooldown.getOrElse(onCooldown),
       timerParameters = params.timerParameters.getOrElse(timerParameters),
-      hitbox = params.hitbox.getOrElse(hitbox)
+      hitbox = params.hitbox.getOrElse(hitbox),
+      b2Body = params.b2Body.getOrElse(b2Body),
+      toRemoveBody = params.toRemoveBody.getOrElse(toRemoveBody),
     )
   }
 

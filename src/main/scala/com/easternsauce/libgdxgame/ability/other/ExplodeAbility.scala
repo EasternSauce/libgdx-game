@@ -15,7 +15,7 @@ case class ExplodeAbility private (
   onCooldown: Boolean = false,
   soundParameters: SoundParameters = SoundParameters(),
   timerParameters: TimerParameters = TimerParameters(),
-  b2Body: Body = null, // TODO: body wrapper
+  b2Body: Option[Body] = None,
   bodyCreated: Boolean = false
 ) extends Ability
     with ActiveAnimation {
@@ -112,15 +112,13 @@ case class ExplodeAbility private (
     fixtureDef.isSensor = true
     b2Body.createFixture(fixtureDef)
 
-    copy(b2Body = b2Body, bodyCreated = true)
-
-    AbilityParameters()
+    AbilityParameters(b2Body = Some(Some(b2Body)), bodyCreated = Some(true))
   }
 
   def destroyBody(world: World): AbilityParameters = {
     if (bodyCreated) {
       // TODO: sideeffect?
-      world.destroyBody(b2Body)
+      if (b2Body.nonEmpty) world.destroyBody(b2Body.get)
       AbilityParameters(bodyCreated = Some(false))
     } else
       AbilityParameters()

@@ -77,7 +77,6 @@ trait Ability {
     import AbilityState._
     state match {
       case Channeling =>
-        println("channeling")
         val params = if (channelTimer.time > channelTime) {
           activeTimer.restart()
           onActiveStart().copy(state = Some(AbilityState.Active), onCooldown = Some(true))
@@ -89,7 +88,6 @@ trait Ability {
           .add(onUpdateChanneling())
 
       case Active =>
-        println("active")
         val params = if (activeTimer.time > activeTime) {
           AbilityParameters(state = Some(AbilityState.Inactive))
             .add(onStop())
