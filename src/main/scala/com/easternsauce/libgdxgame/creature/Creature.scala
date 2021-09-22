@@ -69,7 +69,6 @@ abstract class Creature
 
   val updateDirectionTimer: EsTimer = EsTimer(true)
 
-
   lazy val standardAbilities: Map[String, Ability] =
     Map(SlashAttack(this).asMapEntry, ShootArrowAttack(this).asMapEntry, ThrustAttack(this).asMapEntry)
 
@@ -113,7 +112,7 @@ abstract class Creature
       abilityMap.update(ability.id, ability.applyParams(params))
     }
 
-    currentAttack.update()
+    //currentAttack.update()
 
     updateStamina()
 

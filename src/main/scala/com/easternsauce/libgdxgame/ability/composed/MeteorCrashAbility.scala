@@ -1,24 +1,22 @@
 package com.easternsauce.libgdxgame.ability.composed
 
-import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.math.Vector2
 import com.easternsauce.libgdxgame.ability.composed.components.{AbilityComponent, Meteor}
 import com.easternsauce.libgdxgame.ability.misc.AbilityState.{AbilityState, Inactive}
-import com.easternsauce.libgdxgame.ability.parameters.{AbilityParameters, SoundParameters}
+import com.easternsauce.libgdxgame.ability.parameters.{AbilityParameters, SoundParameters, TimerParameters}
 import com.easternsauce.libgdxgame.creature.Creature
 
-import scala.collection.mutable.ListBuffer
-
 case class MeteorCrashAbility private (
-   creature: Creature,
-   state: AbilityState = Inactive,
-   onCooldown: Boolean = false,
+  creature: Creature,
+  state: AbilityState = Inactive,
+  onCooldown: Boolean = false,
   soundParameters: SoundParameters = SoundParameters(),
-   components: List[AbilityComponent] = List(),
-   lastComponentFinishTime: Float = 0f
+  timerParameters: TimerParameters = TimerParameters(),
+  components: List[AbilityComponent] = List(),
+  lastComponentFinishTime: Float = 0f
 ) extends ComposedAbility {
   val id = "meteor_crash"
-  override protected val channelTime: Float = 0.05f
+  override protected lazy val channelTime: Float = 0.05f
   override protected val cooldownTime: Float = 12f
 
   override protected val numOfComponents = 30
@@ -70,7 +68,6 @@ case class MeteorCrashAbility private (
     // TODO: sideeffect
     creature.activateEffect("immobilized", lastComponentFinishTime)
 
-
     AbilityParameters(components = Some(components.toList))
   }
 
@@ -102,6 +99,8 @@ case class MeteorCrashAbility private (
       creature = params.creature.getOrElse(creature),
       state = params.state.getOrElse(state),
       onCooldown = params.onCooldown.getOrElse(onCooldown),
+      soundParameters = params.soundParameters.getOrElse(soundParameters),
+      timerParameters = params.timerParameters.getOrElse(timerParameters),
       lastComponentFinishTime = params.lastComponentFinishTime.getOrElse(lastComponentFinishTime),
       components = params.components.getOrElse(components)
     )

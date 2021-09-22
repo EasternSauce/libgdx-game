@@ -168,15 +168,8 @@ class PlayScreen() extends Screen {
 
         val updatedInstance = currentAttack.applyParams(params)
 
-        val zzzzz = player.abilityMap
-
         player.abilityMap.update(currentAttack.id, updatedInstance)
 
-        val stuff = player.abilityMap(player.currentAttack.id)
-
-        val zzzzzzzzzz2 = player.abilityMap
-
-        val zzz = stuff.id
       }
     }
 

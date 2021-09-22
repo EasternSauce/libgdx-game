@@ -1,11 +1,9 @@
 package com.easternsauce.libgdxgame.ability.composed
 
-import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.math.Vector2
 import com.easternsauce.libgdxgame.ability.composed.components.{AbilityComponent, IceShard}
-import com.easternsauce.libgdxgame.ability.misc.Ability
 import com.easternsauce.libgdxgame.ability.misc.AbilityState.{AbilityState, Inactive}
-import com.easternsauce.libgdxgame.ability.parameters.{AbilityParameters, SoundParameters}
+import com.easternsauce.libgdxgame.ability.parameters.{AbilityParameters, SoundParameters, TimerParameters}
 import com.easternsauce.libgdxgame.creature.{Creature, Enemy}
 
 case class IceShardAbility private (
@@ -13,11 +11,12 @@ case class IceShardAbility private (
   state: AbilityState = Inactive,
   onCooldown: Boolean = false,
   soundParameters: SoundParameters = SoundParameters(),
+  timerParameters: TimerParameters = TimerParameters(),
   lastComponentFinishTime: Float = 0f,
   components: List[AbilityComponent] = List()
 ) extends ComposedAbility {
   val id = "ice_shard"
-  override protected val channelTime: Float = 0.05f
+  override protected lazy val channelTime: Float = 0.05f
   override protected val cooldownTime = 5f
 
   override protected val numOfComponents = 9
@@ -50,6 +49,8 @@ case class IceShardAbility private (
       creature = params.creature.getOrElse(creature),
       state = params.state.getOrElse(state),
       onCooldown = params.onCooldown.getOrElse(onCooldown),
+      soundParameters = params.soundParameters.getOrElse(soundParameters),
+      timerParameters = params.timerParameters.getOrElse(timerParameters),
       lastComponentFinishTime = params.lastComponentFinishTime.getOrElse(lastComponentFinishTime),
       components = params.components.getOrElse(components)
     )

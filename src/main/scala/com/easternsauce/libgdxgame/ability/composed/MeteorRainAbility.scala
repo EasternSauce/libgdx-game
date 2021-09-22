@@ -1,9 +1,8 @@
 package com.easternsauce.libgdxgame.ability.composed
 
-import com.badlogic.gdx.audio.Sound
 import com.easternsauce.libgdxgame.ability.composed.components.{AbilityComponent, Meteor}
 import com.easternsauce.libgdxgame.ability.misc.AbilityState.{AbilityState, Inactive}
-import com.easternsauce.libgdxgame.ability.parameters.{AbilityParameters, SoundParameters}
+import com.easternsauce.libgdxgame.ability.parameters.{AbilityParameters, SoundParameters, TimerParameters}
 import com.easternsauce.libgdxgame.creature.Creature
 import com.easternsauce.libgdxgame.system.GameSystem
 
@@ -12,11 +11,12 @@ case class MeteorRainAbility private (
   state: AbilityState = Inactive,
   onCooldown: Boolean = false,
   soundParameters: SoundParameters = SoundParameters(),
+  timerParameters: TimerParameters = TimerParameters(),
   components: List[AbilityComponent] = List(),
   lastComponentFinishTime: Float = 0f
 ) extends ComposedAbility {
   val id = "meteor_rain"
-  override protected val channelTime: Float = 0.05f
+  override protected lazy val channelTime: Float = 0.05f
   override protected val cooldownTime = 35f
   protected val explosionRange: Float = 9.375f
 
@@ -43,6 +43,8 @@ case class MeteorRainAbility private (
       creature = params.creature.getOrElse(creature),
       state = params.state.getOrElse(state),
       onCooldown = params.onCooldown.getOrElse(onCooldown),
+      soundParameters = params.soundParameters.getOrElse(soundParameters),
+      timerParameters = params.timerParameters.getOrElse(timerParameters),
       lastComponentFinishTime = params.lastComponentFinishTime.getOrElse(lastComponentFinishTime),
       components = params.components.getOrElse(components)
     )

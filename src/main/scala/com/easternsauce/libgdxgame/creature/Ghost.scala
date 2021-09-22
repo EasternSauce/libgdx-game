@@ -1,6 +1,5 @@
 package com.easternsauce.libgdxgame.creature
 
-import com.badlogic.gdx.assets.loaders.SoundLoader.SoundParameter
 import com.badlogic.gdx.audio.Sound
 import com.easternsauce.libgdxgame.ability.misc.Ability
 import com.easternsauce.libgdxgame.ability.other.ExplodeAbility

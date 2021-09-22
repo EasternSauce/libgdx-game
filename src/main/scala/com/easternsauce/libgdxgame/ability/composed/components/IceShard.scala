@@ -16,8 +16,8 @@ class IceShard(
   val startTime: Float,
   val dirVector: Vector2
 ) extends AbilityComponent {
-  override val activeTime: Float = 1.5f
-  override val channelTime: Float = 0.6f
+  override lazy val activeTime: Float = 1.5f
+  override lazy val channelTime: Float = 0.6f
 
   override var state: AbilityState = AbilityState.Inactive
   override var started = false
@@ -106,4 +106,5 @@ class IceShard(
       if (!creature.isImmune) creature.takeLifeDamage(70f, immunityFrames = true)
     }
   }
+
 }

@@ -1,11 +1,10 @@
 package com.easternsauce.libgdxgame.ability.other
 
-import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.physics.box2d._
 import com.easternsauce.libgdxgame.ability.misc.AbilityState.{AbilityState, Inactive}
 import com.easternsauce.libgdxgame.ability.misc.{Ability, AbilityState, ActiveAnimation}
-import com.easternsauce.libgdxgame.ability.parameters.{AbilityParameters, SoundParameters}
+import com.easternsauce.libgdxgame.ability.parameters.{AbilityParameters, SoundParameters, TimerParameters}
 import com.easternsauce.libgdxgame.creature.Creature
 import com.easternsauce.libgdxgame.system.Assets
 import com.easternsauce.libgdxgame.util.EsBatch
@@ -15,6 +14,7 @@ case class ExplodeAbility private (
   state: AbilityState = Inactive,
   onCooldown: Boolean = false,
   soundParameters: SoundParameters = SoundParameters(),
+  timerParameters: TimerParameters = TimerParameters(),
   b2Body: Body = null, // TODO: body wrapper
   bodyCreated: Boolean = false
 ) extends Ability
@@ -30,9 +30,9 @@ case class ExplodeAbility private (
 
   override protected val isStoppable: Boolean = false
 
-  override protected val activeTime: Float = 0.9f
+  override protected lazy val activeTime: Float = 0.9f
 
-  override protected val channelTime: Float = 1.3f
+  override protected lazy val channelTime: Float = 1.3f
 
   setupActiveAnimation(
     regionName = "explosion",
@@ -45,7 +45,7 @@ case class ExplodeAbility private (
   override protected def onActiveStart(): AbilityParameters = {
     super.onActiveStart()
 
-    abilityActiveAnimationTimer.restart()
+    timerParameters.abilityActiveAnimationTimer.restart()
 
     // TODO: side effects
     creature.takeStaminaDamage(25f)
@@ -56,6 +56,8 @@ case class ExplodeAbility private (
   }
 
   override protected def onUpdateActive(): AbilityParameters = {
+    val activeTimer = timerParameters.activeTimer
+
     if (bodyCreated && activeTimer.time > 0.1f) {
       destroyBody(creature.area.get.world)
     } else
@@ -138,6 +140,8 @@ case class ExplodeAbility private (
       creature = params.creature.getOrElse(creature),
       state = params.state.getOrElse(state),
       onCooldown = params.onCooldown.getOrElse(onCooldown),
+      soundParameters = params.soundParameters.getOrElse(soundParameters),
+      timerParameters = params.timerParameters.getOrElse(timerParameters),
       b2Body = params.b2Body.getOrElse(b2Body),
       bodyCreated = params.bodyCreated.getOrElse(bodyCreated)
     )

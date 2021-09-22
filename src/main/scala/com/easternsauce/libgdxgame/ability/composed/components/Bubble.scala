@@ -4,6 +4,7 @@ import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.{Body, BodyDef, CircleShape, FixtureDef}
 import com.easternsauce.libgdxgame.ability.misc.AbilityState.AbilityState
 import com.easternsauce.libgdxgame.ability.misc.{Ability, AbilityState, ActiveAnimation}
+import com.easternsauce.libgdxgame.ability.parameters.TimerParameters
 import com.easternsauce.libgdxgame.creature.{Creature, Enemy}
 import com.easternsauce.libgdxgame.util.EsBatch
 
@@ -16,8 +17,8 @@ class Bubble(
   val startTime: Float
 ) extends AbilityComponent
     with ActiveAnimation {
-  override val activeTime: Float = 1.5f
-  override val channelTime: Float = 0.6f
+  override lazy val activeTime: Float = 1.5f
+  override lazy val channelTime: Float = 0.6f
 
   val loopTime = 0.2f
 
@@ -73,7 +74,7 @@ class Bubble(
   private def onActiveStart(): Unit = {
     state = AbilityState.Active
     //Assets.sound(Assets.explosionSound).play(0.01f)
-    abilityActiveAnimationTimer.restart()
+    timerParameters.abilityActiveAnimationTimer.restart()
     activeTimer.restart()
     initBody(startX, startY)
     if (mainAbility.creature.asInstanceOf[Enemy].aggroedTarget.nonEmpty) {
@@ -124,4 +125,6 @@ class Bubble(
       if (!creature.isImmune) creature.takeLifeDamage(70f, immunityFrames = true)
     }
   }
+
+  override val timerParameters: TimerParameters = TimerParameters()
 }

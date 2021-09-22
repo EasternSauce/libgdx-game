@@ -3,6 +3,7 @@ package com.easternsauce.libgdxgame.ability.composed.components
 import com.badlogic.gdx.physics.box2d.{Body, BodyDef, CircleShape, FixtureDef}
 import com.easternsauce.libgdxgame.ability.misc.AbilityState.AbilityState
 import com.easternsauce.libgdxgame.ability.misc.{Ability, AbilityState, ActiveAnimation, WindupAnimation}
+import com.easternsauce.libgdxgame.ability.parameters.TimerParameters
 import com.easternsauce.libgdxgame.creature.Creature
 import com.easternsauce.libgdxgame.system.Assets
 import com.easternsauce.libgdxgame.util.EsBatch
@@ -18,8 +19,8 @@ class Meteor(
     with WindupAnimation
     with ActiveAnimation {
 
-  override val activeTime: Float = 1.8f / speed
-  override val channelTime: Float = 1.2f / speed
+  override lazy val activeTime: Float = 1.8f / speed
+  override lazy val channelTime: Float = 1.2f / speed
 
   override var state: AbilityState = AbilityState.Inactive
   override var started = false
@@ -51,7 +52,7 @@ class Meteor(
     started = true
     state = AbilityState.Channeling
     channelTimer.restart()
-    abilityWindupAnimationTimer.restart()
+    timerParameters.abilityWindupAnimationTimer.restart()
   }
 
   override def onUpdateActive(): Unit = {
@@ -77,7 +78,7 @@ class Meteor(
   private def onActiveStart(): Unit = {
     state = AbilityState.Active
     Assets.sound(Assets.explosionSound).play(0.01f)
-    abilityActiveAnimationTimer.restart()
+    timerParameters.abilityActiveAnimationTimer.restart()
     activeTimer.restart()
     initBody(posX, posY)
   }
@@ -140,4 +141,7 @@ class Meteor(
       if (!creature.isImmune) creature.takeLifeDamage(70f, immunityFrames = true)
     }
   }
+
+  override val timerParameters: TimerParameters = TimerParameters()
+
 }

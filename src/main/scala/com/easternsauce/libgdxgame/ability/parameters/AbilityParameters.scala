@@ -18,7 +18,9 @@ case class AbilityParameters(
   bodyCreated: Option[Boolean] = None,
   hitbox: Option[Option[AttackHitbox]] = None,
   toRemoveBody: Option[Boolean] = None,
-  bodyActive: Option[Boolean] = None
+  bodyActive: Option[Boolean] = None,
+  soundParameters: Option[SoundParameters] = None,
+  timerParameters: Option[TimerParameters] = None
 ) {
   def add(abilityParameters: AbilityParameters): AbilityParameters = {
 
@@ -36,7 +38,7 @@ case class AbilityParameters(
       bodyCreated = ifNonEmpty(abilityParameters.bodyCreated, bodyCreated),
       hitbox = ifNonEmpty(abilityParameters.hitbox, hitbox),
       toRemoveBody = ifNonEmpty(abilityParameters.toRemoveBody, toRemoveBody),
-      bodyActive = ifNonEmpty(abilityParameters.bodyActive, bodyActive),
+      bodyActive = ifNonEmpty(abilityParameters.bodyActive, bodyActive)
     )
   }
 }

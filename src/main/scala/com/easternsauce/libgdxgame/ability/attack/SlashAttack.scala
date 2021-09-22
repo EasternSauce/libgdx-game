@@ -1,13 +1,17 @@
 package com.easternsauce.libgdxgame.ability.attack
 
-import com.badlogic.gdx.audio.Sound
 import com.easternsauce.libgdxgame.ability.misc.AbilityState.{AbilityState, Inactive}
-import com.easternsauce.libgdxgame.ability.parameters.{AbilityParameters, SoundParameters}
+import com.easternsauce.libgdxgame.ability.parameters.{AbilityParameters, SoundParameters, TimerParameters}
 import com.easternsauce.libgdxgame.creature.Creature
 import com.easternsauce.libgdxgame.system.Assets
 
-case class SlashAttack private (creature: Creature, state: AbilityState = Inactive, onCooldown: Boolean = false)
-    extends MeleeAttack {
+case class SlashAttack private (
+  creature: Creature,
+  state: AbilityState = Inactive,
+  onCooldown: Boolean = false,
+  timerParameters: TimerParameters = TimerParameters(),
+  hitbox: Option[AttackHitbox] = None
+) extends MeleeAttack {
 
   val id: String = "slash"
 
@@ -43,13 +47,13 @@ case class SlashAttack private (creature: Creature, state: AbilityState = Inacti
   )
 
   override def applyParams(params: AbilityParameters): SlashAttack = {
-    val res = copy(
+    copy(
       creature = params.creature.getOrElse(creature),
       state = params.state.getOrElse(state),
-      onCooldown = params.onCooldown.getOrElse(onCooldown)
+      onCooldown = params.onCooldown.getOrElse(onCooldown),
+      timerParameters = params.timerParameters.getOrElse(timerParameters),
+      hitbox = params.hitbox.getOrElse(hitbox)
     )
-
-    res
   }
 
   override protected def onUpdateActive(): AbilityParameters = {

@@ -1,14 +1,15 @@
 package com.easternsauce.libgdxgame.ability.misc
 
 import com.badlogic.gdx.graphics.g2d.{Animation, TextureAtlas, TextureRegion}
+import com.easternsauce.libgdxgame.ability.parameters.TimerParameters
 import com.easternsauce.libgdxgame.system.Assets
-import com.easternsauce.libgdxgame.util.EsTimer
 
 import scala.collection.mutable.ListBuffer
 
 trait WindupAnimation {
   protected var abilityWindupAnimation: Animation[TextureRegion] = _
-  protected val abilityWindupAnimationTimer: EsTimer = EsTimer()
+
+  val timerParameters: TimerParameters
 
   def setupWindupAnimation(
     regionName: String,
@@ -30,6 +31,6 @@ trait WindupAnimation {
   }
 
   def currentWindupAnimationFrame: TextureRegion = {
-    abilityWindupAnimation.getKeyFrame(abilityWindupAnimationTimer.time, false)
+    abilityWindupAnimation.getKeyFrame(timerParameters.abilityWindupAnimationTimer.time, false)
   }
 }

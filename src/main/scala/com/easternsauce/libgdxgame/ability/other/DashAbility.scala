@@ -1,10 +1,9 @@
 package com.easternsauce.libgdxgame.ability.other
 
-import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.math.Vector2
 import com.easternsauce.libgdxgame.ability.misc.Ability
 import com.easternsauce.libgdxgame.ability.misc.AbilityState.{AbilityState, Inactive}
-import com.easternsauce.libgdxgame.ability.parameters.{AbilityParameters, SoundParameters}
+import com.easternsauce.libgdxgame.ability.parameters.{AbilityParameters, SoundParameters, TimerParameters}
 import com.easternsauce.libgdxgame.creature.Creature
 import com.easternsauce.libgdxgame.util.EsBatch
 
@@ -13,12 +12,13 @@ case class DashAbility private (
   state: AbilityState = Inactive,
   onCooldown: Boolean = false,
   soundParameters: SoundParameters = SoundParameters(),
+  timerParameters: TimerParameters = TimerParameters(),
   dashVector: Vector2 = new Vector2(0f, 0f)
 ) extends Ability {
   override val id = "dash"
   override val cooldownTime: Float = 1.5f
-  override val activeTime: Float = 0.2f
-  override val channelTime: Float = 0f
+  override lazy val activeTime: Float = 0.2f
+  override lazy val channelTime: Float = 0f
 
   val speed = 60f
 
@@ -46,6 +46,8 @@ case class DashAbility private (
       creature = params.creature.getOrElse(creature),
       state = params.state.getOrElse(state),
       onCooldown = params.onCooldown.getOrElse(onCooldown),
+      soundParameters = params.soundParameters.getOrElse(soundParameters),
+      timerParameters = params.timerParameters.getOrElse(timerParameters),
       dashVector = params.dashVector.getOrElse(dashVector)
     )
   }

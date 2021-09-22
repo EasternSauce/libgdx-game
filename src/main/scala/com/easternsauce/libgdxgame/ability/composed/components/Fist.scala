@@ -3,6 +3,7 @@ package com.easternsauce.libgdxgame.ability.composed.components
 import com.badlogic.gdx.physics.box2d.{Body, BodyDef, CircleShape, FixtureDef}
 import com.easternsauce.libgdxgame.ability.misc.AbilityState.AbilityState
 import com.easternsauce.libgdxgame.ability.misc.{Ability, AbilityState, ActiveAnimation, WindupAnimation}
+import com.easternsauce.libgdxgame.ability.parameters.TimerParameters
 import com.easternsauce.libgdxgame.creature.Creature
 import com.easternsauce.libgdxgame.system.Assets
 import com.easternsauce.libgdxgame.util.EsBatch
@@ -12,8 +13,8 @@ class Fist(val mainAbility: Ability, val startTime: Float, posX: Float, posY: Fl
     with WindupAnimation
     with ActiveAnimation {
 
-  override val activeTime: Float = 0.2f
-  override val channelTime: Float = 0.4f
+  override lazy val activeTime: Float = 0.2f
+  override lazy val channelTime: Float = 0.4f
 
   override var state: AbilityState = AbilityState.Inactive
   override var started: Boolean = false
@@ -45,7 +46,7 @@ class Fist(val mainAbility: Ability, val startTime: Float, posX: Float, posY: Fl
     started = true
     state = AbilityState.Channeling
     channelTimer.restart()
-    abilityWindupAnimationTimer.restart()
+    timerParameters.abilityWindupAnimationTimer.restart()
   }
 
   override def onUpdateActive(): Unit = {
@@ -54,7 +55,7 @@ class Fist(val mainAbility: Ability, val startTime: Float, posX: Float, posY: Fl
         if (channelTimer.time > channelTime) {
           state = AbilityState.Active
           Assets.sound(Assets.glassBreakSound).play(0.1f)
-          abilityActiveAnimationTimer.restart()
+          timerParameters.abilityActiveAnimationTimer.restart()
           activeTimer.restart()
           initBody(posX, posY)
         }
@@ -141,5 +142,7 @@ class Fist(val mainAbility: Ability, val startTime: Float, posX: Float, posY: Fl
       if (!creature.isImmune) creature.takeLifeDamage(100f, immunityFrames = true)
     }
   }
+
+  override val timerParameters: TimerParameters = TimerParameters()
 
 }

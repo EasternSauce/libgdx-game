@@ -2,13 +2,7 @@ package com.easternsauce.libgdxgame.ability.attack
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.math.{Polygon, Rectangle, Vector2}
-import com.easternsauce.libgdxgame.ability.misc.{
-  Ability,
-  AbilityState,
-  ActiveAnimation,
-  PhysicalHitbox,
-  WindupAnimation
-}
+import com.easternsauce.libgdxgame.ability.misc._
 import com.easternsauce.libgdxgame.ability.parameters.AbilityParameters
 import com.easternsauce.libgdxgame.creature.Creature
 import com.easternsauce.libgdxgame.system.{Constants, GameSystem}
@@ -16,7 +10,7 @@ import com.easternsauce.libgdxgame.util.{EsBatch, EsPolygon}
 
 trait MeleeAttack extends Ability with PhysicalHitbox with ActiveAnimation with WindupAnimation {
   val attackRange: Float
-  val hitbox: Option[AttackHitbox] = None
+  val hitbox: Option[AttackHitbox]
   val toRemoveBody: Boolean = false
 
   val bodyActive = false
@@ -34,8 +28,8 @@ trait MeleeAttack extends Ability with PhysicalHitbox with ActiveAnimation with 
   protected val baseChannelTime: Float
   protected val baseActiveTime: Float
 
-  override protected val activeTime: Float = baseActiveTime
-  override protected val channelTime: Float = baseChannelTime / attackSpeed
+  override protected lazy val activeTime: Float = baseActiveTime
+  override protected lazy val channelTime: Float = baseChannelTime / attackSpeed
 
   def attackSpeed: Float =
     if (creature.isWeaponEquipped) creature.currentWeapon.template.attackSpeed.get
@@ -48,7 +42,7 @@ trait MeleeAttack extends Ability with PhysicalHitbox with ActiveAnimation with 
   override def onActiveStart(): AbilityParameters = {
     super.onActiveStart()
 
-    abilityActiveAnimationTimer.restart()
+    timerParameters.abilityActiveAnimationTimer.restart()
 
     creature.takeStaminaDamage(15f)
 
@@ -114,7 +108,7 @@ trait MeleeAttack extends Ability with PhysicalHitbox with ActiveAnimation with 
     super.onChannellingStart()
 
     creature.attackVector = creature.facingVector.cpy()
-    abilityWindupAnimationTimer.restart()
+    timerParameters.abilityWindupAnimationTimer.restart()
     creature.isAttacking = true
 
     val attackVector = creature.attackVector
@@ -145,14 +139,14 @@ trait MeleeAttack extends Ability with PhysicalHitbox with ActiveAnimation with 
   }
 
   override def update(): AbilityParameters = {
-    super.update()
+    val params = super.update()
 
     if (b2Body.nonEmpty && toRemoveBody) {
       b2Body.get.getWorld.destroyBody(b2Body.get)
 
-      AbilityParameters(toRemoveBody = Some(false), bodyActive = Some(false))
+      params.copy(toRemoveBody = Some(false), bodyActive = Some(false))
     } else
-          AbilityParameters()
+      params
   }
 
   override def updateHitbox(): AbilityParameters = {
@@ -179,7 +173,7 @@ trait MeleeAttack extends Ability with PhysicalHitbox with ActiveAnimation with 
 
       AbilityParameters(hitbox = Some(newHitbox))
     } else
-          AbilityParameters()
+      AbilityParameters()
 
   }
 
@@ -196,9 +190,16 @@ trait MeleeAttack extends Ability with PhysicalHitbox with ActiveAnimation with 
 
   override def onCollideWithCreature(otherCreature: Creature): AbilityParameters = {
 
+    println("collision!!!")
     // TODO: remove sideeffect
     if (!(creature.isEnemy && otherCreature.isEnemy)) {
-      if (creature != otherCreature && state == AbilityState.Active && !otherCreature.isImmune) {
+      println("colliding, state = " + state)
+      if (
+        creature != otherCreature
+        //&& state == AbilityState.Active TODO: ??? collision box created before ability is active?
+        && !otherCreature.isImmune
+      ) {
+        println("inside")
         otherCreature.takeLifeDamage(
           damage = creature.weaponDamage,
           immunityFrames = true,

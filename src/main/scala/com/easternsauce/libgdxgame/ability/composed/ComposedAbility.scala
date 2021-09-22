@@ -1,13 +1,9 @@
 package com.easternsauce.libgdxgame.ability.composed
 
 import com.easternsauce.libgdxgame.ability.composed.components.AbilityComponent
-import com.easternsauce.libgdxgame.ability.misc.AbilityState.AbilityState
 import com.easternsauce.libgdxgame.ability.misc.{Ability, AbilityState}
 import com.easternsauce.libgdxgame.ability.parameters.AbilityParameters
-import com.easternsauce.libgdxgame.creature.Creature
 import com.easternsauce.libgdxgame.util.EsBatch
-
-import scala.collection.mutable.ListBuffer
 
 trait ComposedAbility extends Ability {
   val components: List[AbilityComponent]
@@ -15,9 +11,12 @@ trait ComposedAbility extends Ability {
 
   protected val numOfComponents = 0
 
-  override protected val activeTime: Float = 0
+  override protected lazy val activeTime: Float = 0
 
   override def update(): AbilityParameters = {
+    val channelTimer = timerParameters.channelTimer
+    val activeTimer = timerParameters.activeTimer
+
     import AbilityState._
 
     state match {
@@ -70,6 +69,8 @@ trait ComposedAbility extends Ability {
   }
 
   override protected def onUpdateActive(): AbilityParameters = {
+    val activeTimer = timerParameters.activeTimer
+
     // TODO: remove sideeffect
 
     for (component <- components) {

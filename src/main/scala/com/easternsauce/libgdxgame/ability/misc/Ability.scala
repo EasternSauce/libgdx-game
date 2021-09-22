@@ -2,9 +2,9 @@ package com.easternsauce.libgdxgame.ability.misc
 
 import com.badlogic.gdx.audio.Sound
 import com.easternsauce.libgdxgame.ability.misc.AbilityState.AbilityState
-import com.easternsauce.libgdxgame.ability.parameters.{AbilityParameters, SoundParameters}
+import com.easternsauce.libgdxgame.ability.parameters.{AbilityParameters, SoundParameters, TimerParameters}
 import com.easternsauce.libgdxgame.creature.Creature
-import com.easternsauce.libgdxgame.util.{EsBatch, EsTimer}
+import com.easternsauce.libgdxgame.util.EsBatch
 
 trait Ability {
   val id: String
@@ -13,13 +13,12 @@ trait Ability {
   val state: AbilityState
   val onCooldown: Boolean
   val soundParameters: SoundParameters
+  val timerParameters: TimerParameters
 
   protected val isStoppable: Boolean = true
-  protected val activeTimer: EsTimer = EsTimer()
-  protected val channelTimer: EsTimer = EsTimer()
   protected val cooldownTime: Float = 0f
-  protected val activeTime: Float = 0f
-  protected val channelTime: Float = 0f
+  protected lazy val activeTime: Float = 0f
+  protected lazy val channelTime: Float = 0f
   protected val isAttack = false
 
   val channelSound: Option[Sound] = None
@@ -55,6 +54,8 @@ trait Ability {
   protected def onStop(): AbilityParameters
 
   def perform(): AbilityParameters = {
+    val channelTimer = timerParameters.channelTimer
+
     if (creature.staminaPoints > 0 && state == AbilityState.Inactive && !onCooldown && !creature.abilityActive) {
 
       // TODO: remove side effect
@@ -70,13 +71,15 @@ trait Ability {
   }
 
   def update(): AbilityParameters = {
+    val channelTimer = timerParameters.channelTimer
+    val activeTimer = timerParameters.activeTimer
 
     import AbilityState._
     state match {
       case Channeling =>
+        println("channeling")
         val params = if (channelTimer.time > channelTime) {
           activeTimer.restart()
-
           onActiveStart().copy(state = Some(AbilityState.Active), onCooldown = Some(true))
         } else
           AbilityParameters()
@@ -86,6 +89,7 @@ trait Ability {
           .add(onUpdateChanneling())
 
       case Active =>
+        println("active")
         val params = if (activeTimer.time > activeTime) {
           AbilityParameters(state = Some(AbilityState.Inactive))
             .add(onStop())

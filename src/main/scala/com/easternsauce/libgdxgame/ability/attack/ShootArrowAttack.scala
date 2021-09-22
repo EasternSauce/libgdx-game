@@ -1,12 +1,10 @@
 package com.easternsauce.libgdxgame.ability.attack
 
-import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.maps.tiled.TiledMap
 import com.badlogic.gdx.math.Vector2
+import com.easternsauce.libgdxgame.ability.misc.AbilityState.AbilityState
 import com.easternsauce.libgdxgame.ability.misc.{Ability, AbilityState}
-import com.easternsauce.libgdxgame.ability.misc.AbilityState.{AbilityState, Inactive}
-import com.easternsauce.libgdxgame.ability.other.DashAbility
-import com.easternsauce.libgdxgame.ability.parameters.{AbilityParameters, SoundParameters}
+import com.easternsauce.libgdxgame.ability.parameters.{AbilityParameters, SoundParameters, TimerParameters}
 import com.easternsauce.libgdxgame.creature.Creature
 import com.easternsauce.libgdxgame.projectile.Arrow
 import com.easternsauce.libgdxgame.system.Assets
@@ -19,13 +17,14 @@ case class ShootArrowAttack private (
   creature: Creature,
   state: AbilityState = AbilityState.Inactive,
   onCooldown: Boolean = false,
-  soundParameters: SoundParameters = SoundParameters()
+  soundParameters: SoundParameters = SoundParameters(),
+  timerParameters: TimerParameters = TimerParameters()
 ) extends Ability {
 
   val id: String = "shoot_arrow"
 
-  override protected val channelTime: Float = 0.85f
-  override protected val activeTime: Float = 0.1f
+  override protected lazy val channelTime: Float = 0.85f
+  override protected lazy val activeTime: Float = 0.1f
   override protected val cooldownTime = 0.8f
 
   override protected val isAttack = true
@@ -105,7 +104,9 @@ case class ShootArrowAttack private (
     copy(
       creature = params.creature.getOrElse(creature),
       state = params.state.getOrElse(state),
-      onCooldown = params.onCooldown.getOrElse(onCooldown)
+      onCooldown = params.onCooldown.getOrElse(onCooldown),
+      soundParameters = params.soundParameters.getOrElse(soundParameters),
+      timerParameters = params.timerParameters.getOrElse(timerParameters)
     )
   }
 

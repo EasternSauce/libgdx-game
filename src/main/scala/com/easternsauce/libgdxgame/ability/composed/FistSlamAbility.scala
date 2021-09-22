@@ -1,25 +1,24 @@
 package com.easternsauce.libgdxgame.ability.composed
 
-import com.badlogic.gdx.audio.Sound
 import com.easternsauce.libgdxgame.ability.composed.components.{AbilityComponent, Fist}
-import com.easternsauce.libgdxgame.ability.misc.Ability
 import com.easternsauce.libgdxgame.ability.misc.AbilityState.{AbilityState, Inactive}
-import com.easternsauce.libgdxgame.ability.parameters.{AbilityParameters, SoundParameters}
+import com.easternsauce.libgdxgame.ability.parameters.{AbilityParameters, SoundParameters, TimerParameters}
 import com.easternsauce.libgdxgame.creature.{Creature, Enemy}
 import com.easternsauce.libgdxgame.system.GameSystem
 
 case class FistSlamAbility private (
-   creature: Creature,
-   state: AbilityState = Inactive,
-   onCooldown: Boolean = false,
+  creature: Creature,
+  state: AbilityState = Inactive,
+  onCooldown: Boolean = false,
   soundParameters: SoundParameters = SoundParameters(),
-   components: List[AbilityComponent] = List(),
-   lastComponentFinishTime: Float = 0f
+  timerParameters: TimerParameters = TimerParameters(),
+  components: List[AbilityComponent] = List(),
+  lastComponentFinishTime: Float = 0f
 ) extends ComposedAbility {
   val id: String = "fist_slam"
 
   override protected val cooldownTime: Float = 10f
-  override protected val channelTime: Float = 0.15f
+  override protected lazy val channelTime: Float = 0.15f
 
   override protected val numOfComponents = 20
 
@@ -49,6 +48,8 @@ case class FistSlamAbility private (
       creature = params.creature.getOrElse(creature),
       state = params.state.getOrElse(state),
       onCooldown = params.onCooldown.getOrElse(onCooldown),
+      soundParameters = params.soundParameters.getOrElse(soundParameters),
+      timerParameters = params.timerParameters.getOrElse(timerParameters),
       lastComponentFinishTime = params.lastComponentFinishTime.getOrElse(lastComponentFinishTime),
       components = params.components.getOrElse(components)
     )
