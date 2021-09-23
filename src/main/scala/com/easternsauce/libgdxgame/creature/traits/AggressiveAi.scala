@@ -208,7 +208,12 @@ trait AggressiveAi {
         }
 
         if (targetVisible && distanceTo(aggroedTarget.get) < attackDistance) {
-          currentAttack.perform()
+          val params = currentAttack.perform()
+
+          // TODO: temp workaround
+          val thisCurrentAttack = abilityMap(currentAttack.id)
+          val updatedInstance = thisCurrentAttack.applyParams(params)
+          abilityMap.update(thisCurrentAttack.id, updatedInstance)
         }
 
         if (!aggroedTarget.get.isAlive || (path.size > 15 && !isBoss)) {
