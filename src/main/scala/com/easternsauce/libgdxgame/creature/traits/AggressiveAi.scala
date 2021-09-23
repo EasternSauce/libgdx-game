@@ -183,6 +183,15 @@ trait AggressiveAi {
 
             if (pickedAbility.nonEmpty) {
               pickedAbility.get.perform()
+
+              val params = pickedAbility.get.perform()
+
+              // TODO: temp workaround
+              val currentAttack = abilityMap(pickedAbility.get.id)
+
+              val updatedInstance = pickedAbility.get.applyParams(params)
+
+              abilityMap.update(pickedAbility.get.id, updatedInstance)
             }
 
           }

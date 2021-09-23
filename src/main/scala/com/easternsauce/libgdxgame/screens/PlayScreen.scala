@@ -200,7 +200,14 @@ class PlayScreen() extends Screen {
     }
 
     if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
-      player.abilityMap("dash").perform()
+      val dash = player.abilityMap("dash")
+
+      val params = dash.perform()
+
+      // TODO: temp workaround
+      val updatedInstance = dash.applyParams(params)
+
+      player.abilityMap.update(dash.id, updatedInstance)
     }
 
     handlePlayerMovement()

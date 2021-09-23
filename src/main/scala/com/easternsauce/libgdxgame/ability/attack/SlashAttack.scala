@@ -59,7 +59,6 @@ case class SlashAttack private (
       b2Body = params.b2Body.getOrElse(b2Body),
       toRemoveBody = params.toRemoveBody.getOrElse(toRemoveBody),
     )
-    a
   }
 
   override protected def onUpdateActive(): AbilityParameters = {
