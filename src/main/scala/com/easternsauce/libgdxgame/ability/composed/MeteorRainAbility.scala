@@ -14,14 +14,7 @@ case class MeteorRainAbility private (
   override val soundParameters: SoundParameters = SoundParameters(),
   override val components: List[AbilityComponent] = List(),
   override val lastComponentFinishTime: Float = 0f
-) extends ComposedAbility(
-      creature = creature,
-      state = state,
-      onCooldown = onCooldown,
-      timerParameters = timerParameters,
-      components = components,
-      lastComponentFinishTime = lastComponentFinishTime
-    ) {
+) extends ComposedAbility {
   override val id = "meteor_rain"
 
   override protected lazy val channelTime: Float = 0.05f
@@ -46,4 +39,12 @@ case class MeteorRainAbility private (
     )
   }
 
+  override def setComponents(components: List[AbilityComponent]): MeteorRainAbility = copy(components = components)
+
+  override def setLastComponentFinishTime(lastComponentFinishTime: Float): MeteorRainAbility =
+    copy(lastComponentFinishTime = lastComponentFinishTime)
+
+  override def setState(state: AbilityState): MeteorRainAbility = copy(state = state)
+
+  override def setOnCooldown(onCooldown: Boolean): MeteorRainAbility = copy(onCooldown = onCooldown)
 }

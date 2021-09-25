@@ -15,14 +15,7 @@ case class MeteorCrashAbility private (
   override val soundParameters: SoundParameters = SoundParameters(),
   override val components: List[AbilityComponent] = List(),
   override val lastComponentFinishTime: Float = 0f
-) extends ComposedAbility(
-      creature = creature,
-      state = state,
-      onCooldown = onCooldown,
-      timerParameters = timerParameters,
-      components = components,
-      lastComponentFinishTime = lastComponentFinishTime
-    ) {
+) extends ComposedAbility {
 
   implicit def toMeteorCrashAbility(ability: Ability): MeteorCrashAbility = ability.asInstanceOf[MeteorCrashAbility]
 
@@ -108,4 +101,12 @@ case class MeteorCrashAbility private (
     )
   }
 
+  override def setComponents(components: List[AbilityComponent]): MeteorCrashAbility = copy(components = components)
+
+  override def setLastComponentFinishTime(lastComponentFinishTime: Float): MeteorCrashAbility =
+    copy(lastComponentFinishTime = lastComponentFinishTime)
+
+  override def setState(state: AbilityState): MeteorCrashAbility = copy(state = state)
+
+  override def setOnCooldown(onCooldown: Boolean): MeteorCrashAbility = copy(onCooldown = onCooldown)
 }

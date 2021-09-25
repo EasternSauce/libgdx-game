@@ -17,7 +17,7 @@ case class ShootArrowAttack private (
   override val state: AbilityState = AbilityState.Inactive,
   override val onCooldown: Boolean = false,
   override val timerParameters: TimerParameters = TimerParameters()
-) extends Ability(creature = creature, state = state, onCooldown = onCooldown, timerParameters = timerParameters) {
+) extends Ability {
 
   override val id: String = "shoot_arrow"
 
@@ -73,5 +73,9 @@ case class ShootArrowAttack private (
 
     copy()
   }
+
+  override def setState(state: AbilityState): Ability = copy(state = state)
+
+  override def setOnCooldown(onCooldown: Boolean): Ability = copy(onCooldown = onCooldown)
 
 }

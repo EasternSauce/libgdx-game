@@ -17,16 +17,7 @@ case class SlashAttack private (
   override val body: Option[Body] = None,
   override val toRemoveBody: Boolean = false,
   override val bodyActive: Boolean = false
-) extends MeleeAttack(
-      creature = creature,
-      state = state,
-      onCooldown = onCooldown,
-      timerParameters = timerParameters,
-      body = body,
-      hitbox = hitbox,
-      toRemoveBody = toRemoveBody,
-      bodyActive = bodyActive
-    ) {
+) extends MeleeAttack {
 
   override val id: String = "slash"
 
@@ -58,4 +49,15 @@ case class SlashAttack private (
     frameDuration = baseChannelTime / numOfChannelFrames
   )
 
+  override def setToRemoveBody(toRemoveBody: Boolean): SlashAttack = copy(toRemoveBody = toRemoveBody)
+
+  override def setBody(body: Option[Body]): SlashAttack = copy(body = body)
+
+  override def setHitbox(hitbox: Option[AttackHitbox]): SlashAttack = copy(hitbox = hitbox)
+
+  override def setBodyActive(bodyActive: Boolean): SlashAttack = copy(bodyActive = bodyActive)
+
+  override def setState(state: AbilityState): SlashAttack = copy(state = state)
+
+  override def setOnCooldown(onCooldown: Boolean): SlashAttack = copy(onCooldown = onCooldown)
 }

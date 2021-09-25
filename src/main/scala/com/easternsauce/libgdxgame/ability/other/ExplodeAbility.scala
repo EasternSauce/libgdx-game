@@ -17,7 +17,7 @@ case class ExplodeAbility private (
   override val soundParameters: SoundParameters = SoundParameters(),
   body: Option[Body] = None,
   bodyCreated: Boolean = false
-) extends Ability(creature = creature, state = state, onCooldown = onCooldown, timerParameters = timerParameters)
+) extends Ability
     with ActiveAnimation {
   override val id: String = "explode"
   override protected val cooldownTime: Float = 0.8f
@@ -132,5 +132,9 @@ case class ExplodeAbility private (
 
     copy()
   }
+
+  override def setState(state: AbilityState): Ability = copy(state = state)
+
+  override def setOnCooldown(onCooldown: Boolean): Ability = copy(onCooldown = onCooldown)
 
 }

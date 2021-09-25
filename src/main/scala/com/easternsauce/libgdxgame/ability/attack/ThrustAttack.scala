@@ -1,6 +1,7 @@
 package com.easternsauce.libgdxgame.ability.attack
 
 import com.badlogic.gdx.physics.box2d.Body
+import com.easternsauce.libgdxgame.ability.misc.Ability
 import com.easternsauce.libgdxgame.ability.misc.AbilityState.{AbilityState, Inactive}
 import com.easternsauce.libgdxgame.ability.parameters.{SoundParameters, TimerParameters}
 import com.easternsauce.libgdxgame.creature.Creature
@@ -17,16 +18,7 @@ case class ThrustAttack private (
   override val body: Option[Body] = None,
   override val toRemoveBody: Boolean = false,
   override val bodyActive: Boolean = false
-) extends MeleeAttack(
-      creature = creature,
-      state = state,
-      onCooldown = onCooldown,
-      timerParameters = timerParameters,
-      body = body,
-      hitbox = hitbox,
-      toRemoveBody = toRemoveBody,
-      bodyActive = bodyActive
-    ) {
+) extends MeleeAttack {
 
   override val id: String = "thrust"
 
@@ -58,4 +50,15 @@ case class ThrustAttack private (
     frameDuration = baseChannelTime / numOfChannelFrames
   )
 
+  override def setState(state: AbilityState): Ability = copy(state = state)
+
+  override def setOnCooldown(onCooldown: Boolean): Ability = copy(onCooldown = onCooldown)
+
+  override def setToRemoveBody(toRemoveBody: Boolean): MeleeAttack = copy(toRemoveBody = toRemoveBody)
+
+  override def setBody(body: Option[Body]): MeleeAttack = copy(body = body)
+
+  override def setHitbox(hitbox: Option[AttackHitbox]): MeleeAttack = copy(hitbox = hitbox)
+
+  override def setBodyActive(bodyActive: Boolean): MeleeAttack = copy(bodyActive = bodyActive)
 }

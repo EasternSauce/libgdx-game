@@ -6,20 +6,19 @@ import com.easternsauce.libgdxgame.ability.parameters.{SoundParameters, TimerPar
 import com.easternsauce.libgdxgame.creature.Creature
 import com.easternsauce.libgdxgame.util.EsBatch
 
-class Ability protected (
-  val creature: Creature,
-  val state: AbilityState,
-  val onCooldown: Boolean,
+trait Ability {
+  val creature: Creature
+  val state: AbilityState
+  val onCooldown: Boolean
   val timerParameters: TimerParameters
-) {
 
-  val id: String = "INCORRECT_ID"
+  val id: String
 
   val soundParameters: SoundParameters = SoundParameters()
 
   protected val isStoppable: Boolean = true
 
-  protected val cooldownTime: Float = 0f
+  protected val cooldownTime: Float
   protected lazy val activeTime: Float = 0f
   protected lazy val channelTime: Float = 0f
   protected val isAttack = false
@@ -27,7 +26,7 @@ class Ability protected (
   val channelSound: Option[Sound] = None
   val channelSoundVolume: Option[Float] = None
 
-  def updateHitbox(): Ability = makeAbilityCopy()
+  def updateHitbox(): Ability = this
 
   def onActiveStart(): Ability = {
     // TODO: remove side effect
@@ -35,27 +34,28 @@ class Ability protected (
     val activeSoundVolume = soundParameters.activeSoundVolume
     if (activeSound.nonEmpty) activeSound.get.play(activeSoundVolume.get)
 
-    makeAbilityCopy()
+    this
   }
 
-  def onUpdateActive(): Ability = makeAbilityCopy()
+  def onUpdateActive(): Ability = this
 
-  def onUpdateChanneling(): Ability = makeAbilityCopy()
+  def onUpdateChanneling(): Ability = this
 
-  def render(esBatch: EsBatch): Ability = makeAbilityCopy()
+  def render(esBatch: EsBatch): Ability = this
 
   def forceStop(): Ability = {
 
     if (isStoppable && state != AbilityState.Inactive) {
-      onStop()
-        .makeAbilityCopy(state = AbilityState.Inactive)
+      this
+        .onStop()
+        .setState(state = AbilityState.Inactive)
     } else {
-      makeAbilityCopy()
+      this
     }
 
   }
 
-  def onStop(): Ability = makeAbilityCopy()
+  def onStop(): Ability = this
 
   def perform(): Ability = {
     val channelTimer = timerParameters.channelTimer
@@ -69,10 +69,11 @@ class Ability protected (
       // + 0.01 to ensure regen doesn't start if we hold attack button
       creature.activateEffect("staminaRegenerationStopped", if (isAttack) channelTime + cooldownTime + 0.01f else 1f)
 
-      onChannellingStart()
-        .makeAbilityCopy(state = AbilityState.Channeling)
+      this
+        .onChannellingStart()
+        .setState(state = AbilityState.Channeling)
     } else
-      makeAbilityCopy()
+      this
   }
 
   def update(): Ability = {
@@ -85,10 +86,12 @@ class Ability protected (
         val ability: Ability = if (channelTimer.time > channelTime) {
           activeTimer.restart()
 
-          onActiveStart()
-            .makeAbilityCopy(state = AbilityState.Active, onCooldown = true)
+          this
+            .onActiveStart()
+            .setState(state = AbilityState.Active)
+            .setOnCooldown(onCooldown = true)
         } else
-          makeAbilityCopy()
+          this
 
         ability
           .updateHitbox()
@@ -96,10 +99,10 @@ class Ability protected (
 
       case Active =>
         val ability: Ability = if (activeTimer.time > activeTime) {
-          makeAbilityCopy(state = AbilityState.Inactive)
+          setState(state = AbilityState.Inactive)
             .onStop()
         } else
-          makeAbilityCopy()
+          this
 
         ability
           .updateHitbox()
@@ -107,11 +110,13 @@ class Ability protected (
 
       case Inactive =>
         if (onCooldown && activeTimer.time > cooldownTime) {
-          makeAbilityCopy(onCooldown = false)
-        } else
-          makeAbilityCopy()
 
-      case _ => makeAbilityCopy()
+          this
+            .setOnCooldown(onCooldown = false)
+        } else
+          this
+
+      case _ => this
     }
 
   }
@@ -122,30 +127,16 @@ class Ability protected (
       channelSound.get.play(channelSoundVolume.get)
     }
 
-    makeAbilityCopy()
+    this
   }
 
-  def onCollideWithCreature(creature: Creature): Ability = makeAbilityCopy()
+  def onCollideWithCreature(creature: Creature): Ability = this
 
   def active: Boolean = state == AbilityState.Active
 
   def asMapEntry: (String, Ability) = id -> this
 
-  private def makeAbilityCopy(
-    creature: Creature = creature,
-    state: AbilityState = state,
-    onCooldown: Boolean = onCooldown,
-    timerParameters: TimerParameters = timerParameters
-  ): Ability = {
-    Ability(creature, state, onCooldown, timerParameters)
-  }
+  def setState(state: AbilityState): Ability
 
-}
-
-object Ability {
-  def apply(creature: Creature, state: AbilityState, onCooldown: Boolean, timerParameters: TimerParameters): Ability = {
-    println("creating ability")
-
-    new Ability(creature, state, onCooldown, timerParameters)
-  }
+  def setOnCooldown(onCooldown: Boolean): Ability
 }

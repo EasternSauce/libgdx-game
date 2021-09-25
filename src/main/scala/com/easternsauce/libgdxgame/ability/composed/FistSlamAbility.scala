@@ -14,14 +14,7 @@ case class FistSlamAbility private (
   override val soundParameters: SoundParameters = SoundParameters(),
   override val components: List[AbilityComponent] = List(),
   override val lastComponentFinishTime: Float = 0f
-) extends ComposedAbility(
-      creature = creature,
-      state = state,
-      onCooldown = onCooldown,
-      timerParameters = timerParameters,
-      components = components,
-      lastComponentFinishTime = lastComponentFinishTime
-    ) {
+) extends ComposedAbility {
   override val id: String = "fist_slam"
 
   override protected val cooldownTime: Float = 10f
@@ -50,4 +43,12 @@ case class FistSlamAbility private (
     )
   }
 
+  override def setComponents(components: List[AbilityComponent]): FistSlamAbility = copy(components = components)
+
+  override def setLastComponentFinishTime(lastComponentFinishTime: Float): FistSlamAbility =
+    copy(lastComponentFinishTime = lastComponentFinishTime)
+
+  override def setState(state: AbilityState): FistSlamAbility = copy(state = state)
+
+  override def setOnCooldown(onCooldown: Boolean): FistSlamAbility = copy(onCooldown = onCooldown)
 }

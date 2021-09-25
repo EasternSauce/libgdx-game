@@ -13,7 +13,7 @@ case class DashAbility private (
   override val timerParameters: TimerParameters = TimerParameters(),
   override val soundParameters: SoundParameters = SoundParameters(),
   dashVector: Vector2 = new Vector2(0f, 0f)
-) extends Ability(creature = creature, state = state, onCooldown = onCooldown, timerParameters = timerParameters) {
+) extends Ability {
   override val id = "dash"
   override val cooldownTime: Float = 1.5f
   override lazy val activeTime: Float = 0.2f
@@ -39,5 +39,9 @@ case class DashAbility private (
 
     copy()
   }
+
+  override def setState(state: AbilityState): Ability = copy(state = state)
+
+  override def setOnCooldown(onCooldown: Boolean): Ability = copy(onCooldown = onCooldown)
 
 }

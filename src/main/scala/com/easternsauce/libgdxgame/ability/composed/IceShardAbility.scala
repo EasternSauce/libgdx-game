@@ -14,14 +14,7 @@ case class IceShardAbility private (
   override val soundParameters: SoundParameters = SoundParameters(),
   override val components: List[AbilityComponent] = List(),
   override val lastComponentFinishTime: Float = 0f
-) extends ComposedAbility(
-      creature = creature,
-      state = state,
-      onCooldown = onCooldown,
-      timerParameters = timerParameters,
-      components = components,
-      lastComponentFinishTime = lastComponentFinishTime
-    ) {
+) extends ComposedAbility {
   override val id = "ice_shard"
 
   override protected lazy val channelTime: Float = 0.05f
@@ -52,4 +45,12 @@ case class IceShardAbility private (
     )
   }
 
+  override def setComponents(components: List[AbilityComponent]): IceShardAbility = copy(components = components)
+
+  override def setLastComponentFinishTime(lastComponentFinishTime: Float): IceShardAbility =
+    copy(lastComponentFinishTime = lastComponentFinishTime)
+
+  override def setState(state: AbilityState): IceShardAbility = copy(state = state)
+
+  override def setOnCooldown(onCooldown: Boolean): IceShardAbility = copy(onCooldown = onCooldown)
 }

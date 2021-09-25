@@ -1,22 +1,15 @@
 package com.easternsauce.libgdxgame.ability.composed
 
 import com.easternsauce.libgdxgame.ability.composed.components.AbilityComponent
-import com.easternsauce.libgdxgame.ability.misc.AbilityState.AbilityState
 import com.easternsauce.libgdxgame.ability.misc.{Ability, AbilityState}
-import com.easternsauce.libgdxgame.ability.parameters.TimerParameters
-import com.easternsauce.libgdxgame.creature.Creature
 import com.easternsauce.libgdxgame.util.EsBatch
 
-class ComposedAbility protected (
-  override val creature: Creature,
-  override val state: AbilityState,
-  override val onCooldown: Boolean,
-  override val timerParameters: TimerParameters,
-  val components: List[AbilityComponent],
-  val lastComponentFinishTime: Float
-) extends Ability(creature = creature, state = state, onCooldown = onCooldown, timerParameters = timerParameters) {
+trait ComposedAbility extends Ability {
 
   implicit def toComposedAbility(ability: Ability): ComposedAbility = ability.asInstanceOf[ComposedAbility]
+
+  val components: List[AbilityComponent]
+  val lastComponentFinishTime: Float
 
   protected val numOfComponents: Int = -1
 
@@ -33,11 +26,13 @@ class ComposedAbility protected (
         val ability: ComposedAbility = if (channelTimer.time > channelTime) {
           activeTimer.restart()
 
-          makeComposedAbilityCopy(state = AbilityState.Active, onCooldown = true)
+          this
+            .setState(state = AbilityState.Active)
+            .setOnCooldown(onCooldown = true)
             .onActiveStart()
 
         } else
-          makeComposedAbilityCopy()
+          this
 
         ability
           .onUpdateChanneling()
@@ -46,23 +41,21 @@ class ComposedAbility protected (
         //stop when all components are stopped
         val ability =
           if (activeTimer.time > lastComponentFinishTime)
-            makeComposedAbilityCopy(
-              state = AbilityState.Inactive,
-              components = components
-            ) // TODO: refactor so it knows which implementation to take without copying components
+            this
+              .setState(state = AbilityState.Inactive)
               .onStop()
           else
-            makeComposedAbilityCopy()
+            this
 
         ability
           .onUpdateActive()
 
       case Inactive if onCooldown =>
         if (activeTimer.time > cooldownTime) {
-          makeComposedAbilityCopy(onCooldown = false)
+          setOnCooldown(onCooldown = false)
         } else
-          makeComposedAbilityCopy()
-      case _ => makeComposedAbilityCopy()
+          this
+      case _ => this
     }
     res
   }
@@ -75,7 +68,7 @@ class ComposedAbility protected (
       }
     }
 
-    makeComposedAbilityCopy()
+    this
   }
 
   override def onUpdateActive(): ComposedAbility = {
@@ -91,7 +84,7 @@ class ComposedAbility protected (
       component.onUpdateActive()
     }
 
-    makeComposedAbilityCopy()
+    this
   }
 
   override def onChannellingStart(): ComposedAbility = {
@@ -104,32 +97,14 @@ class ComposedAbility protected (
     // TODO: remove side effect
     creature.activateEffect("immobilized", lastComponentFinishTime)
 
-    makeComposedAbilityCopy(components = components.toList, lastComponentFinishTime = lastComponentFinishTime)
+    this
+      .setComponents(components = components.toList)
+      .setLastComponentFinishTime(lastComponentFinishTime = lastComponentFinishTime)
   }
 
   def createComponent(index: Int): AbilityComponent = ???
 
-  private def makeComposedAbilityCopy(
-    creature: Creature = creature,
-    state: AbilityState = state,
-    onCooldown: Boolean = onCooldown,
-    timerParameters: TimerParameters = timerParameters,
-    components: List[AbilityComponent] = components,
-    lastComponentFinishTime: Float = lastComponentFinishTime
-  ): ComposedAbility = {
-    ComposedAbility(creature, state, onCooldown, timerParameters, components, lastComponentFinishTime)
-  }
+  def setComponents(components: List[AbilityComponent]): ComposedAbility
+  def setLastComponentFinishTime(lastComponentFinishTime: Float): ComposedAbility
 
-}
-
-object ComposedAbility {
-  def apply(
-    creature: Creature,
-    state: AbilityState,
-    onCooldown: Boolean,
-    timerParameters: TimerParameters,
-    components: List[AbilityComponent],
-    lastComponentFinishTime: Float
-  ): ComposedAbility =
-    new ComposedAbility(creature, state, onCooldown, timerParameters, components, lastComponentFinishTime)
 }

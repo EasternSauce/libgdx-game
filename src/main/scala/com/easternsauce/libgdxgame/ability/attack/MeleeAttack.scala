@@ -3,28 +3,17 @@ package com.easternsauce.libgdxgame.ability.attack
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.math.{Polygon, Rectangle, Vector2}
 import com.badlogic.gdx.physics.box2d.Body
-import com.easternsauce.libgdxgame.ability.misc.AbilityState.AbilityState
 import com.easternsauce.libgdxgame.ability.misc._
-import com.easternsauce.libgdxgame.ability.parameters.TimerParameters
 import com.easternsauce.libgdxgame.creature.Creature
 import com.easternsauce.libgdxgame.system.{Constants, GameSystem}
 import com.easternsauce.libgdxgame.util.{EsBatch, EsPolygon}
 
-class MeleeAttack protected (
-  override val creature: Creature,
-  override val state: AbilityState,
-  override val onCooldown: Boolean,
-  override val timerParameters: TimerParameters,
-  val body: Option[Body],
-  val hitbox: Option[AttackHitbox],
-  val toRemoveBody: Boolean,
-  val bodyActive: Boolean
-) extends Ability(creature = creature, state = state, onCooldown = onCooldown, timerParameters = timerParameters)
-    with PhysicalHitbox
-    with ActiveAnimation
-    with WindupAnimation {
+trait MeleeAttack extends Ability with PhysicalHitbox with ActiveAnimation with WindupAnimation {
 
-  //implicit def toMeleeAttack(ability: Ability): MeleeAttack = ability.asInstanceOf[MeleeAttack]
+  val body: Option[Body]
+  val hitbox: Option[AttackHitbox]
+  val toRemoveBody: Boolean
+  val bodyActive: Boolean
 
   val attackRange: Float = -1f
 
@@ -88,11 +77,13 @@ class MeleeAttack protected (
 
     val ability = if (creature.area.nonEmpty) {
       val body = initBody(creature.area.get.world, hitbox.get)
-      makeMeleeAttackCopy(body = Some(body))
-    } else makeMeleeAttackCopy()
+      setBody(body = Some(body))
+    } else this
 
     ability
-      .makeMeleeAttackCopy(hitbox = hitbox, toRemoveBody = false, bodyActive = true)
+      .setHitbox(hitbox = hitbox)
+      .setToRemoveBody(toRemoveBody = false)
+      .setBodyActive(bodyActive = true)
 
   }
 
@@ -121,7 +112,7 @@ class MeleeAttack protected (
     if (state == AbilityState.Channeling) renderFrame(currentWindupAnimationFrame)
     if (state == AbilityState.Active) renderFrame(currentActiveAnimationFrame)
 
-    makeMeleeAttackCopy()
+    this
 
   }
 
@@ -157,18 +148,17 @@ class MeleeAttack protected (
 
     val hitbox = Some(AttackHitbox(attackRectX, attackRectY, poly))
 
-    ability.makeMeleeAttackCopy(hitbox = hitbox)
+    ability.setHitbox(hitbox = hitbox)
   }
 
   override def update(): MeleeAttack = {
-    println("before casting, ability is of class: " + super.update().getClass)
 
     val ability: MeleeAttack = super.update().asInstanceOf[MeleeAttack] // TODO: zzzz
 
     if (body.nonEmpty && toRemoveBody) {
       body.get.getWorld.destroyBody(body.get)
 
-      ability.makeMeleeAttackCopy(toRemoveBody = false, bodyActive = false)
+      ability.setToRemoveBody(toRemoveBody = false).setBodyActive(bodyActive = false)
     } else
       ability
 
@@ -196,9 +186,9 @@ class MeleeAttack protected (
         body.get.setTransform(hitbox.get.x, hitbox.get.y, 0f)
       }
 
-      makeMeleeAttackCopy(hitbox = newHitbox)
+      setHitbox(hitbox = newHitbox)
     } else
-      makeMeleeAttackCopy()
+      this
 
   }
 
@@ -208,9 +198,9 @@ class MeleeAttack protected (
     // IMPORTANT: ability has to be active
     // if we remove during channeling we could remove it before body is created, causing BOX2D crash
     if (state == AbilityState.Active)
-      makeMeleeAttackCopy(toRemoveBody = true)
+      setToRemoveBody(toRemoveBody = true)
     else
-      makeMeleeAttackCopy()
+      this
   }
 
   override def onCollideWithCreature(otherCreature: Creature): MeleeAttack = {
@@ -235,35 +225,17 @@ class MeleeAttack protected (
       }
     }
 
-    makeMeleeAttackCopy()
+    this
   }
 
-  private def makeMeleeAttackCopy(
-    creature: Creature = creature,
-    state: AbilityState = state,
-    onCooldown: Boolean = onCooldown,
-    timerParameters: TimerParameters = timerParameters,
-    body: Option[Body] = body,
-    hitbox: Option[AttackHitbox] = hitbox,
-    toRemoveBody: Boolean = toRemoveBody,
-    bodyActive: Boolean = bodyActive
-  ): MeleeAttack = {
-    MeleeAttack(creature, state, onCooldown, timerParameters, body, hitbox, toRemoveBody, bodyActive)
-  }
-}
+  def setToRemoveBody(toRemoveBody: Boolean): MeleeAttack
 
-object MeleeAttack {
-  def apply(
-    creature: Creature,
-    state: AbilityState,
-    onCooldown: Boolean,
-    timerParameters: TimerParameters,
-    body: Option[Body],
-    hitbox: Option[AttackHitbox],
-    toRemoveBody: Boolean,
-    bodyActive: Boolean
-  ): MeleeAttack =
-    new MeleeAttack(creature, state, onCooldown, timerParameters, body, hitbox, toRemoveBody, bodyActive)
+  def setBody(body: Option[Body]): MeleeAttack
+
+  def setHitbox(hitbox: Option[AttackHitbox]): MeleeAttack
+
+  def setBodyActive(bodyActive: Boolean): MeleeAttack
+
 }
 
 case class AttackHitbox private (x: Float, y: Float, polygon: Polygon)
