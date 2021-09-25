@@ -166,9 +166,7 @@ class PlayScreen() extends Screen {
         // TODO: temp workaround
         val currentAttack = player.abilityMap(player.currentAttack.id)
 
-        val updatedInstance = currentAttack.applyParams(params)
-
-        player.abilityMap.update(currentAttack.id, updatedInstance)
+        player.abilityMap.update(currentAttack.id, currentAttack.update())
 
       }
     }
@@ -205,9 +203,8 @@ class PlayScreen() extends Screen {
       val params = dash.perform()
 
       // TODO: temp workaround
-      val updatedInstance = dash.applyParams(params)
 
-      player.abilityMap.update(dash.id, updatedInstance)
+      player.abilityMap.update(dash.id, dash.update())
     }
 
     handlePlayerMovement()

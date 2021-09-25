@@ -2,27 +2,35 @@ package com.easternsauce.libgdxgame.ability.composed
 
 import com.easternsauce.libgdxgame.ability.composed.components.{AbilityComponent, Meteor}
 import com.easternsauce.libgdxgame.ability.misc.AbilityState.{AbilityState, Inactive}
-import com.easternsauce.libgdxgame.ability.parameters.{AbilityParameters, SoundParameters, TimerParameters}
+import com.easternsauce.libgdxgame.ability.parameters.{SoundParameters, TimerParameters}
 import com.easternsauce.libgdxgame.creature.Creature
 import com.easternsauce.libgdxgame.system.GameSystem
 
 case class MeteorRainAbility private (
-  creature: Creature,
-  state: AbilityState = Inactive,
-  onCooldown: Boolean = false,
-  soundParameters: SoundParameters = SoundParameters(),
-  timerParameters: TimerParameters = TimerParameters(),
-  components: List[AbilityComponent] = List(),
-  lastComponentFinishTime: Float = 0f
-) extends ComposedAbility {
-  val id = "meteor_rain"
+  override val creature: Creature,
+  override val state: AbilityState = Inactive,
+  override val onCooldown: Boolean = false,
+  override val timerParameters: TimerParameters = TimerParameters(),
+  override val soundParameters: SoundParameters = SoundParameters(),
+  override val components: List[AbilityComponent] = List(),
+  override val lastComponentFinishTime: Float = 0f
+) extends ComposedAbility(
+      creature = creature,
+      state = state,
+      onCooldown = onCooldown,
+      timerParameters = timerParameters,
+      components = components,
+      lastComponentFinishTime = lastComponentFinishTime
+    ) {
+  override val id = "meteor_rain"
+
   override protected lazy val channelTime: Float = 0.05f
   override protected val cooldownTime = 35f
   protected val explosionRange: Float = 9.375f
 
-  override protected def onActiveStart(): AbilityParameters = {
+  override def onActiveStart(): MeteorRainAbility = {
     creature.takeStaminaDamage(25f)
-    AbilityParameters()
+    copy()
   }
 
   override def createComponent(index: Int): AbilityComponent = {
@@ -38,31 +46,4 @@ case class MeteorRainAbility private (
     )
   }
 
-  override def applyParams(params: AbilityParameters): MeteorRainAbility = {
-    copy(
-      creature = params.creature.getOrElse(creature),
-      state = params.state.getOrElse(state),
-      onCooldown = params.onCooldown.getOrElse(onCooldown),
-      soundParameters = params.soundParameters.getOrElse(soundParameters),
-      timerParameters = params.timerParameters.getOrElse(timerParameters),
-      lastComponentFinishTime = params.lastComponentFinishTime.getOrElse(lastComponentFinishTime),
-      components = params.components.getOrElse(components)
-    )
-  }
-
-  override def updateHitbox(): AbilityParameters = {
-    AbilityParameters()
-  }
-
-  override protected def onUpdateChanneling(): AbilityParameters = {
-    AbilityParameters()
-  }
-
-  override protected def onStop(): AbilityParameters = {
-    AbilityParameters()
-  }
-
-  override def onCollideWithCreature(creature: Creature): AbilityParameters = {
-    AbilityParameters()
-  }
 }

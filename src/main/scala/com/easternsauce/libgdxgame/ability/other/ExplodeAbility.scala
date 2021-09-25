@@ -4,22 +4,22 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.physics.box2d._
 import com.easternsauce.libgdxgame.ability.misc.AbilityState.{AbilityState, Inactive}
 import com.easternsauce.libgdxgame.ability.misc.{Ability, AbilityState, ActiveAnimation}
-import com.easternsauce.libgdxgame.ability.parameters.{AbilityParameters, SoundParameters, TimerParameters}
+import com.easternsauce.libgdxgame.ability.parameters.{SoundParameters, TimerParameters}
 import com.easternsauce.libgdxgame.creature.Creature
 import com.easternsauce.libgdxgame.system.Assets
 import com.easternsauce.libgdxgame.util.EsBatch
 
 case class ExplodeAbility private (
-  creature: Creature,
-  state: AbilityState = Inactive,
-  onCooldown: Boolean = false,
-  soundParameters: SoundParameters = SoundParameters(),
-  timerParameters: TimerParameters = TimerParameters(),
-  b2Body: Option[Body] = None,
+  override val creature: Creature,
+  override val state: AbilityState = Inactive,
+  override val onCooldown: Boolean = false,
+  override val timerParameters: TimerParameters = TimerParameters(),
+  override val soundParameters: SoundParameters = SoundParameters(),
+  body: Option[Body] = None,
   bodyCreated: Boolean = false
-) extends Ability
+) extends Ability(creature = creature, state = state, onCooldown = onCooldown, timerParameters = timerParameters)
     with ActiveAnimation {
-  val id: String = "explode"
+  override val id: String = "explode"
   override protected val cooldownTime: Float = 0.8f
 
   protected val explosionRange: Float = 10f
@@ -42,7 +42,7 @@ case class ExplodeAbility private (
     frameDuration = activeTime / numOfFrames
   )
 
-  override protected def onActiveStart(): AbilityParameters = {
+  override def onActiveStart(): ExplodeAbility = {
     super.onActiveStart()
 
     timerParameters.abilityActiveAnimationTimer.restart()
@@ -55,16 +55,16 @@ case class ExplodeAbility private (
     initBody(creature.pos.x, creature.pos.y)
   }
 
-  override protected def onUpdateActive(): AbilityParameters = {
+  override def onUpdateActive(): ExplodeAbility = {
     val activeTimer = timerParameters.activeTimer
 
     if (bodyCreated && activeTimer.time > 0.1f) {
       destroyBody(creature.area.get.world)
     } else
-      AbilityParameters()
+      copy()
   }
 
-  override def render(batch: EsBatch): AbilityParameters = {
+  override def render(batch: EsBatch): ExplodeAbility = {
     def renderFrame(image: TextureRegion): Unit = {
 
       val scale = explosionRange * 2 / image.getRegionWidth
@@ -92,10 +92,10 @@ case class ExplodeAbility private (
       renderFrame(currentActiveAnimationFrame)
     }
 
-    AbilityParameters()
+    copy()
   }
 
-  def initBody(x: Float, y: Float): AbilityParameters = {
+  def initBody(x: Float, y: Float): ExplodeAbility = {
     // TODO: side effects
 
     val bodyDef = new BodyDef()
@@ -112,49 +112,25 @@ case class ExplodeAbility private (
     fixtureDef.isSensor = true
     b2Body.createFixture(fixtureDef)
 
-    AbilityParameters(b2Body = Some(Some(b2Body)), bodyCreated = Some(true))
+    copy(body = Some(b2Body), bodyCreated = true)
   }
 
-  def destroyBody(world: World): AbilityParameters = {
+  def destroyBody(world: World): ExplodeAbility = {
     if (bodyCreated) {
       // TODO: sideeffect?
-      if (b2Body.nonEmpty) world.destroyBody(b2Body.get)
-      AbilityParameters(bodyCreated = Some(false))
+      if (body.nonEmpty) world.destroyBody(body.get)
+      copy(bodyCreated = false) // TODO: change to bodyDestroyed = true?
     } else
-      AbilityParameters()
+      copy()
   }
 
-  override def onCollideWithCreature(otherCreature: Creature): AbilityParameters = {
+  override def onCollideWithCreature(otherCreature: Creature): ExplodeAbility = {
     // TODO: side effect
     if (!(creature.isEnemy && otherCreature.isEnemy) && otherCreature.isAlive) { // mob can't hurt a mob?
       if (!otherCreature.isImmune) otherCreature.takeLifeDamage(700f, immunityFrames = true, Some(creature), 0, 0, 0)
     }
 
-    AbilityParameters()
-  }
-
-  override def applyParams(params: AbilityParameters): ExplodeAbility = {
-    copy(
-      creature = params.creature.getOrElse(creature),
-      state = params.state.getOrElse(state),
-      onCooldown = params.onCooldown.getOrElse(onCooldown),
-      soundParameters = params.soundParameters.getOrElse(soundParameters),
-      timerParameters = params.timerParameters.getOrElse(timerParameters),
-      b2Body = params.b2Body.getOrElse(b2Body),
-      bodyCreated = params.bodyCreated.getOrElse(bodyCreated)
-    )
-  }
-
-  override def updateHitbox(): AbilityParameters = {
-    AbilityParameters()
-  }
-
-  override protected def onUpdateChanneling(): AbilityParameters = {
-    AbilityParameters()
-  }
-
-  override protected def onStop(): AbilityParameters = {
-    AbilityParameters()
+    copy()
   }
 
 }

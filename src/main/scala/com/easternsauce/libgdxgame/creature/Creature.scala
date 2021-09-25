@@ -106,10 +106,8 @@ abstract class Creature
 
     updateEffects()
 
-    val params = for (ability <- abilityMap.values) yield (ability, ability.update())
-
-    for ((ability, params) <- params) {
-      abilityMap.update(ability.id, ability.applyParams(params))
+    for ((id, ability) <- abilityMap) {
+      abilityMap.update(id, ability.update())
     }
 
     //currentAttack.update()

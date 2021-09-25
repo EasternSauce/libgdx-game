@@ -2,20 +2,23 @@ package com.easternsauce.libgdxgame.ability.misc
 
 import com.badlogic.gdx.audio.Sound
 import com.easternsauce.libgdxgame.ability.misc.AbilityState.AbilityState
-import com.easternsauce.libgdxgame.ability.parameters.{AbilityParameters, SoundParameters, TimerParameters}
+import com.easternsauce.libgdxgame.ability.parameters.{SoundParameters, TimerParameters}
 import com.easternsauce.libgdxgame.creature.Creature
 import com.easternsauce.libgdxgame.util.EsBatch
 
-trait Ability {
-  val id: String
-
-  val creature: Creature
-  val state: AbilityState
-  val onCooldown: Boolean
-  val soundParameters: SoundParameters
+class Ability protected (
+  val creature: Creature,
+  val state: AbilityState,
+  val onCooldown: Boolean,
   val timerParameters: TimerParameters
+) {
+
+  val id: String = "INCORRECT_ID"
+
+  val soundParameters: SoundParameters = SoundParameters()
 
   protected val isStoppable: Boolean = true
+
   protected val cooldownTime: Float = 0f
   protected lazy val activeTime: Float = 0f
   protected lazy val channelTime: Float = 0f
@@ -24,36 +27,37 @@ trait Ability {
   val channelSound: Option[Sound] = None
   val channelSoundVolume: Option[Float] = None
 
-  def updateHitbox(): AbilityParameters
+  def updateHitbox(): Ability = makeAbilityCopy()
 
-  protected def onActiveStart(): AbilityParameters = {
+  def onActiveStart(): Ability = {
     // TODO: remove side effect
     val activeSound = soundParameters.activeSound
     val activeSoundVolume = soundParameters.activeSoundVolume
     if (activeSound.nonEmpty) activeSound.get.play(activeSoundVolume.get)
 
-    AbilityParameters()
+    makeAbilityCopy()
   }
 
-  protected def onUpdateActive(): AbilityParameters
+  def onUpdateActive(): Ability = makeAbilityCopy()
 
-  protected def onUpdateChanneling(): AbilityParameters
+  def onUpdateChanneling(): Ability = makeAbilityCopy()
 
-  def render(esBatch: EsBatch): AbilityParameters
+  def render(esBatch: EsBatch): Ability = makeAbilityCopy()
 
-  def forceStop(): AbilityParameters = {
+  def forceStop(): Ability = {
 
     if (isStoppable && state != AbilityState.Inactive) {
-      onStop().copy(state = Some(AbilityState.Inactive))
+      onStop()
+        .makeAbilityCopy(state = AbilityState.Inactive)
     } else {
-      AbilityParameters()
+      makeAbilityCopy()
     }
 
   }
 
-  protected def onStop(): AbilityParameters
+  def onStop(): Ability = makeAbilityCopy()
 
-  def perform(): AbilityParameters = {
+  def perform(): Ability = {
     val channelTimer = timerParameters.channelTimer
 
     if (creature.staminaPoints > 0 && state == AbilityState.Inactive && !onCooldown && !creature.abilityActive) {
@@ -65,63 +69,83 @@ trait Ability {
       // + 0.01 to ensure regen doesn't start if we hold attack button
       creature.activateEffect("staminaRegenerationStopped", if (isAttack) channelTime + cooldownTime + 0.01f else 1f)
 
-      onChannellingStart().copy(state = Some(AbilityState.Channeling))
+      onChannellingStart()
+        .makeAbilityCopy(state = AbilityState.Channeling)
     } else
-      AbilityParameters()
+      makeAbilityCopy()
   }
 
-  def update(): AbilityParameters = {
+  def update(): Ability = {
     val channelTimer = timerParameters.channelTimer
     val activeTimer = timerParameters.activeTimer
 
     import AbilityState._
     state match {
       case Channeling =>
-        val params = if (channelTimer.time > channelTime) {
+        val ability: Ability = if (channelTimer.time > channelTime) {
           activeTimer.restart()
-          onActiveStart().copy(state = Some(AbilityState.Active), onCooldown = Some(true))
-        } else
-          AbilityParameters()
 
-        params
-          .add(updateHitbox())
-          .add(onUpdateChanneling())
+          onActiveStart()
+            .makeAbilityCopy(state = AbilityState.Active, onCooldown = true)
+        } else
+          makeAbilityCopy()
+
+        ability
+          .updateHitbox()
+          .onUpdateChanneling()
 
       case Active =>
-        val params = if (activeTimer.time > activeTime) {
-          AbilityParameters(state = Some(AbilityState.Inactive))
-            .add(onStop())
+        val ability: Ability = if (activeTimer.time > activeTime) {
+          makeAbilityCopy(state = AbilityState.Inactive)
+            .onStop()
         } else
-          AbilityParameters()
+          makeAbilityCopy()
 
-        params
-          .add(updateHitbox())
-          .add(onUpdateActive())
+        ability
+          .updateHitbox()
+          .onUpdateActive()
 
       case Inactive =>
         if (onCooldown && activeTimer.time > cooldownTime) {
-          AbilityParameters(onCooldown = Some(false))
+          makeAbilityCopy(onCooldown = false)
         } else
-          AbilityParameters()
+          makeAbilityCopy()
 
-      case _ => AbilityParameters()
+      case _ => makeAbilityCopy()
     }
+
   }
 
-  def onChannellingStart(): AbilityParameters = {
+  def onChannellingStart(): Ability = {
     if (channelSound.nonEmpty) {
       // TODO: remove side effect
       channelSound.get.play(channelSoundVolume.get)
     }
 
-    AbilityParameters()
+    makeAbilityCopy()
   }
+
+  def onCollideWithCreature(creature: Creature): Ability = makeAbilityCopy()
 
   def active: Boolean = state == AbilityState.Active
 
-  def onCollideWithCreature(creature: Creature): AbilityParameters
-
   def asMapEntry: (String, Ability) = id -> this
 
-  def applyParams(params: AbilityParameters): Ability
+  private def makeAbilityCopy(
+    creature: Creature = creature,
+    state: AbilityState = state,
+    onCooldown: Boolean = onCooldown,
+    timerParameters: TimerParameters = timerParameters
+  ): Ability = {
+    Ability(creature, state, onCooldown, timerParameters)
+  }
+
+}
+
+object Ability {
+  def apply(creature: Creature, state: AbilityState, onCooldown: Boolean, timerParameters: TimerParameters): Ability = {
+    println("creating ability")
+
+    new Ability(creature, state, onCooldown, timerParameters)
+  }
 }

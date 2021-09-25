@@ -2,32 +2,39 @@ package com.easternsauce.libgdxgame.ability.composed
 
 import com.easternsauce.libgdxgame.ability.composed.components.{AbilityComponent, Fist}
 import com.easternsauce.libgdxgame.ability.misc.AbilityState.{AbilityState, Inactive}
-import com.easternsauce.libgdxgame.ability.parameters.{AbilityParameters, SoundParameters, TimerParameters}
+import com.easternsauce.libgdxgame.ability.parameters.{SoundParameters, TimerParameters}
 import com.easternsauce.libgdxgame.creature.{Creature, Enemy}
 import com.easternsauce.libgdxgame.system.GameSystem
 
 case class FistSlamAbility private (
-  creature: Creature,
-  state: AbilityState = Inactive,
-  onCooldown: Boolean = false,
-  soundParameters: SoundParameters = SoundParameters(),
-  timerParameters: TimerParameters = TimerParameters(),
-  components: List[AbilityComponent] = List(),
-  lastComponentFinishTime: Float = 0f
-) extends ComposedAbility {
-  val id: String = "fist_slam"
+  override val creature: Creature,
+  override val state: AbilityState = Inactive,
+  override val onCooldown: Boolean = false,
+  override val timerParameters: TimerParameters = TimerParameters(),
+  override val soundParameters: SoundParameters = SoundParameters(),
+  override val components: List[AbilityComponent] = List(),
+  override val lastComponentFinishTime: Float = 0f
+) extends ComposedAbility(
+      creature = creature,
+      state = state,
+      onCooldown = onCooldown,
+      timerParameters = timerParameters,
+      components = components,
+      lastComponentFinishTime = lastComponentFinishTime
+    ) {
+  override val id: String = "fist_slam"
 
   override protected val cooldownTime: Float = 10f
   override protected lazy val channelTime: Float = 0.15f
 
   override protected val numOfComponents = 20
 
-  override protected def onActiveStart(): AbilityParameters = {
+  override def onActiveStart(): FistSlamAbility = {
 
     // TODO: sideeffect
     creature.takeStaminaDamage(25f)
 
-    AbilityParameters()
+    copy()
   }
 
   override def createComponent(index: Int): AbilityComponent = {
@@ -43,31 +50,4 @@ case class FistSlamAbility private (
     )
   }
 
-  override def applyParams(params: AbilityParameters): FistSlamAbility = {
-    copy(
-      creature = params.creature.getOrElse(creature),
-      state = params.state.getOrElse(state),
-      onCooldown = params.onCooldown.getOrElse(onCooldown),
-      soundParameters = params.soundParameters.getOrElse(soundParameters),
-      timerParameters = params.timerParameters.getOrElse(timerParameters),
-      lastComponentFinishTime = params.lastComponentFinishTime.getOrElse(lastComponentFinishTime),
-      components = params.components.getOrElse(components)
-    )
-  }
-
-  override def updateHitbox(): AbilityParameters = {
-    AbilityParameters()
-  }
-
-  override protected def onUpdateChanneling(): AbilityParameters = {
-    AbilityParameters()
-  }
-
-  override protected def onStop(): AbilityParameters = {
-    AbilityParameters()
-  }
-
-  override def onCollideWithCreature(creature: Creature): AbilityParameters = {
-    AbilityParameters()
-  }
 }

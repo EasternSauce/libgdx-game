@@ -1,63 +1,73 @@
 package com.easternsauce.libgdxgame.ability.composed
 
 import com.easternsauce.libgdxgame.ability.composed.components.AbilityComponent
+import com.easternsauce.libgdxgame.ability.misc.AbilityState.AbilityState
 import com.easternsauce.libgdxgame.ability.misc.{Ability, AbilityState}
-import com.easternsauce.libgdxgame.ability.parameters.AbilityParameters
+import com.easternsauce.libgdxgame.ability.parameters.TimerParameters
+import com.easternsauce.libgdxgame.creature.Creature
 import com.easternsauce.libgdxgame.util.EsBatch
 
-trait ComposedAbility extends Ability {
-  val components: List[AbilityComponent]
+class ComposedAbility protected (
+  override val creature: Creature,
+  override val state: AbilityState,
+  override val onCooldown: Boolean,
+  override val timerParameters: TimerParameters,
+  val components: List[AbilityComponent],
   val lastComponentFinishTime: Float
+) extends Ability(creature = creature, state = state, onCooldown = onCooldown, timerParameters = timerParameters) {
 
-  protected val numOfComponents = 0
+  implicit def toComposedAbility(ability: Ability): ComposedAbility = ability.asInstanceOf[ComposedAbility]
+
+  protected val numOfComponents: Int = -1
 
   override protected lazy val activeTime: Float = 0
 
-  override def update(): AbilityParameters = {
+  override def update(): ComposedAbility = {
     val channelTimer = timerParameters.channelTimer
     val activeTimer = timerParameters.activeTimer
 
     import AbilityState._
 
-    state match {
+    val res: ComposedAbility = state match {
       case Channeling =>
-        val params = if (channelTimer.time > channelTime) {
+        val ability: ComposedAbility = if (channelTimer.time > channelTime) {
           activeTimer.restart()
 
-          AbilityParameters(state = Some(AbilityState.Active), onCooldown = Some(true))
-            .add(onActiveStart())
+          makeComposedAbilityCopy(state = AbilityState.Active, onCooldown = true)
+            .onActiveStart()
 
         } else
-          AbilityParameters()
+          makeComposedAbilityCopy()
 
-        params
-          .add(updateHitbox())
-          .add(onUpdateChanneling())
+        ability
+          .onUpdateChanneling()
 
       case Active =>
-        // stop when all components are stopped
-        val params =
+        //stop when all components are stopped
+        val ability =
           if (activeTimer.time > lastComponentFinishTime)
-            AbilityParameters(state = Some(AbilityState.Inactive))
-              .add(onStop())
+            makeComposedAbilityCopy(
+              state = AbilityState.Inactive,
+              components = components
+            ) // TODO: refactor so it knows which implementation to take without copying components
+              .onStop()
           else
-            AbilityParameters()
+            makeComposedAbilityCopy()
 
-        params
-          .add(updateHitbox())
-          .add(onUpdateActive())
+        ability
+          .onUpdateActive()
 
       case Inactive if onCooldown =>
         if (activeTimer.time > cooldownTime) {
-          AbilityParameters(onCooldown = Some(false))
+          makeComposedAbilityCopy(onCooldown = false)
         } else
-          AbilityParameters()
-      case _ => AbilityParameters()
+          makeComposedAbilityCopy()
+      case _ => makeComposedAbilityCopy()
     }
-
+    res
   }
 
-  override def render(batch: EsBatch): AbilityParameters = {
+  override def render(batch: EsBatch): ComposedAbility = {
     if (state == AbilityState.Active) {
       // TODO: remove sideeffect
       for (component <- components) {
@@ -65,10 +75,10 @@ trait ComposedAbility extends Ability {
       }
     }
 
-    AbilityParameters()
+    makeComposedAbilityCopy()
   }
 
-  override protected def onUpdateActive(): AbilityParameters = {
+  override def onUpdateActive(): ComposedAbility = {
     val activeTimer = timerParameters.activeTimer
 
     // TODO: remove sideeffect
@@ -81,10 +91,10 @@ trait ComposedAbility extends Ability {
       component.onUpdateActive()
     }
 
-    AbilityParameters()
+    makeComposedAbilityCopy()
   }
 
-  override def onChannellingStart(): AbilityParameters = {
+  override def onChannellingStart(): ComposedAbility = {
 
     val components = for (i <- 0 until numOfComponents) yield createComponent(i)
 
@@ -94,9 +104,32 @@ trait ComposedAbility extends Ability {
     // TODO: remove side effect
     creature.activateEffect("immobilized", lastComponentFinishTime)
 
-    AbilityParameters(components = Some(components.toList), lastComponentFinishTime = Some(lastComponentFinishTime))
+    makeComposedAbilityCopy(components = components.toList, lastComponentFinishTime = lastComponentFinishTime)
   }
 
-  def createComponent(index: Int): AbilityComponent
+  def createComponent(index: Int): AbilityComponent = ???
 
+  private def makeComposedAbilityCopy(
+    creature: Creature = creature,
+    state: AbilityState = state,
+    onCooldown: Boolean = onCooldown,
+    timerParameters: TimerParameters = timerParameters,
+    components: List[AbilityComponent] = components,
+    lastComponentFinishTime: Float = lastComponentFinishTime
+  ): ComposedAbility = {
+    ComposedAbility(creature, state, onCooldown, timerParameters, components, lastComponentFinishTime)
+  }
+
+}
+
+object ComposedAbility {
+  def apply(
+    creature: Creature,
+    state: AbilityState,
+    onCooldown: Boolean,
+    timerParameters: TimerParameters,
+    components: List[AbilityComponent],
+    lastComponentFinishTime: Float
+  ): ComposedAbility =
+    new ComposedAbility(creature, state, onCooldown, timerParameters, components, lastComponentFinishTime)
 }

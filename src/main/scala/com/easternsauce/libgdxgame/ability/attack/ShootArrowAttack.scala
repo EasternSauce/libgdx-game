@@ -4,24 +4,22 @@ import com.badlogic.gdx.maps.tiled.TiledMap
 import com.badlogic.gdx.math.Vector2
 import com.easternsauce.libgdxgame.ability.misc.AbilityState.AbilityState
 import com.easternsauce.libgdxgame.ability.misc.{Ability, AbilityState}
-import com.easternsauce.libgdxgame.ability.parameters.{AbilityParameters, SoundParameters, TimerParameters}
+import com.easternsauce.libgdxgame.ability.parameters.TimerParameters
 import com.easternsauce.libgdxgame.creature.Creature
 import com.easternsauce.libgdxgame.projectile.Arrow
 import com.easternsauce.libgdxgame.system.Assets
-import com.easternsauce.libgdxgame.util.EsBatch
 
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
 
 case class ShootArrowAttack private (
-  creature: Creature,
-  state: AbilityState = AbilityState.Inactive,
-  onCooldown: Boolean = false,
-  soundParameters: SoundParameters = SoundParameters(),
-  timerParameters: TimerParameters = TimerParameters()
-) extends Ability {
+  override val creature: Creature,
+  override val state: AbilityState = AbilityState.Inactive,
+  override val onCooldown: Boolean = false,
+  override val timerParameters: TimerParameters = TimerParameters()
+) extends Ability(creature = creature, state = state, onCooldown = onCooldown, timerParameters = timerParameters) {
 
-  val id: String = "shoot_arrow"
+  override val id: String = "shoot_arrow"
 
   override protected lazy val channelTime: Float = 0.85f
   override protected lazy val activeTime: Float = 0.1f
@@ -29,7 +27,7 @@ case class ShootArrowAttack private (
 
   override protected val isAttack = true
 
-  override def onChannellingStart(): AbilityParameters = {
+  override def onChannellingStart(): ShootArrowAttack = {
     super.onChannellingStart()
 
     // TODO: remove side effects
@@ -37,10 +35,10 @@ case class ShootArrowAttack private (
 
     Assets.sound(Assets.bowPullSound).play(0.1f)
 
-    AbilityParameters()
+    copy()
   }
 
-  override def onActiveStart(): AbilityParameters = {
+  override def onActiveStart(): ShootArrowAttack = {
     val result = super.onActiveStart()
 
     // TODO: remove side effects
@@ -73,41 +71,7 @@ case class ShootArrowAttack private (
 
     creature.takeStaminaDamage(20f)
 
-    AbilityParameters()
-  }
-
-  override def updateHitbox(): AbilityParameters = {
-    AbilityParameters()
-  }
-
-  override protected def onUpdateActive(): AbilityParameters = {
-    AbilityParameters()
-  }
-
-  override protected def onUpdateChanneling(): AbilityParameters = {
-    AbilityParameters()
-  }
-
-  override def render(esBatch: EsBatch): AbilityParameters = {
-    AbilityParameters()
-  }
-
-  override protected def onStop(): AbilityParameters = {
-    AbilityParameters()
-  }
-
-  override def onCollideWithCreature(creature: Creature): AbilityParameters = {
-    AbilityParameters()
-  }
-
-  override def applyParams(params: AbilityParameters): ShootArrowAttack = {
-    copy(
-      creature = params.creature.getOrElse(creature),
-      state = params.state.getOrElse(state),
-      onCooldown = params.onCooldown.getOrElse(onCooldown),
-      soundParameters = params.soundParameters.getOrElse(soundParameters),
-      timerParameters = params.timerParameters.getOrElse(timerParameters)
-    )
+    copy()
   }
 
 }
