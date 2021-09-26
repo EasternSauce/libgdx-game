@@ -161,12 +161,11 @@ class PlayScreen() extends Screen {
       ) {
         lootPickupMenu.pickUpItemClick()
       } else {
-        val params = player.currentAttack.perform()
 
         // TODO: temp workaround
         val currentAttack = player.abilityMap(player.currentAttack.id)
 
-        player.abilityMap.update(currentAttack.id, currentAttack.update())
+        player.abilityMap.update(currentAttack.id, currentAttack.perform())
 
       }
     }
@@ -200,11 +199,9 @@ class PlayScreen() extends Screen {
     if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
       val dash = player.abilityMap("dash")
 
-      val params = dash.perform()
-
       // TODO: temp workaround
 
-      player.abilityMap.update(dash.id, dash.update())
+      player.abilityMap.update(dash.id, dash.perform())
     }
 
     handlePlayerMovement()
