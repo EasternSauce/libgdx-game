@@ -2,7 +2,7 @@ package com.easternsauce.libgdxgame.ability.composed
 
 import com.easternsauce.libgdxgame.ability.composed.components.{AbilityComponent, Meteor}
 import com.easternsauce.libgdxgame.ability.misc.AbilityState.{AbilityState, Inactive}
-import com.easternsauce.libgdxgame.ability.parameters.{SoundParameters, TimerParameters}
+import com.easternsauce.libgdxgame.ability.parameters.{BodyParameters, SoundParameters, TimerParameters}
 import com.easternsauce.libgdxgame.creature.Creature
 import com.easternsauce.libgdxgame.system.GameSystem
 
@@ -15,6 +15,7 @@ case class MeteorRainAbility private (
   override val components: List[AbilityComponent] = List(),
   override val lastComponentFinishTime: Float = 0f
 ) extends ComposedAbility {
+
   override val id = "meteor_rain"
 
   override protected lazy val channelTime: Float = 0.05f
@@ -39,12 +40,21 @@ case class MeteorRainAbility private (
     )
   }
 
-  override def setComponents(components: List[AbilityComponent]): MeteorRainAbility = copy(components = components)
-
-  override def setLastComponentFinishTime(lastComponentFinishTime: Float): MeteorRainAbility =
-    copy(lastComponentFinishTime = lastComponentFinishTime)
-
-  override def setState(state: AbilityState): MeteorRainAbility = copy(state = state)
-
-  override def setOnCooldown(onCooldown: Boolean): MeteorRainAbility = copy(onCooldown = onCooldown)
+  override def makeCopy(
+    components: List[AbilityComponent] = components,
+    lastComponentFinishTime: Float = lastComponentFinishTime,
+    state: AbilityState = state,
+    onCooldown: Boolean = onCooldown,
+    soundParameters: SoundParameters = soundParameters,
+    timerParameters: TimerParameters = timerParameters,
+    bodyParameters: BodyParameters = bodyParameters
+  ): MeteorRainAbility =
+    copy(
+      components = components,
+      lastComponentFinishTime = lastComponentFinishTime,
+      state = state,
+      onCooldown = onCooldown,
+      soundParameters = soundParameters,
+      timerParameters = timerParameters
+    )
 }

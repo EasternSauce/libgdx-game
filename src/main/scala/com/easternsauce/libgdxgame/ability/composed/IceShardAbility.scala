@@ -3,7 +3,7 @@ package com.easternsauce.libgdxgame.ability.composed
 import com.badlogic.gdx.math.Vector2
 import com.easternsauce.libgdxgame.ability.composed.components.{AbilityComponent, IceShard}
 import com.easternsauce.libgdxgame.ability.misc.AbilityState.{AbilityState, Inactive}
-import com.easternsauce.libgdxgame.ability.parameters.{SoundParameters, TimerParameters}
+import com.easternsauce.libgdxgame.ability.parameters.{BodyParameters, SoundParameters, TimerParameters}
 import com.easternsauce.libgdxgame.creature.{Creature, Enemy}
 
 case class IceShardAbility private (
@@ -15,6 +15,7 @@ case class IceShardAbility private (
   override val components: List[AbilityComponent] = List(),
   override val lastComponentFinishTime: Float = 0f
 ) extends ComposedAbility {
+
   override val id = "ice_shard"
 
   override protected lazy val channelTime: Float = 0.05f
@@ -45,12 +46,21 @@ case class IceShardAbility private (
     )
   }
 
-  override def setComponents(components: List[AbilityComponent]): IceShardAbility = copy(components = components)
-
-  override def setLastComponentFinishTime(lastComponentFinishTime: Float): IceShardAbility =
-    copy(lastComponentFinishTime = lastComponentFinishTime)
-
-  override def setState(state: AbilityState): IceShardAbility = copy(state = state)
-
-  override def setOnCooldown(onCooldown: Boolean): IceShardAbility = copy(onCooldown = onCooldown)
+  override def makeCopy(
+    components: List[AbilityComponent] = components,
+    lastComponentFinishTime: Float = lastComponentFinishTime,
+    state: AbilityState = state,
+    onCooldown: Boolean = onCooldown,
+    soundParameters: SoundParameters = soundParameters,
+    timerParameters: TimerParameters = timerParameters,
+    bodyParameters: BodyParameters = bodyParameters
+  ): IceShardAbility =
+    copy(
+      components = components,
+      lastComponentFinishTime = lastComponentFinishTime,
+      state = state,
+      onCooldown = onCooldown,
+      soundParameters = soundParameters,
+      timerParameters = timerParameters
+    )
 }

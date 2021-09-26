@@ -1,9 +1,10 @@
 package com.easternsauce.libgdxgame.ability.other
 
 import com.badlogic.gdx.math.Vector2
+import com.easternsauce.libgdxgame.ability.composed.components.AbilityComponent
 import com.easternsauce.libgdxgame.ability.misc.Ability
 import com.easternsauce.libgdxgame.ability.misc.AbilityState.{AbilityState, Inactive}
-import com.easternsauce.libgdxgame.ability.parameters.{SoundParameters, TimerParameters}
+import com.easternsauce.libgdxgame.ability.parameters.{BodyParameters, SoundParameters, TimerParameters}
 import com.easternsauce.libgdxgame.creature.Creature
 
 case class DashAbility private (
@@ -14,6 +15,7 @@ case class DashAbility private (
   override val soundParameters: SoundParameters = SoundParameters(),
   dashVector: Vector2 = new Vector2(0f, 0f)
 ) extends Ability {
+
   override val id = "dash"
   override val cooldownTime: Float = 1.5f
   override lazy val activeTime: Float = 0.2f
@@ -40,8 +42,14 @@ case class DashAbility private (
     copy()
   }
 
-  override def setState(state: AbilityState): Ability = copy(state = state)
-
-  override def setOnCooldown(onCooldown: Boolean): Ability = copy(onCooldown = onCooldown)
-
+  override def makeCopy(
+    components: List[AbilityComponent] = components,
+    lastComponentFinishTime: Float = lastComponentFinishTime,
+    state: AbilityState = state,
+    onCooldown: Boolean = onCooldown,
+    soundParameters: SoundParameters = soundParameters,
+    timerParameters: TimerParameters = timerParameters,
+    bodyParameters: BodyParameters = bodyParameters
+  ): DashAbility =
+    copy(state = state, onCooldown = onCooldown, soundParameters = soundParameters, timerParameters = timerParameters)
 }

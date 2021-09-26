@@ -1,35 +1,32 @@
 package com.easternsauce.libgdxgame.ability.attack
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion
-import com.badlogic.gdx.math.{Polygon, Rectangle, Vector2}
-import com.badlogic.gdx.physics.box2d.Body
+import com.badlogic.gdx.math.{Rectangle, Vector2}
 import com.easternsauce.libgdxgame.ability.misc._
+import com.easternsauce.libgdxgame.ability.parameters.AttackHitbox
 import com.easternsauce.libgdxgame.creature.Creature
 import com.easternsauce.libgdxgame.system.{Constants, GameSystem}
 import com.easternsauce.libgdxgame.util.{EsBatch, EsPolygon}
 
 trait MeleeAttack extends Ability with PhysicalHitbox with ActiveAnimation with WindupAnimation {
 
-  val body: Option[Body]
-  val hitbox: Option[AttackHitbox]
-  val toRemoveBody: Boolean
-  val bodyActive: Boolean
+  implicit def toMeleeAttack(ability: Ability): MeleeAttack = ability.asInstanceOf[MeleeAttack]
 
-  val attackRange: Float = -1f
+  val attackRange: Float
 
   // IMPORTANT: do NOT use body after already destroyed (otherwise weird behavior occurs, because, for some reason,
   // the reference can STILL be attached to some other random body after destruction, like arrow bodies)
 
-  protected val aimed: Boolean = false
-  protected val spriteWidth: Int = -1
-  protected val spriteHeight: Int = -1
+  protected val aimed: Boolean
+  protected val spriteWidth: Int
+  protected val spriteHeight: Int
   protected def width: Float = spriteWidth.toFloat / Constants.PPM
   protected def height: Float = spriteHeight.toFloat / Constants.PPM
-  protected val knockbackVelocity: Float = -1f
+  protected val knockbackVelocity: Float
   override protected val isAttack = true
 
-  protected val baseChannelTime: Float = -1f
-  protected val baseActiveTime: Float = -1f
+  protected val baseChannelTime: Float
+  protected val baseActiveTime: Float
 
   override protected lazy val activeTime: Float = baseActiveTime
   override protected lazy val channelTime: Float = baseChannelTime / attackSpeed
@@ -43,7 +40,7 @@ trait MeleeAttack extends Ability with PhysicalHitbox with ActiveAnimation with 
     else 1.4f
 
   override def onActiveStart(): MeleeAttack = {
-    super.onActiveStart()
+    val ability = super.onActiveStart()
 
     // TODO: clean up sideeffects
 
@@ -75,16 +72,14 @@ trait MeleeAttack extends Ability with PhysicalHitbox with ActiveAnimation with 
 
     val hitbox = Some(AttackHitbox(attackRectX, attackRectY, poly))
 
-    val ability = if (creature.area.nonEmpty) {
-      val body = initBody(creature.area.get.world, hitbox.get)
-      setBody(body = Some(body))
-    } else this
+    val body = if (creature.area.nonEmpty) {
+      initBody(creature.area.get.world, bodyParameters.hitbox.get)
+    } else None
+
+    val newBodyParameters = bodyParameters.copy(body = body, toRemoveBody = false, bodyActive = true, hitbox = hitbox)
 
     ability
-      .setHitbox(hitbox = hitbox)
-      .setToRemoveBody(toRemoveBody = false)
-      .setBodyActive(bodyActive = true)
-
+      .makeCopy(bodyParameters = newBodyParameters)
   }
 
   override def render(batch: EsBatch): MeleeAttack = {
@@ -93,11 +88,11 @@ trait MeleeAttack extends Ability with PhysicalHitbox with ActiveAnimation with 
       val attackVector = creature.attackVector
       val theta = new Vector2(attackVector.x, attackVector.y).angleDeg()
 
-      if (hitbox.nonEmpty) {
+      if (bodyParameters.hitbox.nonEmpty) {
         batch.spriteBatch.draw(
           image,
-          hitbox.get.x,
-          hitbox.get.y - height / 2,
+          bodyParameters.hitbox.get.x,
+          bodyParameters.hitbox.get.y - height / 2,
           0,
           height / 2,
           width,
@@ -112,12 +107,11 @@ trait MeleeAttack extends Ability with PhysicalHitbox with ActiveAnimation with 
     if (state == AbilityState.Channeling) renderFrame(currentWindupAnimationFrame)
     if (state == AbilityState.Active) renderFrame(currentActiveAnimationFrame)
 
-    this
-
+    makeCopy()
   }
 
   override def onChannellingStart(): MeleeAttack = {
-    val ability: MeleeAttack = super.onChannellingStart().asInstanceOf[MeleeAttack] // TODO: zzzz
+    val ability: MeleeAttack = super.onChannellingStart()
 
     // TODO: sideeffects
 
@@ -148,24 +142,24 @@ trait MeleeAttack extends Ability with PhysicalHitbox with ActiveAnimation with 
 
     val hitbox = Some(AttackHitbox(attackRectX, attackRectY, poly))
 
-    ability.setHitbox(hitbox = hitbox)
+    ability.makeCopy(bodyParameters = bodyParameters.copy(hitbox = hitbox))
   }
 
   override def update(): MeleeAttack = {
 
-    val ability: MeleeAttack = super.update().asInstanceOf[MeleeAttack] // TODO: zzzz
+    val ability: MeleeAttack = super.update()
 
-    if (body.nonEmpty && toRemoveBody) {
-      body.get.getWorld.destroyBody(body.get)
+    if (bodyParameters.body.nonEmpty && bodyParameters.toRemoveBody) {
+      bodyParameters.body.get.getWorld.destroyBody(bodyParameters.body.get)
 
-      ability.setToRemoveBody(toRemoveBody = false).setBodyActive(bodyActive = false)
+      ability.makeCopy(bodyParameters = bodyParameters.copy(toRemoveBody = false, bodyActive = false))
     } else
       ability
 
   }
 
   override def updateHitbox(): MeleeAttack = {
-    if (hitbox.nonEmpty) {
+    if (bodyParameters.hitbox.nonEmpty) {
 
       val attackVector = creature.attackVector
 
@@ -178,15 +172,17 @@ trait MeleeAttack extends Ability with PhysicalHitbox with ActiveAnimation with 
       val attackShiftY = normalizedAttackVector.y * attackRange
 
       val newHitbox = Some(
-        AttackHitbox(attackShiftX + creature.pos.x, attackShiftY + creature.pos.y, hitbox.get.polygon)
+        AttackHitbox(attackShiftX + creature.pos.x, attackShiftY + creature.pos.y, bodyParameters.hitbox.get.polygon)
       )
 
       // TODO: remove sideeffect
-      if (bodyActive) {
-        body.get.setTransform(hitbox.get.x, hitbox.get.y, 0f)
+      if (bodyParameters.bodyActive) {
+        bodyParameters.body.get.setTransform(bodyParameters.hitbox.get.x, bodyParameters.hitbox.get.y, 0f)
       }
 
-      setHitbox(hitbox = newHitbox)
+      this
+        .makeCopy(bodyParameters = bodyParameters.copy(hitbox = newHitbox))
+
     } else
       this
 
@@ -198,9 +194,9 @@ trait MeleeAttack extends Ability with PhysicalHitbox with ActiveAnimation with 
     // IMPORTANT: ability has to be active
     // if we remove during channeling we could remove it before body is created, causing BOX2D crash
     if (state == AbilityState.Active)
-      setToRemoveBody(toRemoveBody = true)
+      makeCopy(bodyParameters = bodyParameters.copy(toRemoveBody = true))
     else
-      this
+      makeCopy()
   }
 
   override def onCollideWithCreature(otherCreature: Creature): MeleeAttack = {
@@ -228,14 +224,4 @@ trait MeleeAttack extends Ability with PhysicalHitbox with ActiveAnimation with 
     this
   }
 
-  def setToRemoveBody(toRemoveBody: Boolean): MeleeAttack
-
-  def setBody(body: Option[Body]): MeleeAttack
-
-  def setHitbox(hitbox: Option[AttackHitbox]): MeleeAttack
-
-  def setBodyActive(bodyActive: Boolean): MeleeAttack
-
 }
-
-case class AttackHitbox private (x: Float, y: Float, polygon: Polygon)

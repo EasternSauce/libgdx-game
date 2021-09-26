@@ -1,10 +1,10 @@
 package com.easternsauce.libgdxgame.ability.misc
 
 import com.badlogic.gdx.physics.box2d._
-import com.easternsauce.libgdxgame.ability.attack.AttackHitbox
+import com.easternsauce.libgdxgame.ability.parameters.AttackHitbox
 
 trait PhysicalHitbox {
-  def initBody(world: World, hitbox: AttackHitbox): Body = {
+  def initBody(world: World, hitbox: AttackHitbox): Option[Body] = {
     val bodyDef = new BodyDef()
     bodyDef.position.set(hitbox.x, hitbox.y)
 
@@ -21,6 +21,6 @@ trait PhysicalHitbox {
     fixtureDef.isSensor = true
     b2Body.createFixture(fixtureDef)
 
-    b2Body
+    Some(b2Body)
   }
 }

@@ -2,9 +2,10 @@ package com.easternsauce.libgdxgame.ability.attack
 
 import com.badlogic.gdx.maps.tiled.TiledMap
 import com.badlogic.gdx.math.Vector2
+import com.easternsauce.libgdxgame.ability.composed.components.AbilityComponent
 import com.easternsauce.libgdxgame.ability.misc.AbilityState.AbilityState
 import com.easternsauce.libgdxgame.ability.misc.{Ability, AbilityState}
-import com.easternsauce.libgdxgame.ability.parameters.TimerParameters
+import com.easternsauce.libgdxgame.ability.parameters.{BodyParameters, SoundParameters, TimerParameters}
 import com.easternsauce.libgdxgame.creature.Creature
 import com.easternsauce.libgdxgame.projectile.Arrow
 import com.easternsauce.libgdxgame.system.Assets
@@ -16,6 +17,7 @@ case class ShootArrowAttack private (
   override val creature: Creature,
   override val state: AbilityState = AbilityState.Inactive,
   override val onCooldown: Boolean = false,
+  override val soundParameters: SoundParameters = SoundParameters(),
   override val timerParameters: TimerParameters = TimerParameters()
 ) extends Ability {
 
@@ -74,8 +76,15 @@ case class ShootArrowAttack private (
     copy()
   }
 
-  override def setState(state: AbilityState): Ability = copy(state = state)
-
-  override def setOnCooldown(onCooldown: Boolean): Ability = copy(onCooldown = onCooldown)
+  override def makeCopy(
+    components: List[AbilityComponent] = components,
+    lastComponentFinishTime: Float = lastComponentFinishTime,
+    state: AbilityState = state,
+    onCooldown: Boolean = onCooldown,
+    soundParameters: SoundParameters = soundParameters,
+    timerParameters: TimerParameters = timerParameters,
+    bodyParameters: BodyParameters = bodyParameters
+  ): ShootArrowAttack =
+    copy(state = state, onCooldown = onCooldown, soundParameters = soundParameters, timerParameters = timerParameters)
 
 }

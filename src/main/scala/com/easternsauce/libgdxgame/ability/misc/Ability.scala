@@ -1,20 +1,22 @@
 package com.easternsauce.libgdxgame.ability.misc
 
 import com.badlogic.gdx.audio.Sound
+import com.easternsauce.libgdxgame.ability.composed.components.AbilityComponent
 import com.easternsauce.libgdxgame.ability.misc.AbilityState.AbilityState
-import com.easternsauce.libgdxgame.ability.parameters.{SoundParameters, TimerParameters}
+import com.easternsauce.libgdxgame.ability.parameters.{BodyParameters, SoundParameters, TimerParameters}
 import com.easternsauce.libgdxgame.creature.Creature
 import com.easternsauce.libgdxgame.util.EsBatch
 
 trait Ability {
-  val creature: Creature
-  val state: AbilityState
-  val onCooldown: Boolean
-  val timerParameters: TimerParameters
-
   val id: String
-
+  val creature: Creature
+  val components: List[AbilityComponent] = List()
+  val lastComponentFinishTime: Float = 0f
+  val state: AbilityState = AbilityState.Inactive
+  val onCooldown: Boolean = false
   val soundParameters: SoundParameters = SoundParameters()
+  val timerParameters: TimerParameters = TimerParameters()
+  val bodyParameters: BodyParameters = BodyParameters()
 
   protected val isStoppable: Boolean = true
 
@@ -48,7 +50,7 @@ trait Ability {
     if (isStoppable && state != AbilityState.Inactive) {
       this
         .onStop()
-        .setState(state = AbilityState.Inactive)
+        .makeCopy(state = AbilityState.Inactive)
     } else {
       this
     }
@@ -71,7 +73,7 @@ trait Ability {
 
       this
         .onChannellingStart()
-        .setState(state = AbilityState.Channeling)
+        .makeCopy(state = AbilityState.Channeling)
     } else
       this
   }
@@ -88,8 +90,7 @@ trait Ability {
 
           this
             .onActiveStart()
-            .setState(state = AbilityState.Active)
-            .setOnCooldown(onCooldown = true)
+            .makeCopy(state = AbilityState.Active, onCooldown = true)
         } else
           this
 
@@ -99,7 +100,8 @@ trait Ability {
 
       case Active =>
         val ability: Ability = if (activeTimer.time > activeTime) {
-          setState(state = AbilityState.Inactive)
+          this
+            .makeCopy(state = AbilityState.Inactive)
             .onStop()
         } else
           this
@@ -112,7 +114,7 @@ trait Ability {
         if (onCooldown && activeTimer.time > cooldownTime) {
 
           this
-            .setOnCooldown(onCooldown = false)
+            .makeCopy(onCooldown = false)
         } else
           this
 
@@ -136,7 +138,13 @@ trait Ability {
 
   def asMapEntry: (String, Ability) = id -> this
 
-  def setState(state: AbilityState): Ability
-
-  def setOnCooldown(onCooldown: Boolean): Ability
+  def makeCopy(
+    components: List[AbilityComponent] = components,
+    lastComponentFinishTime: Float = lastComponentFinishTime,
+    state: AbilityState = state,
+    onCooldown: Boolean = onCooldown,
+    soundParameters: SoundParameters = soundParameters,
+    timerParameters: TimerParameters = timerParameters,
+    bodyParameters: BodyParameters = bodyParameters
+  ): Ability
 }

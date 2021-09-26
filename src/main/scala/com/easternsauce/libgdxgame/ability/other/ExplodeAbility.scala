@@ -2,9 +2,10 @@ package com.easternsauce.libgdxgame.ability.other
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.physics.box2d._
+import com.easternsauce.libgdxgame.ability.composed.components.AbilityComponent
 import com.easternsauce.libgdxgame.ability.misc.AbilityState.{AbilityState, Inactive}
 import com.easternsauce.libgdxgame.ability.misc.{Ability, AbilityState, ActiveAnimation}
-import com.easternsauce.libgdxgame.ability.parameters.{SoundParameters, TimerParameters}
+import com.easternsauce.libgdxgame.ability.parameters.{BodyParameters, SoundParameters, TimerParameters}
 import com.easternsauce.libgdxgame.creature.Creature
 import com.easternsauce.libgdxgame.system.Assets
 import com.easternsauce.libgdxgame.util.EsBatch
@@ -19,6 +20,7 @@ case class ExplodeAbility private (
   bodyCreated: Boolean = false
 ) extends Ability
     with ActiveAnimation {
+
   override val id: String = "explode"
   override protected val cooldownTime: Float = 0.8f
 
@@ -133,8 +135,14 @@ case class ExplodeAbility private (
     copy()
   }
 
-  override def setState(state: AbilityState): Ability = copy(state = state)
-
-  override def setOnCooldown(onCooldown: Boolean): Ability = copy(onCooldown = onCooldown)
-
+  override def makeCopy(
+    components: List[AbilityComponent] = components,
+    lastComponentFinishTime: Float = lastComponentFinishTime,
+    state: AbilityState = state,
+    onCooldown: Boolean = onCooldown,
+    soundParameters: SoundParameters = soundParameters,
+    timerParameters: TimerParameters = timerParameters,
+    bodyParameters: BodyParameters = bodyParameters
+  ): ExplodeAbility =
+    copy(state = state, onCooldown = onCooldown, soundParameters = soundParameters, timerParameters = timerParameters)
 }

@@ -2,7 +2,7 @@ package com.easternsauce.libgdxgame.ability.composed
 
 import com.easternsauce.libgdxgame.ability.composed.components.{AbilityComponent, Fist}
 import com.easternsauce.libgdxgame.ability.misc.AbilityState.{AbilityState, Inactive}
-import com.easternsauce.libgdxgame.ability.parameters.{SoundParameters, TimerParameters}
+import com.easternsauce.libgdxgame.ability.parameters.{BodyParameters, SoundParameters, TimerParameters}
 import com.easternsauce.libgdxgame.creature.{Creature, Enemy}
 import com.easternsauce.libgdxgame.system.GameSystem
 
@@ -15,6 +15,7 @@ case class FistSlamAbility private (
   override val components: List[AbilityComponent] = List(),
   override val lastComponentFinishTime: Float = 0f
 ) extends ComposedAbility {
+
   override val id: String = "fist_slam"
 
   override protected val cooldownTime: Float = 10f
@@ -43,12 +44,21 @@ case class FistSlamAbility private (
     )
   }
 
-  override def setComponents(components: List[AbilityComponent]): FistSlamAbility = copy(components = components)
-
-  override def setLastComponentFinishTime(lastComponentFinishTime: Float): FistSlamAbility =
-    copy(lastComponentFinishTime = lastComponentFinishTime)
-
-  override def setState(state: AbilityState): FistSlamAbility = copy(state = state)
-
-  override def setOnCooldown(onCooldown: Boolean): FistSlamAbility = copy(onCooldown = onCooldown)
+  override def makeCopy(
+    components: List[AbilityComponent] = components,
+    lastComponentFinishTime: Float = lastComponentFinishTime,
+    state: AbilityState = state,
+    onCooldown: Boolean = onCooldown,
+    soundParameters: SoundParameters = soundParameters,
+    timerParameters: TimerParameters = timerParameters,
+    bodyParameters: BodyParameters = bodyParameters
+  ): FistSlamAbility =
+    copy(
+      components = components,
+      lastComponentFinishTime = lastComponentFinishTime,
+      state = state,
+      onCooldown = onCooldown,
+      soundParameters = soundParameters,
+      timerParameters = timerParameters
+    )
 }

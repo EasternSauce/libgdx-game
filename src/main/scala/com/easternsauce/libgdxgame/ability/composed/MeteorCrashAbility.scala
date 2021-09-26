@@ -4,7 +4,7 @@ import com.badlogic.gdx.math.Vector2
 import com.easternsauce.libgdxgame.ability.composed.components.{AbilityComponent, Meteor}
 import com.easternsauce.libgdxgame.ability.misc.Ability
 import com.easternsauce.libgdxgame.ability.misc.AbilityState.{AbilityState, Inactive}
-import com.easternsauce.libgdxgame.ability.parameters.{SoundParameters, TimerParameters}
+import com.easternsauce.libgdxgame.ability.parameters.{BodyParameters, SoundParameters, TimerParameters}
 import com.easternsauce.libgdxgame.creature.Creature
 
 case class MeteorCrashAbility private (
@@ -101,12 +101,21 @@ case class MeteorCrashAbility private (
     )
   }
 
-  override def setComponents(components: List[AbilityComponent]): MeteorCrashAbility = copy(components = components)
-
-  override def setLastComponentFinishTime(lastComponentFinishTime: Float): MeteorCrashAbility =
-    copy(lastComponentFinishTime = lastComponentFinishTime)
-
-  override def setState(state: AbilityState): MeteorCrashAbility = copy(state = state)
-
-  override def setOnCooldown(onCooldown: Boolean): MeteorCrashAbility = copy(onCooldown = onCooldown)
+  override def makeCopy(
+    components: List[AbilityComponent] = components,
+    lastComponentFinishTime: Float = lastComponentFinishTime,
+    state: AbilityState = state,
+    onCooldown: Boolean = onCooldown,
+    soundParameters: SoundParameters = soundParameters,
+    timerParameters: TimerParameters = timerParameters,
+    bodyParameters: BodyParameters = bodyParameters
+  ): MeteorCrashAbility =
+    copy(
+      components = components,
+      lastComponentFinishTime = lastComponentFinishTime,
+      state = state,
+      onCooldown = onCooldown,
+      soundParameters = soundParameters,
+      timerParameters = timerParameters
+    )
 }

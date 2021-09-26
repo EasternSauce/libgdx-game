@@ -1,9 +1,8 @@
 package com.easternsauce.libgdxgame.ability.attack
 
-import com.badlogic.gdx.physics.box2d.Body
-import com.easternsauce.libgdxgame.ability.misc.Ability
+import com.easternsauce.libgdxgame.ability.composed.components.AbilityComponent
 import com.easternsauce.libgdxgame.ability.misc.AbilityState.{AbilityState, Inactive}
-import com.easternsauce.libgdxgame.ability.parameters.{SoundParameters, TimerParameters}
+import com.easternsauce.libgdxgame.ability.parameters.{BodyParameters, SoundParameters, TimerParameters}
 import com.easternsauce.libgdxgame.creature.Creature
 import com.easternsauce.libgdxgame.system.Assets
 
@@ -14,12 +13,8 @@ case class ThrustAttack private (
   override val timerParameters: TimerParameters = TimerParameters(),
   override val soundParameters: SoundParameters =
     SoundParameters(activeSound = Some(Assets.sound(Assets.attackSound)), activeSoundVolume = Some(0.1f)),
-  override val hitbox: Option[AttackHitbox] = None,
-  override val body: Option[Body] = None,
-  override val toRemoveBody: Boolean = false,
-  override val bodyActive: Boolean = false
+  override val bodyParameters: BodyParameters = BodyParameters()
 ) extends MeleeAttack {
-
   override val id: String = "thrust"
 
   override protected val baseChannelTime = 0.6f
@@ -50,15 +45,20 @@ case class ThrustAttack private (
     frameDuration = baseChannelTime / numOfChannelFrames
   )
 
-  override def setState(state: AbilityState): Ability = copy(state = state)
-
-  override def setOnCooldown(onCooldown: Boolean): Ability = copy(onCooldown = onCooldown)
-
-  override def setToRemoveBody(toRemoveBody: Boolean): MeleeAttack = copy(toRemoveBody = toRemoveBody)
-
-  override def setBody(body: Option[Body]): MeleeAttack = copy(body = body)
-
-  override def setHitbox(hitbox: Option[AttackHitbox]): MeleeAttack = copy(hitbox = hitbox)
-
-  override def setBodyActive(bodyActive: Boolean): MeleeAttack = copy(bodyActive = bodyActive)
+  override def makeCopy(
+    components: List[AbilityComponent] = components,
+    lastComponentFinishTime: Float = lastComponentFinishTime,
+    state: AbilityState = state,
+    onCooldown: Boolean = onCooldown,
+    soundParameters: SoundParameters = soundParameters,
+    timerParameters: TimerParameters = timerParameters,
+    bodyParameters: BodyParameters = bodyParameters
+  ): ThrustAttack =
+    copy(
+      state = state,
+      onCooldown = onCooldown,
+      soundParameters = soundParameters,
+      timerParameters = timerParameters,
+      bodyParameters = bodyParameters
+    )
 }
