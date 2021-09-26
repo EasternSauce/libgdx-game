@@ -107,7 +107,7 @@ trait MeleeAttack extends Ability with PhysicalHitbox with ActiveAnimation with 
     if (state == AbilityState.Channeling) renderFrame(currentWindupAnimationFrame)
     if (state == AbilityState.Active) renderFrame(currentActiveAnimationFrame)
 
-    makeCopy()
+    this
   }
 
   override def onChannellingStart(): MeleeAttack = {
@@ -193,10 +193,10 @@ trait MeleeAttack extends Ability with PhysicalHitbox with ActiveAnimation with 
 
     // IMPORTANT: ability has to be active
     // if we remove during channeling we could remove it before body is created, causing BOX2D crash
-    if (state == AbilityState.Active)
+    if (state == AbilityState.Active) {
       makeCopy(bodyParameters = bodyParameters.copy(toRemoveBody = true))
-    else
-      makeCopy()
+    } else
+      this
   }
 
   override def onCollideWithCreature(otherCreature: Creature): MeleeAttack = {

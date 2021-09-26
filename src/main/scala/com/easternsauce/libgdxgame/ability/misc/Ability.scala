@@ -101,8 +101,8 @@ trait Ability {
       case Active =>
         val ability: Ability = if (activeTimer.time > activeTime) {
           this
-            .makeCopy(state = AbilityState.Inactive)
             .onStop()
+            .makeCopy(state = AbilityState.Inactive)
         } else
           this
 
