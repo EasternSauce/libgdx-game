@@ -3,7 +3,7 @@ package com.easternsauce.libgdxgame.ability.composed
 import com.badlogic.gdx.math.Vector2
 import com.easternsauce.libgdxgame.ability.composed.components.{AbilityComponent, IceShard}
 import com.easternsauce.libgdxgame.ability.misc.AbilityState.{AbilityState, Inactive}
-import com.easternsauce.libgdxgame.ability.parameters.{BodyParameters, SoundParameters, TimerParameters}
+import com.easternsauce.libgdxgame.ability.parameters.{AnimationParameters, BodyParameters, SoundParameters, TimerParameters}
 import com.easternsauce.libgdxgame.creature.{Creature, Enemy}
 
 case class IceShardAbility private (
@@ -53,7 +53,8 @@ case class IceShardAbility private (
     onCooldown: Boolean = onCooldown,
     soundParameters: SoundParameters = soundParameters,
     timerParameters: TimerParameters = timerParameters,
-    bodyParameters: BodyParameters = bodyParameters
+    bodyParameters: BodyParameters = bodyParameters,
+    animationParameters: AnimationParameters = animationParameters
   ): IceShardAbility =
     copy(
       components = components,

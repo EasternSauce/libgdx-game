@@ -2,6 +2,8 @@ package com.easternsauce.libgdxgame.ability.composed.components
 
 import com.badlogic.gdx.physics.box2d.Body
 import com.easternsauce.libgdxgame.ability.misc.AbilityState.AbilityState
+import com.easternsauce.libgdxgame.ability.parameters.{AnimationParameters, TimerParameters}
+import com.easternsauce.libgdxgame.animation.Animation
 import com.easternsauce.libgdxgame.creature.Creature
 import com.easternsauce.libgdxgame.util.{EsBatch, EsTimer}
 
@@ -17,6 +19,11 @@ trait AbilityComponent {
   var started: Boolean
   var body: Body
   var destroyed: Boolean
+
+  val timerParameters: TimerParameters = TimerParameters()
+  val animationParameters: AnimationParameters = AnimationParameters()
+  val activeAnimation: Option[Animation]
+  val channelAnimation: Option[Animation]
 
   def onUpdateActive(): Unit
 

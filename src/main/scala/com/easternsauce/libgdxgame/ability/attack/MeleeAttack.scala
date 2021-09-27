@@ -8,7 +8,7 @@ import com.easternsauce.libgdxgame.creature.Creature
 import com.easternsauce.libgdxgame.system.{Constants, GameSystem}
 import com.easternsauce.libgdxgame.util.{EsBatch, EsPolygon}
 
-trait MeleeAttack extends Ability with PhysicalHitbox with ActiveAnimation with WindupAnimation {
+trait MeleeAttack extends Ability with PhysicalHitbox {
 
   implicit def toMeleeAttack(ability: Ability): MeleeAttack = ability.asInstanceOf[MeleeAttack]
 
@@ -104,8 +104,14 @@ trait MeleeAttack extends Ability with PhysicalHitbox with ActiveAnimation with 
       }
     }
 
-    if (state == AbilityState.Channeling) renderFrame(currentWindupAnimationFrame)
-    if (state == AbilityState.Active) renderFrame(currentActiveAnimationFrame)
+    if (state == AbilityState.Channeling && channelAnimation.nonEmpty)
+      renderFrame(
+        channelAnimation.get.currentFrame(time = timerParameters.abilityChannelAnimationTimer.time, loop = true)
+      )
+    if (state == AbilityState.Active && activeAnimation.nonEmpty)
+      renderFrame(
+        activeAnimation.get.currentFrame(time = timerParameters.abilityActiveAnimationTimer.time, loop = true)
+      )
 
     this
   }
@@ -116,7 +122,7 @@ trait MeleeAttack extends Ability with PhysicalHitbox with ActiveAnimation with 
     // TODO: sideeffects
 
     creature.attackVector = creature.facingVector.cpy()
-    timerParameters.abilityWindupAnimationTimer.restart()
+    timerParameters.abilityChannelAnimationTimer.restart()
     creature.isAttacking = true
 
     val attackVector = creature.attackVector

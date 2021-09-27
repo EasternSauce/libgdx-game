@@ -2,16 +2,29 @@ package com.easternsauce.libgdxgame.ability.composed.components
 
 import com.badlogic.gdx.physics.box2d.{Body, BodyDef, CircleShape, FixtureDef}
 import com.easternsauce.libgdxgame.ability.misc.AbilityState.AbilityState
-import com.easternsauce.libgdxgame.ability.misc.{Ability, AbilityState, ActiveAnimation, WindupAnimation}
-import com.easternsauce.libgdxgame.ability.parameters.TimerParameters
+import com.easternsauce.libgdxgame.ability.misc.{Ability, AbilityState}
+import com.easternsauce.libgdxgame.ability.parameters.{AnimationParameters, TimerParameters}
+import com.easternsauce.libgdxgame.animation.Animation
 import com.easternsauce.libgdxgame.creature.Creature
 import com.easternsauce.libgdxgame.system.Assets
 import com.easternsauce.libgdxgame.util.EsBatch
 
-class Fist(val mainAbility: Ability, val startTime: Float, posX: Float, posY: Float, radius: Float)
-    extends AbilityComponent
-    with WindupAnimation
-    with ActiveAnimation {
+class Fist(
+  val mainAbility: Ability,
+  val startTime: Float,
+  posX: Float,
+  posY: Float,
+  radius: Float,
+  override val timerParameters: TimerParameters = TimerParameters(),
+  override val animationParameters: AnimationParameters = AnimationParameters(
+    textureWidth = 40,
+    textureHeight = 80,
+    activeRegionName = "fist_slam",
+    activeFrameCount = 5,
+    channelRegionName = "fist_slam_windup",
+    channelFrameCount = 5
+  )
+) extends AbilityComponent {
 
   override lazy val activeTime: Float = 0.2f
   override lazy val channelTime: Float = 0.4f
@@ -21,32 +34,18 @@ class Fist(val mainAbility: Ability, val startTime: Float, posX: Float, posY: Fl
   override var body: Body = _
   override var destroyed: Boolean = false
 
-  val spriteWidth = 40
-  val spriteHeight = 80
-
-  val numOfFrames = 5
-
-  setupActiveAnimation(
-    regionName = "fist_slam",
-    textureWidth = spriteWidth,
-    textureHeight = spriteHeight,
-    animationFrameCount = numOfFrames,
-    frameDuration = activeTime / numOfFrames
+  override val activeAnimation: Option[Animation] = Some(
+    Animation.activeAnimationFromParameters(animationParameters, activeTime)
   )
-
-  setupWindupAnimation(
-    regionName = "fist_slam_windup",
-    textureWidth = spriteWidth,
-    textureHeight = spriteHeight,
-    animationFrameCount = numOfFrames,
-    frameDuration = channelTime / numOfFrames
+  override val channelAnimation: Option[Animation] = Some(
+    Animation.channelAnimationFromParameters(animationParameters, channelTime)
   )
 
   def start(): Unit = {
     started = true
     state = AbilityState.Channeling
     channelTimer.restart()
-    timerParameters.abilityWindupAnimationTimer.restart()
+    timerParameters.abilityChannelAnimationTimer.restart()
   }
 
   override def onUpdateActive(): Unit = {
@@ -96,7 +95,7 @@ class Fist(val mainAbility: Ability, val startTime: Float, posX: Float, posY: Fl
 
     if (state == AbilityState.Channeling) {
 
-      val image = currentWindupAnimationFrame
+      val image = channelAnimation.get.currentFrame(time = timerParameters.channelTimer.time, loop = true)
 
       val scale = radius * 2f / image.getRegionWidth
 
@@ -116,7 +115,7 @@ class Fist(val mainAbility: Ability, val startTime: Float, posX: Float, posY: Fl
     }
     if (state == AbilityState.Active) {
 
-      val image = currentActiveAnimationFrame
+      val image = activeAnimation.get.currentFrame(time = timerParameters.activeTimer.time, loop = true)
 
       val scale = radius * 2f / image.getRegionWidth
 
@@ -142,7 +141,5 @@ class Fist(val mainAbility: Ability, val startTime: Float, posX: Float, posY: Fl
       if (!creature.isImmune) creature.takeLifeDamage(100f, immunityFrames = true)
     }
   }
-
-  override val timerParameters: TimerParameters = TimerParameters()
 
 }

@@ -3,7 +3,8 @@ package com.easternsauce.libgdxgame.ability.misc
 import com.badlogic.gdx.audio.Sound
 import com.easternsauce.libgdxgame.ability.composed.components.AbilityComponent
 import com.easternsauce.libgdxgame.ability.misc.AbilityState.AbilityState
-import com.easternsauce.libgdxgame.ability.parameters.{BodyParameters, SoundParameters, TimerParameters}
+import com.easternsauce.libgdxgame.ability.parameters.{AnimationParameters, BodyParameters, SoundParameters, TimerParameters}
+import com.easternsauce.libgdxgame.animation.Animation
 import com.easternsauce.libgdxgame.creature.Creature
 import com.easternsauce.libgdxgame.util.EsBatch
 
@@ -17,6 +18,10 @@ trait Ability {
   val soundParameters: SoundParameters = SoundParameters()
   val timerParameters: TimerParameters = TimerParameters()
   val bodyParameters: BodyParameters = BodyParameters()
+  val animationParameters: AnimationParameters = AnimationParameters()
+
+  val activeAnimation: Option[Animation] = None
+  val channelAnimation: Option[Animation] = None
 
   protected val isStoppable: Boolean = true
 
@@ -145,6 +150,7 @@ trait Ability {
     onCooldown: Boolean = onCooldown,
     soundParameters: SoundParameters = soundParameters,
     timerParameters: TimerParameters = timerParameters,
-    bodyParameters: BodyParameters = bodyParameters
+    bodyParameters: BodyParameters = bodyParameters,
+    animationParameters: AnimationParameters = animationParameters
   ): Ability
 }

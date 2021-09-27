@@ -2,7 +2,7 @@ package com.easternsauce.libgdxgame.ability.composed
 
 import com.easternsauce.libgdxgame.ability.composed.components.{AbilityComponent, Bubble}
 import com.easternsauce.libgdxgame.ability.misc.AbilityState.{AbilityState, Inactive}
-import com.easternsauce.libgdxgame.ability.parameters.{BodyParameters, SoundParameters, TimerParameters}
+import com.easternsauce.libgdxgame.ability.parameters.{AnimationParameters, BodyParameters, SoundParameters, TimerParameters}
 import com.easternsauce.libgdxgame.creature.Creature
 
 case class BubbleAbility private (
@@ -41,7 +41,8 @@ case class BubbleAbility private (
     onCooldown: Boolean = onCooldown,
     soundParameters: SoundParameters = soundParameters,
     timerParameters: TimerParameters = timerParameters,
-    bodyParameters: BodyParameters = bodyParameters
+    bodyParameters: BodyParameters = bodyParameters,
+    animationParameters: AnimationParameters = animationParameters
   ): BubbleAbility =
     copy(
       components = components,

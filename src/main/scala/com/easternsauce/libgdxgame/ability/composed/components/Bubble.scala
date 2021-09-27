@@ -3,8 +3,9 @@ package com.easternsauce.libgdxgame.ability.composed.components
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.{Body, BodyDef, CircleShape, FixtureDef}
 import com.easternsauce.libgdxgame.ability.misc.AbilityState.AbilityState
-import com.easternsauce.libgdxgame.ability.misc.{Ability, AbilityState, ActiveAnimation}
-import com.easternsauce.libgdxgame.ability.parameters.TimerParameters
+import com.easternsauce.libgdxgame.ability.misc.{Ability, AbilityState}
+import com.easternsauce.libgdxgame.ability.parameters.{AnimationParameters, TimerParameters}
+import com.easternsauce.libgdxgame.animation.Animation
 import com.easternsauce.libgdxgame.creature.{Creature, Enemy}
 import com.easternsauce.libgdxgame.util.EsBatch
 
@@ -14,9 +15,11 @@ class Bubble(
   var startY: Float,
   val radius: Float,
   val speed: Float,
-  val startTime: Float
-) extends AbilityComponent
-    with ActiveAnimation {
+  val startTime: Float,
+  override val timerParameters: TimerParameters = TimerParameters(),
+  override val animationParameters: AnimationParameters =
+    AnimationParameters(textureWidth = 64, textureHeight = 64, activeRegionName = "bubble", activeFrameCount = 2)
+) extends AbilityComponent {
   override lazy val activeTime: Float = 1.5f
   override lazy val channelTime: Float = 0.6f
 
@@ -29,18 +32,10 @@ class Bubble(
   override var body: Body = _
   override var destroyed = false
 
-  val spriteWidth = 64
-  val spriteHeight = 64
-  val numOfActiveFrames = 2
-
-  setupActiveAnimation(
-    regionName = "bubble",
-    textureWidth = spriteHeight,
-    textureHeight = spriteHeight,
-    animationFrameCount = numOfActiveFrames,
-    frameDuration = loopTime / numOfActiveFrames,
-    loop = true
+  override val activeAnimation: Option[Animation] = Some(
+    Animation.activeAnimationFromParameters(animationParameters, activeTime)
   )
+  override val channelAnimation: Option[Animation] = None
 
   def start(): Unit = {
     started = true
@@ -104,7 +99,7 @@ class Bubble(
     if (state == AbilityState.Active) {
       val spriteWidth = 64
       val scale = radius * 2 / spriteWidth
-      val image = currentActiveAnimationFrame
+      val image = activeAnimation.get.currentFrame(time = timerParameters.activeTimer.time, loop = true)
       batch.spriteBatch.draw(
         image,
         body.getPosition.x - radius,
@@ -126,5 +121,4 @@ class Bubble(
     }
   }
 
-  override val timerParameters: TimerParameters = TimerParameters()
 }

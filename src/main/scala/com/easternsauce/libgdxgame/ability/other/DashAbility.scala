@@ -4,7 +4,8 @@ import com.badlogic.gdx.math.Vector2
 import com.easternsauce.libgdxgame.ability.composed.components.AbilityComponent
 import com.easternsauce.libgdxgame.ability.misc.Ability
 import com.easternsauce.libgdxgame.ability.misc.AbilityState.{AbilityState, Inactive}
-import com.easternsauce.libgdxgame.ability.parameters.{BodyParameters, SoundParameters, TimerParameters}
+import com.easternsauce.libgdxgame.ability.parameters.{AnimationParameters, BodyParameters, SoundParameters, TimerParameters}
+import com.easternsauce.libgdxgame.animation.Animation
 import com.easternsauce.libgdxgame.creature.Creature
 
 case class DashAbility private (
@@ -22,6 +23,9 @@ case class DashAbility private (
   override lazy val channelTime: Float = 0f
 
   val speed = 60f
+
+  override val activeAnimation: Option[Animation] = None
+  override val channelAnimation: Option[Animation] = None
 
   override def onActiveStart(): DashAbility = {
     super.onActiveStart()
@@ -49,7 +53,8 @@ case class DashAbility private (
     onCooldown: Boolean = onCooldown,
     soundParameters: SoundParameters = soundParameters,
     timerParameters: TimerParameters = timerParameters,
-    bodyParameters: BodyParameters = bodyParameters
+    bodyParameters: BodyParameters = bodyParameters,
+    animationParameters: AnimationParameters = animationParameters
   ): DashAbility =
     copy(state = state, onCooldown = onCooldown, soundParameters = soundParameters, timerParameters = timerParameters)
 }

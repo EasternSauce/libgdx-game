@@ -2,7 +2,8 @@ package com.easternsauce.libgdxgame.ability.attack
 
 import com.easternsauce.libgdxgame.ability.composed.components.AbilityComponent
 import com.easternsauce.libgdxgame.ability.misc.AbilityState.{AbilityState, Inactive}
-import com.easternsauce.libgdxgame.ability.parameters.{BodyParameters, SoundParameters, TimerParameters}
+import com.easternsauce.libgdxgame.ability.parameters.{AnimationParameters, BodyParameters, SoundParameters, TimerParameters}
+import com.easternsauce.libgdxgame.animation.Animation
 import com.easternsauce.libgdxgame.creature.Creature
 import com.easternsauce.libgdxgame.system.Assets
 
@@ -13,14 +14,20 @@ case class SlashAttack private (
   override val timerParameters: TimerParameters = TimerParameters(),
   override val soundParameters: SoundParameters =
     SoundParameters(activeSound = Some(Assets.sound(Assets.attackSound)), activeSoundVolume = Some(0.1f)),
-  override val bodyParameters: BodyParameters = BodyParameters()
+  override val bodyParameters: BodyParameters = BodyParameters(),
+  override val animationParameters: AnimationParameters = AnimationParameters(
+    textureWidth = 40,
+    textureHeight = 40,
+    activeRegionName = "slash",
+    channelRegionName = "slash_windup",
+    channelFrameCount = 6,
+    activeFrameCount = 6
+  )
 ) extends MeleeAttack {
   override val id: String = "slash"
 
   override protected val baseChannelTime = 0.3f
   override protected val baseActiveTime = 0.3f
-  val numOfChannelFrames = 6
-  val numOfFrames = 6
 
   override val attackRange: Float = 0.9375f
   override protected val aimed: Boolean = false
@@ -29,20 +36,11 @@ case class SlashAttack private (
   override protected val knockbackVelocity: Float = 20f
   override protected val cooldownTime: Float = 0.8f
 
-  setupActiveAnimation(
-    regionName = "slash",
-    textureWidth = spriteWidth,
-    textureHeight = spriteHeight,
-    animationFrameCount = numOfFrames,
-    frameDuration = baseActiveTime / numOfFrames
+  override val activeAnimation: Option[Animation] = Some(
+    Animation.activeAnimationFromParameters(animationParameters, baseActiveTime)
   )
-
-  setupWindupAnimation(
-    regionName = "slash_windup",
-    textureWidth = spriteWidth,
-    textureHeight = spriteHeight,
-    animationFrameCount = numOfChannelFrames,
-    frameDuration = baseChannelTime / numOfChannelFrames
+  override val channelAnimation: Option[Animation] = Some(
+    Animation.channelAnimationFromParameters(animationParameters, baseChannelTime)
   )
 
   override def makeCopy(
@@ -52,13 +50,15 @@ case class SlashAttack private (
     onCooldown: Boolean = onCooldown,
     soundParameters: SoundParameters = soundParameters,
     timerParameters: TimerParameters = timerParameters,
-    bodyParameters: BodyParameters = bodyParameters
+    bodyParameters: BodyParameters = bodyParameters,
+    animationParameters: AnimationParameters = animationParameters
   ): SlashAttack =
     copy(
       state = state,
       onCooldown = onCooldown,
       soundParameters = soundParameters,
       timerParameters = timerParameters,
-      bodyParameters = bodyParameters
+      bodyParameters = bodyParameters,
+      animationParameters = animationParameters
     )
 }

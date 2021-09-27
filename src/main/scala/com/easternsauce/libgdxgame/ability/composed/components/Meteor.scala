@@ -2,8 +2,9 @@ package com.easternsauce.libgdxgame.ability.composed.components
 
 import com.badlogic.gdx.physics.box2d.{Body, BodyDef, CircleShape, FixtureDef}
 import com.easternsauce.libgdxgame.ability.misc.AbilityState.AbilityState
-import com.easternsauce.libgdxgame.ability.misc.{Ability, AbilityState, ActiveAnimation, WindupAnimation}
-import com.easternsauce.libgdxgame.ability.parameters.TimerParameters
+import com.easternsauce.libgdxgame.ability.misc.{Ability, AbilityState}
+import com.easternsauce.libgdxgame.ability.parameters.{AnimationParameters, TimerParameters}
+import com.easternsauce.libgdxgame.animation.Animation
 import com.easternsauce.libgdxgame.creature.Creature
 import com.easternsauce.libgdxgame.system.Assets
 import com.easternsauce.libgdxgame.util.EsBatch
@@ -14,10 +15,17 @@ class Meteor(
   val posX: Float,
   val posY: Float,
   val radius: Float,
-  speed: Float
-) extends AbilityComponent
-    with WindupAnimation
-    with ActiveAnimation {
+  speed: Float,
+  override val timerParameters: TimerParameters = TimerParameters(),
+  override val animationParameters: AnimationParameters = AnimationParameters(
+    textureWidth = 64,
+    textureHeight = 64,
+    activeRegionName = "explosion",
+    activeFrameCount = 21,
+    channelRegionName = "explosion_windup",
+    channelFrameCount = 7
+  )
+) extends AbilityComponent {
 
   override lazy val activeTime: Float = 1.8f / speed
   override lazy val channelTime: Float = 1.2f / speed
@@ -27,32 +35,18 @@ class Meteor(
   override var body: Body = _
   override var destroyed = false
 
-  val spriteWidth = 64
-  val spriteHeight = 64
-  val numOfActiveFrames = 21
-  val numOfChannelingFrames = 7
-
-  setupActiveAnimation(
-    regionName = "explosion",
-    textureWidth = spriteHeight,
-    textureHeight = spriteHeight,
-    animationFrameCount = numOfActiveFrames,
-    frameDuration = activeTime / numOfActiveFrames
+  override val activeAnimation: Option[Animation] = Some(
+    Animation.activeAnimationFromParameters(animationParameters, activeTime)
   )
-
-  setupWindupAnimation(
-    regionName = "explosion_windup",
-    textureWidth = spriteHeight,
-    textureHeight = spriteHeight,
-    animationFrameCount = numOfChannelingFrames,
-    frameDuration = channelTime / numOfChannelingFrames
+  override val channelAnimation: Option[Animation] = Some(
+    Animation.channelAnimationFromParameters(animationParameters, channelTime)
   )
 
   def start(): Unit = {
     started = true
     state = AbilityState.Channeling
     channelTimer.restart()
-    timerParameters.abilityWindupAnimationTimer.restart()
+    timerParameters.abilityChannelAnimationTimer.restart()
   }
 
   override def onUpdateActive(): Unit = {
@@ -103,7 +97,7 @@ class Meteor(
     if (state == AbilityState.Channeling) {
       val spriteWidth = 64
       val scale = radius * 2 / spriteWidth
-      val image = currentWindupAnimationFrame
+      val image = channelAnimation.get.currentFrame(time = timerParameters.channelTimer.time, loop = true)
       batch.spriteBatch.draw(
         image,
         posX - radius,
@@ -120,7 +114,7 @@ class Meteor(
     if (state == AbilityState.Active) {
       val spriteWidth = 64
       val scale = radius * 2 / spriteWidth
-      val image = currentActiveAnimationFrame
+      val image = activeAnimation.get.currentFrame(time = timerParameters.activeTimer.time, loop = true)
       batch.spriteBatch.draw(
         image,
         posX - radius,
@@ -141,7 +135,5 @@ class Meteor(
       if (!creature.isImmune) creature.takeLifeDamage(70f, immunityFrames = true)
     }
   }
-
-  override val timerParameters: TimerParameters = TimerParameters()
 
 }

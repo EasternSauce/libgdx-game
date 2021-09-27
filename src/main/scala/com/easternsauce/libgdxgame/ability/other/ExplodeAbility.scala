@@ -4,8 +4,8 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.physics.box2d._
 import com.easternsauce.libgdxgame.ability.composed.components.AbilityComponent
 import com.easternsauce.libgdxgame.ability.misc.AbilityState.{AbilityState, Inactive}
-import com.easternsauce.libgdxgame.ability.misc.{Ability, AbilityState, ActiveAnimation}
-import com.easternsauce.libgdxgame.ability.parameters.{BodyParameters, SoundParameters, TimerParameters}
+import com.easternsauce.libgdxgame.ability.misc.{Ability, AbilityState}
+import com.easternsauce.libgdxgame.ability.parameters.{AnimationParameters, BodyParameters, SoundParameters, TimerParameters}
 import com.easternsauce.libgdxgame.creature.Creature
 import com.easternsauce.libgdxgame.system.Assets
 import com.easternsauce.libgdxgame.util.EsBatch
@@ -15,34 +15,23 @@ case class ExplodeAbility private (
   override val state: AbilityState = Inactive,
   override val onCooldown: Boolean = false,
   override val timerParameters: TimerParameters = TimerParameters(),
+  override val animationParameters: AnimationParameters =
+    AnimationParameters(textureWidth = 64, textureHeight = 64, activeRegionName = "explosion", activeFrameCount = 21),
   override val soundParameters: SoundParameters = SoundParameters(),
   body: Option[Body] = None,
   bodyCreated: Boolean = false
-) extends Ability
-    with ActiveAnimation {
+) extends Ability {
 
   override val id: String = "explode"
   override protected val cooldownTime: Float = 0.8f
 
   protected val explosionRange: Float = 10f
 
-  val spriteWidth: Int = 64
-  val spriteHeight: Int = 64
-  val numOfFrames: Int = 21
-
   override protected val isStoppable: Boolean = false
 
   override protected lazy val activeTime: Float = 0.9f
 
   override protected lazy val channelTime: Float = 1.3f
-
-  setupActiveAnimation(
-    regionName = "explosion",
-    textureWidth = spriteWidth,
-    textureHeight = spriteHeight,
-    animationFrameCount = numOfFrames,
-    frameDuration = activeTime / numOfFrames
-  )
 
   override def onActiveStart(): ExplodeAbility = {
     super.onActiveStart()
@@ -91,7 +80,7 @@ case class ExplodeAbility private (
 
     // TODO: remove side effect
     if (state == AbilityState.Active) {
-      renderFrame(currentActiveAnimationFrame)
+      renderFrame(activeAnimation.get.currentFrame(time = timerParameters.activeTimer.time, loop = true))
     }
 
     copy()
@@ -142,7 +131,14 @@ case class ExplodeAbility private (
     onCooldown: Boolean = onCooldown,
     soundParameters: SoundParameters = soundParameters,
     timerParameters: TimerParameters = timerParameters,
-    bodyParameters: BodyParameters = bodyParameters
+    bodyParameters: BodyParameters = bodyParameters,
+    animationParameters: AnimationParameters = animationParameters
   ): ExplodeAbility =
-    copy(state = state, onCooldown = onCooldown, soundParameters = soundParameters, timerParameters = timerParameters)
+    copy(
+      state = state,
+      onCooldown = onCooldown,
+      soundParameters = soundParameters,
+      timerParameters = timerParameters,
+      animationParameters = animationParameters
+    )
 }

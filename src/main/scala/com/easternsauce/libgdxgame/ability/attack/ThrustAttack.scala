@@ -2,7 +2,8 @@ package com.easternsauce.libgdxgame.ability.attack
 
 import com.easternsauce.libgdxgame.ability.composed.components.AbilityComponent
 import com.easternsauce.libgdxgame.ability.misc.AbilityState.{AbilityState, Inactive}
-import com.easternsauce.libgdxgame.ability.parameters.{BodyParameters, SoundParameters, TimerParameters}
+import com.easternsauce.libgdxgame.ability.parameters.{AnimationParameters, BodyParameters, SoundParameters, TimerParameters}
+import com.easternsauce.libgdxgame.animation.Animation
 import com.easternsauce.libgdxgame.creature.Creature
 import com.easternsauce.libgdxgame.system.Assets
 
@@ -13,14 +14,20 @@ case class ThrustAttack private (
   override val timerParameters: TimerParameters = TimerParameters(),
   override val soundParameters: SoundParameters =
     SoundParameters(activeSound = Some(Assets.sound(Assets.attackSound)), activeSoundVolume = Some(0.1f)),
-  override val bodyParameters: BodyParameters = BodyParameters()
+  override val bodyParameters: BodyParameters = BodyParameters(),
+  override val animationParameters: AnimationParameters = AnimationParameters(
+    textureWidth = 64,
+    textureHeight = 32,
+    activeRegionName = "trident_thrust",
+    activeFrameCount = 11,
+    channelRegionName = "trident_thrust_windup",
+    channelFrameCount = 7
+  )
 ) extends MeleeAttack {
   override val id: String = "thrust"
 
   override protected val baseChannelTime = 0.6f
   override protected val baseActiveTime = 0.275f
-  private val numOfChannelFrames = 7
-  private val numOfFrames = 11
 
   override val attackRange: Float = 0.9375f
   override protected val aimed: Boolean = false
@@ -29,20 +36,11 @@ case class ThrustAttack private (
   override protected val knockbackVelocity: Float = 20f
   override protected val cooldownTime: Float = 0.7f
 
-  setupActiveAnimation(
-    regionName = "trident_thrust",
-    textureWidth = spriteWidth,
-    textureHeight = spriteHeight,
-    animationFrameCount = numOfFrames,
-    frameDuration = baseActiveTime / numOfFrames
+  override val activeAnimation: Option[Animation] = Some(
+    Animation.activeAnimationFromParameters(animationParameters, baseActiveTime)
   )
-
-  setupWindupAnimation(
-    regionName = "trident_thrust_windup",
-    textureWidth = spriteWidth,
-    textureHeight = spriteHeight,
-    animationFrameCount = numOfChannelFrames,
-    frameDuration = baseChannelTime / numOfChannelFrames
+  override val channelAnimation: Option[Animation] = Some(
+    Animation.channelAnimationFromParameters(animationParameters, baseChannelTime)
   )
 
   override def makeCopy(
@@ -52,13 +50,15 @@ case class ThrustAttack private (
     onCooldown: Boolean = onCooldown,
     soundParameters: SoundParameters = soundParameters,
     timerParameters: TimerParameters = timerParameters,
-    bodyParameters: BodyParameters = bodyParameters
+    bodyParameters: BodyParameters = bodyParameters,
+    animationParameters: AnimationParameters = animationParameters
   ): ThrustAttack =
     copy(
       state = state,
       onCooldown = onCooldown,
       soundParameters = soundParameters,
       timerParameters = timerParameters,
-      bodyParameters = bodyParameters
+      bodyParameters = bodyParameters,
+      animationParameters = animationParameters
     )
 }
