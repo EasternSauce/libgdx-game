@@ -47,14 +47,14 @@ case class DashAbility private (
   }
 
   override def makeCopy(
-    components: List[AbilityComponent] = components,
-    lastComponentFinishTime: Float = lastComponentFinishTime,
-    state: AbilityState = state,
-    onCooldown: Boolean = onCooldown,
-    soundParameters: SoundParameters = soundParameters,
-    timerParameters: TimerParameters = timerParameters,
-    bodyParameters: BodyParameters = bodyParameters,
-    animationParameters: AnimationParameters = animationParameters
+    components: List[AbilityComponent],
+    lastComponentFinishTime: Float,
+    state: AbilityState,
+    onCooldown: Boolean,
+    soundParameters: SoundParameters,
+    timerParameters: TimerParameters,
+    bodyParameters: BodyParameters,
+    animationParameters: AnimationParameters
   ): DashAbility =
     copy(state = state, onCooldown = onCooldown, soundParameters = soundParameters, timerParameters = timerParameters)
 }
