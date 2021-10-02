@@ -20,6 +20,7 @@ case class ShootArrowAttack private (
   override val soundParameters: SoundParameters = SoundParameters(),
   override val timerParameters: TimerParameters = TimerParameters()
 ) extends Ability {
+  type Self = ShootArrowAttack
 
   override val id: String = "shoot_arrow"
 
@@ -29,7 +30,7 @@ case class ShootArrowAttack private (
 
   override protected val isAttack = true
 
-  override def onChannellingStart(): ShootArrowAttack = {
+  override def onChannellingStart(): Self = {
     super.onChannellingStart()
 
     // TODO: remove side effects
@@ -40,8 +41,8 @@ case class ShootArrowAttack private (
     copy()
   }
 
-  override def onActiveStart(): ShootArrowAttack = {
-    val result = super.onActiveStart()
+  override def onActiveStart(): Self = {
+    val result = super.onActiveStart().asInstanceOf[Self]
 
     // TODO: remove side effects
 
@@ -73,7 +74,7 @@ case class ShootArrowAttack private (
 
     creature.takeStaminaDamage(20f)
 
-    copy()
+    result
   }
 
   override def makeCopy(
@@ -85,7 +86,7 @@ case class ShootArrowAttack private (
     timerParameters: TimerParameters,
     bodyParameters: BodyParameters,
     animationParameters: AnimationParameters
-  ): ShootArrowAttack =
+  ): Self =
     copy(state = state, onCooldown = onCooldown, soundParameters = soundParameters, timerParameters = timerParameters)
 
 }

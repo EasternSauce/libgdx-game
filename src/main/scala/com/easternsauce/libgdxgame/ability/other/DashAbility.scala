@@ -16,6 +16,7 @@ case class DashAbility private (
   override val soundParameters: SoundParameters = SoundParameters(),
   dashVector: Vector2 = new Vector2(0f, 0f)
 ) extends Ability {
+  type Self = DashAbility
 
   override val id = "dash"
   override val cooldownTime: Float = 1.5f
@@ -27,7 +28,7 @@ case class DashAbility private (
   override val activeAnimation: Option[Animation] = None
   override val channelAnimation: Option[Animation] = None
 
-  override def onActiveStart(): DashAbility = {
+  override def onActiveStart(): Self = {
     super.onActiveStart()
 
     val dashVector = new Vector2(creature.walkingVector.x * speed, creature.walkingVector.y * speed)
@@ -39,7 +40,7 @@ case class DashAbility private (
     copy(dashVector = dashVector)
   }
 
-  override def onUpdateActive(): DashAbility = {
+  override def onUpdateActive(): Self = {
     // TODO: remove sideffect
     creature.sustainVelocity(dashVector)
 
@@ -55,6 +56,6 @@ case class DashAbility private (
     timerParameters: TimerParameters,
     bodyParameters: BodyParameters,
     animationParameters: AnimationParameters
-  ): DashAbility =
+  ): Self =
     copy(state = state, onCooldown = onCooldown, soundParameters = soundParameters, timerParameters = timerParameters)
 }

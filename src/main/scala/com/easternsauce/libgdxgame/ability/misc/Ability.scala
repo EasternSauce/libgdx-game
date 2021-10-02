@@ -3,12 +3,20 @@ package com.easternsauce.libgdxgame.ability.misc
 import com.badlogic.gdx.audio.Sound
 import com.easternsauce.libgdxgame.ability.composed.components.AbilityComponent
 import com.easternsauce.libgdxgame.ability.misc.AbilityState.AbilityState
-import com.easternsauce.libgdxgame.ability.parameters.{AnimationParameters, BodyParameters, SoundParameters, TimerParameters}
+import com.easternsauce.libgdxgame.ability.parameters.{
+  AnimationParameters,
+  BodyParameters,
+  SoundParameters,
+  TimerParameters
+}
 import com.easternsauce.libgdxgame.animation.Animation
 import com.easternsauce.libgdxgame.creature.Creature
 import com.easternsauce.libgdxgame.util.EsBatch
+import com.softwaremill.quicklens._
 
-trait Ability {
+trait Ability extends Modification {
+  type Self >: this.type <: Ability
+
   val id: String
   val creature: Creature
   val components: List[AbilityComponent] = List()
@@ -55,6 +63,7 @@ trait Ability {
     if (isStoppable && state != AbilityState.Inactive) {
       this
         .onStop()
+        //.modify(_.state).setTo(AbilityState.Inactive)
         .makeCopy(state = AbilityState.Inactive)
     } else {
       this
@@ -137,7 +146,7 @@ trait Ability {
     this
   }
 
-  def onCollideWithCreature(creature: Creature): Ability = this
+  def onCollideWithCreature(creature: Creature): Self = this
 
   def active: Boolean = state == AbilityState.Active
 
@@ -152,5 +161,5 @@ trait Ability {
     timerParameters: TimerParameters = timerParameters,
     bodyParameters: BodyParameters = bodyParameters,
     animationParameters: AnimationParameters = animationParameters
-  ): Ability
+  ): Self
 }

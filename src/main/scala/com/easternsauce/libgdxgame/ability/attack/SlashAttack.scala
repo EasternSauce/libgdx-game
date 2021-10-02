@@ -2,6 +2,7 @@ package com.easternsauce.libgdxgame.ability.attack
 
 import com.easternsauce.libgdxgame.ability.composed.components.AbilityComponent
 import com.easternsauce.libgdxgame.ability.misc.AbilityState.{AbilityState, Inactive}
+import com.easternsauce.libgdxgame.ability.misc.Modification
 import com.easternsauce.libgdxgame.ability.parameters.{AnimationParameters, BodyParameters, SoundParameters, TimerParameters}
 import com.easternsauce.libgdxgame.animation.Animation
 import com.easternsauce.libgdxgame.creature.Creature
@@ -24,6 +25,8 @@ case class SlashAttack private (
     activeFrameCount = 6
   )
 ) extends MeleeAttack {
+  override type Self = MeleeAttack
+
   override val id: String = "slash"
 
   override protected val baseChannelTime = 0.3f
@@ -52,7 +55,7 @@ case class SlashAttack private (
     timerParameters: TimerParameters,
     bodyParameters: BodyParameters,
     animationParameters: AnimationParameters
-  ): SlashAttack =
+  ): Self =
     copy(
       state = state,
       onCooldown = onCooldown,

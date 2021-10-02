@@ -2,7 +2,7 @@ package com.easternsauce.libgdxgame.ability.composed
 
 import com.easternsauce.libgdxgame.ability.composed.components.{AbilityComponent, Fist}
 import com.easternsauce.libgdxgame.ability.misc.AbilityState.{AbilityState, Inactive}
-import com.easternsauce.libgdxgame.ability.parameters.{AnimationParameters, BodyParameters, SoundParameters, TimerParameters}
+import com.easternsauce.libgdxgame.ability.parameters._
 import com.easternsauce.libgdxgame.creature.{Creature, Enemy}
 import com.easternsauce.libgdxgame.system.GameSystem
 
@@ -15,6 +15,7 @@ case class FistSlamAbility private (
   override val components: List[AbilityComponent] = List(),
   override val lastComponentFinishTime: Float = 0f
 ) extends ComposedAbility {
+  override type Self = FistSlamAbility
 
   override val id: String = "fist_slam"
 
@@ -23,7 +24,7 @@ case class FistSlamAbility private (
 
   override protected val numOfComponents = 20
 
-  override def onActiveStart(): FistSlamAbility = {
+  override def onActiveStart(): Self = {
 
     // TODO: sideeffect
     creature.takeStaminaDamage(25f)
@@ -34,13 +35,14 @@ case class FistSlamAbility private (
   override def createComponent(index: Int): AbilityComponent = {
     val range: Float = 7.8125f
     val aggroedCreature = creature.asInstanceOf[Enemy].aggroedTarget.get // TODO targeting?
-    // TODO: factory method
-    new Fist(
+    Fist(
       this,
-      0.1f * index,
-      aggroedCreature.pos.x + GameSystem.randomGenerator.between(-range, range),
-      aggroedCreature.pos.y + GameSystem.randomGenerator.between(-range, range),
-      2f
+      ComponentParameters(
+        startTime = 0.1f * index,
+        startX = aggroedCreature.pos.x + GameSystem.randomGenerator.between(-range, range),
+        startY = aggroedCreature.pos.y + GameSystem.randomGenerator.between(-range, range),
+        radius = 2f
+      )
     )
   }
 
@@ -53,7 +55,7 @@ case class FistSlamAbility private (
     timerParameters: TimerParameters,
     bodyParameters: BodyParameters,
     animationParameters: AnimationParameters
-  ): FistSlamAbility =
+  ): Self =
     copy(
       components = components,
       lastComponentFinishTime = lastComponentFinishTime,

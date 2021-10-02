@@ -2,7 +2,8 @@ package com.easternsauce.libgdxgame.ability.composed
 
 import com.easternsauce.libgdxgame.ability.composed.components.{AbilityComponent, Bubble}
 import com.easternsauce.libgdxgame.ability.misc.AbilityState.{AbilityState, Inactive}
-import com.easternsauce.libgdxgame.ability.parameters.{AnimationParameters, BodyParameters, SoundParameters, TimerParameters}
+import com.easternsauce.libgdxgame.ability.misc.Modification
+import com.easternsauce.libgdxgame.ability.parameters._
 import com.easternsauce.libgdxgame.creature.Creature
 
 case class BubbleAbility private (
@@ -14,6 +15,7 @@ case class BubbleAbility private (
   override val components: List[AbilityComponent] = List(),
   override val lastComponentFinishTime: Float = 0f
 ) extends ComposedAbility {
+  override type Self = BubbleAbility
 
   override val id = "bubble"
   override protected lazy val channelTime: Float = 0.05f
@@ -21,7 +23,7 @@ case class BubbleAbility private (
 
   override protected val numOfComponents = 3
 
-  override def onActiveStart(): BubbleAbility = {
+  override def onActiveStart(): Self = {
 
     // TODO: sideeffects
     creature.takeStaminaDamage(25f)
@@ -30,8 +32,16 @@ case class BubbleAbility private (
   }
 
   override def createComponent(index: Int): AbilityComponent = {
-    // TODO: factory method
-    new Bubble(this, creature.pos.x, creature.pos.y, radius = 4f, speed = 30f, startTime = 0.4f * index)
+    Bubble(
+      this,
+      componentParameters = ComponentParameters(
+        startX = creature.pos.x,
+        startY = creature.pos.y,
+        radius = 4f,
+        speed = 30f,
+        startTime = 0.4f * index
+      )
+    )
   }
 
   override def makeCopy(
@@ -43,7 +53,7 @@ case class BubbleAbility private (
     timerParameters: TimerParameters,
     bodyParameters: BodyParameters,
     animationParameters: AnimationParameters
-  ): BubbleAbility =
+  ): Self =
     copy(
       components = components,
       lastComponentFinishTime = lastComponentFinishTime,

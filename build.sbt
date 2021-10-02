@@ -25,4 +25,6 @@ libraryDependencies += "io.circe" %% "circe-parser" % "0.14.1"
 
 libraryDependencies += "io.circe" %% "circe-generic" % "0.14.1"
 
+libraryDependencies += "com.softwaremill.quicklens" %% "quicklens" % "1.7.4"
+
 scalacOptions += "-deprecation"

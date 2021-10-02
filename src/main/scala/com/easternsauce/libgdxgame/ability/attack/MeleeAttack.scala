@@ -2,15 +2,18 @@ package com.easternsauce.libgdxgame.ability.attack
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.math.{Rectangle, Vector2}
-import com.easternsauce.libgdxgame.ability.misc._
-import com.easternsauce.libgdxgame.ability.parameters.AttackHitbox
+import com.easternsauce.libgdxgame.ability.composed.components.AbilityComponent
+import com.easternsauce.libgdxgame.ability.misc.AbilityState.AbilityState
+import com.easternsauce.libgdxgame.ability.misc.{Ability, _}
+import com.easternsauce.libgdxgame.ability.parameters._
 import com.easternsauce.libgdxgame.creature.Creature
 import com.easternsauce.libgdxgame.system.{Constants, GameSystem}
 import com.easternsauce.libgdxgame.util.{EsBatch, EsPolygon}
 
 trait MeleeAttack extends Ability with PhysicalHitbox {
+  type Self >: this.type <: MeleeAttack
 
-  implicit def toMeleeAttack(ability: Ability): MeleeAttack = ability.asInstanceOf[MeleeAttack]
+  implicit def toMeleeAttack(ability: Ability): Self = ability.asInstanceOf[Self]
 
   val attackRange: Float
 
@@ -20,8 +23,11 @@ trait MeleeAttack extends Ability with PhysicalHitbox {
   protected val aimed: Boolean
   protected val spriteWidth: Int
   protected val spriteHeight: Int
+
   protected def width: Float = spriteWidth.toFloat / Constants.PPM
+
   protected def height: Float = spriteHeight.toFloat / Constants.PPM
+
   protected val knockbackVelocity: Float
   override protected val isAttack = true
 
@@ -39,7 +45,7 @@ trait MeleeAttack extends Ability with PhysicalHitbox {
     if (creature.isWeaponEquipped) creature.currentWeapon.template.attackScale.get
     else 1.4f
 
-  override def onActiveStart(): MeleeAttack = {
+  abstract override def onActiveStart(): Self = {
     val ability = super.onActiveStart()
 
     // TODO: clean up sideeffects
@@ -82,7 +88,7 @@ trait MeleeAttack extends Ability with PhysicalHitbox {
       .makeCopy(bodyParameters = newBodyParameters)
   }
 
-  override def render(batch: EsBatch): MeleeAttack = {
+  override def render(batch: EsBatch): Self = {
     // TODO: remove side effect
     def renderFrame(image: TextureRegion): Unit = {
       val attackVector = creature.attackVector
@@ -116,8 +122,8 @@ trait MeleeAttack extends Ability with PhysicalHitbox {
     this
   }
 
-  override def onChannellingStart(): MeleeAttack = {
-    val ability: MeleeAttack = super.onChannellingStart()
+  override def onChannellingStart(): Self = {
+    val ability: Self = super.onChannellingStart()
 
     // TODO: sideeffects
 
@@ -151,9 +157,9 @@ trait MeleeAttack extends Ability with PhysicalHitbox {
     ability.makeCopy(bodyParameters = bodyParameters.copy(hitbox = hitbox))
   }
 
-  override def update(): MeleeAttack = {
+  override def update(): Self = {
 
-    val ability: MeleeAttack = super.update()
+    val ability: Self = super.update()
 
     if (bodyParameters.body.nonEmpty && bodyParameters.toRemoveBody) {
       bodyParameters.body.get.getWorld.destroyBody(bodyParameters.body.get)
@@ -164,7 +170,7 @@ trait MeleeAttack extends Ability with PhysicalHitbox {
 
   }
 
-  override def updateHitbox(): MeleeAttack = {
+  override def updateHitbox(): Self = {
     if (bodyParameters.hitbox.nonEmpty) {
 
       val attackVector = creature.attackVector
@@ -194,7 +200,7 @@ trait MeleeAttack extends Ability with PhysicalHitbox {
 
   }
 
-  override def onStop(): MeleeAttack = {
+  override def onStop(): Self = {
     creature.isAttacking = false
 
     // IMPORTANT: ability has to be active
@@ -205,7 +211,7 @@ trait MeleeAttack extends Ability with PhysicalHitbox {
       this
   }
 
-  override def onCollideWithCreature(otherCreature: Creature): MeleeAttack = {
+  override def onCollideWithCreature(otherCreature: Creature): Self = {
 
     // TODO: remove sideeffect
     if (!(creature.isEnemy && otherCreature.isEnemy)) {
@@ -230,4 +236,14 @@ trait MeleeAttack extends Ability with PhysicalHitbox {
     this
   }
 
+  override def makeCopy(
+    components: List[AbilityComponent] = components,
+    lastComponentFinishTime: Float = lastComponentFinishTime,
+    state: AbilityState = state,
+    onCooldown: Boolean = onCooldown,
+    soundParameters: SoundParameters = soundParameters,
+    timerParameters: TimerParameters = timerParameters,
+    bodyParameters: BodyParameters = bodyParameters,
+    animationParameters: AnimationParameters = animationParameters
+  ): Self
 }

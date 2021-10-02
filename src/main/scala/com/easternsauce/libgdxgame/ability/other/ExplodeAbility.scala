@@ -21,6 +21,7 @@ case class ExplodeAbility private (
   body: Option[Body] = None,
   bodyCreated: Boolean = false
 ) extends Ability {
+  type Self = ExplodeAbility
 
   override val id: String = "explode"
   override protected val cooldownTime: Float = 0.8f
@@ -33,7 +34,7 @@ case class ExplodeAbility private (
 
   override protected lazy val channelTime: Float = 1.3f
 
-  override def onActiveStart(): ExplodeAbility = {
+  override def onActiveStart(): Self = {
     super.onActiveStart()
 
     timerParameters.abilityActiveAnimationTimer.restart()
@@ -46,7 +47,7 @@ case class ExplodeAbility private (
     initBody(creature.pos.x, creature.pos.y)
   }
 
-  override def onUpdateActive(): ExplodeAbility = {
+  override def onUpdateActive(): Self = {
     val activeTimer = timerParameters.activeTimer
 
     if (bodyCreated && activeTimer.time > 0.1f) {
@@ -55,7 +56,7 @@ case class ExplodeAbility private (
       copy()
   }
 
-  override def render(batch: EsBatch): ExplodeAbility = {
+  override def render(batch: EsBatch): Self = {
     def renderFrame(image: TextureRegion): Unit = {
 
       val scale = explosionRange * 2 / image.getRegionWidth
@@ -86,7 +87,7 @@ case class ExplodeAbility private (
     copy()
   }
 
-  def initBody(x: Float, y: Float): ExplodeAbility = {
+  def initBody(x: Float, y: Float): Self = {
     // TODO: side effects
 
     val bodyDef = new BodyDef()
@@ -106,7 +107,7 @@ case class ExplodeAbility private (
     copy(body = Some(b2Body), bodyCreated = true)
   }
 
-  def destroyBody(world: World): ExplodeAbility = {
+  def destroyBody(world: World): Self = {
     if (bodyCreated) {
       // TODO: sideeffect?
       if (body.nonEmpty) world.destroyBody(body.get)
@@ -115,7 +116,7 @@ case class ExplodeAbility private (
       copy()
   }
 
-  override def onCollideWithCreature(otherCreature: Creature): ExplodeAbility = {
+  override def onCollideWithCreature(otherCreature: Creature): Self = {
     // TODO: side effect
     if (!(creature.isEnemy && otherCreature.isEnemy) && otherCreature.isAlive) { // mob can't hurt a mob?
       if (!otherCreature.isImmune) otherCreature.takeLifeDamage(700f, immunityFrames = true, Some(creature), 0, 0, 0)
@@ -133,7 +134,7 @@ case class ExplodeAbility private (
     timerParameters: TimerParameters,
     bodyParameters: BodyParameters,
     animationParameters: AnimationParameters
-  ): ExplodeAbility =
+  ): Self =
     copy(
       state = state,
       onCooldown = onCooldown,

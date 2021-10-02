@@ -5,8 +5,9 @@ import com.easternsauce.libgdxgame.ability.misc.{Ability, AbilityState}
 import com.easternsauce.libgdxgame.util.EsBatch
 
 trait ComposedAbility extends Ability {
+  type Self >: this.type <: ComposedAbility
 
-  implicit def toComposedAbility(ability: Ability): ComposedAbility = ability.asInstanceOf[ComposedAbility]
+  implicit def toComposedAbility(ability: Ability): Self = ability.asInstanceOf[Self]
 
   val components: List[AbilityComponent]
   val lastComponentFinishTime: Float
@@ -15,15 +16,15 @@ trait ComposedAbility extends Ability {
 
   override protected lazy val activeTime: Float = 0
 
-  override def update(): ComposedAbility = {
+  override def update(): Self = {
     val channelTimer = timerParameters.channelTimer
     val activeTimer = timerParameters.activeTimer
 
     import AbilityState._
 
-    val res: ComposedAbility = state match {
+    val res: Self = state match {
       case Channeling =>
-        val ability: ComposedAbility = if (channelTimer.time > channelTime) {
+        val ability: Self = if (channelTimer.time > channelTime) {
           activeTimer.restart()
 
           this
@@ -59,7 +60,7 @@ trait ComposedAbility extends Ability {
     res
   }
 
-  override def render(batch: EsBatch): ComposedAbility = {
+  override def render(batch: EsBatch): Self = {
     if (state == AbilityState.Active) {
       // TODO: remove sideeffect
       for (component <- components) {
@@ -70,13 +71,14 @@ trait ComposedAbility extends Ability {
     this
   }
 
-  override def onUpdateActive(): ComposedAbility = {
+  override def onUpdateActive(): Self = {
     val activeTimer = timerParameters.activeTimer
 
     // TODO: remove sideeffect
 
+    // TODO: update components!!
     for (component <- components) {
-      if (!component.started && activeTimer.time > component.startTime) {
+      if (!component.started && activeTimer.time > component.componentParameters.startTime) {
         component.start()
       }
 
@@ -86,7 +88,7 @@ trait ComposedAbility extends Ability {
     this
   }
 
-  override def onChannellingStart(): ComposedAbility = {
+  override def onChannellingStart(): Self = {
 
     val components = for (i <- 0 until numOfComponents) yield createComponent(i)
 

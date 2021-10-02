@@ -1,21 +1,18 @@
 package com.easternsauce.libgdxgame.ability.composed.components
 
+import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.{Body, BodyDef, CircleShape, FixtureDef}
 import com.easternsauce.libgdxgame.ability.misc.AbilityState.AbilityState
-import com.easternsauce.libgdxgame.ability.misc.{Ability, AbilityState}
-import com.easternsauce.libgdxgame.ability.parameters.{AnimationParameters, TimerParameters}
+import com.easternsauce.libgdxgame.ability.misc.{Ability, AbilityState, Modification}
+import com.easternsauce.libgdxgame.ability.parameters.{AnimationParameters, ComponentParameters, TimerParameters}
 import com.easternsauce.libgdxgame.animation.Animation
 import com.easternsauce.libgdxgame.creature.Creature
 import com.easternsauce.libgdxgame.system.Assets
 import com.easternsauce.libgdxgame.util.EsBatch
 
-class Meteor(
-  val mainAbility: Ability,
-  val startTime: Float,
-  val posX: Float,
-  val posY: Float,
-  val radius: Float,
-  speed: Float,
+case class Meteor(
+  mainAbility: Ability,
+  override val componentParameters: ComponentParameters = ComponentParameters(),
   override val timerParameters: TimerParameters = TimerParameters(),
   override val animationParameters: AnimationParameters = AnimationParameters(
     textureWidth = 64,
@@ -24,16 +21,18 @@ class Meteor(
     activeFrameCount = 21,
     channelRegionName = "explosion_windup",
     channelFrameCount = 7
-  )
-) extends AbilityComponent {
+  ),
+  override val state: AbilityState = AbilityState.Inactive,
+  override val started: Boolean = false,
+  override val body: Option[Body] = None,
+  override val destroyed: Boolean = false,
+  override val dirVector: Vector2 = new Vector2(1, 0)
+) extends AbilityComponent
+    with Modification {
+  type Self = Meteor
 
-  override lazy val activeTime: Float = 1.8f / speed
-  override lazy val channelTime: Float = 1.2f / speed
-
-  override var state: AbilityState = AbilityState.Inactive
-  override var started = false
-  override var body: Body = _
-  override var destroyed = false
+  override lazy val activeTime: Float = 1.8f / componentParameters.speed
+  override lazy val channelTime: Float = 1.2f / componentParameters.speed
 
   override val activeAnimation: Option[Animation] = Some(
     Animation.activeAnimationFromParameters(animationParameters, activeTime)
@@ -42,66 +41,74 @@ class Meteor(
     Animation.channelAnimationFromParameters(animationParameters, channelTime)
   )
 
-  def start(): Unit = {
-    started = true
-    state = AbilityState.Channeling
+  def start(): Meteor = {
+
     channelTimer.restart()
     timerParameters.abilityChannelAnimationTimer.restart()
+
+    copy(started = true, state = AbilityState.Channeling)
   }
 
-  override def onUpdateActive(): Unit = {
-    if (started) {
-      if (state == AbilityState.Channeling)
-        if (channelTimer.time > channelTime) {
-          onActiveStart()
-        }
-      if (state == AbilityState.Active) {
-        if (!destroyed && activeTimer.time >= 0.2f) {
-          body.getWorld.destroyBody(body)
-          destroyed = true
-        }
-        if (activeTimer.time > activeTime) {
-          // on active stop
-          state = AbilityState.Inactive
-        }
+  override def onUpdateActive(): Meteor = {
+    modifyIf(started) {
+      state match {
+        case AbilityState.Channeling =>
+          this
+            .modifyIf(channelTimer.time > channelTime) {
+              onActiveStart()
+            }
+        case AbilityState.Active =>
+          this
+            .modifyIf(!destroyed && activeTimer.time >= 0.2f) {
+              body.get.getWorld.destroyBody(body.get)
+              copy(destroyed = true)
+            }
+            .modifyIf(activeTimer.time > activeTime) {
+              // on active stop
+              copy(state = AbilityState.Inactive)
+            }
+        case _ => this
       }
     }
 
   }
 
-  private def onActiveStart(): Unit = {
-    state = AbilityState.Active
+  private def onActiveStart(): Meteor = {
     Assets.sound(Assets.explosionSound).play(0.01f)
     timerParameters.abilityActiveAnimationTimer.restart()
     activeTimer.restart()
-    initBody(posX, posY)
+    val body = initBody(componentParameters.startX, componentParameters.startY)
+
+    copy(state = AbilityState.Active, body = body)
   }
 
-  def initBody(x: Float, y: Float): Unit = {
+  def initBody(x: Float, y: Float): Option[Body] = {
     val bodyDef = new BodyDef()
     bodyDef.position.set(x, y)
 
     bodyDef.`type` = BodyDef.BodyType.StaticBody
-    body = mainAbility.creature.area.get.world.createBody(bodyDef)
+    val body = mainAbility.creature.area.get.world.createBody(bodyDef)
     body.setUserData(this)
 
     val fixtureDef: FixtureDef = new FixtureDef()
     val shape: CircleShape = new CircleShape()
-    shape.setRadius(radius)
+    shape.setRadius(componentParameters.radius)
     fixtureDef.shape = shape
     fixtureDef.isSensor = true
     body.createFixture(fixtureDef)
+
+    Some(body)
   }
 
-  override def render(batch: EsBatch): Unit = {
+  override def render(batch: EsBatch): Meteor = {
     if (state == AbilityState.Channeling) {
       val spriteWidth = 64
-      val scale = radius * 2 / spriteWidth
+      val scale = componentParameters.radius * 2 / spriteWidth
       val image = channelAnimation.get.currentFrame(time = timerParameters.channelTimer.time, loop = true)
       batch.spriteBatch.draw(
         image,
-        posX - radius,
-        posY - radius,
+        componentParameters.startX - componentParameters.radius,
+        componentParameters.startY - componentParameters.radius,
         0,
         0,
         image.getRegionWidth.toFloat,
@@ -113,12 +120,12 @@ class Meteor(
     }
     if (state == AbilityState.Active) {
       val spriteWidth = 64
-      val scale = radius * 2 / spriteWidth
+      val scale = componentParameters.radius * 2 / spriteWidth
       val image = activeAnimation.get.currentFrame(time = timerParameters.activeTimer.time, loop = true)
       batch.spriteBatch.draw(
         image,
-        posX - radius,
-        posY - radius,
+        componentParameters.startX - componentParameters.radius,
+        componentParameters.startY - componentParameters.radius,
         0,
         0,
         image.getRegionWidth.toFloat,
@@ -128,12 +135,16 @@ class Meteor(
         0.0f
       )
     }
+
+    this
   }
 
-  override def onCollideWithCreature(creature: Creature): Unit = {
+  override def onCollideWithCreature(creature: Creature): Meteor = {
     if (!(mainAbility.creature.isEnemy && creature.isEnemy) && creature.isAlive) {
       if (!creature.isImmune) creature.takeLifeDamage(70f, immunityFrames = true)
     }
+
+    this
   }
 
 }

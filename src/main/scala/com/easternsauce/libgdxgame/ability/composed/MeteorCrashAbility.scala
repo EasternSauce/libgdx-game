@@ -4,7 +4,7 @@ import com.badlogic.gdx.math.Vector2
 import com.easternsauce.libgdxgame.ability.composed.components.{AbilityComponent, Meteor}
 import com.easternsauce.libgdxgame.ability.misc.Ability
 import com.easternsauce.libgdxgame.ability.misc.AbilityState.{AbilityState, Inactive}
-import com.easternsauce.libgdxgame.ability.parameters.{AnimationParameters, BodyParameters, SoundParameters, TimerParameters}
+import com.easternsauce.libgdxgame.ability.parameters._
 import com.easternsauce.libgdxgame.creature.Creature
 
 case class MeteorCrashAbility private (
@@ -16,8 +16,7 @@ case class MeteorCrashAbility private (
   override val components: List[AbilityComponent] = List(),
   override val lastComponentFinishTime: Float = 0f
 ) extends ComposedAbility {
-
-  implicit def toMeteorCrashAbility(ability: Ability): MeteorCrashAbility = ability.asInstanceOf[MeteorCrashAbility]
+  override type Self = MeteorCrashAbility
 
   override val id = "meteor_crash"
 
@@ -26,42 +25,48 @@ case class MeteorCrashAbility private (
 
   override protected val numOfComponents = 30
 
-  override def onChannellingStart(): MeteorCrashAbility = {
+  override def onChannellingStart(): Self = {
     val facingVector: Vector2 = creature.facingVector.nor()
     val meteors1 = for (i <- 0 until numOfComponents / 3) yield {
-      new Meteor(
+      Meteor(
         this,
-        0.1f * i,
-        creature.pos.x + (3.125f * (i + 1)) * facingVector.x,
-        creature.pos.y + (3.125f * (i + 1)) * facingVector.y,
-        1.5625f + 0.09375f * i * i,
-        2.5f
+        ComponentParameters(
+          startTime = 0.1f * i,
+          startX = creature.pos.x + (3.125f * (i + 1)) * facingVector.x,
+          startY = creature.pos.y + (3.125f * (i + 1)) * facingVector.y,
+          radius = 1.5625f + 0.09375f * i * i,
+          speed = 2.5f
+        )
       )
     }
 
     val meteors2 = for (i <- 0 until numOfComponents / 3) yield {
       val vector: Vector2 = facingVector.cpy()
       vector.setAngleDeg(vector.angleDeg() + 50)
-      new Meteor(
+      Meteor(
         this,
-        0.1f * i,
-        creature.pos.x + (3.125f * (i + 1)) * vector.x,
-        creature.pos.y + (3.125f * (i + 1)) * vector.y,
-        1.5625f + 0.09375f * i * i,
-        2.5f
+        ComponentParameters(
+          startTime = 0.1f * i,
+          startX = creature.pos.x + (3.125f * (i + 1)) * vector.x,
+          startY = creature.pos.y + (3.125f * (i + 1)) * vector.y,
+          radius = 1.5625f + 0.09375f * i * i,
+          speed = 2.5f
+        )
       )
     }
 
     val meteors3 = for (i <- 0 until numOfComponents / 3) yield {
       val vector: Vector2 = facingVector.cpy()
       vector.setAngleDeg(vector.angleDeg() - 50)
-      new Meteor(
+      Meteor(
         this,
-        0.1f * i,
-        creature.pos.x + (3.125f * (i + 1)) * vector.x,
-        creature.pos.y + (3.125f * (i + 1)) * vector.y,
-        1.5625f + 0.09375f * i * i,
-        2.5f
+        ComponentParameters(
+          startTime = 0.1f * i,
+          startX = creature.pos.x + (3.125f * (i + 1)) * vector.x,
+          startY = creature.pos.y + (3.125f * (i + 1)) * vector.y,
+          radius = 1.5625f + 0.09375f * i * i,
+          speed = 2.5f
+        )
       )
     }
 
@@ -76,8 +81,8 @@ case class MeteorCrashAbility private (
     copy(components = components.toList)
   }
 
-  override def onActiveStart(): MeteorCrashAbility = {
-    val ability = super.onActiveStart()
+  override def onActiveStart(): Self = {
+    val ability = super.onActiveStart().asInstanceOf[Self]
 
     creature.takeStaminaDamage(25f)
 
@@ -91,13 +96,15 @@ case class MeteorCrashAbility private (
     // TODO: change angle based on index?
     vector.setAngleDeg(vector.angleDeg() + 50)
 
-    new Meteor(
+    Meteor(
       this,
-      0.1f * index,
-      creature.pos.x + (3.125f * (index + 1)) * vector.x,
-      creature.pos.y + (3.125f * (index + 1)) * vector.y,
-      1.5625f + 0.09375f * index * index,
-      2.5f
+      ComponentParameters(
+        startTime = 0.1f * index,
+        startX = creature.pos.x + (3.125f * (index + 1)) * vector.x,
+        startY = creature.pos.y + (3.125f * (index + 1)) * vector.y,
+        radius = 1.5625f + 0.09375f * index * index,
+        speed = 2.5f
+      )
     )
   }
 
@@ -110,7 +117,7 @@ case class MeteorCrashAbility private (
     timerParameters: TimerParameters,
     bodyParameters: BodyParameters,
     animationParameters: AnimationParameters
-  ): MeteorCrashAbility =
+  ): Self =
     copy(
       components = components,
       lastComponentFinishTime = lastComponentFinishTime,

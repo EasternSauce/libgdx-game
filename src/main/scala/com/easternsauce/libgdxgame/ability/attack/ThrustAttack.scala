@@ -24,6 +24,8 @@ case class ThrustAttack private (
     channelFrameCount = 7
   )
 ) extends MeleeAttack {
+  override type Self = MeleeAttack
+
   override val id: String = "thrust"
 
   override protected val baseChannelTime = 0.6f
@@ -52,7 +54,7 @@ case class ThrustAttack private (
     timerParameters: TimerParameters,
     bodyParameters: BodyParameters,
     animationParameters: AnimationParameters
-  ): ThrustAttack =
+  ): Self =
     copy(
       state = state,
       onCooldown = onCooldown,

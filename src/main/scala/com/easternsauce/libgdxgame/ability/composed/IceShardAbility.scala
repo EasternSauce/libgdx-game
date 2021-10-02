@@ -3,7 +3,7 @@ package com.easternsauce.libgdxgame.ability.composed
 import com.badlogic.gdx.math.Vector2
 import com.easternsauce.libgdxgame.ability.composed.components.{AbilityComponent, IceShard}
 import com.easternsauce.libgdxgame.ability.misc.AbilityState.{AbilityState, Inactive}
-import com.easternsauce.libgdxgame.ability.parameters.{AnimationParameters, BodyParameters, SoundParameters, TimerParameters}
+import com.easternsauce.libgdxgame.ability.parameters._
 import com.easternsauce.libgdxgame.creature.{Creature, Enemy}
 
 case class IceShardAbility private (
@@ -15,6 +15,7 @@ case class IceShardAbility private (
   override val components: List[AbilityComponent] = List(),
   override val lastComponentFinishTime: Float = 0f
 ) extends ComposedAbility {
+  override type Self = IceShardAbility
 
   override val id = "ice_shard"
 
@@ -23,7 +24,7 @@ case class IceShardAbility private (
 
   override protected val numOfComponents = 9
 
-  override def onActiveStart(): IceShardAbility = {
+  override def onActiveStart(): Self = {
     creature.takeStaminaDamage(25f)
     copy()
   }
@@ -36,13 +37,10 @@ case class IceShardAbility private (
         new Vector2(1.0f, 0.0f)
       }
 
-    new IceShard(
+    IceShard(
       this,
-      creature.pos.x,
-      creature.pos.y,
-      speed = 30f,
-      startTime = 0.05f * index,
-      facingVector.cpy.rotateDeg(20f * (index - 5))
+      ComponentParameters(startX = creature.pos.x, startY = creature.pos.y, speed = 30f, startTime = 0.05f * index),
+      dirVector = facingVector.cpy.rotateDeg(20f * (index - 5))
     )
   }
 
@@ -55,7 +53,7 @@ case class IceShardAbility private (
     timerParameters: TimerParameters,
     bodyParameters: BodyParameters,
     animationParameters: AnimationParameters
-  ): IceShardAbility =
+  ): Self =
     copy(
       components = components,
       lastComponentFinishTime = lastComponentFinishTime,
