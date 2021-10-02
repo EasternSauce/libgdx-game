@@ -108,7 +108,7 @@ case class MeteorCrashAbility private (
     )
   }
 
-  override def makeCopy(
+  override def copy(
     components: List[AbilityComponent],
     lastComponentFinishTime: Float,
     state: AbilityState,
@@ -116,7 +116,7 @@ case class MeteorCrashAbility private (
     soundParameters: SoundParameters,
     timerParameters: TimerParameters,
     bodyParameters: BodyParameters,
-    animationParameters: AnimationParameters
+    animationParameters: AnimationParameters, dirVector: Vector2
   ): Self =
     copy(
       components = components,

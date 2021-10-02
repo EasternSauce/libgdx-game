@@ -28,7 +28,7 @@ trait ComposedAbility extends Ability {
           activeTimer.restart()
 
           this
-            .makeCopy(state = AbilityState.Active, onCooldown = true)
+            .copy(state = AbilityState.Active, onCooldown = true)
             .onActiveStart()
 
         } else
@@ -42,7 +42,7 @@ trait ComposedAbility extends Ability {
         val ability =
           if (activeTimer.time > lastComponentFinishTime)
             this
-              .makeCopy(state = AbilityState.Inactive)
+              .copy(state = AbilityState.Inactive)
               .onStop()
           else
             this
@@ -52,7 +52,7 @@ trait ComposedAbility extends Ability {
 
       case Inactive if onCooldown =>
         if (activeTimer.time > cooldownTime) {
-          makeCopy(onCooldown = false)
+          copy(onCooldown = false)
         } else
           this
       case _ => this
@@ -99,7 +99,7 @@ trait ComposedAbility extends Ability {
     creature.activateEffect("immobilized", lastComponentFinishTime)
 
     this
-      .makeCopy(components = components.toList, lastComponentFinishTime = lastComponentFinishTime)
+      .copy(components = components.toList, lastComponentFinishTime = lastComponentFinishTime)
   }
 
   def createComponent(index: Int): AbilityComponent = ???

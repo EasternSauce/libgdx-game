@@ -1,14 +1,10 @@
 package com.easternsauce.libgdxgame.ability.misc
 
 import com.badlogic.gdx.audio.Sound
+import com.badlogic.gdx.math.Vector2
 import com.easternsauce.libgdxgame.ability.composed.components.AbilityComponent
 import com.easternsauce.libgdxgame.ability.misc.AbilityState.AbilityState
-import com.easternsauce.libgdxgame.ability.parameters.{
-  AnimationParameters,
-  BodyParameters,
-  SoundParameters,
-  TimerParameters
-}
+import com.easternsauce.libgdxgame.ability.parameters.{AnimationParameters, BodyParameters, SoundParameters, TimerParameters}
 import com.easternsauce.libgdxgame.animation.Animation
 import com.easternsauce.libgdxgame.creature.Creature
 import com.easternsauce.libgdxgame.util.EsBatch
@@ -27,6 +23,7 @@ trait Ability extends Modification {
   val timerParameters: TimerParameters = TimerParameters()
   val bodyParameters: BodyParameters = BodyParameters()
   val animationParameters: AnimationParameters = AnimationParameters()
+  val dirVector: Vector2 = new Vector2(0f, 0f)
 
   val activeAnimation: Option[Animation] = None
   val channelAnimation: Option[Animation] = None
@@ -63,8 +60,8 @@ trait Ability extends Modification {
     if (isStoppable && state != AbilityState.Inactive) {
       this
         .onStop()
-        //.modify(_.state).setTo(AbilityState.Inactive)
-        .makeCopy(state = AbilityState.Inactive)
+        .modify(_.state).setTo(AbilityState.Inactive)
+//        .makeCopy(state = AbilityState.Inactive)
     } else {
       this
     }
@@ -87,7 +84,7 @@ trait Ability extends Modification {
 
       this
         .onChannellingStart()
-        .makeCopy(state = AbilityState.Channeling)
+        .copy(state = AbilityState.Channeling)
     } else
       this
   }
@@ -104,7 +101,7 @@ trait Ability extends Modification {
 
           this
             .onActiveStart()
-            .makeCopy(state = AbilityState.Active, onCooldown = true)
+            .copy(state = AbilityState.Active, onCooldown = true)
         } else
           this
 
@@ -116,7 +113,7 @@ trait Ability extends Modification {
         val ability: Ability = if (activeTimer.time > activeTime) {
           this
             .onStop()
-            .makeCopy(state = AbilityState.Inactive)
+            .copy(state = AbilityState.Inactive)
         } else
           this
 
@@ -128,7 +125,7 @@ trait Ability extends Modification {
         if (onCooldown && activeTimer.time > cooldownTime) {
 
           this
-            .makeCopy(onCooldown = false)
+            .copy(onCooldown = false)
         } else
           this
 
@@ -152,7 +149,7 @@ trait Ability extends Modification {
 
   def asMapEntry: (String, Ability) = id -> this
 
-  def makeCopy(
+  def copy(
     components: List[AbilityComponent] = components,
     lastComponentFinishTime: Float = lastComponentFinishTime,
     state: AbilityState = state,
@@ -160,6 +157,7 @@ trait Ability extends Modification {
     soundParameters: SoundParameters = soundParameters,
     timerParameters: TimerParameters = timerParameters,
     bodyParameters: BodyParameters = bodyParameters,
-    animationParameters: AnimationParameters = animationParameters
+    animationParameters: AnimationParameters = animationParameters,
+    dirVector: Vector2 = dirVector
   ): Self
 }

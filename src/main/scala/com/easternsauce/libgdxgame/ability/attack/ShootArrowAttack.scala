@@ -5,7 +5,12 @@ import com.badlogic.gdx.math.Vector2
 import com.easternsauce.libgdxgame.ability.composed.components.AbilityComponent
 import com.easternsauce.libgdxgame.ability.misc.AbilityState.AbilityState
 import com.easternsauce.libgdxgame.ability.misc.{Ability, AbilityState}
-import com.easternsauce.libgdxgame.ability.parameters.{AnimationParameters, BodyParameters, SoundParameters, TimerParameters}
+import com.easternsauce.libgdxgame.ability.parameters.{
+  AnimationParameters,
+  BodyParameters,
+  SoundParameters,
+  TimerParameters
+}
 import com.easternsauce.libgdxgame.creature.Creature
 import com.easternsauce.libgdxgame.projectile.Arrow
 import com.easternsauce.libgdxgame.system.Assets
@@ -38,7 +43,7 @@ case class ShootArrowAttack private (
 
     Assets.sound(Assets.bowPullSound).play(0.1f)
 
-    copy()
+    this
   }
 
   override def onActiveStart(): Self = {
@@ -77,7 +82,7 @@ case class ShootArrowAttack private (
     result
   }
 
-  override def makeCopy(
+  override def copy(
     components: List[AbilityComponent],
     lastComponentFinishTime: Float,
     state: AbilityState,
@@ -85,7 +90,8 @@ case class ShootArrowAttack private (
     soundParameters: SoundParameters,
     timerParameters: TimerParameters,
     bodyParameters: BodyParameters,
-    animationParameters: AnimationParameters
+    animationParameters: AnimationParameters,
+    dirVector: Vector2
   ): Self =
     copy(state = state, onCooldown = onCooldown, soundParameters = soundParameters, timerParameters = timerParameters)
 

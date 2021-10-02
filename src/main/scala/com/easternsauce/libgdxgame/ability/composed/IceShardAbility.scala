@@ -26,7 +26,7 @@ case class IceShardAbility private (
 
   override def onActiveStart(): Self = {
     creature.takeStaminaDamage(25f)
-    copy()
+    this
   }
 
   override def createComponent(index: Int): AbilityComponent = {
@@ -44,7 +44,7 @@ case class IceShardAbility private (
     )
   }
 
-  override def makeCopy(
+  override def copy(
     components: List[AbilityComponent],
     lastComponentFinishTime: Float,
     state: AbilityState,
@@ -52,7 +52,7 @@ case class IceShardAbility private (
     soundParameters: SoundParameters,
     timerParameters: TimerParameters,
     bodyParameters: BodyParameters,
-    animationParameters: AnimationParameters
+    animationParameters: AnimationParameters, dirVector: Vector2
   ): Self =
     copy(
       components = components,

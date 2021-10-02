@@ -4,7 +4,12 @@ import com.badlogic.gdx.math.Vector2
 import com.easternsauce.libgdxgame.ability.composed.components.AbilityComponent
 import com.easternsauce.libgdxgame.ability.misc.Ability
 import com.easternsauce.libgdxgame.ability.misc.AbilityState.{AbilityState, Inactive}
-import com.easternsauce.libgdxgame.ability.parameters.{AnimationParameters, BodyParameters, SoundParameters, TimerParameters}
+import com.easternsauce.libgdxgame.ability.parameters.{
+  AnimationParameters,
+  BodyParameters,
+  SoundParameters,
+  TimerParameters
+}
 import com.easternsauce.libgdxgame.animation.Animation
 import com.easternsauce.libgdxgame.creature.Creature
 
@@ -14,7 +19,10 @@ case class DashAbility private (
   override val onCooldown: Boolean = false,
   override val timerParameters: TimerParameters = TimerParameters(),
   override val soundParameters: SoundParameters = SoundParameters(),
-  dashVector: Vector2 = new Vector2(0f, 0f)
+  override val components: List[AbilityComponent] = List(),
+  override val bodyParameters: BodyParameters = BodyParameters(),
+  override val animationParameters: AnimationParameters = AnimationParameters(),
+  override val dirVector: Vector2 = new Vector2(0f, 0f)
 ) extends Ability {
   type Self = DashAbility
 
@@ -37,17 +45,17 @@ case class DashAbility private (
     creature.activateEffect("immobilized", channelTime + activeTime)
     creature.takeStaminaDamage(35f)
 
-    copy(dashVector = dashVector)
+    copy(dirVector = dashVector)
   }
 
   override def onUpdateActive(): Self = {
     // TODO: remove sideffect
-    creature.sustainVelocity(dashVector)
+    creature.sustainVelocity(dirVector)
 
-    copy()
+    this
   }
 
-  override def makeCopy(
+  override def copy(
     components: List[AbilityComponent],
     lastComponentFinishTime: Float,
     state: AbilityState,
@@ -55,7 +63,18 @@ case class DashAbility private (
     soundParameters: SoundParameters,
     timerParameters: TimerParameters,
     bodyParameters: BodyParameters,
-    animationParameters: AnimationParameters
+    animationParameters: AnimationParameters,
+    dirVector: Vector2
   ): Self =
-    copy(state = state, onCooldown = onCooldown, soundParameters = soundParameters, timerParameters = timerParameters)
+    DashAbility(
+      creature = creature,
+      state = state,
+      onCooldown = onCooldown,
+      soundParameters = soundParameters,
+      timerParameters = timerParameters,
+      bodyParameters = bodyParameters,
+      animationParameters = animationParameters,
+      components = components,
+      dirVector = dirVector
+    )
 }

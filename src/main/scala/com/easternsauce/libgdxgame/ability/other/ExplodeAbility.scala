@@ -1,14 +1,21 @@
 package com.easternsauce.libgdxgame.ability.other
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion
+import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d._
 import com.easternsauce.libgdxgame.ability.composed.components.AbilityComponent
 import com.easternsauce.libgdxgame.ability.misc.AbilityState.{AbilityState, Inactive}
 import com.easternsauce.libgdxgame.ability.misc.{Ability, AbilityState}
-import com.easternsauce.libgdxgame.ability.parameters.{AnimationParameters, BodyParameters, SoundParameters, TimerParameters}
+import com.easternsauce.libgdxgame.ability.parameters.{
+  AnimationParameters,
+  BodyParameters,
+  SoundParameters,
+  TimerParameters
+}
 import com.easternsauce.libgdxgame.creature.Creature
 import com.easternsauce.libgdxgame.system.Assets
 import com.easternsauce.libgdxgame.util.EsBatch
+import com.softwaremill.quicklens._
 
 case class ExplodeAbility private (
   override val creature: Creature,
@@ -18,8 +25,9 @@ case class ExplodeAbility private (
   override val animationParameters: AnimationParameters =
     AnimationParameters(textureWidth = 64, textureHeight = 64, activeRegionName = "explosion", activeFrameCount = 21),
   override val soundParameters: SoundParameters = SoundParameters(),
-  body: Option[Body] = None,
-  bodyCreated: Boolean = false
+  override val bodyParameters: BodyParameters = BodyParameters(),
+  override val components: List[AbilityComponent] = List(),
+  override val dirVector: Vector2 = new Vector2(0f, 0f)
 ) extends Ability {
   type Self = ExplodeAbility
 
@@ -50,10 +58,10 @@ case class ExplodeAbility private (
   override def onUpdateActive(): Self = {
     val activeTimer = timerParameters.activeTimer
 
-    if (bodyCreated && activeTimer.time > 0.1f) {
+    if (bodyParameters.bodyActive && activeTimer.time > 0.1f) {
       destroyBody(creature.area.get.world)
     } else
-      copy()
+      this
   }
 
   override def render(batch: EsBatch): Self = {
@@ -84,7 +92,7 @@ case class ExplodeAbility private (
       renderFrame(activeAnimation.get.currentFrame(time = timerParameters.activeTimer.time, loop = true))
     }
 
-    copy()
+    this
   }
 
   def initBody(x: Float, y: Float): Self = {
@@ -104,16 +112,21 @@ case class ExplodeAbility private (
     fixtureDef.isSensor = true
     b2Body.createFixture(fixtureDef)
 
-    copy(body = Some(b2Body), bodyCreated = true)
+    this
+      .modify(_.bodyParameters.body)
+      .setTo(Some(b2Body))
+      .modify(_.bodyParameters.bodyActive)
+      .setTo(true)
   }
 
   def destroyBody(world: World): Self = {
-    if (bodyCreated) {
+    if (bodyParameters.bodyActive) {
       // TODO: sideeffect?
-      if (body.nonEmpty) world.destroyBody(body.get)
-      copy(bodyCreated = false) // TODO: change to bodyDestroyed = true?
+      if (bodyParameters.body.nonEmpty) world.destroyBody(bodyParameters.body.get)
+
+      this.modify(_.bodyParameters.bodyActive).setTo(false)
     } else
-      copy()
+      this
   }
 
   override def onCollideWithCreature(otherCreature: Creature): Self = {
@@ -122,10 +135,10 @@ case class ExplodeAbility private (
       if (!otherCreature.isImmune) otherCreature.takeLifeDamage(700f, immunityFrames = true, Some(creature), 0, 0, 0)
     }
 
-    copy()
+    this
   }
 
-  override def makeCopy(
+  override def copy(
     components: List[AbilityComponent],
     lastComponentFinishTime: Float,
     state: AbilityState,
@@ -133,13 +146,18 @@ case class ExplodeAbility private (
     soundParameters: SoundParameters,
     timerParameters: TimerParameters,
     bodyParameters: BodyParameters,
-    animationParameters: AnimationParameters
+    animationParameters: AnimationParameters,
+    dirVector: Vector2
   ): Self =
-    copy(
+    ExplodeAbility(
+      creature = creature,
       state = state,
       onCooldown = onCooldown,
       soundParameters = soundParameters,
       timerParameters = timerParameters,
-      animationParameters = animationParameters
+      animationParameters = animationParameters,
+      bodyParameters = bodyParameters,
+      components = components,
+      dirVector = dirVector
     )
 }

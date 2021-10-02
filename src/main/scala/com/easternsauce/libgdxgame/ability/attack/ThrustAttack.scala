@@ -1,5 +1,6 @@
 package com.easternsauce.libgdxgame.ability.attack
 
+import com.badlogic.gdx.math.Vector2
 import com.easternsauce.libgdxgame.ability.composed.components.AbilityComponent
 import com.easternsauce.libgdxgame.ability.misc.AbilityState.{AbilityState, Inactive}
 import com.easternsauce.libgdxgame.ability.parameters.{AnimationParameters, BodyParameters, SoundParameters, TimerParameters}
@@ -45,7 +46,7 @@ case class ThrustAttack private (
     Animation.channelAnimationFromParameters(animationParameters, baseChannelTime)
   )
 
-  override def makeCopy(
+  override def copy(
     components: List[AbilityComponent],
     lastComponentFinishTime: Float,
     state: AbilityState,
@@ -53,7 +54,7 @@ case class ThrustAttack private (
     soundParameters: SoundParameters,
     timerParameters: TimerParameters,
     bodyParameters: BodyParameters,
-    animationParameters: AnimationParameters
+    animationParameters: AnimationParameters, dirVector: Vector2
   ): Self =
     copy(
       state = state,

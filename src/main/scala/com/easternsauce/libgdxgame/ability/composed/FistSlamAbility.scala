@@ -1,5 +1,6 @@
 package com.easternsauce.libgdxgame.ability.composed
 
+import com.badlogic.gdx.math.Vector2
 import com.easternsauce.libgdxgame.ability.composed.components.{AbilityComponent, Fist}
 import com.easternsauce.libgdxgame.ability.misc.AbilityState.{AbilityState, Inactive}
 import com.easternsauce.libgdxgame.ability.parameters._
@@ -29,7 +30,7 @@ case class FistSlamAbility private (
     // TODO: sideeffect
     creature.takeStaminaDamage(25f)
 
-    copy()
+    this
   }
 
   override def createComponent(index: Int): AbilityComponent = {
@@ -46,7 +47,7 @@ case class FistSlamAbility private (
     )
   }
 
-  override def makeCopy(
+  override def copy(
     components: List[AbilityComponent],
     lastComponentFinishTime: Float,
     state: AbilityState,
@@ -54,7 +55,7 @@ case class FistSlamAbility private (
     soundParameters: SoundParameters,
     timerParameters: TimerParameters,
     bodyParameters: BodyParameters,
-    animationParameters: AnimationParameters
+    animationParameters: AnimationParameters, dirVector: Vector2
   ): Self =
     copy(
       components = components,

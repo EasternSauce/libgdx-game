@@ -85,7 +85,7 @@ trait MeleeAttack extends Ability with PhysicalHitbox {
     val newBodyParameters = bodyParameters.copy(body = body, toRemoveBody = false, bodyActive = true, hitbox = hitbox)
 
     ability
-      .makeCopy(bodyParameters = newBodyParameters)
+      .copy(bodyParameters = newBodyParameters)
   }
 
   override def render(batch: EsBatch): Self = {
@@ -154,7 +154,7 @@ trait MeleeAttack extends Ability with PhysicalHitbox {
 
     val hitbox = Some(AttackHitbox(attackRectX, attackRectY, poly))
 
-    ability.makeCopy(bodyParameters = bodyParameters.copy(hitbox = hitbox))
+    ability.copy(bodyParameters = bodyParameters.copy(hitbox = hitbox))
   }
 
   override def update(): Self = {
@@ -164,7 +164,7 @@ trait MeleeAttack extends Ability with PhysicalHitbox {
     if (bodyParameters.body.nonEmpty && bodyParameters.toRemoveBody) {
       bodyParameters.body.get.getWorld.destroyBody(bodyParameters.body.get)
 
-      ability.makeCopy(bodyParameters = bodyParameters.copy(toRemoveBody = false, bodyActive = false))
+      ability.copy(bodyParameters = bodyParameters.copy(toRemoveBody = false, bodyActive = false))
     } else
       ability
 
@@ -193,7 +193,7 @@ trait MeleeAttack extends Ability with PhysicalHitbox {
       }
 
       this
-        .makeCopy(bodyParameters = bodyParameters.copy(hitbox = newHitbox))
+        .copy(bodyParameters = bodyParameters.copy(hitbox = newHitbox))
 
     } else
       this
@@ -206,7 +206,7 @@ trait MeleeAttack extends Ability with PhysicalHitbox {
     // IMPORTANT: ability has to be active
     // if we remove during channeling we could remove it before body is created, causing BOX2D crash
     if (state == AbilityState.Active) {
-      makeCopy(bodyParameters = bodyParameters.copy(toRemoveBody = true))
+      copy(bodyParameters = bodyParameters.copy(toRemoveBody = true))
     } else
       this
   }
@@ -236,7 +236,7 @@ trait MeleeAttack extends Ability with PhysicalHitbox {
     this
   }
 
-  override def makeCopy(
+  override def copy(
     components: List[AbilityComponent] = components,
     lastComponentFinishTime: Float = lastComponentFinishTime,
     state: AbilityState = state,
@@ -244,6 +244,7 @@ trait MeleeAttack extends Ability with PhysicalHitbox {
     soundParameters: SoundParameters = soundParameters,
     timerParameters: TimerParameters = timerParameters,
     bodyParameters: BodyParameters = bodyParameters,
-    animationParameters: AnimationParameters = animationParameters
+    animationParameters: AnimationParameters = animationParameters,
+    dirVector: Vector2 = dirVector
   ): Self
 }
