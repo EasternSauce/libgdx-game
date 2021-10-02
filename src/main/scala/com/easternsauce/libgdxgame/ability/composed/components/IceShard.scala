@@ -3,8 +3,8 @@ package com.easternsauce.libgdxgame.ability.composed.components
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.{Body, BodyDef, CircleShape, FixtureDef}
 import com.easternsauce.libgdxgame.ability.misc.AbilityState.AbilityState
-import com.easternsauce.libgdxgame.ability.misc.{Ability, AbilityState, Modification}
-import com.easternsauce.libgdxgame.ability.parameters.{AnimationParameters, ComponentParameters, TimerParameters}
+import com.easternsauce.libgdxgame.ability.misc.{Ability, AbilityState}
+import com.easternsauce.libgdxgame.ability.parameters.{AnimationParameters, BodyParameters, ComponentParameters, TimerParameters}
 import com.easternsauce.libgdxgame.animation.Animation
 import com.easternsauce.libgdxgame.creature.Creature
 import com.easternsauce.libgdxgame.system.Assets
@@ -12,17 +12,24 @@ import com.easternsauce.libgdxgame.util.EsBatch
 import com.softwaremill.quicklens.ModifyPimp
 
 case class IceShard(
-  mainAbility: Ability,
+  override val mainAbility: Ability,
+  override val state: AbilityState = AbilityState.Inactive,
+  override val started: Boolean = false,
   override val componentParameters: ComponentParameters = ComponentParameters(),
   override val timerParameters: TimerParameters = TimerParameters(),
   override val animationParameters: AnimationParameters = AnimationParameters(),
-  override val state: AbilityState = AbilityState.Inactive,
-  override val started: Boolean = false,
-  override val body: Option[Body] = None,
-  override val destroyed: Boolean = false,
-  override val dirVector: Vector2 = new Vector2(1, 0)
-) extends AbilityComponent
-    with Modification {
+  override val bodyParameters: BodyParameters = BodyParameters(),
+  override val dirVector: Vector2 = new Vector2(0, 0)
+) extends AbilityComponent(
+      mainAbility = mainAbility,
+      state = state,
+      started = started,
+      componentParameters = componentParameters,
+      timerParameters = timerParameters,
+      animationParameters = animationParameters,
+      bodyParameters = bodyParameters,
+      dirVector = dirVector
+    ) {
   type Self = IceShard
 
   override lazy val activeTime: Float = 1.5f
@@ -36,7 +43,7 @@ case class IceShard(
   override val activeAnimation: Option[Animation] = None
   override val channelAnimation: Option[Animation] = None
 
-  def start(): IceShard = {
+  def start(): Self = {
 
     channelTimer.restart()
 
@@ -47,7 +54,7 @@ case class IceShard(
       .setTo(AbilityState.Channeling)
   }
 
-  override def onUpdateActive(): IceShard = {
+  override def onUpdateActive(): Self = {
     modifyIf(started) {
       state match {
         case AbilityState.Channeling =>
@@ -56,10 +63,10 @@ case class IceShard(
           }
         case AbilityState.Active =>
           val component = this
-            .modifyIf(!destroyed && activeTimer.time >= activeTime) {
-              body.get.getWorld.destroyBody(body.get)
+            .modifyIf(!bodyParameters.destroyed && activeTimer.time >= activeTime) {
+              bodyParameters.body.get.getWorld.destroyBody(bodyParameters.body.get)
               this
-                .modify(_.destroyed)
+                .modify(_.bodyParameters.destroyed)
                 .setTo(true)
             }
             .modifyIf(activeTimer.time > activeTime) {
@@ -68,8 +75,9 @@ case class IceShard(
                 .modify(_.state)
                 .setTo(AbilityState.Inactive)
             }
-          if (!destroyed) {
-            body.get.setLinearVelocity(dirVector.x * componentParameters.speed, dirVector.y * componentParameters.speed)
+          if (!bodyParameters.destroyed) {
+            bodyParameters.body.get
+              .setLinearVelocity(dirVector.x * componentParameters.speed, dirVector.y * componentParameters.speed)
           }
           component
         case _ => this
@@ -78,7 +86,7 @@ case class IceShard(
 
   }
 
-  private def onActiveStart(): IceShard = {
+  private def onActiveStart(): Self = {
     //Assets.sound(Assets.explosionSound).play(0.01f)
     activeTimer.restart()
 
@@ -87,7 +95,7 @@ case class IceShard(
     this
       .modify(_.state)
       .setTo(AbilityState.Active)
-      .modify(_.body)
+      .modify(_.bodyParameters.body)
       .setTo(body)
   }
 
@@ -109,14 +117,14 @@ case class IceShard(
     Some(body)
   }
 
-  override def render(batch: EsBatch): IceShard = {
+  override def render(batch: EsBatch): Self = {
     if (state == AbilityState.Active) {
       val scale = radius * 2 / spriteWidth
       val image = Assets.atlas.findRegion("ice_shard")
       batch.spriteBatch.draw(
         image,
-        body.get.getPosition.x - radius,
-        body.get.getPosition.y - radius,
+        bodyParameters.body.get.getPosition.x - radius,
+        bodyParameters.body.get.getPosition.y - radius,
         0,
         0,
         image.getRegionWidth.toFloat,
@@ -130,7 +138,7 @@ case class IceShard(
     this
   }
 
-  override def onCollideWithCreature(creature: Creature): IceShard = {
+  override def onCollideWithCreature(creature: Creature): Self = {
     if (!(mainAbility.creature.isEnemy && creature.isEnemy) && creature.isAlive) {
       if (!creature.isImmune) creature.takeLifeDamage(70f, immunityFrames = true)
     }

@@ -3,8 +3,8 @@ package com.easternsauce.libgdxgame.ability.composed.components
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.{Body, BodyDef, CircleShape, FixtureDef}
 import com.easternsauce.libgdxgame.ability.misc.AbilityState.AbilityState
-import com.easternsauce.libgdxgame.ability.misc.{Ability, AbilityState, Modification}
-import com.easternsauce.libgdxgame.ability.parameters.{AnimationParameters, ComponentParameters, TimerParameters}
+import com.easternsauce.libgdxgame.ability.misc.{Ability, AbilityState}
+import com.easternsauce.libgdxgame.ability.parameters.{AnimationParameters, BodyParameters, ComponentParameters, TimerParameters}
 import com.easternsauce.libgdxgame.animation.Animation
 import com.easternsauce.libgdxgame.creature.Creature
 import com.easternsauce.libgdxgame.system.Assets
@@ -12,7 +12,9 @@ import com.easternsauce.libgdxgame.util.EsBatch
 import com.softwaremill.quicklens.ModifyPimp
 
 case class Fist(
-  mainAbility: Ability,
+  override val mainAbility: Ability,
+  override val state: AbilityState = AbilityState.Inactive,
+  override val started: Boolean = false,
   override val componentParameters: ComponentParameters = ComponentParameters(),
   override val timerParameters: TimerParameters = TimerParameters(),
   override val animationParameters: AnimationParameters = AnimationParameters(
@@ -23,13 +25,18 @@ case class Fist(
     channelRegionName = "fist_slam_windup",
     channelFrameCount = 5
   ),
-  override val state: AbilityState = AbilityState.Inactive,
-  override val started: Boolean = false,
-  override val body: Option[Body] = None,
-  override val destroyed: Boolean = false,
-  override val dirVector: Vector2 = new Vector2(1, 0)
-) extends AbilityComponent
-    with Modification {
+  override val bodyParameters: BodyParameters = BodyParameters(),
+  override val dirVector: Vector2 = new Vector2(0, 0)
+) extends AbilityComponent(
+      mainAbility = mainAbility,
+      state = state,
+      started = started,
+      componentParameters = componentParameters,
+      timerParameters = timerParameters,
+      animationParameters = animationParameters,
+      bodyParameters = bodyParameters,
+      dirVector = dirVector
+    ) {
   type Self = Fist
 
   override lazy val activeTime: Float = 0.2f
@@ -42,7 +49,7 @@ case class Fist(
     Animation.channelAnimationFromParameters(animationParameters, channelTime)
   )
 
-  def start(): Fist = {
+  def start(): Self = {
 
     channelTimer.restart()
     timerParameters.abilityChannelAnimationTimer.restart()
@@ -54,7 +61,7 @@ case class Fist(
       .setTo(AbilityState.Channeling)
   }
 
-  override def onUpdateActive(): Fist = {
+  override def onUpdateActive(): Self = {
     modifyIf(started) {
       state match {
         case AbilityState.Channeling =>
@@ -68,7 +75,7 @@ case class Fist(
             this
               .modify(_.state)
               .setTo(AbilityState.Active)
-              .modify(_.body)
+              .modify(_.bodyParameters.body)
               .setTo(body)
           }
         case AbilityState.Active =>
@@ -78,10 +85,10 @@ case class Fist(
                 .modify(_.state)
                 .setTo(AbilityState.Inactive)
             }
-            .modifyIf(!destroyed && activeTimer.time >= 0.2f) {
-              body.get.getWorld.destroyBody(body.get)
+            .modifyIf(!bodyParameters.destroyed && activeTimer.time >= 0.2f) {
+              bodyParameters.body.get.getWorld.destroyBody(bodyParameters.body.get)
               this
-                .modify(_.destroyed)
+                .modify(_.bodyParameters.destroyed)
                 .setTo(true)
             }
             .modifyIf(activeTimer.time > activeTime) {
@@ -113,7 +120,7 @@ case class Fist(
     Some(body)
   }
 
-  override def render(batch: EsBatch): Fist = {
+  override def render(batch: EsBatch): Self = {
 
     if (state == AbilityState.Channeling) {
 
@@ -160,7 +167,7 @@ case class Fist(
     this
   }
 
-  override def onCollideWithCreature(creature: Creature): Fist = {
+  override def onCollideWithCreature(creature: Creature): Self = {
     if (!(mainAbility.creature.isEnemy && creature.isEnemy) && creature.isAlive && activeTimer.time < 0.15f) {
       if (!creature.isImmune) creature.takeLifeDamage(100f, immunityFrames = true)
     }

@@ -51,8 +51,8 @@ case class FistSlamAbility private (
     val range: Float = 7.8125f
     val aggroedCreature = creature.asInstanceOf[Enemy].aggroedTarget.get // TODO targeting?
     Fist(
-      this,
-      ComponentParameters(
+      mainAbility = this,
+      componentParameters = ComponentParameters(
         startTime = 0.1f * index,
         startX = aggroedCreature.pos.x + GameSystem.randomGenerator.between(-range, range),
         startY = aggroedCreature.pos.y + GameSystem.randomGenerator.between(-range, range),

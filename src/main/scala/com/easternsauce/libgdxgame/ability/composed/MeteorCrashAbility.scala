@@ -43,8 +43,8 @@ case class MeteorCrashAbility private (
     val facingVector: Vector2 = creature.facingVector.nor()
     val meteors1 = for (i <- 0 until numOfComponents / 3) yield {
       Meteor(
-        this,
-        ComponentParameters(
+        mainAbility = this,
+        componentParameters = ComponentParameters(
           startTime = 0.1f * i,
           startX = creature.pos.x + (3.125f * (i + 1)) * facingVector.x,
           startY = creature.pos.y + (3.125f * (i + 1)) * facingVector.y,
@@ -58,8 +58,8 @@ case class MeteorCrashAbility private (
       val vector: Vector2 = facingVector.cpy()
       vector.setAngleDeg(vector.angleDeg() + 50)
       Meteor(
-        this,
-        ComponentParameters(
+        mainAbility = this,
+        componentParameters = ComponentParameters(
           startTime = 0.1f * i,
           startX = creature.pos.x + (3.125f * (i + 1)) * vector.x,
           startY = creature.pos.y + (3.125f * (i + 1)) * vector.y,
@@ -73,8 +73,8 @@ case class MeteorCrashAbility private (
       val vector: Vector2 = facingVector.cpy()
       vector.setAngleDeg(vector.angleDeg() - 50)
       Meteor(
-        this,
-        ComponentParameters(
+        mainAbility = this,
+        componentParameters = ComponentParameters(
           startTime = 0.1f * i,
           startX = creature.pos.x + (3.125f * (i + 1)) * vector.x,
           startY = creature.pos.y + (3.125f * (i + 1)) * vector.y,
@@ -111,8 +111,8 @@ case class MeteorCrashAbility private (
     vector.setAngleDeg(vector.angleDeg() + 50)
 
     Meteor(
-      this,
-      ComponentParameters(
+      mainAbility = this,
+      componentParameters = ComponentParameters(
         startTime = 0.1f * index,
         startX = creature.pos.x + (3.125f * (index + 1)) * vector.x,
         startY = creature.pos.y + (3.125f * (index + 1)) * vector.y,

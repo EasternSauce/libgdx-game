@@ -47,8 +47,8 @@ case class MeteorRainAbility private (
     val range = 34.375f
 
     Meteor(
-      this,
-      ComponentParameters(
+      mainAbility = this,
+      componentParameters = ComponentParameters(
         startTime = 0.15f * index,
         startX = creature.pos.x + GameSystem.randomGenerator.between(-range, range),
         startY = creature.pos.y + GameSystem.randomGenerator.between(-range, range),
