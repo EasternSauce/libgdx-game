@@ -3,14 +3,37 @@ package com.easternsauce.libgdxgame.ability.attack
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.math.{Rectangle, Vector2}
 import com.easternsauce.libgdxgame.ability.composed.components.AbilityComponent
-import com.easternsauce.libgdxgame.ability.misc.AbilityState.AbilityState
+import com.easternsauce.libgdxgame.ability.misc.AbilityState.{AbilityState, Inactive}
 import com.easternsauce.libgdxgame.ability.misc.{Ability, _}
 import com.easternsauce.libgdxgame.ability.parameters._
 import com.easternsauce.libgdxgame.creature.Creature
 import com.easternsauce.libgdxgame.system.{Constants, GameSystem}
 import com.easternsauce.libgdxgame.util.{EsBatch, EsPolygon}
 
-trait MeleeAttack extends Ability with PhysicalHitbox {
+abstract class MeleeAttack(
+  override val creature: Creature,
+  override val state: AbilityState = Inactive,
+  override val onCooldown: Boolean = false,
+  override val components: List[AbilityComponent] = List(),
+  override val lastComponentFinishTime: Float = 0,
+  override val timerParameters: TimerParameters = TimerParameters(),
+  override val soundParameters: SoundParameters = SoundParameters(),
+  override val bodyParameters: BodyParameters = BodyParameters(),
+  override val animationParameters: AnimationParameters = AnimationParameters(),
+  override val dirVector: Vector2 = new Vector2(0f, 0f)
+) extends Ability(
+      creature = creature,
+      state = state,
+      onCooldown = onCooldown,
+      components = components,
+      lastComponentFinishTime = lastComponentFinishTime,
+      timerParameters = timerParameters,
+      soundParameters = soundParameters,
+      bodyParameters = bodyParameters,
+      animationParameters = animationParameters,
+      dirVector = dirVector
+    )
+    with PhysicalHitbox {
   type Self >: this.type <: MeleeAttack
 
   implicit def toMeleeAttack(ability: Ability): Self = ability.asInstanceOf[Self]
@@ -45,7 +68,7 @@ trait MeleeAttack extends Ability with PhysicalHitbox {
     if (creature.isWeaponEquipped) creature.currentWeapon.template.attackScale.get
     else 1.4f
 
-  abstract override def onActiveStart(): Self = {
+  override def onActiveStart(): Self = {
     val ability = super.onActiveStart()
 
     // TODO: clean up sideeffects
@@ -237,10 +260,11 @@ trait MeleeAttack extends Ability with PhysicalHitbox {
   }
 
   override def copy(
-    components: List[AbilityComponent] = components,
-    lastComponentFinishTime: Float = lastComponentFinishTime,
+    creature: Creature = creature,
     state: AbilityState = state,
     onCooldown: Boolean = onCooldown,
+    components: List[AbilityComponent] = components,
+    lastComponentFinishTime: Float = lastComponentFinishTime,
     soundParameters: SoundParameters = soundParameters,
     timerParameters: TimerParameters = timerParameters,
     bodyParameters: BodyParameters = bodyParameters,

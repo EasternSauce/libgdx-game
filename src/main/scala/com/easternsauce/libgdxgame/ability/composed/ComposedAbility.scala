@@ -1,16 +1,44 @@
 package com.easternsauce.libgdxgame.ability.composed
 
+import com.badlogic.gdx.math.Vector2
 import com.easternsauce.libgdxgame.ability.composed.components.AbilityComponent
+import com.easternsauce.libgdxgame.ability.misc.AbilityState.{AbilityState, Inactive}
 import com.easternsauce.libgdxgame.ability.misc.{Ability, AbilityState}
+import com.easternsauce.libgdxgame.ability.parameters.{
+  AnimationParameters,
+  BodyParameters,
+  SoundParameters,
+  TimerParameters
+}
+import com.easternsauce.libgdxgame.creature.Creature
 import com.easternsauce.libgdxgame.util.EsBatch
 
-trait ComposedAbility extends Ability {
+abstract class ComposedAbility(
+  override val creature: Creature,
+  override val state: AbilityState = Inactive,
+  override val onCooldown: Boolean = false,
+  override val components: List[AbilityComponent] = List(),
+  override val lastComponentFinishTime: Float = 0,
+  override val timerParameters: TimerParameters = TimerParameters(),
+  override val soundParameters: SoundParameters = SoundParameters(),
+  override val bodyParameters: BodyParameters = BodyParameters(),
+  override val animationParameters: AnimationParameters = AnimationParameters(),
+  override val dirVector: Vector2 = new Vector2(0f, 0f)
+) extends Ability(
+      creature = creature,
+      state = state,
+      onCooldown = onCooldown,
+      components = components,
+      lastComponentFinishTime = lastComponentFinishTime,
+      timerParameters = timerParameters,
+      soundParameters = soundParameters,
+      bodyParameters = bodyParameters,
+      animationParameters = animationParameters,
+      dirVector = dirVector
+    ) {
   type Self >: this.type <: ComposedAbility
 
   implicit def toComposedAbility(ability: Ability): Self = ability.asInstanceOf[Self]
-
-  val components: List[AbilityComponent]
-  val lastComponentFinishTime: Float
 
   protected val numOfComponents: Int = -1
 

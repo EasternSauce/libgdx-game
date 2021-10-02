@@ -1,10 +1,15 @@
 package com.easternsauce.libgdxgame.ability.attack
 
 import com.badlogic.gdx.math.Vector2
+import com.easternsauce.libgdxgame.ability.composed.MeteorRainAbility
 import com.easternsauce.libgdxgame.ability.composed.components.AbilityComponent
 import com.easternsauce.libgdxgame.ability.misc.AbilityState.{AbilityState, Inactive}
-import com.easternsauce.libgdxgame.ability.misc.Modification
-import com.easternsauce.libgdxgame.ability.parameters.{AnimationParameters, BodyParameters, SoundParameters, TimerParameters}
+import com.easternsauce.libgdxgame.ability.parameters.{
+  AnimationParameters,
+  BodyParameters,
+  SoundParameters,
+  TimerParameters
+}
 import com.easternsauce.libgdxgame.animation.Animation
 import com.easternsauce.libgdxgame.creature.Creature
 import com.easternsauce.libgdxgame.system.Assets
@@ -13,6 +18,8 @@ case class SlashAttack private (
   override val creature: Creature,
   override val state: AbilityState = Inactive,
   override val onCooldown: Boolean = false,
+  override val components: List[AbilityComponent] = List(),
+  override val lastComponentFinishTime: Float = 0,
   override val timerParameters: TimerParameters = TimerParameters(),
   override val soundParameters: SoundParameters =
     SoundParameters(activeSound = Some(Assets.sound(Assets.attackSound)), activeSoundVolume = Some(0.1f)),
@@ -24,8 +31,20 @@ case class SlashAttack private (
     channelRegionName = "slash_windup",
     channelFrameCount = 6,
     activeFrameCount = 6
-  )
-) extends MeleeAttack {
+  ),
+  override val dirVector: Vector2 = new Vector2(0f, 0f)
+) extends MeleeAttack(
+      creature = creature,
+      state = state,
+      onCooldown = onCooldown,
+      components = components,
+      lastComponentFinishTime = lastComponentFinishTime,
+      timerParameters = timerParameters,
+      soundParameters = soundParameters,
+      bodyParameters = bodyParameters,
+      animationParameters = animationParameters,
+      dirVector = dirVector
+    ) {
   override type Self = MeleeAttack
 
   override val id: String = "slash"
@@ -48,21 +67,27 @@ case class SlashAttack private (
   )
 
   override def copy(
-    components: List[AbilityComponent],
-    lastComponentFinishTime: Float,
+    creature: Creature,
     state: AbilityState,
     onCooldown: Boolean,
+    components: List[AbilityComponent],
+    lastComponentFinishTime: Float,
     soundParameters: SoundParameters,
     timerParameters: TimerParameters,
     bodyParameters: BodyParameters,
-    animationParameters: AnimationParameters, dirVector: Vector2
+    animationParameters: AnimationParameters,
+    dirVector: Vector2
   ): Self =
-    copy(
+    SlashAttack(
+      creature = creature,
       state = state,
       onCooldown = onCooldown,
+      components = components,
+      lastComponentFinishTime = lastComponentFinishTime,
       soundParameters = soundParameters,
       timerParameters = timerParameters,
       bodyParameters = bodyParameters,
-      animationParameters = animationParameters
+      animationParameters = animationParameters,
+      dirVector = dirVector
     )
 }

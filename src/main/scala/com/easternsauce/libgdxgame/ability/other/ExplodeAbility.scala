@@ -21,14 +21,26 @@ case class ExplodeAbility private (
   override val creature: Creature,
   override val state: AbilityState = Inactive,
   override val onCooldown: Boolean = false,
+  override val components: List[AbilityComponent] = List(),
+  override val lastComponentFinishTime: Float = 0f,
   override val timerParameters: TimerParameters = TimerParameters(),
   override val animationParameters: AnimationParameters =
     AnimationParameters(textureWidth = 64, textureHeight = 64, activeRegionName = "explosion", activeFrameCount = 21),
   override val soundParameters: SoundParameters = SoundParameters(),
   override val bodyParameters: BodyParameters = BodyParameters(),
-  override val components: List[AbilityComponent] = List(),
   override val dirVector: Vector2 = new Vector2(0f, 0f)
-) extends Ability {
+) extends Ability(
+      creature = creature,
+      state = state,
+      onCooldown = onCooldown,
+      components = components,
+      lastComponentFinishTime = lastComponentFinishTime,
+      timerParameters = timerParameters,
+      soundParameters = soundParameters,
+      bodyParameters = bodyParameters,
+      animationParameters = animationParameters,
+      dirVector = dirVector
+    ) {
   type Self = ExplodeAbility
 
   override val id: String = "explode"
@@ -139,10 +151,11 @@ case class ExplodeAbility private (
   }
 
   override def copy(
-    components: List[AbilityComponent],
-    lastComponentFinishTime: Float,
+    creature: Creature,
     state: AbilityState,
     onCooldown: Boolean,
+    components: List[AbilityComponent],
+    lastComponentFinishTime: Float,
     soundParameters: SoundParameters,
     timerParameters: TimerParameters,
     bodyParameters: BodyParameters,
@@ -153,11 +166,12 @@ case class ExplodeAbility private (
       creature = creature,
       state = state,
       onCooldown = onCooldown,
+      components = components,
+      lastComponentFinishTime = lastComponentFinishTime,
       soundParameters = soundParameters,
       timerParameters = timerParameters,
-      animationParameters = animationParameters,
       bodyParameters = bodyParameters,
-      components = components,
+      animationParameters = animationParameters,
       dirVector = dirVector
     )
 }

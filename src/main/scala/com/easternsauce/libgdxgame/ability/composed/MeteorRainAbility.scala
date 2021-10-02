@@ -11,11 +11,25 @@ case class MeteorRainAbility private (
   override val creature: Creature,
   override val state: AbilityState = Inactive,
   override val onCooldown: Boolean = false,
+  override val components: List[AbilityComponent] = List(),
+  override val lastComponentFinishTime: Float = 0f,
   override val timerParameters: TimerParameters = TimerParameters(),
   override val soundParameters: SoundParameters = SoundParameters(),
-  override val components: List[AbilityComponent] = List(),
-  override val lastComponentFinishTime: Float = 0f
-) extends ComposedAbility {
+  override val bodyParameters: BodyParameters = BodyParameters(),
+  override val animationParameters: AnimationParameters = AnimationParameters(),
+  override val dirVector: Vector2 = new Vector2(0f, 0f)
+) extends ComposedAbility(
+      creature = creature,
+      state = state,
+      onCooldown = onCooldown,
+      components = components,
+      lastComponentFinishTime = lastComponentFinishTime,
+      timerParameters = timerParameters,
+      soundParameters = soundParameters,
+      bodyParameters = bodyParameters,
+      animationParameters = animationParameters,
+      dirVector = dirVector
+    ) {
   override type Self = MeteorRainAbility
 
   override val id = "meteor_rain"
@@ -45,22 +59,27 @@ case class MeteorRainAbility private (
   }
 
   override def copy(
-    components: List[AbilityComponent],
-    lastComponentFinishTime: Float,
+    creature: Creature,
     state: AbilityState,
     onCooldown: Boolean,
+    components: List[AbilityComponent],
+    lastComponentFinishTime: Float,
     soundParameters: SoundParameters,
     timerParameters: TimerParameters,
     bodyParameters: BodyParameters,
     animationParameters: AnimationParameters,
     dirVector: Vector2
   ): Self =
-    copy(
-      components = components,
-      lastComponentFinishTime = lastComponentFinishTime,
+    MeteorRainAbility(
+      creature = creature,
       state = state,
       onCooldown = onCooldown,
+      components = components,
+      lastComponentFinishTime = lastComponentFinishTime,
       soundParameters = soundParameters,
-      timerParameters = timerParameters
+      timerParameters = timerParameters,
+      bodyParameters = bodyParameters,
+      animationParameters = animationParameters,
+      dirVector = dirVector
     )
 }

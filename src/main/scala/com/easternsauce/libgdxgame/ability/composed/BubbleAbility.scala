@@ -3,7 +3,6 @@ package com.easternsauce.libgdxgame.ability.composed
 import com.badlogic.gdx.math.Vector2
 import com.easternsauce.libgdxgame.ability.composed.components.{AbilityComponent, Bubble}
 import com.easternsauce.libgdxgame.ability.misc.AbilityState.{AbilityState, Inactive}
-import com.easternsauce.libgdxgame.ability.misc.Modification
 import com.easternsauce.libgdxgame.ability.parameters._
 import com.easternsauce.libgdxgame.creature.Creature
 
@@ -11,11 +10,25 @@ case class BubbleAbility private (
   override val creature: Creature,
   override val state: AbilityState = Inactive,
   override val onCooldown: Boolean = false,
+  override val components: List[AbilityComponent] = List(),
+  override val lastComponentFinishTime: Float = 0f,
   override val timerParameters: TimerParameters = TimerParameters(),
   override val soundParameters: SoundParameters = SoundParameters(),
-  override val components: List[AbilityComponent] = List(),
-  override val lastComponentFinishTime: Float = 0f
-) extends ComposedAbility {
+  override val bodyParameters: BodyParameters = BodyParameters(),
+  override val animationParameters: AnimationParameters = AnimationParameters(),
+  override val dirVector: Vector2 = new Vector2(0f, 0f)
+) extends ComposedAbility(
+      creature = creature,
+      state = state,
+      onCooldown = onCooldown,
+      components = components,
+      lastComponentFinishTime = lastComponentFinishTime,
+      timerParameters = timerParameters,
+      soundParameters = soundParameters,
+      bodyParameters = bodyParameters,
+      animationParameters = animationParameters,
+      dirVector = dirVector
+    ) {
   override type Self = BubbleAbility
 
   override val id = "bubble"
@@ -46,21 +59,27 @@ case class BubbleAbility private (
   }
 
   override def copy(
-    components: List[AbilityComponent],
-    lastComponentFinishTime: Float,
+    creature: Creature,
     state: AbilityState,
     onCooldown: Boolean,
+    components: List[AbilityComponent],
+    lastComponentFinishTime: Float,
     soundParameters: SoundParameters,
     timerParameters: TimerParameters,
     bodyParameters: BodyParameters,
-    animationParameters: AnimationParameters, dirVector: Vector2
+    animationParameters: AnimationParameters,
+    dirVector: Vector2
   ): Self =
-    copy(
-      components = components,
-      lastComponentFinishTime = lastComponentFinishTime,
+    BubbleAbility(
+      creature = creature,
       state = state,
       onCooldown = onCooldown,
+      components = components,
+      lastComponentFinishTime = lastComponentFinishTime,
       soundParameters = soundParameters,
-      timerParameters = timerParameters
+      timerParameters = timerParameters,
+      bodyParameters = bodyParameters,
+      animationParameters = animationParameters,
+      dirVector = dirVector
     )
 }

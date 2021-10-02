@@ -3,27 +3,33 @@ package com.easternsauce.libgdxgame.ability.misc
 import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.math.Vector2
 import com.easternsauce.libgdxgame.ability.composed.components.AbilityComponent
-import com.easternsauce.libgdxgame.ability.misc.AbilityState.AbilityState
-import com.easternsauce.libgdxgame.ability.parameters.{AnimationParameters, BodyParameters, SoundParameters, TimerParameters}
+import com.easternsauce.libgdxgame.ability.misc.AbilityState.{AbilityState, Inactive}
+import com.easternsauce.libgdxgame.ability.parameters.{
+  AnimationParameters,
+  BodyParameters,
+  SoundParameters,
+  TimerParameters
+}
 import com.easternsauce.libgdxgame.animation.Animation
 import com.easternsauce.libgdxgame.creature.Creature
 import com.easternsauce.libgdxgame.util.EsBatch
 import com.softwaremill.quicklens._
 
-trait Ability extends Modification {
+abstract class Ability(
+  val creature: Creature,
+  val state: AbilityState = Inactive,
+  val onCooldown: Boolean = false,
+  val components: List[AbilityComponent] = List(),
+  val lastComponentFinishTime: Float = 0,
+  val timerParameters: TimerParameters = TimerParameters(),
+  val soundParameters: SoundParameters = SoundParameters(),
+  val bodyParameters: BodyParameters = BodyParameters(),
+  val animationParameters: AnimationParameters = AnimationParameters(),
+  val dirVector: Vector2 = new Vector2(0f, 0f)
+) extends Modification {
   type Self >: this.type <: Ability
 
   val id: String
-  val creature: Creature
-  val components: List[AbilityComponent] = List()
-  val lastComponentFinishTime: Float = 0f
-  val state: AbilityState = AbilityState.Inactive
-  val onCooldown: Boolean = false
-  val soundParameters: SoundParameters = SoundParameters()
-  val timerParameters: TimerParameters = TimerParameters()
-  val bodyParameters: BodyParameters = BodyParameters()
-  val animationParameters: AnimationParameters = AnimationParameters()
-  val dirVector: Vector2 = new Vector2(0f, 0f)
 
   val activeAnimation: Option[Animation] = None
   val channelAnimation: Option[Animation] = None
@@ -60,7 +66,8 @@ trait Ability extends Modification {
     if (isStoppable && state != AbilityState.Inactive) {
       this
         .onStop()
-        .modify(_.state).setTo(AbilityState.Inactive)
+        .modify(_.state)
+        .setTo(AbilityState.Inactive)
 //        .makeCopy(state = AbilityState.Inactive)
     } else {
       this
@@ -150,10 +157,11 @@ trait Ability extends Modification {
   def asMapEntry: (String, Ability) = id -> this
 
   def copy(
-    components: List[AbilityComponent] = components,
-    lastComponentFinishTime: Float = lastComponentFinishTime,
+    creature: Creature = creature,
     state: AbilityState = state,
     onCooldown: Boolean = onCooldown,
+    components: List[AbilityComponent] = components,
+    lastComponentFinishTime: Float = lastComponentFinishTime,
     soundParameters: SoundParameters = soundParameters,
     timerParameters: TimerParameters = timerParameters,
     bodyParameters: BodyParameters = bodyParameters,

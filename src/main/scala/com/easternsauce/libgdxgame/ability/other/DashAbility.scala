@@ -17,13 +17,25 @@ case class DashAbility private (
   override val creature: Creature,
   override val state: AbilityState = Inactive,
   override val onCooldown: Boolean = false,
+  override val components: List[AbilityComponent] = List(),
+  override val lastComponentFinishTime: Float = 0f,
   override val timerParameters: TimerParameters = TimerParameters(),
   override val soundParameters: SoundParameters = SoundParameters(),
-  override val components: List[AbilityComponent] = List(),
   override val bodyParameters: BodyParameters = BodyParameters(),
   override val animationParameters: AnimationParameters = AnimationParameters(),
   override val dirVector: Vector2 = new Vector2(0f, 0f)
-) extends Ability {
+) extends Ability(
+      creature = creature,
+      state = state,
+      onCooldown = onCooldown,
+      components = components,
+      lastComponentFinishTime = lastComponentFinishTime,
+      timerParameters = timerParameters,
+      soundParameters = soundParameters,
+      bodyParameters = bodyParameters,
+      animationParameters = animationParameters,
+      dirVector = dirVector
+    ) {
   type Self = DashAbility
 
   override val id = "dash"
@@ -56,10 +68,11 @@ case class DashAbility private (
   }
 
   override def copy(
-    components: List[AbilityComponent],
-    lastComponentFinishTime: Float,
+    creature: Creature,
     state: AbilityState,
     onCooldown: Boolean,
+    components: List[AbilityComponent],
+    lastComponentFinishTime: Float,
     soundParameters: SoundParameters,
     timerParameters: TimerParameters,
     bodyParameters: BodyParameters,
@@ -70,11 +83,12 @@ case class DashAbility private (
       creature = creature,
       state = state,
       onCooldown = onCooldown,
+      components = components,
+      lastComponentFinishTime = lastComponentFinishTime,
       soundParameters = soundParameters,
       timerParameters = timerParameters,
       bodyParameters = bodyParameters,
       animationParameters = animationParameters,
-      components = components,
       dirVector = dirVector
     )
 }
