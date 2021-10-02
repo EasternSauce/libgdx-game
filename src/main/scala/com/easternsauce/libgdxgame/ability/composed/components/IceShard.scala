@@ -9,6 +9,7 @@ import com.easternsauce.libgdxgame.animation.Animation
 import com.easternsauce.libgdxgame.creature.Creature
 import com.easternsauce.libgdxgame.system.Assets
 import com.easternsauce.libgdxgame.util.EsBatch
+import com.softwaremill.quicklens.ModifyPimp
 
 case class IceShard(
   mainAbility: Ability,
@@ -39,7 +40,11 @@ case class IceShard(
 
     channelTimer.restart()
 
-    copy(started = true, state = AbilityState.Channeling)
+    this
+      .modify(_.started)
+      .setTo(true)
+      .modify(_.state)
+      .setTo(AbilityState.Channeling)
   }
 
   override def onUpdateActive(): IceShard = {
@@ -53,11 +58,15 @@ case class IceShard(
           val component = this
             .modifyIf(!destroyed && activeTimer.time >= activeTime) {
               body.get.getWorld.destroyBody(body.get)
-              copy(destroyed = true)
+              this
+                .modify(_.destroyed)
+                .setTo(true)
             }
             .modifyIf(activeTimer.time > activeTime) {
               // on active stop
-              copy(state = AbilityState.Inactive)
+              this
+                .modify(_.state)
+                .setTo(AbilityState.Inactive)
             }
           if (!destroyed) {
             body.get.setLinearVelocity(dirVector.x * componentParameters.speed, dirVector.y * componentParameters.speed)
@@ -75,7 +84,11 @@ case class IceShard(
 
     val body = initBody(componentParameters.startX, componentParameters.startY)
 
-    copy(state = AbilityState.Active, body = body)
+    this
+      .modify(_.state)
+      .setTo(AbilityState.Active)
+      .modify(_.body)
+      .setTo(body)
   }
 
   def initBody(x: Float, y: Float): Option[Body] = {

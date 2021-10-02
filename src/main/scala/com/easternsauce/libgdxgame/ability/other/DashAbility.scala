@@ -4,14 +4,10 @@ import com.badlogic.gdx.math.Vector2
 import com.easternsauce.libgdxgame.ability.composed.components.AbilityComponent
 import com.easternsauce.libgdxgame.ability.misc.Ability
 import com.easternsauce.libgdxgame.ability.misc.AbilityState.{AbilityState, Inactive}
-import com.easternsauce.libgdxgame.ability.parameters.{
-  AnimationParameters,
-  BodyParameters,
-  SoundParameters,
-  TimerParameters
-}
+import com.easternsauce.libgdxgame.ability.parameters.{AnimationParameters, BodyParameters, SoundParameters, TimerParameters}
 import com.easternsauce.libgdxgame.animation.Animation
 import com.easternsauce.libgdxgame.creature.Creature
+import com.softwaremill.quicklens.ModifyPimp
 
 case class DashAbility private (
   override val creature: Creature,
@@ -57,7 +53,9 @@ case class DashAbility private (
     creature.activateEffect("immobilized", channelTime + activeTime)
     creature.takeStaminaDamage(35f)
 
-    copy(dirVector = dashVector)
+    this
+      .modify(_.dirVector)
+      .setTo(dashVector)
   }
 
   override def onUpdateActive(): Self = {

@@ -9,6 +9,7 @@ import com.easternsauce.libgdxgame.animation.Animation
 import com.easternsauce.libgdxgame.creature.Creature
 import com.easternsauce.libgdxgame.system.Assets
 import com.easternsauce.libgdxgame.util.EsBatch
+import com.softwaremill.quicklens.ModifyPimp
 
 case class Fist(
   mainAbility: Ability,
@@ -46,7 +47,11 @@ case class Fist(
     channelTimer.restart()
     timerParameters.abilityChannelAnimationTimer.restart()
 
-    copy(started = true, state = AbilityState.Channeling)
+    this
+      .modify(_.started)
+      .setTo(true)
+      .modify(_.state)
+      .setTo(AbilityState.Channeling)
   }
 
   override def onUpdateActive(): Fist = {
@@ -60,20 +65,30 @@ case class Fist(
             activeTimer.restart()
             val body = initBody(componentParameters.startX, componentParameters.startY)
 
-            copy(state = AbilityState.Active, body = body)
+            this
+              .modify(_.state)
+              .setTo(AbilityState.Active)
+              .modify(_.body)
+              .setTo(body)
           }
         case AbilityState.Active =>
           this
             .modifyIf(activeTimer.time > activeTime) {
-              copy(state = AbilityState.Inactive)
+              this
+                .modify(_.state)
+                .setTo(AbilityState.Inactive)
             }
             .modifyIf(!destroyed && activeTimer.time >= 0.2f) {
               body.get.getWorld.destroyBody(body.get)
-              copy(destroyed = true)
+              this
+                .modify(_.destroyed)
+                .setTo(true)
             }
             .modifyIf(activeTimer.time > activeTime) {
               // on active stop
-              copy(state = AbilityState.Inactive)
+              this
+                .modify(_.state)
+                .setTo(AbilityState.Inactive)
             }
         case _ => this
       }

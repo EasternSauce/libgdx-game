@@ -4,12 +4,7 @@ import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.math.Vector2
 import com.easternsauce.libgdxgame.ability.composed.components.AbilityComponent
 import com.easternsauce.libgdxgame.ability.misc.AbilityState.{AbilityState, Inactive}
-import com.easternsauce.libgdxgame.ability.parameters.{
-  AnimationParameters,
-  BodyParameters,
-  SoundParameters,
-  TimerParameters
-}
+import com.easternsauce.libgdxgame.ability.parameters.{AnimationParameters, BodyParameters, SoundParameters, TimerParameters}
 import com.easternsauce.libgdxgame.animation.Animation
 import com.easternsauce.libgdxgame.creature.Creature
 import com.easternsauce.libgdxgame.util.EsBatch
@@ -68,7 +63,6 @@ abstract class Ability(
         .onStop()
         .modify(_.state)
         .setTo(AbilityState.Inactive)
-//        .makeCopy(state = AbilityState.Inactive)
     } else {
       this
     }
@@ -91,7 +85,8 @@ abstract class Ability(
 
       this
         .onChannellingStart()
-        .copy(state = AbilityState.Channeling)
+        .modify(_.state)
+        .setTo(AbilityState.Channeling)
     } else
       this
   }
@@ -108,7 +103,10 @@ abstract class Ability(
 
           this
             .onActiveStart()
-            .copy(state = AbilityState.Active, onCooldown = true)
+            .modify(_.state)
+            .setTo(AbilityState.Active)
+            .modify(_.onCooldown)
+            .setTo(true)
         } else
           this
 
@@ -120,7 +118,8 @@ abstract class Ability(
         val ability: Ability = if (activeTimer.time > activeTime) {
           this
             .onStop()
-            .copy(state = AbilityState.Inactive)
+            .modify(_.state)
+            .setTo(AbilityState.Inactive)
         } else
           this
 
@@ -132,7 +131,8 @@ abstract class Ability(
         if (onCooldown && activeTimer.time > cooldownTime) {
 
           this
-            .copy(onCooldown = false)
+            .modify(_.onCooldown)
+            .setTo(false)
         } else
           this
 

@@ -12,6 +12,7 @@ import com.easternsauce.libgdxgame.ability.parameters.{
 }
 import com.easternsauce.libgdxgame.creature.Creature
 import com.easternsauce.libgdxgame.util.EsBatch
+import com.softwaremill.quicklens._
 
 abstract class ComposedAbility(
   override val creature: Creature,
@@ -56,7 +57,10 @@ abstract class ComposedAbility(
           activeTimer.restart()
 
           this
-            .copy(state = AbilityState.Active, onCooldown = true)
+            .modify(_.state)
+            .setTo(AbilityState.Active)
+            .modify(_.onCooldown)
+            .setTo(true)
             .onActiveStart()
 
         } else
@@ -70,7 +74,8 @@ abstract class ComposedAbility(
         val ability =
           if (activeTimer.time > lastComponentFinishTime)
             this
-              .copy(state = AbilityState.Inactive)
+              .modify(_.state)
+              .setTo(AbilityState.Inactive)
               .onStop()
           else
             this
@@ -80,7 +85,9 @@ abstract class ComposedAbility(
 
       case Inactive if onCooldown =>
         if (activeTimer.time > cooldownTime) {
-          copy(onCooldown = false)
+          this
+            .modify(_.onCooldown)
+            .setTo(false)
         } else
           this
       case _ => this
@@ -127,7 +134,10 @@ abstract class ComposedAbility(
     creature.activateEffect("immobilized", lastComponentFinishTime)
 
     this
-      .copy(components = components.toList, lastComponentFinishTime = lastComponentFinishTime)
+      .modify(_.components)
+      .setTo(components.toList)
+      .modify(_.lastComponentFinishTime)
+      .setTo(lastComponentFinishTime)
   }
 
   def createComponent(index: Int): AbilityComponent = ???

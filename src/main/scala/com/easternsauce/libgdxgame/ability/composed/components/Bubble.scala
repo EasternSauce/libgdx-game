@@ -58,11 +58,15 @@ case class Bubble(
             this
               .modifyIf(!destroyed && activeTimer.time >= activeTime) {
                 body.get.getWorld.destroyBody(body.get)
-                this.modify(_.destroyed).setTo(true)
+                this
+                  .modify(_.destroyed)
+                  .setTo(true)
               }
               .modifyIf(activeTimer.time > activeTime) {
                 // on active stop
-                this.modify(_.state).setTo(AbilityState.Inactive)
+                this
+                  .modify(_.state)
+                  .setTo(AbilityState.Inactive)
               }
 
           if (!destroyed) {

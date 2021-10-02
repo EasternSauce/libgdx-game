@@ -5,6 +5,7 @@ import com.easternsauce.libgdxgame.ability.composed.components.{AbilityComponent
 import com.easternsauce.libgdxgame.ability.misc.AbilityState.{AbilityState, Inactive}
 import com.easternsauce.libgdxgame.ability.parameters._
 import com.easternsauce.libgdxgame.creature.Creature
+import com.softwaremill.quicklens.ModifyPimp
 
 case class MeteorCrashAbility private (
   override val creature: Creature,
@@ -91,7 +92,7 @@ case class MeteorCrashAbility private (
     // TODO: sideeffect
     creature.activateEffect("immobilized", lastComponentFinishTime)
 
-    copy(components = components.toList)
+    this.modify(_.components).setTo(components.toList)
   }
 
   override def onActiveStart(): Self = {

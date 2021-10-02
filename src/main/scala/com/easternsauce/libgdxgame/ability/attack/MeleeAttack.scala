@@ -9,6 +9,7 @@ import com.easternsauce.libgdxgame.ability.parameters._
 import com.easternsauce.libgdxgame.creature.Creature
 import com.easternsauce.libgdxgame.system.{Constants, GameSystem}
 import com.easternsauce.libgdxgame.util.{EsBatch, EsPolygon}
+import com.softwaremill.quicklens.ModifyPimp
 
 abstract class MeleeAttack(
   override val creature: Creature,
@@ -105,10 +106,15 @@ abstract class MeleeAttack(
       initBody(creature.area.get.world, bodyParameters.hitbox.get)
     } else None
 
-    val newBodyParameters = bodyParameters.copy(body = body, toRemoveBody = false, bodyActive = true, hitbox = hitbox)
-
     ability
-      .copy(bodyParameters = newBodyParameters)
+      .modify(_.bodyParameters.body)
+      .setTo(body)
+      .modify(_.bodyParameters.toRemoveBody)
+      .setTo(false)
+      .modify(_.bodyParameters.bodyActive)
+      .setTo(true)
+      .modify(_.bodyParameters.hitbox)
+      .setTo(hitbox)
   }
 
   override def render(batch: EsBatch): Self = {
@@ -177,7 +183,7 @@ abstract class MeleeAttack(
 
     val hitbox = Some(AttackHitbox(attackRectX, attackRectY, poly))
 
-    ability.copy(bodyParameters = bodyParameters.copy(hitbox = hitbox))
+    ability.modify(_.bodyParameters.hitbox).setTo(hitbox)
   }
 
   override def update(): Self = {
@@ -187,7 +193,11 @@ abstract class MeleeAttack(
     if (bodyParameters.body.nonEmpty && bodyParameters.toRemoveBody) {
       bodyParameters.body.get.getWorld.destroyBody(bodyParameters.body.get)
 
-      ability.copy(bodyParameters = bodyParameters.copy(toRemoveBody = false, bodyActive = false))
+      ability
+        .modify(_.bodyParameters.toRemoveBody)
+        .setTo(false)
+        .modify(_.bodyParameters.bodyActive)
+        .setTo(false)
     } else
       ability
 
@@ -216,7 +226,8 @@ abstract class MeleeAttack(
       }
 
       this
-        .copy(bodyParameters = bodyParameters.copy(hitbox = newHitbox))
+        .modify(_.bodyParameters.hitbox)
+        .setTo(newHitbox)
 
     } else
       this
@@ -229,7 +240,9 @@ abstract class MeleeAttack(
     // IMPORTANT: ability has to be active
     // if we remove during channeling we could remove it before body is created, causing BOX2D crash
     if (state == AbilityState.Active) {
-      copy(bodyParameters = bodyParameters.copy(toRemoveBody = true))
+      this
+        .modify(_.bodyParameters.toRemoveBody)
+        .setTo(true)
     } else
       this
   }

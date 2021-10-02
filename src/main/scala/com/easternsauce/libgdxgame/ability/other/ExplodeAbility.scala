@@ -6,12 +6,7 @@ import com.badlogic.gdx.physics.box2d._
 import com.easternsauce.libgdxgame.ability.composed.components.AbilityComponent
 import com.easternsauce.libgdxgame.ability.misc.AbilityState.{AbilityState, Inactive}
 import com.easternsauce.libgdxgame.ability.misc.{Ability, AbilityState}
-import com.easternsauce.libgdxgame.ability.parameters.{
-  AnimationParameters,
-  BodyParameters,
-  SoundParameters,
-  TimerParameters
-}
+import com.easternsauce.libgdxgame.ability.parameters.{AnimationParameters, BodyParameters, SoundParameters, TimerParameters}
 import com.easternsauce.libgdxgame.creature.Creature
 import com.easternsauce.libgdxgame.system.Assets
 import com.easternsauce.libgdxgame.util.EsBatch
@@ -136,7 +131,9 @@ case class ExplodeAbility private (
       // TODO: sideeffect?
       if (bodyParameters.body.nonEmpty) world.destroyBody(bodyParameters.body.get)
 
-      this.modify(_.bodyParameters.bodyActive).setTo(false)
+      this
+        .modify(_.bodyParameters.bodyActive)
+        .setTo(false)
     } else
       this
   }
