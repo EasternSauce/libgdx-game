@@ -21,7 +21,7 @@ abstract class Ability(
   val bodyParameters: BodyParameters = BodyParameters(),
   val animationParameters: AnimationParameters = AnimationParameters(),
   val dirVector: Vector2 = new Vector2(0f, 0f)
-) extends Modification {
+) {
   type Self >: this.type <: Ability
 
   val id: String

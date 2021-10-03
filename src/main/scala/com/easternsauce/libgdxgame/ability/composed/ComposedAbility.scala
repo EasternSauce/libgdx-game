@@ -96,11 +96,10 @@ abstract class ComposedAbility(
   }
 
   override def render(batch: EsBatch): Self = {
-    modifyIf(state == AbilityState.Active) {
-      this
-        .modify(_.components.each)
-        .using(_.render(batch))
-    }
+    this
+      .modify(_.components.each)
+      .usingIf(this.state == AbilityState.Active)(_.render(batch))
+
   }
 
   override def onUpdateActive(): Self = {

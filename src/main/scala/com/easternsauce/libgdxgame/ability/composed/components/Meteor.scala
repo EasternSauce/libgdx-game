@@ -62,31 +62,35 @@ case class Meteor(
   }
 
   override def onUpdateActive(): Self = {
-    modifyIf(started) {
-      state match {
-        case AbilityState.Channeling =>
-          this
-            .modifyIf(timerParameters.channelTimer.time > channelTime) {
-              onActiveStart()
-            }
-        case AbilityState.Active =>
-          this
-            .modifyIf(!bodyParameters.destroyed && timerParameters.activeTimer.time >= 0.2f) {
-              bodyParameters.body.get.getWorld.destroyBody(bodyParameters.body.get)
-              this
-                .modify(_.bodyParameters.destroyed)
-                .setTo(true)
-            }
-            .modifyIf(timerParameters.activeTimer.time > activeTime) {
-              // on active stop
-
-              this
-                .modify(_.state)
-                .setTo(AbilityState.Inactive)
-            }
-        case _ => this
-      }
-    }
+    // TODO: refactor
+    this
+//    modifyIf(started) {
+//      state match {
+//        case AbilityState.Channeling =>
+//          this
+//            .modifyIf(timerParameters.channelTimer.time > channelTime) {
+//              onActiveStart()
+//            }
+//        case AbilityState.Active =>
+//          this
+//            .modifyIf(!bodyParameters.destroyed && timerParameters.activeTimer.time >= 0.2f) {
+//              bodyParameters.body.get.getWorld.destroyBody(bodyParameters.body.get)
+//              this
+//                .modify(_.bodyParameters.destroyed)
+//                .setTo(true)
+//                .modify(_.bodyParameters.body)
+//                .setTo(Some(null))
+//            }
+//            .modifyIf(timerParameters.activeTimer.time > activeTime) {
+//              // on active stop
+//
+//              this
+//                .modify(_.state)
+//                .setTo(AbilityState.Inactive)
+//            }
+//        case _ => this
+//      }
+//    }
 
   }
 

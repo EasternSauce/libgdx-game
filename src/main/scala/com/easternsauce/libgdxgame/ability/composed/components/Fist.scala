@@ -62,44 +62,48 @@ case class Fist(
   }
 
   override def onUpdateActive(): Self = {
-    modifyIf(started) {
-      state match {
-        case AbilityState.Channeling =>
-          modifyIf(timerParameters.channelTimer.time > channelTime) {
-
-            Assets.sound(Assets.glassBreakSound).play(0.1f)
-            timerParameters.abilityActiveAnimationTimer.restart()
-            timerParameters.activeTimer.restart()
-            val body = initBody(componentParameters.startX, componentParameters.startY)
-
-            this
-              .modify(_.state)
-              .setTo(AbilityState.Active)
-              .modify(_.bodyParameters.body)
-              .setTo(body)
-          }
-        case AbilityState.Active =>
-          this
-            .modifyIf(timerParameters.activeTimer.time > activeTime) {
-              this
-                .modify(_.state)
-                .setTo(AbilityState.Inactive)
-            }
-            .modifyIf(!bodyParameters.destroyed && timerParameters.activeTimer.time >= 0.2f) {
-              bodyParameters.body.get.getWorld.destroyBody(bodyParameters.body.get)
-              this
-                .modify(_.bodyParameters.destroyed)
-                .setTo(true)
-            }
-            .modifyIf(timerParameters.activeTimer.time > activeTime) {
-              // on active stop
-              this
-                .modify(_.state)
-                .setTo(AbilityState.Inactive)
-            }
-        case _ => this
-      }
-    }
+    //TODO: refactor
+    this
+//    modifyIf(started) {
+//      state match {
+//        case AbilityState.Channeling =>
+//          modifyIf(timerParameters.channelTimer.time > channelTime) {
+//
+//            Assets.sound(Assets.glassBreakSound).play(0.1f)
+//            timerParameters.abilityActiveAnimationTimer.restart()
+//            timerParameters.activeTimer.restart()
+//            val body = initBody(componentParameters.startX, componentParameters.startY)
+//
+//            this
+//              .modify(_.state)
+//              .setTo(AbilityState.Active)
+//              .modify(_.bodyParameters.body)
+//              .setTo(body)
+//          }
+//        case AbilityState.Active =>
+//          this
+//            .modifyIf(timerParameters.activeTimer.time > activeTime) {
+//              this
+//                .modify(_.state)
+//                .setTo(AbilityState.Inactive)
+//            }
+//            .modifyIf(!bodyParameters.destroyed && timerParameters.activeTimer.time >= 0.2f) {
+//              bodyParameters.body.get.getWorld.destroyBody(bodyParameters.body.get)
+//              this
+//                .modify(_.bodyParameters.destroyed)
+//                .setTo(true)
+//                .modify(_.bodyParameters.body)
+//                .setTo(Some(null))
+//            }
+//            .modifyIf(timerParameters.activeTimer.time > activeTime) {
+//              // on active stop
+//              this
+//                .modify(_.state)
+//                .setTo(AbilityState.Inactive)
+//            }
+//        case _ => this
+//      }
+//    }
   }
 
   def initBody(x: Float, y: Float): Option[Body] = {

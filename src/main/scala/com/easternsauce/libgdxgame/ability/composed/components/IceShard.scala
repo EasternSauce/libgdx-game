@@ -12,7 +12,7 @@ import com.easternsauce.libgdxgame.ability.parameters.{
 }
 import com.easternsauce.libgdxgame.animation.Animation
 import com.easternsauce.libgdxgame.creature.Creature
-import com.easternsauce.libgdxgame.system.{Assets, Constants}
+import com.easternsauce.libgdxgame.system.Assets
 import com.easternsauce.libgdxgame.util.EsBatch
 import com.softwaremill.quicklens.ModifyPimp
 
@@ -45,6 +45,11 @@ case class IceShard(
   val spriteWidth = 152
   val spriteHeight = 72
 
+  // TODO: workaround: change user data when ability is modified
+  if (bodyParameters.body.nonEmpty && bodyParameters.body.get != null) {
+    bodyParameters.body.get.setUserData(this)
+  }
+
   override val activeAnimation: Option[Animation] = None
   override val channelAnimation: Option[Animation] = None
 
@@ -60,43 +65,55 @@ case class IceShard(
   }
 
   override def onUpdateActive(): Self = {
-    modifyIf(started) {
-      state match {
+    val component0: IceShard   = this
+
+    val component1: IceShard = if (component0.started) {
+      component0.state match {
         case AbilityState.Channeling =>
-          modifyIf(timerParameters.channelTimer.time > channelTime) {
-            onActiveStart()
-          }
+          val component1_1 = if (component0.timerParameters.channelTimer.time > component0.channelTime) {
+            component0.onActiveStart()
+          } else component0
+          component1_1
         case AbilityState.Active =>
-          val component = this
-            .modifyIf(!bodyParameters.destroyed && timerParameters.activeTimer.time >= activeTime) {
-              println("destroying ice shard, destroyed = " + bodyParameters.destroyed)
-              bodyParameters.body.get.getWorld.destroyBody(bodyParameters.body.get)
-              this
+          val component1_2: IceShard =
+            if (!component0.bodyParameters.destroyed && component0.timerParameters.activeTimer.time >= activeTime) {
+              component0.bodyParameters.body.get.getWorld.destroyBody(component0.bodyParameters.body.get)
+              component0
                 .modify(_.bodyParameters.destroyed)
                 .setTo(true)
-            }
-            .modifyIf(timerParameters.activeTimer.time > activeTime) {
+                .modify(_.bodyParameters.body)
+                .setTo(Some(null))
+            } else component0
+
+          val component1_3: IceShard = if (component1_2.timerParameters.activeTimer.time > component1_2.activeTime) {
               // on active stop
-              this
+            component1_2
                 .modify(_.state)
                 .setTo(AbilityState.Inactive)
-            }
-          if (!bodyParameters.destroyed) {
-            bodyParameters.body.get
-              .setLinearVelocity(dirVector.x * componentParameters.speed, dirVector.y * componentParameters.speed)
-          }
-          component
-        case _ => this
+            } else component1_2
+
+          val component1_4: IceShard = if (!component1_3.bodyParameters.destroyed) {
+            component1_3.bodyParameters.body.get
+              .setLinearVelocity(
+                component1_3.dirVector.x * component1_3.componentParameters.speed,
+                component1_3.dirVector.y * component1_3.componentParameters.speed
+              )
+            component1_3
+          } else component1_3
+          component1_4
+        case _ => component0
       }
-    }
+    } else component0
+
+    component1
 
   }
 
   private def onActiveStart(): Self = {
+
     //Assets.sound(Assets.explosionSound).play(0.01f)
     timerParameters.activeTimer.restart()
 
-    println("creating body iceshard, destroyed = " + bodyParameters.destroyed)
     val body = initBody(
       mainAbility.creature.pos.x + mainAbility.creature.creatureWidth / 2f,
       mainAbility.creature.pos.y + mainAbility.creature.creatureHeight / 2f
@@ -115,7 +132,7 @@ case class IceShard(
 
     bodyDef.`type` = BodyDef.BodyType.DynamicBody
     val body = mainAbility.creature.area.get.world.createBody(bodyDef)
-//    body.setUserData(this)
+    body.setUserData(this)
 
     val fixtureDef: FixtureDef = new FixtureDef()
     val shape: CircleShape = new CircleShape()
@@ -128,6 +145,7 @@ case class IceShard(
   }
 
   override def render(batch: EsBatch): Self = {
+
     if (state == AbilityState.Active) {
       val scale = radius * 2 / spriteWidth
       val image = Assets.atlas.findRegion("ice_shard")

@@ -4,10 +4,14 @@ import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.{Body, BodyDef, CircleShape, FixtureDef}
 import com.easternsauce.libgdxgame.ability.misc.AbilityState.AbilityState
 import com.easternsauce.libgdxgame.ability.misc.{Ability, AbilityState}
-import com.easternsauce.libgdxgame.ability.parameters.{AnimationParameters, BodyParameters, ComponentParameters, TimerParameters}
+import com.easternsauce.libgdxgame.ability.parameters.{
+  AnimationParameters,
+  BodyParameters,
+  ComponentParameters,
+  TimerParameters
+}
 import com.easternsauce.libgdxgame.animation.Animation
 import com.easternsauce.libgdxgame.creature.{Creature, Enemy}
-import com.easternsauce.libgdxgame.system.Assets
 import com.easternsauce.libgdxgame.util.EsBatch
 import com.softwaremill.quicklens._
 
@@ -38,6 +42,11 @@ case class Bubble(
 
   val loopTime = 0.2f
 
+  // TODO: workaround: change user data when ability is modified
+  if (bodyParameters.body.nonEmpty && bodyParameters.body.get != null) {
+    bodyParameters.body.get.setUserData(this)
+  }
+
   override val activeAnimation: Option[Animation] = Some(
     Animation.activeAnimationFromParameters(animationParameters, activeTime)
   )
@@ -54,38 +63,49 @@ case class Bubble(
   }
 
   override def onUpdateActive(): Self = {
-    modifyIf(started) {
-      state match {
+    val component0: Bubble = this
+    val component1: Bubble = if (component0.started) {
+      component0.state match {
         case AbilityState.Channeling =>
-          modifyIf(timerParameters.channelTimer.time > channelTime) { onActiveStart() }
+          val component1_1: Bubble = if (component0.timerParameters.channelTimer.time > component0.channelTime) {
+            component0.onActiveStart()
+          } else component0
+          component1_1
         case AbilityState.Active =>
-          val component: Bubble =
-            this
-              .modifyIf(!bodyParameters.destroyed && timerParameters.activeTimer.time >= activeTime) {
-                bodyParameters.body.get.getWorld.destroyBody(bodyParameters.body.get)
-                println("destroying bubble")
-                this
-                  .modify(_.bodyParameters.destroyed)
-                  .setTo(true)
-              }
-              .modifyIf(timerParameters.activeTimer.time > activeTime) {
-                // on active stop
-                this
-                  .modify(_.state)
-                  .setTo(AbilityState.Inactive)
-              }
+          val component1_2: Bubble =
+            if (
+              !component0.bodyParameters.destroyed && component0.timerParameters.activeTimer.time >= component0.activeTime
+            ) {
+              component0.bodyParameters.body.get.getWorld.destroyBody(component0.bodyParameters.body.get)
+              component0
+                .modify(_.bodyParameters.destroyed)
+                .setTo(true)
+                .modify(_.bodyParameters.body)
+                .setTo(Some(null))
+            } else component0
+          val component1_3: Bubble = if (component1_2.timerParameters.activeTimer.time > component1_2.activeTime) {
+            // on active stop
+            component1_2
+              .modify(_.state)
+              .setTo(AbilityState.Inactive)
+          } else component1_2
 
-          if (!bodyParameters.destroyed) {
-            bodyParameters.body.get
-              .setLinearVelocity(dirVector.x * componentParameters.speed, dirVector.y * componentParameters.speed)
-          }
+          val component1_4: Bubble = if (!component1_3.bodyParameters.destroyed) {
+            component1_3.bodyParameters.body.get
+              .setLinearVelocity(
+                component1_3.dirVector.x * component1_3.componentParameters.speed,
+                component1_3.dirVector.y * component1_3.componentParameters.speed
+              )
+            component1_3
+          } else component1_3
 
-          component
+          component1_4
 
-        case _ => this
+        case _ => component0
       }
-    }
+    } else component0
 
+    component1
   }
 
   private def onActiveStart(): Self = {
@@ -95,7 +115,6 @@ case class Bubble(
 
     timerParameters.activeTimer.restart()
 
-    println("creating body")
     val body = initBody(componentParameters.startX, componentParameters.startY)
     val dirVector = if (mainAbility.creature.asInstanceOf[Enemy].aggroedTarget.nonEmpty) {
       mainAbility.creature.facingVector.cpy
@@ -118,7 +137,7 @@ case class Bubble(
 
     bodyDef.`type` = BodyDef.BodyType.DynamicBody
     val body = Some(mainAbility.creature.area.get.world.createBody(bodyDef))
-    //body.get.setUserData(this)
+    body.get.setUserData(this)
 
     val fixtureDef: FixtureDef = new FixtureDef()
     val shape: CircleShape = new CircleShape()
