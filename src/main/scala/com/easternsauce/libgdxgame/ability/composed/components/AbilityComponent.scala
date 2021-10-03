@@ -20,8 +20,6 @@ abstract class AbilityComponent(
 ) extends Modification {
   type Self >: this.type <: AbilityComponent
 
-  protected val activeTimer: EsTimer = EsTimer()
-  protected val channelTimer: EsTimer = EsTimer()
   val activeTime: Float
   val channelTime: Float
 

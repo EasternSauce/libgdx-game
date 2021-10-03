@@ -4,7 +4,12 @@ import com.badlogic.gdx.math.Vector2
 import com.easternsauce.libgdxgame.ability.composed.components.AbilityComponent
 import com.easternsauce.libgdxgame.ability.misc.AbilityState.{AbilityState, Inactive}
 import com.easternsauce.libgdxgame.ability.misc.{Ability, AbilityState}
-import com.easternsauce.libgdxgame.ability.parameters.{AnimationParameters, BodyParameters, SoundParameters, TimerParameters}
+import com.easternsauce.libgdxgame.ability.parameters.{
+  AnimationParameters,
+  BodyParameters,
+  SoundParameters,
+  TimerParameters
+}
 import com.easternsauce.libgdxgame.creature.Creature
 import com.easternsauce.libgdxgame.util.EsBatch
 import com.softwaremill.quicklens._
@@ -91,31 +96,24 @@ abstract class ComposedAbility(
   }
 
   override def render(batch: EsBatch): Self = {
-    if (state == AbilityState.Active) {
-      // TODO: remove sideeffect
-      for (component <- components) {
-        component.render(batch)
-      }
+    modifyIf(state == AbilityState.Active) {
+      this
+        .modify(_.components.each)
+        .using(_.render(batch))
     }
-
-    this
   }
 
   override def onUpdateActive(): Self = {
     val activeTimer = timerParameters.activeTimer
 
-    // TODO: remove sideeffect
-
-    // TODO: update components!!
-    for (component <- components) {
-      if (!component.started && activeTimer.time > component.componentParameters.startTime) {
-        component.start()
-      }
-
-      component.onUpdateActive()
-    }
+    val condition: AbilityComponent => Boolean = component =>
+      !component.started && activeTimer.time > component.componentParameters.startTime
 
     this
+      .modify(_.components.eachWhere(condition))
+      .using(_.start())
+      .modify(_.components.each)
+      .using(_.onUpdateActive())
   }
 
   override def onChannellingStart(): Self = {

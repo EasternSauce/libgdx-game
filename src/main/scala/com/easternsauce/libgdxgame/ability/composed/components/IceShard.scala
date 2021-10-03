@@ -4,10 +4,15 @@ import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.{Body, BodyDef, CircleShape, FixtureDef}
 import com.easternsauce.libgdxgame.ability.misc.AbilityState.AbilityState
 import com.easternsauce.libgdxgame.ability.misc.{Ability, AbilityState}
-import com.easternsauce.libgdxgame.ability.parameters.{AnimationParameters, BodyParameters, ComponentParameters, TimerParameters}
+import com.easternsauce.libgdxgame.ability.parameters.{
+  AnimationParameters,
+  BodyParameters,
+  ComponentParameters,
+  TimerParameters
+}
 import com.easternsauce.libgdxgame.animation.Animation
 import com.easternsauce.libgdxgame.creature.Creature
-import com.easternsauce.libgdxgame.system.Assets
+import com.easternsauce.libgdxgame.system.{Assets, Constants}
 import com.easternsauce.libgdxgame.util.EsBatch
 import com.softwaremill.quicklens.ModifyPimp
 
@@ -45,7 +50,7 @@ case class IceShard(
 
   def start(): Self = {
 
-    channelTimer.restart()
+    timerParameters.channelTimer.restart()
 
     this
       .modify(_.started)
@@ -58,18 +63,18 @@ case class IceShard(
     modifyIf(started) {
       state match {
         case AbilityState.Channeling =>
-          modifyIf(channelTimer.time > channelTime) {
+          modifyIf(timerParameters.channelTimer.time > channelTime) {
             onActiveStart()
           }
         case AbilityState.Active =>
           val component = this
-            .modifyIf(!bodyParameters.destroyed && activeTimer.time >= activeTime) {
+            .modifyIf(!bodyParameters.destroyed && timerParameters.activeTimer.time >= activeTime) {
               bodyParameters.body.get.getWorld.destroyBody(bodyParameters.body.get)
               this
                 .modify(_.bodyParameters.destroyed)
                 .setTo(true)
             }
-            .modifyIf(activeTimer.time > activeTime) {
+            .modifyIf(timerParameters.activeTimer.time > activeTime) {
               // on active stop
               this
                 .modify(_.state)
@@ -88,9 +93,12 @@ case class IceShard(
 
   private def onActiveStart(): Self = {
     //Assets.sound(Assets.explosionSound).play(0.01f)
-    activeTimer.restart()
+    timerParameters.activeTimer.restart()
 
-    val body = initBody(componentParameters.startX, componentParameters.startY)
+    val body = initBody(
+      componentParameters.startX + mainAbility.creature.creatureWidth / 2f,
+      componentParameters.startY + mainAbility.creature.creatureHeight / 2f
+    )
 
     this
       .modify(_.state)

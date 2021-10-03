@@ -51,7 +51,7 @@ case class Fist(
 
   def start(): Self = {
 
-    channelTimer.restart()
+    timerParameters.channelTimer.restart()
     timerParameters.abilityChannelAnimationTimer.restart()
 
     this
@@ -65,11 +65,11 @@ case class Fist(
     modifyIf(started) {
       state match {
         case AbilityState.Channeling =>
-          modifyIf(channelTimer.time > channelTime) {
+          modifyIf(timerParameters.channelTimer.time > channelTime) {
 
             Assets.sound(Assets.glassBreakSound).play(0.1f)
             timerParameters.abilityActiveAnimationTimer.restart()
-            activeTimer.restart()
+            timerParameters.activeTimer.restart()
             val body = initBody(componentParameters.startX, componentParameters.startY)
 
             this
@@ -80,18 +80,18 @@ case class Fist(
           }
         case AbilityState.Active =>
           this
-            .modifyIf(activeTimer.time > activeTime) {
+            .modifyIf(timerParameters.activeTimer.time > activeTime) {
               this
                 .modify(_.state)
                 .setTo(AbilityState.Inactive)
             }
-            .modifyIf(!bodyParameters.destroyed && activeTimer.time >= 0.2f) {
+            .modifyIf(!bodyParameters.destroyed && timerParameters.activeTimer.time >= 0.2f) {
               bodyParameters.body.get.getWorld.destroyBody(bodyParameters.body.get)
               this
                 .modify(_.bodyParameters.destroyed)
                 .setTo(true)
             }
-            .modifyIf(activeTimer.time > activeTime) {
+            .modifyIf(timerParameters.activeTimer.time > activeTime) {
               // on active stop
               this
                 .modify(_.state)
@@ -168,7 +168,7 @@ case class Fist(
   }
 
   override def onCollideWithCreature(creature: Creature): Self = {
-    if (!(mainAbility.creature.isEnemy && creature.isEnemy) && creature.isAlive && activeTimer.time < 0.15f) {
+    if (!(mainAbility.creature.isEnemy && creature.isEnemy) && creature.isAlive && timerParameters.activeTimer.time < 0.15f) {
       if (!creature.isImmune) creature.takeLifeDamage(100f, immunityFrames = true)
     }
 

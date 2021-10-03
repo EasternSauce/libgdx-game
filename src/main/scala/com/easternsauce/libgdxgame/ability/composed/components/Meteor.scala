@@ -51,7 +51,7 @@ case class Meteor(
 
   def start(): Self = {
 
-    channelTimer.restart()
+    timerParameters.channelTimer.restart()
     timerParameters.abilityChannelAnimationTimer.restart()
 
     this
@@ -66,18 +66,18 @@ case class Meteor(
       state match {
         case AbilityState.Channeling =>
           this
-            .modifyIf(channelTimer.time > channelTime) {
+            .modifyIf(timerParameters.channelTimer.time > channelTime) {
               onActiveStart()
             }
         case AbilityState.Active =>
           this
-            .modifyIf(!bodyParameters.destroyed && activeTimer.time >= 0.2f) {
+            .modifyIf(!bodyParameters.destroyed && timerParameters.activeTimer.time >= 0.2f) {
               bodyParameters.body.get.getWorld.destroyBody(bodyParameters.body.get)
               this
                 .modify(_.bodyParameters.destroyed)
                 .setTo(true)
             }
-            .modifyIf(activeTimer.time > activeTime) {
+            .modifyIf(timerParameters.activeTimer.time > activeTime) {
               // on active stop
 
               this
@@ -93,7 +93,7 @@ case class Meteor(
   private def onActiveStart(): Self = {
     Assets.sound(Assets.explosionSound).play(0.01f)
     timerParameters.abilityActiveAnimationTimer.restart()
-    activeTimer.restart()
+    timerParameters.activeTimer.restart()
     val body = initBody(componentParameters.startX, componentParameters.startY)
 
     this

@@ -7,6 +7,7 @@ import com.easternsauce.libgdxgame.ability.misc.{Ability, AbilityState}
 import com.easternsauce.libgdxgame.ability.parameters.{AnimationParameters, BodyParameters, ComponentParameters, TimerParameters}
 import com.easternsauce.libgdxgame.animation.Animation
 import com.easternsauce.libgdxgame.creature.{Creature, Enemy}
+import com.easternsauce.libgdxgame.system.Assets
 import com.easternsauce.libgdxgame.util.EsBatch
 import com.softwaremill.quicklens._
 
@@ -43,7 +44,7 @@ case class Bubble(
   override val channelAnimation: Option[Animation] = None
 
   def start(): Self = {
-    channelTimer.restart()
+    timerParameters.channelTimer.restart()
 
     this
       .modify(_.started)
@@ -56,20 +57,17 @@ case class Bubble(
     modifyIf(started) {
       state match {
         case AbilityState.Channeling =>
-          if (channelTimer.time > channelTime) {
-            onActiveStart()
-          } else this
+          modifyIf(timerParameters.channelTimer.time > channelTime) { onActiveStart() }
         case AbilityState.Active =>
-          //TODO: use this: person.modify(_.address.street.name).setToIf(shouldChangeAddress)("3 00 Ln.")
           val component: Bubble =
             this
-              .modifyIf(!bodyParameters.destroyed && activeTimer.time >= activeTime) {
+              .modifyIf(!bodyParameters.destroyed && timerParameters.activeTimer.time >= activeTime) {
                 bodyParameters.body.get.getWorld.destroyBody(bodyParameters.body.get)
                 this
                   .modify(_.bodyParameters.destroyed)
                   .setTo(true)
               }
-              .modifyIf(activeTimer.time > activeTime) {
+              .modifyIf(timerParameters.activeTimer.time > activeTime) {
                 // on active stop
                 this
                   .modify(_.state)
@@ -94,9 +92,9 @@ case class Bubble(
 
     timerParameters.abilityActiveAnimationTimer.restart()
 
-    activeTimer.restart()
+    timerParameters.activeTimer.restart()
 
-    val body = initBody(componentParameters.startX, componentParameters.startX)
+    val body = initBody(componentParameters.startX, componentParameters.startY)
     val dirVector = if (mainAbility.creature.asInstanceOf[Enemy].aggroedTarget.nonEmpty) {
       mainAbility.creature.facingVector.cpy
     } else {
@@ -135,6 +133,7 @@ case class Bubble(
       val spriteWidth = 64
       val scale = componentParameters.radius * 2 / spriteWidth
       val image = activeAnimation.get.currentFrame(time = timerParameters.activeTimer.time, loop = true)
+
       batch.spriteBatch.draw(
         image,
         bodyParameters.body.get.getPosition.x - componentParameters.radius,
