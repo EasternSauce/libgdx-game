@@ -69,6 +69,7 @@ case class IceShard(
         case AbilityState.Active =>
           val component = this
             .modifyIf(!bodyParameters.destroyed && timerParameters.activeTimer.time >= activeTime) {
+              println("destroying ice shard, destroyed = " + bodyParameters.destroyed)
               bodyParameters.body.get.getWorld.destroyBody(bodyParameters.body.get)
               this
                 .modify(_.bodyParameters.destroyed)
@@ -95,9 +96,10 @@ case class IceShard(
     //Assets.sound(Assets.explosionSound).play(0.01f)
     timerParameters.activeTimer.restart()
 
+    println("creating body iceshard, destroyed = " + bodyParameters.destroyed)
     val body = initBody(
-      componentParameters.startX + mainAbility.creature.creatureWidth / 2f,
-      componentParameters.startY + mainAbility.creature.creatureHeight / 2f
+      mainAbility.creature.pos.x + mainAbility.creature.creatureWidth / 2f,
+      mainAbility.creature.pos.y + mainAbility.creature.creatureHeight / 2f
     )
 
     this
@@ -113,7 +115,7 @@ case class IceShard(
 
     bodyDef.`type` = BodyDef.BodyType.DynamicBody
     val body = mainAbility.creature.area.get.world.createBody(bodyDef)
-    body.setUserData(this)
+//    body.setUserData(this)
 
     val fixtureDef: FixtureDef = new FixtureDef()
     val shape: CircleShape = new CircleShape()

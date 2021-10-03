@@ -63,6 +63,7 @@ case class Bubble(
             this
               .modifyIf(!bodyParameters.destroyed && timerParameters.activeTimer.time >= activeTime) {
                 bodyParameters.body.get.getWorld.destroyBody(bodyParameters.body.get)
+                println("destroying bubble")
                 this
                   .modify(_.bodyParameters.destroyed)
                   .setTo(true)
@@ -94,6 +95,7 @@ case class Bubble(
 
     timerParameters.activeTimer.restart()
 
+    println("creating body")
     val body = initBody(componentParameters.startX, componentParameters.startY)
     val dirVector = if (mainAbility.creature.asInstanceOf[Enemy].aggroedTarget.nonEmpty) {
       mainAbility.creature.facingVector.cpy
@@ -116,7 +118,7 @@ case class Bubble(
 
     bodyDef.`type` = BodyDef.BodyType.DynamicBody
     val body = Some(mainAbility.creature.area.get.world.createBody(bodyDef))
-    body.get.setUserData(this)
+    //body.get.setUserData(this)
 
     val fixtureDef: FixtureDef = new FixtureDef()
     val shape: CircleShape = new CircleShape()
