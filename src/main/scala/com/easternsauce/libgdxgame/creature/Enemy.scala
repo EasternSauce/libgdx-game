@@ -2,11 +2,14 @@ package com.easternsauce.libgdxgame.creature
 
 import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.math.Vector2
+import com.easternsauce.libgdxgame.area.Area
 import com.easternsauce.libgdxgame.creature.traits.AggressiveAi
 import com.easternsauce.libgdxgame.system.GameSystem
 import com.easternsauce.libgdxgame.util.EsTimer
 
-abstract class Enemy extends Creature with AggressiveAi {
+abstract class Enemy(override val id: String, override val area: Option[Area] = None)
+    extends Creature(id = id, area = area)
+    with AggressiveAi {
   override val isEnemy: Boolean = true
 
   val activeSoundTimer: EsTimer = EsTimer()

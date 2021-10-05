@@ -2,6 +2,7 @@ package com.easternsauce.libgdxgame.saving
 
 import java.io.{File, PrintWriter}
 
+import com.easternsauce.libgdxgame.area.Area
 import com.easternsauce.libgdxgame.creature.Creature
 import com.easternsauce.libgdxgame.system.GameSystem._
 import io.circe.generic.semiauto._
@@ -84,12 +85,16 @@ class SavefileManager {
   private def recreateCreatureFromSavedata(creatureData: CreatureSavedata): Unit = {
     val action = Class
       .forName(creatureData.creatureClass)
-      .getMethod("apply", classOf[String])
-      .invoke(null, creatureData.id)
+      .getMethod("apply", classOf[String], classOf[Option[Area]])
+      .invoke(null, creatureData.id, None)
 
     val creature = action.asInstanceOf[Creature]
 
-    creature.loadFromSavedata(creatureData)
+    val creaturesMap = areaMap(creatureData.area).creaturesMap
+    // TODO: workaround
+    creaturesMap.update(creature.id, creature.loadFromSavedata(creatureData))
+
+
 
   }
 

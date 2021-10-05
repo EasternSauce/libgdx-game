@@ -6,11 +6,14 @@ import com.badlogic.gdx.math.Vector2
 import com.easternsauce.libgdxgame.ability.misc.Ability
 import com.easternsauce.libgdxgame.ability.other.DashAbility
 import com.easternsauce.libgdxgame.ability.parameters.SoundParameters
+import com.easternsauce.libgdxgame.area.Area
 import com.easternsauce.libgdxgame.creature.traits.AnimationParams
 import com.easternsauce.libgdxgame.system.{Assets, GameSystem}
 import com.easternsauce.libgdxgame.util.{EsDirection, EsTimer}
 
-class Player private (val id: String) extends Creature {
+case class Player(override val id: String, override val area: Option[Area] = None)
+    extends Creature(id = id, area = area) {
+  override type Self = Player
 
   override val creatureWidth = 1.85f
   override val creatureHeight = 1.85f
@@ -96,12 +99,7 @@ class Player private (val id: String) extends Creature {
 
   }
 
-}
+  def copy(id: String = id, area: Option[Area] = area): Self = Player(id = id, area = area)
 
-object Player {
-  def apply(id: String): Player = {
-    val obj = new Player(id)
-    obj.init()
-    obj
-  }
+  init()
 }

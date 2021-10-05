@@ -168,7 +168,8 @@ class Area(val mapLoader: TmxMapLoader, val areaFilesLocation: String, val id: S
 
     creature.spawnPointId = Some(spawnPoint.id)
 
-    creature.assignToArea(this, spawnPoint.posX, spawnPoint.posY)
+    // TODO: workaround
+    creaturesMap.update(creature.id, creature.assignToArea(this, spawnPoint.posX, spawnPoint.posY))
 
     if (spawnPoint.weaponType.nonEmpty) {
       creature.equipmentItems(InventoryMapping.primaryWeaponIndex) =

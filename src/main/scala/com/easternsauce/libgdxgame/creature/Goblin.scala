@@ -1,11 +1,15 @@
 package com.easternsauce.libgdxgame.creature
 
 import com.badlogic.gdx.audio.Sound
+import com.easternsauce.libgdxgame.area.Area
 import com.easternsauce.libgdxgame.creature.traits.AnimationParams
 import com.easternsauce.libgdxgame.system.Assets
 import com.easternsauce.libgdxgame.util.EsDirection
 
-class Goblin private (val id: String) extends Enemy {
+case class Goblin(override val id: String, override val area: Option[Area] = None)
+    extends Enemy(id = id, area = area) {
+  override type Self = Goblin
+
   override val creatureWidth = 2.85f
   override val creatureHeight = 2.85f
 
@@ -33,12 +37,7 @@ class Goblin private (val id: String) extends Enemy {
     dirMap = Map(EsDirection.Up -> 3, EsDirection.Down -> 0, EsDirection.Left -> 1, EsDirection.Right -> 2)
   )
 
-}
+  def copy(id: String = id, area: Option[Area] = area): Self = Goblin(id = id, area = area)
 
-object Goblin {
-  def apply(id: String): Goblin = {
-    val obj = new Goblin(id)
-    obj.init()
-    obj
-  }
+  init()
 }

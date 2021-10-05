@@ -1,11 +1,15 @@
 package com.easternsauce.libgdxgame.creature
 
 import com.badlogic.gdx.audio.Sound
+import com.easternsauce.libgdxgame.area.Area
 import com.easternsauce.libgdxgame.creature.traits.AnimationParams
 import com.easternsauce.libgdxgame.system.Assets
 import com.easternsauce.libgdxgame.util.EsDirection
 
-class Skeleton private (val id: String) extends Enemy {
+case class Skeleton(override val id: String, override val area: Option[Area] = None)
+    extends Enemy(id = id, area = area) {
+  override type Self = Skeleton
+
   override val creatureWidth = 2.85f
   override val creatureHeight = 2.85f
 
@@ -36,12 +40,7 @@ class Skeleton private (val id: String) extends Enemy {
     )
   }
 
-}
+  def copy(id: String = id, area: Option[Area] = area): Self = Skeleton(id = id, area = area)
 
-object Skeleton {
-  def apply(id: String): Skeleton = {
-    val obj = new Skeleton(id)
-    obj.init()
-    obj
-  }
+  init()
 }

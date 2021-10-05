@@ -4,6 +4,7 @@ import com.easternsauce.libgdxgame.creature.Creature
 import com.easternsauce.libgdxgame.items.Item
 import com.easternsauce.libgdxgame.saving.{CreatureSavedata, ItemSavedata, PlayerSpawnPointSavedata, PositionSavedata}
 import com.easternsauce.libgdxgame.system.GameSystem.{allAreaCreaturesMap, areaMap, setPlayer}
+import com.softwaremill.quicklens.ModifyPimp
 
 trait SavefileParser {
   this: Creature =>
@@ -30,26 +31,30 @@ trait SavefileParser {
     )
   }
 
-  def loadFromSavedata(creatureData: CreatureSavedata): Unit = {
-    setPosition(creatureData.position.x, creatureData.position.y)
-    life = creatureData.life
-    this.area = Some(areaMap(creatureData.area))
+  def loadFromSavedata(creatureData: CreatureSavedata): Creature = {
 
-    spawnPointId = creatureData.spawnPointId
+    val creature = assignToArea(areaMap(creatureData.area), creatureData.position.x, creatureData.position.y)
+
+    if (creatureData.isPlayer) setPlayer(creature)
+
+
+    creature.setPosition(creatureData.position.x, creatureData.position.y)
+    creature.life = creatureData.life
+
+    creature.spawnPointId = creatureData.spawnPointId
 
     if (creatureData.playerSpawnPoint.nonEmpty) {
       val area = areaMap(creatureData.playerSpawnPoint.get.area)
-      playerSpawnPoint = Some(area.playerSpawns.filter(_.id == creatureData.playerSpawnPoint.get.id).head)
+      creature.playerSpawnPoint = Some(area.playerSpawns.filter(_.id == creatureData.playerSpawnPoint.get.id).head)
     }
 
-    if (creatureData.isPlayer) setPlayer(this)
 
-    creatureData.inventoryItems.foreach(item => inventoryItems += (item.index -> Item.loadFromSavedata(item)))
-    creatureData.equipmentItems.foreach(item => equipmentItems += (item.index -> Item.loadFromSavedata(item)))
+
+    creatureData.inventoryItems.foreach(item => creature.inventoryItems += (item.index -> Item.loadFromSavedata(item)))
+    creatureData.equipmentItems.foreach(item => creature.equipmentItems += (item.index -> Item.loadFromSavedata(item)))
 
     allAreaCreaturesMap += (id -> this)
 
-    assignToArea(areaMap(creatureData.area), creatureData.position.x, creatureData.position.y)
-
+    creature
   }
 }

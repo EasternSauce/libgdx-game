@@ -4,11 +4,14 @@ import com.badlogic.gdx.audio.{Music, Sound}
 import com.easternsauce.libgdxgame.ability.composed.{FistSlamAbility, MeteorCrashAbility, MeteorRainAbility}
 import com.easternsauce.libgdxgame.ability.misc.Ability
 import com.easternsauce.libgdxgame.ability.other.DashAbility
+import com.easternsauce.libgdxgame.area.Area
 import com.easternsauce.libgdxgame.creature.traits.{AbilityUsage, AnimationParams, Boss}
 import com.easternsauce.libgdxgame.system.Assets
 import com.easternsauce.libgdxgame.util.EsDirection
 
-class FireDemon private (val id: String) extends Boss {
+case class FireDemon(override val id: String, override val area: Option[Area] = None)
+    extends Boss(id = id, area = area) {
+  override type Self = FireDemon
 
   override val creatureWidth = 7.5f
   override val creatureHeight = 7.5f
@@ -62,12 +65,8 @@ class FireDemon private (val id: String) extends Boss {
   // TODO: how to get rid of casting?
   // TODO: refactor this before uncommenting!
   // abilityMap("thrust").asInstanceOf[ThrustAttack].attackRange = 1.5f
-}
 
-object FireDemon {
-  def apply(id: String): FireDemon = {
-    val obj = new FireDemon(id)
-    obj.init()
-    obj
-  }
+  override def copy(id: String = id, area: Option[Area] = area): Self = FireDemon(id = id, area = area)
+
+  init()
 }

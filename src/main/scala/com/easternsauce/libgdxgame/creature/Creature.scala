@@ -10,11 +10,12 @@ import com.easternsauce.libgdxgame.creature.traits._
 import com.easternsauce.libgdxgame.spawns.PlayerSpawnPoint
 import com.easternsauce.libgdxgame.system.Assets
 import com.easternsauce.libgdxgame.util.{EsBatch, EsDirection, EsTimer}
+import com.softwaremill.quicklens.ModifyPimp
 
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
 
-abstract class Creature
+abstract class Creature(val id: String, val area: Option[Area] = None)
     extends Sprite
     with PhysicalBody
     with AnimatedWalk
@@ -24,13 +25,12 @@ abstract class Creature
     with Life
     with Stamina
     with Abilities {
+  type Self >: this.type <: Creature
 
   val isEnemy = false
   val isPlayer = false
   val isNPC = false
   val isBoss = false
-
-  val id: String
 
   val creatureWidth: Float
   val creatureHeight: Float
@@ -43,8 +43,6 @@ abstract class Creature
   val timeSinceMovedTimer: EsTimer = EsTimer()
 
   val directionalSpeed = 18f
-
-  var area: Option[Area] = None
 
   val onGettingHitSound: Option[Sound] = None
   val walkSound: Option[Sound] = None
@@ -213,26 +211,27 @@ abstract class Creature
     }
   }
 
-  def assignToArea(area: Area, x: Float, y: Float): Unit = {
+  def assignToArea(area: Area, x: Float, y: Float): Creature = {
+    val newArea = Some(area)
+
+    val creature = this.modify(_.area).setTo(newArea)
+
     if (this.area.isEmpty) {
-      this.area = Some(area)
-      initBody(area.world, x, y, creatureWidth / 2f)
+      creature.initBody(area.world, x, y, creatureWidth / 2f)
 
       area.creaturesMap += (id -> this)
-
     } else {
       val oldArea = this.area.get
 
-      destroyBody(oldArea.world)
+      creature.destroyBody(oldArea.world)
       oldArea.creaturesMap -= id
 
-      this.area = Some(area)
-      initBody(area.world, x, y, creatureWidth / 2f)
+      creature.initBody(area.world, x, y, creatureWidth / 2f)
 
       area.creaturesMap += (id -> this)
-
     }
 
+    creature
   }
 
   def init(): Unit = {
@@ -263,4 +262,6 @@ abstract class Creature
     setColor(1, 1, 1, 1)
 
   }
+
+  def copy(id: String = id, area: Option[Area] = area): Self
 }
