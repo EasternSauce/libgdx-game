@@ -107,12 +107,10 @@ abstract class MeleeAttack(
     } else None
 
     ability
-      .modify(_.bodyParameters.body)
+      .modify(_.bodyParameters.b2Body)
       .setTo(body)
-      .modify(_.bodyParameters.toRemoveBody)
+      .modify(_.bodyParameters.toBeRemoved)
       .setTo(false)
-      .modify(_.bodyParameters.bodyActive)
-      .setTo(true)
       .modify(_.bodyParameters.hitbox)
       .setTo(hitbox)
   }
@@ -190,14 +188,14 @@ abstract class MeleeAttack(
 
     val ability: Self = super.update()
 
-    if (bodyParameters.body.nonEmpty && bodyParameters.toRemoveBody) {
-      bodyParameters.body.get.getWorld.destroyBody(bodyParameters.body.get)
+    if (bodyParameters.b2Body.nonEmpty && bodyParameters.toBeRemoved) {
+      bodyParameters.b2Body.get.getWorld.destroyBody(bodyParameters.b2Body.get)
 
       ability
-        .modify(_.bodyParameters.toRemoveBody)
+        .modify(_.bodyParameters.toBeRemoved)
         .setTo(false)
-        .modify(_.bodyParameters.bodyActive)
-        .setTo(false)
+        .modify(_.bodyParameters.b2Body)
+        .setTo(None)
     } else
       ability
 
@@ -221,8 +219,8 @@ abstract class MeleeAttack(
       )
 
       // TODO: remove sideeffect
-      if (bodyParameters.bodyActive) {
-        bodyParameters.body.get.setTransform(bodyParameters.hitbox.get.x, bodyParameters.hitbox.get.y, 0f)
+      if (bodyParameters.b2Body.nonEmpty) {
+        bodyParameters.b2Body.get.setTransform(bodyParameters.hitbox.get.x, bodyParameters.hitbox.get.y, 0f)
       }
 
       this
@@ -241,7 +239,7 @@ abstract class MeleeAttack(
     // if we remove during channeling we could remove it before body is created, causing BOX2D crash
     if (state == AbilityState.Active) {
       this
-        .modify(_.bodyParameters.toRemoveBody)
+        .modify(_.bodyParameters.toBeRemoved)
         .setTo(true)
     } else
       this

@@ -43,8 +43,8 @@ case class Bubble(
   val loopTime = 0.2f
 
   // TODO: workaround: change user data when ability is modified
-  if (bodyParameters.body.nonEmpty && bodyParameters.body.get != null) {
-    bodyParameters.body.get.setUserData(this)
+  if (bodyParameters.b2Body.nonEmpty && bodyParameters.b2Body.get != null) {
+    bodyParameters.b2Body.get.setUserData(this)
   }
 
   override val activeAnimation: Option[Animation] = Some(
@@ -74,14 +74,12 @@ case class Bubble(
         case AbilityState.Active =>
           val component1_2: Bubble =
             if (
-              !component0.bodyParameters.destroyed && component0.timerParameters.activeTimer.time >= component0.activeTime
+              component0.bodyParameters.b2Body.nonEmpty && component0.timerParameters.activeTimer.time >= component0.activeTime
             ) {
-              component0.bodyParameters.body.get.getWorld.destroyBody(component0.bodyParameters.body.get)
+              component0.bodyParameters.b2Body.get.getWorld.destroyBody(component0.bodyParameters.b2Body.get)
               component0
-                .modify(_.bodyParameters.destroyed)
-                .setTo(true)
-                .modify(_.bodyParameters.body)
-                .setTo(Some(null))
+                .modify(_.bodyParameters.b2Body)
+                .setTo(None)
             } else component0
           val component1_3: Bubble = if (component1_2.timerParameters.activeTimer.time > component1_2.activeTime) {
             // on active stop
@@ -90,8 +88,8 @@ case class Bubble(
               .setTo(AbilityState.Inactive)
           } else component1_2
 
-          val component1_4: Bubble = if (!component1_3.bodyParameters.destroyed) {
-            component1_3.bodyParameters.body.get
+          val component1_4: Bubble = if (component1_3.bodyParameters.b2Body.nonEmpty) {
+            component1_3.bodyParameters.b2Body.get
               .setLinearVelocity(
                 component1_3.dirVector.x * component1_3.componentParameters.speed,
                 component1_3.dirVector.y * component1_3.componentParameters.speed
@@ -125,7 +123,7 @@ case class Bubble(
     this
       .modify(_.state)
       .setTo(AbilityState.Active)
-      .modify(_.bodyParameters.body)
+      .modify(_.bodyParameters.b2Body)
       .setTo(body)
       .modify(_.dirVector)
       .setTo(dirVector)
@@ -157,8 +155,8 @@ case class Bubble(
 
       batch.spriteBatch.draw(
         image,
-        bodyParameters.body.get.getPosition.x - componentParameters.radius,
-        bodyParameters.body.get.getPosition.y - componentParameters.radius,
+        bodyParameters.b2Body.get.getPosition.x - componentParameters.radius,
+        bodyParameters.b2Body.get.getPosition.y - componentParameters.radius,
         0,
         0,
         image.getRegionWidth.toFloat,

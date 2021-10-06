@@ -10,7 +10,7 @@ import com.easternsauce.libgdxgame.creature.traits._
 import com.easternsauce.libgdxgame.spawns.PlayerSpawnPoint
 import com.easternsauce.libgdxgame.system.Assets
 import com.easternsauce.libgdxgame.util.{EsBatch, EsDirection, EsTimer}
-import com.softwaremill.quicklens.ModifyPimp
+import com.softwaremill.quicklens.{ModifyPimp, modify}
 
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
@@ -120,7 +120,7 @@ abstract class Creature(val id: String, val area: Option[Area] = None)
     if (isMoving) setRegion(walkAnimationFrame(currentDirection))
     else setRegion(standStillImage(currentDirection))
 
-    if (bodyCreated) {
+    if (b2Body.nonEmpty) {
       val roundedX = (math.floor(pos.x * 100) / 100).toFloat
       val roundedY = (math.floor(pos.y * 100) / 100).toFloat
       setPosition(roundedX - getWidth / 2f, roundedY - getHeight / 2f)
@@ -217,18 +217,22 @@ abstract class Creature(val id: String, val area: Option[Area] = None)
     val creature = this.modify(_.area).setTo(newArea)
 
     if (this.area.isEmpty) {
-      creature.initBody(area.world, x, y, creatureWidth / 2f)
+      val body = creature.initBody(area.world, x, y, creatureWidth / 2f)
 
       area.creaturesMap += (id -> this)
+
+      creature.b2Body = body
     } else {
       val oldArea = this.area.get
 
       creature.destroyBody(oldArea.world)
       oldArea.creaturesMap -= id
 
-      creature.initBody(area.world, x, y, creatureWidth / 2f)
+      val body = creature.initBody(area.world, x, y, creatureWidth / 2f)
 
       area.creaturesMap += (id -> this)
+
+      creature.b2Body = body
     }
 
     creature

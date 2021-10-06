@@ -103,7 +103,7 @@ case class Meteor(
     this
       .modify(_.state)
       .setTo(AbilityState.Active)
-      .modify(_.bodyParameters.body)
+      .modify(_.bodyParameters.b2Body)
       .setTo(body)
   }
 

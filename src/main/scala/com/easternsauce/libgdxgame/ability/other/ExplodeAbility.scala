@@ -65,7 +65,7 @@ case class ExplodeAbility private (
   override def onUpdateActive(): Self = {
     val activeTimer = timerParameters.activeTimer
 
-    if (bodyParameters.bodyActive && activeTimer.time > 0.1f) {
+    if (bodyParameters.b2Body.nonEmpty && activeTimer.time > 0.1f) {
       destroyBody(creature.area.get.world)
     } else
       this
@@ -120,20 +120,18 @@ case class ExplodeAbility private (
     b2Body.createFixture(fixtureDef)
 
     this
-      .modify(_.bodyParameters.body)
+      .modify(_.bodyParameters.b2Body)
       .setTo(Some(b2Body))
-      .modify(_.bodyParameters.bodyActive)
-      .setTo(true)
   }
 
   def destroyBody(world: World): Self = {
-    if (bodyParameters.bodyActive) {
+    if (bodyParameters.b2Body.nonEmpty) {
       // TODO: sideeffect?
-      if (bodyParameters.body.nonEmpty) world.destroyBody(bodyParameters.body.get)
+      world.destroyBody(bodyParameters.b2Body.get)
 
       this
-        .modify(_.bodyParameters.bodyActive)
-        .setTo(false)
+        .modify(_.bodyParameters.b2Body)
+        .setTo(None)
     } else
       this
   }

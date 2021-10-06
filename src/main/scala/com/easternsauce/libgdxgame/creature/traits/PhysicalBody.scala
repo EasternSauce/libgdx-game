@@ -7,19 +7,17 @@ import com.easternsauce.libgdxgame.creature.Creature
 trait PhysicalBody {
   this: Creature =>
 
-  var b2Body: Body = _
+  var b2Body: Option[Body] = None
   var b2fixture: Fixture = _
 
   var mass: Float = 300f
-  var bodyCreated = false
 
-  def initBody(world: World, x: Float, y: Float, radius: Float): Unit = {
-    if (!bodyCreated) {
+  def initBody(world: World, x: Float, y: Float, radius: Float): Option[Body] = {
+    if (b2Body.isEmpty) {
       val bodyDef = new BodyDef()
-      bodyDef.position
-        .set(x, y)
+      bodyDef.position.set(x, y)
       bodyDef.`type` = BodyDef.BodyType.DynamicBody
-      b2Body = world.createBody(bodyDef)
+      val b2Body = world.createBody(bodyDef)
       b2Body.setUserData(this)
       b2Body.setSleepingAllowed(false)
 
@@ -34,39 +32,41 @@ trait PhysicalBody {
       b2Body.setMassData(massData)
       b2Body.setLinearDamping(10f)
 
-      bodyCreated = true
+      Some(b2Body)
+    } else {
+      throw new RuntimeException("attempt at creating a body more than once")
     }
 
   }
 
   def destroyBody(world: World): Unit = {
-    if (bodyCreated) {
-      world.destroyBody(b2Body)
-      bodyCreated = false
+    if (b2Body.nonEmpty) {
+      world.destroyBody(b2Body.get)
+      b2Body = None
     }
   }
 
   def sustainVelocity(velocity: Vector2): Unit = {
-    if (bodyCreated) {
-      b2Body.setLinearVelocity(velocity)
+    if (b2Body.nonEmpty) {
+      b2Body.get.setLinearVelocity(velocity)
     }
   }
 
   def distanceTo(otherCreature: Creature): Float = {
-    if (bodyCreated) {
-      b2Body.getPosition.dst(otherCreature.b2Body.getPosition)
+    if (b2Body.nonEmpty) {
+      b2Body.get.getPosition.dst(otherCreature.b2Body.get.getPosition)
     } else ???
   }
 
   def pos: Vector2 = {
-    if (bodyCreated) {
-      b2Body.getPosition
+    if (b2Body.nonEmpty) {
+      b2Body.get.getPosition
     } else ???
   }
 
   def setNonInteractive(): Unit = {
     b2fixture.setSensor(true)
-    b2Body.setType(BodyDef.BodyType.StaticBody)
+    b2Body.get.setType(BodyDef.BodyType.StaticBody)
   }
 
 }
