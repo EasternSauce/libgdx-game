@@ -10,8 +10,8 @@ import com.easternsauce.libgdxgame.creature.traits.{AbilityUsage, AnimationParam
 import com.easternsauce.libgdxgame.system.Assets
 import com.easternsauce.libgdxgame.util.EsDirection
 
-case class FireDemon(override val id: String, override val area: Option[Area] = None)
-    extends Boss(id = id, area = area) {
+case class FireDemon(override val id: String, override val area: Option[Area] = None, override val b2Body: Option[Body] = None)
+    extends Boss(id = id, area = area, b2Body = b2Body) {
   override type Self = FireDemon
 
   override val creatureWidth = 7.5f
@@ -67,7 +67,7 @@ case class FireDemon(override val id: String, override val area: Option[Area] = 
   // TODO: refactor this before uncommenting!
   // abilityMap("thrust").asInstanceOf[ThrustAttack].attackRange = 1.5f
 
-  override def copy(id: String = id, area: Option[Area] = area): Self = FireDemon(id = id, area = area)
+  override def copy(id: String = id, area: Option[Area] = area, b2Body: Option[Body] = b2Body): Self = FireDemon(id = id, area = area, b2Body = b2Body)
 
   init()
 }

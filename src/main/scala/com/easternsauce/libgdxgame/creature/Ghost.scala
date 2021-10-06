@@ -1,6 +1,7 @@
 package com.easternsauce.libgdxgame.creature
 
 import com.badlogic.gdx.audio.Sound
+import com.badlogic.gdx.physics.box2d.Body
 import com.easternsauce.libgdxgame.ability.misc.Ability
 import com.easternsauce.libgdxgame.ability.other.ExplodeAbility
 import com.easternsauce.libgdxgame.ability.parameters.SoundParameters
@@ -9,8 +10,8 @@ import com.easternsauce.libgdxgame.creature.traits.{AbilityUsage, AnimationParam
 import com.easternsauce.libgdxgame.system.Assets
 import com.easternsauce.libgdxgame.util.EsDirection
 
-case class Ghost(override val id: String, override val area: Option[Area] = None)
-    extends Enemy(id = id, area = area) {
+case class Ghost(override val id: String, override val area: Option[Area] = None, override val b2Body: Option[Body] = None)
+    extends Enemy(id = id, area = area, b2Body = b2Body) {
   override type Self = Ghost
 
   override val creatureWidth = 2.85f
@@ -58,7 +59,7 @@ case class Ghost(override val id: String, override val area: Option[Area] = None
     dirMap = Map(EsDirection.Up -> 3, EsDirection.Down -> 0, EsDirection.Left -> 1, EsDirection.Right -> 2)
   )
 
-  def copy(id: String = id, area: Option[Area] = area): Self = Ghost(id = id, area = area)
+  def copy(id: String = id, area: Option[Area] = area, b2Body: Option[Body] = b2Body): Self = Ghost(id = id, area = area, b2Body = b2Body)
 
   init()
 }

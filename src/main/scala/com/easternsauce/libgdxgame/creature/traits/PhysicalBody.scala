@@ -3,11 +3,11 @@ package com.easternsauce.libgdxgame.creature.traits
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d._
 import com.easternsauce.libgdxgame.creature.Creature
+import com.softwaremill.quicklens.ModifyPimp
 
 trait PhysicalBody {
   this: Creature =>
 
-  var b2Body: Option[Body] = None
   var b2fixture: Fixture = _
 
   var mass: Float = 300f
@@ -39,11 +39,12 @@ trait PhysicalBody {
 
   }
 
-  def destroyBody(world: World): Unit = {
+  def destroyBody(world: World): Creature = {
     if (b2Body.nonEmpty) {
       world.destroyBody(b2Body.get)
-      b2Body = None
+      this.modify(_.b2Body).setTo(None)
     }
+    else this
   }
 
   def sustainVelocity(velocity: Vector2): Unit = {

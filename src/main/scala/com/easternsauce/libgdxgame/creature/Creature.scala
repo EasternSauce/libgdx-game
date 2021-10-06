@@ -3,6 +3,7 @@ package com.easternsauce.libgdxgame.creature
 import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.graphics.g2d.Sprite
 import com.badlogic.gdx.math.Vector2
+import com.badlogic.gdx.physics.box2d.Body
 import com.easternsauce.libgdxgame.ability.attack.{ShootArrowAttack, SlashAttack, ThrustAttack}
 import com.easternsauce.libgdxgame.ability.misc.Ability
 import com.easternsauce.libgdxgame.area.Area
@@ -10,12 +11,12 @@ import com.easternsauce.libgdxgame.creature.traits._
 import com.easternsauce.libgdxgame.spawns.PlayerSpawnPoint
 import com.easternsauce.libgdxgame.system.Assets
 import com.easternsauce.libgdxgame.util.{EsBatch, EsDirection, EsTimer}
-import com.softwaremill.quicklens.{ModifyPimp, modify}
+import com.softwaremill.quicklens.ModifyPimp
 
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
 
-abstract class Creature(val id: String, val area: Option[Area] = None)
+abstract class Creature(val id: String, val area: Option[Area] = None, val b2Body: Option[Body] = None)
     extends Sprite
     with PhysicalBody
     with AnimatedWalk
@@ -214,28 +215,23 @@ abstract class Creature(val id: String, val area: Option[Area] = None)
   def assignToArea(area: Area, x: Float, y: Float): Creature = {
     val newArea = Some(area)
 
-    val creature = this.modify(_.area).setTo(newArea)
+    val creature: Creature = this.modify(_.area).setTo(newArea)
 
-    if (this.area.isEmpty) {
-      val body = creature.initBody(area.world, x, y, creatureWidth / 2f)
+    area.creaturesMap += (id -> this)
 
-      area.creaturesMap += (id -> this)
-
-      creature.b2Body = body
+    val body = if (this.area.isEmpty) {
+      creature.initBody(area.world, x, y, creatureWidth / 2f)
     } else {
       val oldArea = this.area.get
 
-      creature.destroyBody(oldArea.world)
       oldArea.creaturesMap -= id
 
-      val body = creature.initBody(area.world, x, y, creatureWidth / 2f)
-
-      area.creaturesMap += (id -> this)
-
-      creature.b2Body = body
+      creature
+        .destroyBody(oldArea.world)
+        .initBody(area.world, x, y, creatureWidth / 2f)
     }
 
-    creature
+    creature.modify(_.b2Body).setTo(body)
   }
 
   def init(): Unit = {
@@ -267,5 +263,5 @@ abstract class Creature(val id: String, val area: Option[Area] = None)
 
   }
 
-  def copy(id: String = id, area: Option[Area] = area): Self
+  def copy(id: String = id, area: Option[Area] = area, b2Body: Option[Body] = b2Body): Self
 }

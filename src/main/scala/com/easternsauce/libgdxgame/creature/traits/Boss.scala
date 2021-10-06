@@ -1,12 +1,16 @@
 package com.easternsauce.libgdxgame.creature.traits
 
 import com.badlogic.gdx.audio.Music
+import com.badlogic.gdx.physics.box2d.Body
 import com.easternsauce.libgdxgame.area.Area
 import com.easternsauce.libgdxgame.creature.{Creature, Enemy}
 import com.easternsauce.libgdxgame.system.GameSystem
 
-abstract class Boss(override val id: String, override val area: Option[Area] = None)
-    extends Enemy(id = id, area = area) {
+abstract class Boss(
+  override val id: String,
+  override val area: Option[Area] = None,
+  override val b2Body: Option[Body] = None
+) extends Enemy(id = id, area = area, b2Body = b2Body) {
 
   override val isKnockbackable = false
   override val isBoss = true

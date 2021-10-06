@@ -1,6 +1,7 @@
 package com.easternsauce.libgdxgame.creature
 
 import com.badlogic.gdx.audio.Sound
+import com.badlogic.gdx.physics.box2d.Body
 import com.easternsauce.libgdxgame.ability.composed.{BubbleAbility, IceShardAbility}
 import com.easternsauce.libgdxgame.ability.misc.Ability
 import com.easternsauce.libgdxgame.area.Area
@@ -8,8 +9,8 @@ import com.easternsauce.libgdxgame.creature.traits.{AbilityUsage, AnimationParam
 import com.easternsauce.libgdxgame.system.Assets
 import com.easternsauce.libgdxgame.util.EsDirection
 
-case class Serpent(override val id: String, override val area: Option[Area] = None)
-  extends Enemy(id = id, area = area)  {
+case class Serpent(override val id: String, override val area: Option[Area] = None, override val b2Body: Option[Body] = None)
+  extends Enemy(id = id, area = area, b2Body = b2Body)  {
   override type Self = Serpent
 
   override val creatureWidth = 3.85f
@@ -49,7 +50,7 @@ case class Serpent(override val id: String, override val area: Option[Area] = No
     dirMap = Map(EsDirection.Up -> 0, EsDirection.Down -> 2, EsDirection.Left -> 1, EsDirection.Right -> 3)
   )
 
-  def copy(id: String = id, area: Option[Area] = area): Self = Serpent(id = id, area = area)
+  def copy(id: String = id, area: Option[Area] = area, b2Body: Option[Body] = b2Body): Self = Serpent(id = id, area = area, b2Body = b2Body)
 
   init()
 }

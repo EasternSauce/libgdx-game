@@ -139,9 +139,16 @@ class Area(val mapLoader: TmxMapLoader, val areaFilesLocation: String, val id: S
   }
 
   def reset(): Unit = {
-    creaturesMap.values
+    // TODO: workaround
+
+    val changed = creaturesMap.values
       .filter(creature => creature.isEnemy)
-      .foreach(creature => creature.destroyBody(creature.area.get.world))
+      .map(creature => creature.destroyBody(creature.area.get.world))
+
+    changed.foreach(creature => creaturesMap.update(creature.id, creature))
+
+
+
     allAreaCreaturesMap.filterInPlace { case (_, creature) => !(creature.isEnemy && creature.area.get == this) }
     creaturesMap.filterInPlace { case (_, creature) => !creature.isEnemy }
     enemySpawns.foreach(spawnPoint => spawnEnemy(spawnPoint))

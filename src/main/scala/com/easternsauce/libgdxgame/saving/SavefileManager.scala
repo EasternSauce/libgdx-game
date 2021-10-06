@@ -2,6 +2,7 @@ package com.easternsauce.libgdxgame.saving
 
 import java.io.{File, PrintWriter}
 
+import com.badlogic.gdx.physics.box2d.Body
 import com.easternsauce.libgdxgame.area.Area
 import com.easternsauce.libgdxgame.creature.Creature
 import com.easternsauce.libgdxgame.system.GameSystem._
@@ -85,8 +86,8 @@ class SavefileManager {
   private def recreateCreatureFromSavedata(creatureData: CreatureSavedata): Unit = {
     val action = Class
       .forName(creatureData.creatureClass)
-      .getMethod("apply", classOf[String], classOf[Option[Area]])
-      .invoke(null, creatureData.id, None)
+      .getMethod("apply", classOf[String], classOf[Option[Area]], classOf[Option[Body]])
+      .invoke(null, creatureData.id, None, None)
 
     val creature = action.asInstanceOf[Creature]
 
