@@ -41,10 +41,10 @@ trait PhysicalBody {
 
   def destroyBody(world: World): Creature = {
     if (b2Body.nonEmpty) {
+      println("destroying body")
       world.destroyBody(b2Body.get)
       this.modify(_.b2Body).setTo(None)
-    }
-    else this
+    } else ???
   }
 
   def sustainVelocity(velocity: Vector2): Unit = {
@@ -62,7 +62,11 @@ trait PhysicalBody {
   def pos: Vector2 = {
     if (b2Body.nonEmpty) {
       b2Body.get.getPosition
-    } else ???
+    } else {
+      println("body: " + b2Body)
+      println("trying to access position for " + id)
+      ???
+    }
   }
 
   def setNonInteractive(): Unit = {

@@ -228,7 +228,7 @@ object GameSystem extends Game {
   }
 
   def setupNewGame(): Unit = {
-    val creature = Player("player")
+    val creature = Player(id = "player")
 
     // TODO: npcs?
 

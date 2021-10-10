@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.Body
 import com.easternsauce.libgdxgame.ability.attack.{ShootArrowAttack, SlashAttack, ThrustAttack}
-import com.easternsauce.libgdxgame.ability.misc.Ability
+import com.easternsauce.libgdxgame.ability.misc.Action
 import com.easternsauce.libgdxgame.area.Area
 import com.easternsauce.libgdxgame.creature.traits._
 import com.easternsauce.libgdxgame.spawns.PlayerSpawnPoint
@@ -16,8 +16,13 @@ import com.softwaremill.quicklens.ModifyPimp
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
 
-abstract class Creature(val id: String, val area: Option[Area] = None, val b2Body: Option[Body] = None)
-    extends Sprite
+abstract class Creature(
+  val id: String,
+  val area: Option[Area] = None,
+  val b2Body: Option[Body] = None,
+  val standardAbilities: Map[String, Action] = Map(),
+  val additionalAbilities: Map[String, Action] = Map()
+) extends Sprite
     with PhysicalBody
     with AnimatedWalk
     with Inventory
@@ -41,7 +46,7 @@ abstract class Creature(val id: String, val area: Option[Area] = None, val b2Bod
   var currentDirection: EsDirection.Value = EsDirection.Down
 
   var isMoving = false
-  val timeSinceMovedTimer: EsTimer = EsTimer()
+  var timeSinceMovedTimer: EsTimer = EsTimer()
 
   val directionalSpeed = 18f
 
@@ -64,18 +69,13 @@ abstract class Creature(val id: String, val area: Option[Area] = None, val b2Bod
 
   var playerSpawnPoint: Option[PlayerSpawnPoint] = None
 
-  val recentDirections: ListBuffer[EsDirection.Value] = ListBuffer()
+  var recentDirections: ListBuffer[EsDirection.Value] = ListBuffer()
 
-  val updateDirectionTimer: EsTimer = EsTimer(true)
-
-  lazy val standardAbilities: Map[String, Ability] =
-    Map(SlashAttack(this).asMapEntry, ShootArrowAttack(this).asMapEntry, ThrustAttack(this).asMapEntry)
-
-  lazy val additionalAbilities: Map[String, Ability] = Map()
+  var updateDirectionTimer: EsTimer = EsTimer(true)
 
   // TODO: refactor this
-  lazy val abilityMap: mutable.Map[String, Ability] = {
-    val map = mutable.Map[String, Ability]()
+  lazy val abilityMap: mutable.Map[String, Action] = {
+    val map = mutable.Map[String, Action]()
     map.addAll(standardAbilities)
     map.addAll(additionalAbilities)
 
@@ -90,6 +90,8 @@ abstract class Creature(val id: String, val area: Option[Area] = None, val b2Bod
   def totalArmor: Float = equipmentItems.values.map(item => item.armor.getOrElse(0)).sum.toFloat
 
   def update(): Unit = {
+    if (isPlayer) println("body is " + b2Body)
+
     if (isInitialized && isAlive) {
       updateStaminaDrain()
 
@@ -219,34 +221,40 @@ abstract class Creature(val id: String, val area: Option[Area] = None, val b2Bod
 
     area.creaturesMap += (id -> this)
 
-    val body = if (this.area.isEmpty) {
-      creature.initBody(area.world, x, y, creatureWidth / 2f)
+    if (this.area.isEmpty) {
+      val body = creature.initBody(area.world, x, y, creatureWidth / 2f)
+
+      creature.modify(_.b2Body).setTo(body)
     } else {
       val oldArea = this.area.get
 
       oldArea.creaturesMap -= id
 
+      val body = initBody(area.world, x, y, creatureWidth / 2f)
+
       creature
         .destroyBody(oldArea.world)
-        .initBody(area.world, x, y, creatureWidth / 2f)
-    }
+        .modify(_.b2Body)
+        .setTo(body)
 
-    creature.modify(_.b2Body).setTo(body)
+    }
   }
 
   def init(): Unit = {
-    setupAnimation()
+    if (!isInitialized) {
+      setupAnimation()
 
-    setBounds(0, 0, creatureWidth, creatureHeight)
-    setOrigin(creatureWidth / 2f, creatureHeight / 2f)
+      setBounds(0, 0, creatureWidth, creatureHeight)
+      setOrigin(creatureWidth / 2f, creatureHeight / 2f)
 
-    defineEffects()
+      defineEffects()
 
-    setRegion(standStillImage(currentDirection))
+      setRegion(standStillImage(currentDirection))
 
-    life = maxLife
+      life = maxLife
 
-    isInitialized = true
+      isInitialized = true
+    }
   }
 
   def render(batch: EsBatch): Unit = {
@@ -263,5 +271,31 @@ abstract class Creature(val id: String, val area: Option[Area] = None, val b2Bod
 
   }
 
-  def copy(id: String = id, area: Option[Area] = area, b2Body: Option[Body] = b2Body): Self
+  def _temp_copyVars[T <: Creature](that: T): T = {
+    isInitialized = that.isInitialized
+    currentDirection = that.currentDirection
+    isMoving = that.isMoving
+    timeSinceMovedTimer = that.timeSinceMovedTimer
+    timeSinceMovedTimer = that.timeSinceMovedTimer
+    attackVector = that.attackVector
+    facingVector = that.facingVector
+    walkingVector = that.walkingVector
+    passedGateRecently = that.passedGateRecently
+    toSetBodyNonInteractive = that.toSetBodyNonInteractive
+    spawnPointId = that.spawnPointId
+    sprinting = that.sprinting
+    playerSpawnPoint = that.playerSpawnPoint
+    recentDirections = that.recentDirections
+    updateDirectionTimer = that.updateDirectionTimer
+
+    this.modify(_.additionalAbilities).setTo(that.additionalAbilities).asInstanceOf[T]
+  }
+
+  def copy(
+    id: String = id,
+    area: Option[Area] = area,
+    b2Body: Option[Body] = b2Body,
+    standardAbilities: Map[String, Action] = standardAbilities,
+    additionalAbilities: Map[String, Action] = additionalAbilities
+  ): Self
 }

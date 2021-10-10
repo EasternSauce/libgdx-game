@@ -11,9 +11,15 @@ import com.easternsauce.libgdxgame.area.Area
 import com.easternsauce.libgdxgame.creature.traits.AnimationParams
 import com.easternsauce.libgdxgame.system.{Assets, GameSystem}
 import com.easternsauce.libgdxgame.util.{EsDirection, EsTimer}
+import com.softwaremill.quicklens.ModifyPimp
 
-case class Player(override val id: String, override val area: Option[Area] = None, override val b2Body: Option[Body] = None)
-    extends Creature(id = id, area = area, b2Body = b2Body) {
+case class Player(
+  override val id: String,
+  override val area: Option[Area],
+  override val b2Body: Option[Body],
+  override val standardAbilities: Map[String, Ability],
+  override val additionalAbilities: Map[String, Ability]
+) extends Creature(id = id, area = area, b2Body = b2Body) {
   override type Self = Player
 
   override val creatureWidth = 1.85f
@@ -42,7 +48,7 @@ case class Player(override val id: String, override val area: Option[Area] = Non
     dirMap = Map(EsDirection.Up -> 3, EsDirection.Down -> 0, EsDirection.Left -> 1, EsDirection.Right -> 2)
   )
 
-  override lazy val additionalAbilities: Map[String, Ability] =
+  override val defaultAdditionalAbilities: Map[String, Ability] =
     Map({
       DashAbility(
         creature = this,
@@ -100,7 +106,44 @@ case class Player(override val id: String, override val area: Option[Area] = Non
 
   }
 
-  def copy(id: String = id, area: Option[Area] = area, b2Body: Option[Body] = b2Body): Self = Player(id = id, area = area, b2Body = b2Body)
+  def copy(
+    id: String = id,
+    area: Option[Area] = area,
+    b2Body: Option[Body] = b2Body,
+    standardAbilities: Map[String, Ability] = standardAbilities,
+    additionalAbilities: Map[String, Ability] = additionalAbilities
+  ): Self =
+    Player(
+      id = id,
+      area = area,
+      b2Body = b2Body,
+      standardAbilities = standardAbilities,
+      additionalAbilities = additionalAbilities
+    )._temp_copyVars(this)
 
   init()
+}
+
+object Player {
+  def apply(
+    id: String,
+    area: Option[Area] = None,
+    b2Body: Option[Body] = None,
+    standardAbilities: Map[String, Ability] = Map(),
+    additionalAbilities: Map[String, Ability] = Map()
+  ): Player = {
+    val creature0 = new Player(id, area, b2Body, standardAbilities, additionalAbilities)
+    val creature1 = if (standardAbilities.isEmpty) {
+      creature0
+        .modify(_.standardAbilities)
+        .setTo(creature0.defaultStandardAbilities)
+    } else creature0
+    val creature2 = if (additionalAbilities.isEmpty) {
+      creature1
+        .modify(_.additionalAbilities)
+        .setTo(creature1.defaultAdditionalAbilities)
+    } else creature1
+
+    creature2
+  }
 }
