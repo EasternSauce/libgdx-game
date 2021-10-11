@@ -14,7 +14,6 @@ import com.easternsauce.libgdxgame.system.GameSystem._
 import com.easternsauce.libgdxgame.system.{Constants, InventoryMapping}
 import com.easternsauce.libgdxgame.util.EsBatch
 
-import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
 
 class Area(val mapLoader: TmxMapLoader, val areaFilesLocation: String, val id: String, val mapScale: Float)
@@ -24,8 +23,6 @@ class Area(val mapLoader: TmxMapLoader, val areaFilesLocation: String, val id: S
     with PhysicalTerrain
     with TiledGrid
     with LootManagement {
-
-  val creaturesMap: mutable.Map[String, Creature] = mutable.Map()
 
   val arrowList: ListBuffer[Arrow] = ListBuffer()
 
@@ -47,11 +44,14 @@ class Area(val mapLoader: TmxMapLoader, val areaFilesLocation: String, val id: S
 
   def renderTopLayer(): Unit = tiledMapRenderer.render(Array(2, 3))
 
+  def creaturesMap: List[Creature] =
+    globalCreaturesMap.values.filter(creature => creature.areaId.nonEmpty && creature.areaId.get == id).toList
+
   def update(): Unit = {
 
     world.step(Math.min(Gdx.graphics.getDeltaTime, 0.15f), 6, 2)
 
-    creaturesMap.values.foreach(_.update())
+    creaturesMap.foreach(_.update())
 
     val toBeDeleted = ListBuffer[Arrow]()
     for (arrow <- arrowList) {
@@ -77,13 +77,14 @@ class Area(val mapLoader: TmxMapLoader, val areaFilesLocation: String, val id: S
   def renderAiDebug(batch: EsBatch): Unit = {
     if (debugMode) {
 
-      for (creature <- creaturesMap.values.filter(_.isEnemy)) {
+      for (creature <- creaturesMap.filter(_.isEnemy)) {
         val enemy = creature.asInstanceOf[Enemy]
 
         // render debug
         enemy.path.foreach(node => {
           batch.shapeDrawer.setColor(Color.RED)
-          val pos = enemy.area.get.getTileCenter(node.x, node.y)
+          val area = areaMap(enemy.areaId.get)
+          val pos = area.getTileCenter(node.x, node.y)
           batch.shapeDrawer.filledCircle(pos.x, pos.y, 0.1f)
         })
 
@@ -108,24 +109,24 @@ class Area(val mapLoader: TmxMapLoader, val areaFilesLocation: String, val id: S
   }
 
   def renderCreatureLifeBars(batch: EsBatch): Unit = {
-    for (creature <- creaturesMap.values) {
+    for (creature <- creaturesMap) {
       if (creature.isAlive && !creature.atFullLife)
         creature.renderLifeBar(batch)
     }
   }
 
   def renderCreatureAbilities(batch: EsBatch): Unit = {
-    for (creature <- creaturesMap.values) {
+    for (creature <- creaturesMap) {
       creature.renderAbilities(batch)
     }
   }
 
   def renderAliveCreatures(batch: EsBatch): Unit = {
-    creaturesMap.values.filter(_.isAlive).foreach(_.render(batch))
+    creaturesMap.filter(_.isAlive).foreach(_.render(batch))
   }
 
   def renderDeadCreatures(batch: EsBatch): Unit = {
-    creaturesMap.values.filter(!_.isAlive).foreach(_.render(batch))
+    creaturesMap.filter(!_.isAlive).foreach(_.render(batch))
   }
 
   def setView(camera: OrthographicCamera): Unit = {
@@ -139,11 +140,10 @@ class Area(val mapLoader: TmxMapLoader, val areaFilesLocation: String, val id: S
   }
 
   def reset(): Unit = {
-    creaturesMap.values
+    creaturesMap
       .filter(creature => creature.isEnemy)
-      .foreach(creature => creature.destroyBody(creature.area.get.world))
-    allAreaCreaturesMap.filterInPlace { case (_, creature) => !(creature.isEnemy && creature.area.get == this) }
-    creaturesMap.filterInPlace { case (_, creature) => !creature.isEnemy }
+      .foreach(creature => creature.destroyBody(areaMap(creature.areaId.get).world))
+    globalCreaturesMap.filterInPlace { case (_, creature) => !(creature.isEnemy && creature.areaId.get == id) }
     enemySpawns.foreach(spawnPoint => spawnEnemy(spawnPoint))
     arrowList.clear()
 
@@ -168,14 +168,14 @@ class Area(val mapLoader: TmxMapLoader, val areaFilesLocation: String, val id: S
 
     creature.spawnPointId = Some(spawnPoint.id)
 
-    creature.assignToArea(this, spawnPoint.posX, spawnPoint.posY)
+    creature.assignToArea(id, spawnPoint.posX, spawnPoint.posY)
 
     if (spawnPoint.weaponType.nonEmpty) {
       creature.equipmentItems(InventoryMapping.primaryWeaponIndex) =
         Item.generateFromTemplate(spawnPoint.weaponType.get)
     }
 
-    allAreaCreaturesMap += (creatureId -> creature)
+    globalCreaturesMap += (creatureId -> creature)
   }
 
   def width: Float = {

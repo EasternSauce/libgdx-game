@@ -7,6 +7,7 @@ import com.easternsauce.libgdxgame.ability.misc.Ability
 import com.easternsauce.libgdxgame.ability.other.DashAbility
 import com.easternsauce.libgdxgame.ability.parameters.SoundParameters
 import com.easternsauce.libgdxgame.creature.traits.AnimationParams
+import com.easternsauce.libgdxgame.system.GameSystem.areaMap
 import com.easternsauce.libgdxgame.system.{Assets, GameSystem}
 import com.easternsauce.libgdxgame.util.{EsDirection, EsTimer}
 
@@ -73,7 +74,7 @@ class Player private (val id: String) extends Creature {
 
   def interact(): Unit = {
     if (onSpawnPointId.nonEmpty) {
-      playerSpawnPoint = Some(area.get.playerSpawns.filter(_.id == onSpawnPointId.get).head)
+      playerSpawnPoint = Some(areaMap(areaId.get).playerSpawns.filter(_.id == onSpawnPointId.get).head)
       playerSpawnPoint.get.onRespawnSet()
     }
   }

@@ -6,7 +6,7 @@ import com.easternsauce.libgdxgame.ability.misc.{Ability, AbilityState}
 import com.easternsauce.libgdxgame.ability.parameters.{AnimationParameters, BodyParameters, ComponentParameters, TimerParameters}
 import com.easternsauce.libgdxgame.animation.Animation
 import com.easternsauce.libgdxgame.creature.Creature
-import com.easternsauce.libgdxgame.util.{EsBatch, EsTimer}
+import com.easternsauce.libgdxgame.util.EsBatch
 
 abstract class AbilityComponent(
   val mainAbility: Ability,
@@ -25,7 +25,6 @@ abstract class AbilityComponent(
 
   val activeAnimation: Option[Animation]
   val channelAnimation: Option[Animation]
-
 
   def onUpdateActive(): Self
 

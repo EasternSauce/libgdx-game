@@ -20,13 +20,13 @@ class PlayScreen() extends Screen {
 
     handleInput()
 
-    currentArea.get.update()
+    areaMap(currentAreaId.get).update()
 
     handleCreaturesMovingBetweenAreas()
 
     updateCamera(player)
 
-    currentArea.get.setView(camera)
+    areaMap(currentAreaId.get).setView(camera)
 
     lifeStaminaBar.update()
 
@@ -52,35 +52,37 @@ class PlayScreen() extends Screen {
            else 0)
     )
 
-    currentArea.get.renderBottomLayer()
+    val currentArea = areaMap(currentAreaId.get)
+
+    currentArea.renderBottomLayer()
 
     worldBatch.spriteBatch.begin()
 
     for (areaGate <- gateList) areaGate.render(worldBatch)
 
-    currentArea.get.renderPlayerSpawns(worldBatch)
+    currentArea.renderPlayerSpawns(worldBatch)
 
-    currentArea.get.renderBossArenaBlockades(worldBatch)
+    currentArea.renderBossArenaBlockades(worldBatch)
 
-    currentArea.get.renderAiDebug(worldBatch)
+    currentArea.renderAiDebug(worldBatch)
 
-    currentArea.get.renderDeadCreatures(worldBatch)
+    currentArea.renderDeadCreatures(worldBatch)
 
-    currentArea.get.renderLootPiles(worldBatch)
+    currentArea.renderLootPiles(worldBatch)
 
-    currentArea.get.renderAliveCreatures(worldBatch)
+    currentArea.renderAliveCreatures(worldBatch)
 
     worldBatch.spriteBatch.end()
 
-    currentArea.get.renderTopLayer()
+    currentArea.renderTopLayer()
 
     worldBatch.spriteBatch.begin()
 
-    currentArea.get.renderCreatureAbilities(worldBatch)
+    currentArea.renderCreatureAbilities(worldBatch)
 
-    currentArea.get.renderCreatureLifeBars(worldBatch)
+    currentArea.renderCreatureLifeBars(worldBatch)
 
-    currentArea.get.arrowList.foreach((arrow: Arrow) => arrow.render(worldBatch))
+    currentArea.arrowList.foreach((arrow: Arrow) => arrow.render(worldBatch))
 
     worldBatch.spriteBatch.end()
 
@@ -104,7 +106,7 @@ class PlayScreen() extends Screen {
     hudBatch.spriteBatch.end()
 
     if (debugMode) {
-      b2DebugRenderer.render(currentArea.get.world, camera.combined)
+      b2DebugRenderer.render(currentArea.world, camera.combined)
     }
 
   }

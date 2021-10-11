@@ -43,7 +43,7 @@ class SavefileManager {
     })
 
     val saveFile = SaveFile(
-      allAreaCreaturesMap.values.filter(c => c.isPlayer || c.isAlive).map(_.saveToData()).toList,
+      globalCreaturesMap.values.filter(c => c.isPlayer || c.isAlive).map(_.saveToData()).toList,
       treasureLootedData.toList
     )
 
@@ -68,15 +68,15 @@ class SavefileManager {
 
     val result = decoded.getOrElse(throw new RuntimeException("failed to decode save file"))
 
-    allAreaCreaturesMap = mutable.Map()
+    globalCreaturesMap = mutable.Map()
     result.creatures.foreach(creatureData => recreateCreatureFromSavedata(creatureData))
     result.treasuresLooted.foreach(
       treasureData => treasureLootedList += (treasureData.areaId -> treasureData.treasureId)
     )
 
-    currentArea.get.lootPileList.addAll(
-      currentArea.get.treasuresList
-        .filterNot(treasure => treasureLootedList.contains((currentArea.get.id, treasure.treasureId.get)))
+    areaMap(currentAreaId.get).lootPileList.addAll(
+      areaMap(currentAreaId.get).treasuresList
+        .filterNot(treasure => treasureLootedList.contains((areaMap(currentAreaId.get).id, treasure.treasureId.get)))
     )
 
   }

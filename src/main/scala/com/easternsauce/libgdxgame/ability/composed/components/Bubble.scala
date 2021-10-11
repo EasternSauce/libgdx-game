@@ -4,14 +4,10 @@ import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.{Body, BodyDef, CircleShape, FixtureDef}
 import com.easternsauce.libgdxgame.ability.misc.AbilityState.AbilityState
 import com.easternsauce.libgdxgame.ability.misc.{Ability, AbilityState}
-import com.easternsauce.libgdxgame.ability.parameters.{
-  AnimationParameters,
-  BodyParameters,
-  ComponentParameters,
-  TimerParameters
-}
+import com.easternsauce.libgdxgame.ability.parameters.{AnimationParameters, BodyParameters, ComponentParameters, TimerParameters}
 import com.easternsauce.libgdxgame.animation.Animation
 import com.easternsauce.libgdxgame.creature.{Creature, Enemy}
+import com.easternsauce.libgdxgame.system.GameSystem.areaMap
 import com.easternsauce.libgdxgame.util.EsBatch
 import com.softwaremill.quicklens._
 
@@ -136,7 +132,8 @@ case class Bubble(
     bodyDef.position.set(x, y)
 
     bodyDef.`type` = BodyDef.BodyType.DynamicBody
-    val body = Some(mainAbility.creature.area.get.world.createBody(bodyDef))
+    val area = areaMap(mainAbility.creature.areaId.get)
+    val body = Some(area.world.createBody(bodyDef))
     body.get.setUserData(this)
 
     val fixtureDef: FixtureDef = new FixtureDef()

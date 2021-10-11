@@ -73,8 +73,12 @@ class LootPickupMenu {
         val success = player.tryPickUpItem(item)
         if (success) {
           val lootPile = item.lootPile.get
-          if (lootPile.isTreasure && !treasureLootedList.contains(currentArea.get.id -> lootPile.treasureId.get))
-            treasureLootedList += (currentArea.get.id -> lootPile.treasureId.get)
+          if (
+            lootPile.isTreasure && !treasureLootedList.contains(
+              areaMap(currentAreaId.get).id -> lootPile.treasureId.get
+            )
+          )
+            treasureLootedList += (areaMap(currentAreaId.get).id -> lootPile.treasureId.get)
           scheduledToRemove += (item -> lootPile)
         }
       }

@@ -53,7 +53,8 @@ case class IceShardAbility private (
 
     IceShard(
       mainAbility = this,
-      componentParameters = ComponentParameters(startX = creature.pos.x, startY = creature.pos.y, speed = 30f, startTime = 0.05f * index),
+      componentParameters =
+        ComponentParameters(startX = creature.pos.x, startY = creature.pos.y, speed = 30f, startTime = 0.05f * index),
       dirVector = facingVector.cpy.rotateDeg(20f * (index - 5))
     )
   }

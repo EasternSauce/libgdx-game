@@ -33,9 +33,10 @@ class AreaGate private (
   private val bodyTo: Body = initBody(areaTo, toPosX, toPosY)
 
   def render(batch: EsBatch): Unit = {
-    val area = currentArea.getOrElse {
+    val areaId = currentAreaId.getOrElse {
       throw new RuntimeException("current area not specified")
     }
+    val area = areaMap(areaId)
 
     if (area == areaFrom) downArrowImageFrom.draw(batch.spriteBatch, 1.0f)
     if (area == areaTo) downArrowImageTo.draw(batch.spriteBatch, 1.0f)
@@ -64,10 +65,10 @@ class AreaGate private (
   def activate(creature: Creature): Unit = {
     if (!creature.passedGateRecently) {
       if (creature.isPlayer) {
-        val (destination: Area, posX: Float, posY: Float) = creature.area match {
-          case Some(`areaFrom`) => (areaTo, toPosX, toPosY)
-          case Some(`areaTo`)   => (areaFrom, fromPosX, fromPosY)
-          case _                => throw new RuntimeException("should never reach here")
+        val (destination: Area, posX: Float, posY: Float) = areaMap(creature.areaId.get) match {
+          case `areaFrom` => (areaTo, toPosX, toPosY)
+          case `areaTo`   => (areaFrom, fromPosX, fromPosY)
+          case _          => throw new RuntimeException("should never reach here")
         }
 
         musicManager.stopMusic()
@@ -78,7 +79,7 @@ class AreaGate private (
 
         if (destination.music.nonEmpty) musicManager.playMusic(destination.music.get, 0.2f)
 
-        currentArea = Some(destination)
+        currentAreaId = Some(destination.id)
 
       }
     }

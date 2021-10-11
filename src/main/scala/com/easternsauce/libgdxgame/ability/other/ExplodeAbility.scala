@@ -9,6 +9,7 @@ import com.easternsauce.libgdxgame.ability.misc.{Ability, AbilityState}
 import com.easternsauce.libgdxgame.ability.parameters.{AnimationParameters, BodyParameters, SoundParameters, TimerParameters}
 import com.easternsauce.libgdxgame.creature.Creature
 import com.easternsauce.libgdxgame.system.Assets
+import com.easternsauce.libgdxgame.system.GameSystem.areaMap
 import com.easternsauce.libgdxgame.util.EsBatch
 import com.softwaremill.quicklens._
 
@@ -66,7 +67,9 @@ case class ExplodeAbility private (
     val activeTimer = timerParameters.activeTimer
 
     if (bodyParameters.bodyActive && activeTimer.time > 0.1f) {
-      destroyBody(creature.area.get.world)
+      val area = areaMap(creature.areaId.get)
+
+      destroyBody(area.world)
     } else
       this
   }
@@ -109,7 +112,9 @@ case class ExplodeAbility private (
     bodyDef.position.set(x, y)
 
     bodyDef.`type` = BodyDef.BodyType.StaticBody
-    val b2Body = creature.area.get.world.createBody(bodyDef)
+    val area = areaMap(creature.areaId.get)
+
+    val b2Body = area.world.createBody(bodyDef)
     b2Body.setUserData(this)
 
     val fixtureDef: FixtureDef = new FixtureDef()

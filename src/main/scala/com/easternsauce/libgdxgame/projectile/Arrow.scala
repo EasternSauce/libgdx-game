@@ -9,7 +9,6 @@ import com.easternsauce.libgdxgame.creature.Creature
 import com.easternsauce.libgdxgame.system.Assets
 import com.easternsauce.libgdxgame.util.{EsBatch, EsTimer}
 
-import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
 
 class Arrow private (
@@ -19,7 +18,6 @@ class Arrow private (
   var dirVector: Vector2,
   var arrowList: ListBuffer[Arrow],
   val tiledMap: TiledMap,
-  val creatures: mutable.Map[String, Creature],
   val shooter: Creature
 ) {
 
@@ -126,7 +124,6 @@ object Arrow {
     dirVector: Vector2,
     arrowList: ListBuffer[Arrow],
     tiledMap: TiledMap,
-    creatures: mutable.Map[String, Creature],
     shooter: Creature
-  ) = new Arrow(startX, startY, area, dirVector.cpy(), arrowList, tiledMap, creatures, shooter)
+  ) = new Arrow(startX, startY, area, dirVector.cpy(), arrowList, tiledMap, shooter)
 }

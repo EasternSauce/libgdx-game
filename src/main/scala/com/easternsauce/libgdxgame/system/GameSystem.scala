@@ -32,7 +32,7 @@ object GameSystem extends Game {
   var mainMenuScreen: MainMenuScreen = _
   var playScreen: PlayScreen = _
 
-  var allAreaCreaturesMap: mutable.Map[String, Creature] = mutable.Map()
+  var globalCreaturesMap: mutable.Map[String, Creature] = mutable.Map()
 
   val treasureLootedList: ListBuffer[(String, String)] = ListBuffer()
 
@@ -60,7 +60,7 @@ object GameSystem extends Game {
 
   private val mapLoader: TmxMapLoader = new TmxMapLoader()
 
-  var currentArea: Option[Area] = _
+  var currentAreaId: Option[String] = _
 
   var gateList: ListBuffer[AreaGate] = ListBuffer()
 
@@ -112,9 +112,9 @@ object GameSystem extends Game {
     inventoryWindow = new InventoryWindow()
     lifeStaminaBar = new PlayerInfoHud()
 
-    currentArea = player.area
+    currentAreaId = player.areaId
 
-    if (currentArea.get.music.nonEmpty) musicManager.playMusic(currentArea.get.music.get, 0.2f)
+    if (areaMap(currentAreaId.get).music.nonEmpty) musicManager.playMusic(areaMap(currentAreaId.get).music.get, 0.2f)
   }
 
   private def loadAreas(): Unit = {
@@ -190,13 +190,13 @@ object GameSystem extends Game {
 
       musicManager.stopMusic()
 
-      val area = player.playerSpawnPoint.get.area
-      currentArea = Option(area)
-      area.reset()
+      val areaId = Some(player.playerSpawnPoint.get.area.id)
+      currentAreaId = Option(areaId.get)
+      areaMap(areaId.get).reset()
 
-      if (area.music.nonEmpty) musicManager.playMusic(area.music.get, 0.2f)
+      if (areaMap(areaId.get).music.nonEmpty) musicManager.playMusic(areaMap(areaId.get).music.get, 0.2f)
 
-      player.assignToArea(area, player.playerSpawnPoint.get.posX, player.playerSpawnPoint.get.posY)
+      player.assignToArea(areaId.get, player.playerSpawnPoint.get.posX, player.playerSpawnPoint.get.posY)
 
       player.setRotation(0f)
 
@@ -219,7 +219,7 @@ object GameSystem extends Game {
     if (creaturesToMove.nonEmpty) {
       creaturesToMove.foreach {
         case (creature, area, x, y) =>
-          creature.assignToArea(area, x, y)
+          creature.assignToArea(area.id, x, y)
           creature.passedGateRecently = true
       }
 
@@ -232,16 +232,16 @@ object GameSystem extends Game {
 
     // TODO: npcs?
 
-    allAreaCreaturesMap = mutable.Map()
-    allAreaCreaturesMap += (creature.id -> creature)
+    globalCreaturesMap = mutable.Map()
+    globalCreaturesMap += (creature.id -> creature)
 
     setPlayer(creature)
 
-    allAreaCreaturesMap("player").assignToArea(areaMap("area1"), 82f, 194f)
+    globalCreaturesMap("player").assignToArea("area1", 82f, 194f)
 
     player.playerSpawnPoint = Some(areaMap("area1").playerSpawns.head)
 
-    currentArea = Some(areaMap("area1"))
+    currentAreaId = Some("area1")
 
     areaMap("area1").reset()
 

@@ -260,7 +260,7 @@ class InventoryWindow {
     } else {
       if (inventoryItemBeingMoved.nonEmpty) {
         val item = player.inventoryItems(inventoryItemBeingMoved.get)
-        currentArea.get.spawnLootPile(player.pos.x, player.pos.y, item)
+        areaMap(currentAreaId.get).spawnLootPile(player.pos.x, player.pos.y, item)
 
         player.inventoryItems.remove(inventoryItemBeingMoved.get)
 
@@ -270,7 +270,7 @@ class InventoryWindow {
       }
       if (equipmentItemBeingMoved.nonEmpty) {
         val item = player.inventoryItems(equipmentItemBeingMoved.get)
-        currentArea.get.spawnLootPile(player.pos.x, player.pos.y, item)
+        areaMap(currentAreaId.get).spawnLootPile(player.pos.x, player.pos.y, item)
 
         player.equipmentItems.remove(equipmentItemBeingMoved.get)
 
@@ -363,7 +363,8 @@ class InventoryWindow {
       .foreach { case (k, _) => equipmentSlotHovered = Some(k) }
 
     if (inventorySlotHovered.nonEmpty && player.inventoryItems.contains(inventorySlotHovered.get)) {
-      currentArea.get.spawnLootPile(player.pos.x, player.pos.y, player.inventoryItems(inventorySlotHovered.get))
+      areaMap(currentAreaId.get)
+        .spawnLootPile(player.pos.x, player.pos.y, player.inventoryItems(inventorySlotHovered.get))
       player.inventoryItems.remove(inventorySlotHovered.get)
 
       Assets.sound(Assets.coinBagSound).play(0.3f)
@@ -373,7 +374,8 @@ class InventoryWindow {
     }
 
     if (equipmentSlotHovered.nonEmpty && player.equipmentItems.contains(inventorySlotHovered.get)) {
-      currentArea.get.spawnLootPile(player.pos.x, player.pos.y, player.equipmentItems(equipmentSlotHovered.get))
+      areaMap(currentAreaId.get)
+        .spawnLootPile(player.pos.x, player.pos.y, player.equipmentItems(equipmentSlotHovered.get))
       player.equipmentItems.remove(equipmentSlotHovered.get)
 
       Assets.sound(Assets.coinBagSound).play(0.3f)

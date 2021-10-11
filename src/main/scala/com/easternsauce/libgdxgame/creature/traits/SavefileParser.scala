@@ -3,7 +3,7 @@ package com.easternsauce.libgdxgame.creature.traits
 import com.easternsauce.libgdxgame.creature.Creature
 import com.easternsauce.libgdxgame.items.Item
 import com.easternsauce.libgdxgame.saving.{CreatureSavedata, ItemSavedata, PlayerSpawnPointSavedata, PositionSavedata}
-import com.easternsauce.libgdxgame.system.GameSystem.{allAreaCreaturesMap, areaMap, setPlayer}
+import com.easternsauce.libgdxgame.system.GameSystem.{areaMap, globalCreaturesMap, setPlayer}
 
 trait SavefileParser {
   this: Creature =>
@@ -14,7 +14,7 @@ trait SavefileParser {
       id = id,
       spawnPointId = spawnPointId,
       life = life,
-      area = area.get.id,
+      area = areaId.get,
       isPlayer = isPlayer,
       position = PositionSavedata(pos.x, pos.y),
       playerSpawnPoint =
@@ -33,7 +33,7 @@ trait SavefileParser {
   def loadFromSavedata(creatureData: CreatureSavedata): Unit = {
     setPosition(creatureData.position.x, creatureData.position.y)
     life = creatureData.life
-    this.area = Some(areaMap(creatureData.area))
+    this.areaId = Some(creatureData.area)
 
     spawnPointId = creatureData.spawnPointId
 
@@ -47,9 +47,9 @@ trait SavefileParser {
     creatureData.inventoryItems.foreach(item => inventoryItems += (item.index -> Item.loadFromSavedata(item)))
     creatureData.equipmentItems.foreach(item => equipmentItems += (item.index -> Item.loadFromSavedata(item)))
 
-    allAreaCreaturesMap += (id -> this)
+    globalCreaturesMap += (id -> this)
 
-    assignToArea(areaMap(creatureData.area), creatureData.position.x, creatureData.position.y)
+    assignToArea(creatureData.area, creatureData.position.x, creatureData.position.y)
 
   }
 }

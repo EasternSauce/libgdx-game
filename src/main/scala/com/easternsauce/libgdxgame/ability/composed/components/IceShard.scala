@@ -4,15 +4,11 @@ import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.{Body, BodyDef, CircleShape, FixtureDef}
 import com.easternsauce.libgdxgame.ability.misc.AbilityState.AbilityState
 import com.easternsauce.libgdxgame.ability.misc.{Ability, AbilityState}
-import com.easternsauce.libgdxgame.ability.parameters.{
-  AnimationParameters,
-  BodyParameters,
-  ComponentParameters,
-  TimerParameters
-}
+import com.easternsauce.libgdxgame.ability.parameters.{AnimationParameters, BodyParameters, ComponentParameters, TimerParameters}
 import com.easternsauce.libgdxgame.animation.Animation
 import com.easternsauce.libgdxgame.creature.Creature
 import com.easternsauce.libgdxgame.system.Assets
+import com.easternsauce.libgdxgame.system.GameSystem.areaMap
 import com.easternsauce.libgdxgame.util.EsBatch
 import com.softwaremill.quicklens.ModifyPimp
 
@@ -65,7 +61,7 @@ case class IceShard(
   }
 
   override def onUpdateActive(): Self = {
-    val component0: IceShard   = this
+    val component0: IceShard = this
 
     val component1: IceShard = if (component0.started) {
       component0.state match {
@@ -86,11 +82,11 @@ case class IceShard(
             } else component0
 
           val component1_3: IceShard = if (component1_2.timerParameters.activeTimer.time > component1_2.activeTime) {
-              // on active stop
+            // on active stop
             component1_2
-                .modify(_.state)
-                .setTo(AbilityState.Inactive)
-            } else component1_2
+              .modify(_.state)
+              .setTo(AbilityState.Inactive)
+          } else component1_2
 
           val component1_4: IceShard = if (!component1_3.bodyParameters.destroyed) {
             component1_3.bodyParameters.body.get
@@ -131,7 +127,9 @@ case class IceShard(
     bodyDef.position.set(x, y)
 
     bodyDef.`type` = BodyDef.BodyType.DynamicBody
-    val body = mainAbility.creature.area.get.world.createBody(bodyDef)
+    val area = areaMap(mainAbility.creature.areaId.get)
+
+    val body = area.world.createBody(bodyDef)
     body.setUserData(this)
 
     val fixtureDef: FixtureDef = new FixtureDef()

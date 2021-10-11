@@ -5,17 +5,12 @@ import com.badlogic.gdx.math.Vector2
 import com.easternsauce.libgdxgame.ability.composed.components.AbilityComponent
 import com.easternsauce.libgdxgame.ability.misc.Ability
 import com.easternsauce.libgdxgame.ability.misc.AbilityState.{AbilityState, Inactive}
-import com.easternsauce.libgdxgame.ability.parameters.{
-  AnimationParameters,
-  BodyParameters,
-  SoundParameters,
-  TimerParameters
-}
+import com.easternsauce.libgdxgame.ability.parameters.{AnimationParameters, BodyParameters, SoundParameters, TimerParameters}
 import com.easternsauce.libgdxgame.creature.Creature
 import com.easternsauce.libgdxgame.projectile.Arrow
 import com.easternsauce.libgdxgame.system.Assets
+import com.easternsauce.libgdxgame.system.GameSystem.areaMap
 
-import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
 
 case class ShootArrowAttack private (
@@ -71,25 +66,17 @@ case class ShootArrowAttack private (
 
     creature.attackVector = creature.facingVector.cpy()
 
-    val arrowList: ListBuffer[Arrow] = creature.area.get.arrowList
-    val tiles: TiledMap = creature.area.get.map
-    val areaCreatures: mutable.Map[String, Creature] =
-      creature.area.get.creaturesMap
+    val area = areaMap(creature.areaId.get)
+    val arrowList: ListBuffer[Arrow] = area.arrowList
+    val tiles: TiledMap = area.map
+    val areaCreatures: List[Creature] =
+      area.creaturesMap
 
     if (!creature.facingVector.equals(new Vector2(0.0f, 0.0f))) {
       val arrowStartX = creature.pos.x
       val arrowStartY = creature.pos.y
 
-      val arrow: Arrow = Arrow(
-        arrowStartX,
-        arrowStartY,
-        creature.area.get,
-        creature.facingVector,
-        arrowList,
-        tiles,
-        areaCreatures,
-        this.creature
-      )
+      val arrow: Arrow = Arrow(arrowStartX, arrowStartY, area, creature.facingVector, arrowList, tiles, this.creature)
       arrowList += arrow
     }
 

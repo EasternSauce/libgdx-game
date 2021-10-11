@@ -8,6 +8,7 @@ import com.easternsauce.libgdxgame.ability.parameters.{AnimationParameters, Body
 import com.easternsauce.libgdxgame.animation.Animation
 import com.easternsauce.libgdxgame.creature.Creature
 import com.easternsauce.libgdxgame.system.Assets
+import com.easternsauce.libgdxgame.system.GameSystem.areaMap
 import com.easternsauce.libgdxgame.util.EsBatch
 import com.softwaremill.quicklens.ModifyPimp
 
@@ -112,7 +113,9 @@ case class Meteor(
     bodyDef.position.set(x, y)
 
     bodyDef.`type` = BodyDef.BodyType.StaticBody
-    val body = mainAbility.creature.area.get.world.createBody(bodyDef)
+    val area = areaMap(mainAbility.creature.areaId.get)
+
+    val body = area.world.createBody(bodyDef)
     body.setUserData(this)
 
     val fixtureDef: FixtureDef = new FixtureDef()

@@ -7,6 +7,7 @@ import com.easternsauce.libgdxgame.ability.misc.AbilityState.{AbilityState, Inac
 import com.easternsauce.libgdxgame.ability.misc.{Ability, _}
 import com.easternsauce.libgdxgame.ability.parameters._
 import com.easternsauce.libgdxgame.creature.Creature
+import com.easternsauce.libgdxgame.system.GameSystem.areaMap
 import com.easternsauce.libgdxgame.system.{Constants, GameSystem}
 import com.easternsauce.libgdxgame.util.{EsBatch, EsPolygon}
 import com.softwaremill.quicklens.ModifyPimp
@@ -102,8 +103,8 @@ abstract class MeleeAttack(
 
     val hitbox = Some(AttackHitbox(attackRectX, attackRectY, poly))
 
-    val body = if (creature.area.nonEmpty) {
-      initBody(creature.area.get.world, bodyParameters.hitbox.get)
+    val body = if (creature.areaId.get.nonEmpty) {
+      initBody(areaMap(creature.areaId.get).world, bodyParameters.hitbox.get)
     } else None
 
     ability

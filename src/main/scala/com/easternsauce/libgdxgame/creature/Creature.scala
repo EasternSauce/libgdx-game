@@ -5,10 +5,10 @@ import com.badlogic.gdx.graphics.g2d.Sprite
 import com.badlogic.gdx.math.Vector2
 import com.easternsauce.libgdxgame.ability.attack.{ShootArrowAttack, SlashAttack, ThrustAttack}
 import com.easternsauce.libgdxgame.ability.misc.Ability
-import com.easternsauce.libgdxgame.area.Area
 import com.easternsauce.libgdxgame.creature.traits._
 import com.easternsauce.libgdxgame.spawns.PlayerSpawnPoint
 import com.easternsauce.libgdxgame.system.Assets
+import com.easternsauce.libgdxgame.system.GameSystem.{areaMap, globalCreaturesMap}
 import com.easternsauce.libgdxgame.util.{EsBatch, EsDirection, EsTimer}
 
 import scala.collection.mutable
@@ -31,6 +31,7 @@ abstract class Creature
   val isBoss = false
 
   val id: String
+  var areaId: Option[String] = None
 
   val creatureWidth: Float
   val creatureHeight: Float
@@ -43,8 +44,6 @@ abstract class Creature
   val timeSinceMovedTimer: EsTimer = EsTimer()
 
   val directionalSpeed = 18f
-
-  var area: Option[Area] = None
 
   val onGettingHitSound: Option[Sound] = None
   val walkSound: Option[Sound] = None
@@ -213,23 +212,23 @@ abstract class Creature
     }
   }
 
-  def assignToArea(area: Area, x: Float, y: Float): Unit = {
-    if (this.area.isEmpty) {
-      this.area = Some(area)
-      initBody(area.world, x, y, creatureWidth / 2f)
+  def assignToArea(areaId: String, x: Float, y: Float): Unit = {
+    if (this.areaId.isEmpty) {
 
-      area.creaturesMap += (id -> this)
+      this.areaId = Some(areaId)
+      initBody(areaMap(this.areaId.get).world, x, y, creatureWidth / 2f)
+
+      globalCreaturesMap += (id -> this)
 
     } else {
-      val oldArea = this.area.get
+      val oldArea = areaMap(this.areaId.get)
 
       destroyBody(oldArea.world)
-      oldArea.creaturesMap -= id
 
-      this.area = Some(area)
-      initBody(area.world, x, y, creatureWidth / 2f)
+      this.areaId = Some(areaId)
+      initBody(areaMap(this.areaId.get).world, x, y, creatureWidth / 2f)
 
-      area.creaturesMap += (id -> this)
+      globalCreaturesMap += (id -> this)
 
     }
 
