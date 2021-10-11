@@ -15,9 +15,9 @@ trait Abilities {
 
   def renderAbilities(batch: EsBatch): Unit = {
     for (ability <- abilityMap.values) {
-      ability.render(batch)
+      ability.render(this, batch)
     }
-    currentAttack.render(batch)
+    currentAttack.render(this, batch)
   }
 
   def abilityActive: Boolean = {

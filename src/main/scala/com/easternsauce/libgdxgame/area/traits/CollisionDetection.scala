@@ -4,6 +4,7 @@ import com.badlogic.gdx.physics.box2d._
 import com.easternsauce.libgdxgame.ability.composed.components.AbilityComponent
 import com.easternsauce.libgdxgame.ability.misc.Ability
 import com.easternsauce.libgdxgame.area.{Area, AreaGate, TerrainTile}
+import com.easternsauce.libgdxgame.collision.CreatureCollision
 import com.easternsauce.libgdxgame.creature.{Creature, Player}
 import com.easternsauce.libgdxgame.items.LootPile
 import com.easternsauce.libgdxgame.projectile.Arrow
@@ -21,23 +22,24 @@ trait CollisionDetection {
         val objB = contact.getFixtureB.getBody.getUserData
 
         def onContactStart(pair: (AnyRef, AnyRef)): Unit = {
-          pair match { // will run onContact twice for same type objects!
-            case (creature: Creature, areaGate: AreaGate) =>
-              areaGate.activate(creature)
-            case (creature: Creature, ability: Ability) =>
-              ability.onCollideWithCreature(creature)
-            case (creature: Creature, abilityComponent: AbilityComponent) =>
-              abilityComponent.onCollideWithCreature(creature)
-            case (creature: Creature, arrow: Arrow) =>
-              arrow.onCollideWithCreature(creature)
-            case (areaTile: TerrainTile, arrow: Arrow) =>
-              arrow.onCollideWithTerrain(areaTile)
-            case (player: Player, playerSpawnPoint: PlayerSpawnPoint) =>
-              player.onSpawnPointId = Some(playerSpawnPoint.id)
-            case (player: Player, lootPile: LootPile) =>
-              lootPickupMenu.showLootPile(lootPile)
-            case _ =>
-          }
+          // TODO: fix this
+//          pair match { // will run onContact twice for same type objects!
+//            case (creature: CreatureCollision, areaGate: AreaGate) =>
+//              areaGate.activate(creature)
+//            case (creature: CreatureCollision, ability: Ability) =>
+//              ability.onCollideWithCreature(creature)
+//            case (creature: CreatureCollision, abilityComponent: AbilityComponent) =>
+//              abilityComponent.onCollideWithCreature(creature)
+//            case (creature: CreatureCollision, arrow: Arrow) =>
+//              arrow.onCollideWithCreature(creature)
+//            case (areaTile: TerrainTile, arrow: Arrow) =>
+//              arrow.onCollideWithTerrain(areaTile)
+//            case (player: Player, playerSpawnPoint: PlayerSpawnPoint) =>
+//              player.onSpawnPointId = Some(playerSpawnPoint.id)
+//            case (player: Player, lootPile: LootPile) =>
+//              lootPickupMenu.showLootPile(lootPile)
+//            case _ =>
+//          }
         }
 
         onContactStart(objA, objB)

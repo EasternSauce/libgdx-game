@@ -12,8 +12,9 @@ import com.easternsauce.libgdxgame.util.{EsBatch, EsPolygon}
 import com.softwaremill.quicklens.ModifyPimp
 
 abstract class MeleeAttack(
-  override val creature: Creature,
+  override val creatureId: String,
   override val state: AbilityState = Inactive,
+  override val creatureOperations: List[Creature => Creature] = List(),
   override val onCooldown: Boolean = false,
   override val components: List[AbilityComponent] = List(),
   override val lastComponentFinishTime: Float = 0,
@@ -23,8 +24,9 @@ abstract class MeleeAttack(
   override val animationParameters: AnimationParameters = AnimationParameters(),
   override val dirVector: Vector2 = new Vector2(0f, 0f)
 ) extends Ability(
-      creature = creature,
+      creatureId = creatureId,
       state = state,
+      creatureOperations = creatureOperations,
       onCooldown = onCooldown,
       components = components,
       lastComponentFinishTime = lastComponentFinishTime,
@@ -58,25 +60,31 @@ abstract class MeleeAttack(
   protected val baseChannelTime: Float
   protected val baseActiveTime: Float
 
+  // TODO: dependent on creature?
+  val attackSpeed = 1.4f
+  val attackScale = 1.4f
+
   override protected lazy val activeTime: Float = baseActiveTime
   override protected lazy val channelTime: Float = baseChannelTime / attackSpeed
 
-  def attackSpeed: Float =
+  //TODO: move to creature
+  def attackSpeed(creature: Creature): Float =
     if (creature.isWeaponEquipped) creature.currentWeapon.template.attackSpeed.get
     else 1.4f
 
-  def attackScale: Float =
+  //TODO: move to creature
+  def attackScale(creature: Creature): Float =
     if (creature.isWeaponEquipped) creature.currentWeapon.template.attackScale.get
     else 1.4f
 
-  override def onActiveStart(): Self = {
-    val ability = super.onActiveStart()
+  override def onActiveStart(creature: Creature): Self = {
+    val ability = super.onActiveStart(creature)
 
     // TODO: clean up sideeffects
 
     timerParameters.abilityActiveAnimationTimer.restart()
 
-    creature.takeStaminaDamage(15f)
+    val creatureOps = (creature: Creature) => { creature.takeStaminaDamage(15f); creature }
 
     val attackVector = creature.attackVector
 
@@ -113,9 +121,11 @@ abstract class MeleeAttack(
       .setTo(false)
       .modify(_.bodyParameters.hitbox)
       .setTo(hitbox)
+      .modify(_.creatureOperations)
+      .setTo(creatureOps :: creatureOperations)
   }
 
-  override def render(batch: EsBatch): Self = {
+  override def render(creature: Creature, batch: EsBatch): Self = {
     // TODO: remove side effect
     def renderFrame(image: TextureRegion): Unit = {
       val attackVector = creature.attackVector
@@ -149,8 +159,8 @@ abstract class MeleeAttack(
     this
   }
 
-  override def onChannellingStart(): Self = {
-    val ability: Self = super.onChannellingStart()
+  override def onChannellingStart(creature: Creature): Self = {
+    val ability: Self = super.onChannellingStart(creature)
 
     // TODO: sideeffects
 
@@ -184,9 +194,9 @@ abstract class MeleeAttack(
     ability.modify(_.bodyParameters.hitbox).setTo(hitbox)
   }
 
-  override def update(): Self = {
+  override def update(creature: Creature): Self = {
 
-    val ability: Self = super.update()
+    val ability: Self = super.update(creature)
 
     if (bodyParameters.b2Body.nonEmpty && bodyParameters.toBeRemoved) {
       bodyParameters.b2Body.get.getWorld.destroyBody(bodyParameters.b2Body.get)
@@ -201,7 +211,7 @@ abstract class MeleeAttack(
 
   }
 
-  override def updateHitbox(): Self = {
+  override def updateHitbox(creature: Creature): Self = {
     if (bodyParameters.hitbox.nonEmpty) {
 
       val attackVector = creature.attackVector
@@ -232,54 +242,62 @@ abstract class MeleeAttack(
 
   }
 
-  override def onStop(): Self = {
-    creature.isAttacking = false
+  override def onStop(creature: Creature): Self = {
+
+    val creatureOps = (creature: Creature) => { creature.isAttacking = false; creature }
 
     // IMPORTANT: ability has to be active
     // if we remove during channeling we could remove it before body is created, causing BOX2D crash
-    if (state == AbilityState.Active) {
+    val ability = if (state == AbilityState.Active) {
       this
         .modify(_.bodyParameters.toBeRemoved)
         .setTo(true)
     } else
       this
+
+    ability
+      .modify(_.creatureOperations)
+      .setTo(creatureOps :: creatureOperations)
   }
 
-  override def onCollideWithCreature(otherCreature: Creature): Self = {
 
-    // TODO: remove sideeffect
-    if (!(creature.isEnemy && otherCreature.isEnemy)) {
-      if (creature != otherCreature && !otherCreature.isImmune) {
-        otherCreature.takeLifeDamage(
-          damage = creature.weaponDamage,
-          immunityFrames = true,
-          dealtBy = Some(creature),
-          attackKnockbackVelocity = knockbackVelocity,
-          sourceX = creature.pos.x,
-          sourceY = creature.pos.y
-        )
-        val random = GameSystem.randomGenerator.nextFloat()
-
-        if (creature.isWeaponEquipped && random < creature.currentWeapon.template.poisonChance.get) {
-          otherCreature.activateEffect("poisoned", 10f)
-          otherCreature.poisonTickTimer.restart()
-        }
-      }
-    }
-
-    this
-  }
+  // TODO: fix
+//  override def onCollideWithCreature(creature: Creature, otherCreature: Creature): Self = {
+//
+//    // TODO: remove sideeffect
+//    if (!(creature.isEnemy && otherCreature.isEnemy)) {
+//      if (creature != otherCreature && !otherCreature.isImmune) {
+//        otherCreature.takeLifeDamage(
+//          damage = creature.weaponDamage,
+//          immunityFrames = true,
+//          dealtBy = Some(creature),
+//          attackKnockbackVelocity = knockbackVelocity,
+//          sourceX = creature.pos.x,
+//          sourceY = creature.pos.y
+//        )
+//        val random = GameSystem.randomGenerator.nextFloat()
+//
+//        if (creature.isWeaponEquipped && random < creature.currentWeapon.template.poisonChance.get) {
+//          otherCreature.activateEffect("poisoned", 10f)
+//          otherCreature.poisonTickTimer.restart()
+//        }
+//      }
+//    }
+//
+//    this
+//  }
 
   override def copy(
-    creature: Creature = creature,
-    state: AbilityState = state,
-    onCooldown: Boolean = onCooldown,
-    components: List[AbilityComponent] = components,
-    lastComponentFinishTime: Float = lastComponentFinishTime,
-    soundParameters: SoundParameters = soundParameters,
-    timerParameters: TimerParameters = timerParameters,
-    bodyParameters: BodyParameters = bodyParameters,
-    animationParameters: AnimationParameters = animationParameters,
-    dirVector: Vector2 = dirVector
+    creatureId: String,
+    state: AbilityState,
+    creatureOperations: List[Creature => Creature],
+    onCooldown: Boolean,
+    components: List[AbilityComponent],
+    lastComponentFinishTime: Float,
+    soundParameters: SoundParameters,
+    timerParameters: TimerParameters,
+    bodyParameters: BodyParameters,
+    animationParameters: AnimationParameters,
+    dirVector: Vector2
   ): Self
 }

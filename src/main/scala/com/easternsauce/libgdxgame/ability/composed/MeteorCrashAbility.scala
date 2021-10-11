@@ -8,8 +8,9 @@ import com.easternsauce.libgdxgame.creature.Creature
 import com.softwaremill.quicklens.ModifyPimp
 
 case class MeteorCrashAbility private (
-  override val creature: Creature,
+  override val creatureId: String,
   override val state: AbilityState = Inactive,
+  override val creatureOperations: List[Creature => Creature] = List(),
   override val onCooldown: Boolean = false,
   override val components: List[AbilityComponent] = List(),
   override val lastComponentFinishTime: Float = 0f,
@@ -19,8 +20,9 @@ case class MeteorCrashAbility private (
   override val animationParameters: AnimationParameters = AnimationParameters(),
   override val dirVector: Vector2 = new Vector2(0f, 0f)
 ) extends ComposedAbility(
-      creature = creature,
+      creatureId = creatureId,
       state = state,
+      creatureOperations = creatureOperations,
       onCooldown = onCooldown,
       components = components,
       lastComponentFinishTime = lastComponentFinishTime,
@@ -39,10 +41,11 @@ case class MeteorCrashAbility private (
 
   override protected val numOfComponents = 30
 
-  override def onChannellingStart(): Self = {
+  override def onChannellingStart(creature: Creature): Self = {
     val facingVector: Vector2 = creature.facingVector.nor()
     val meteors1 = for (i <- 0 until numOfComponents / 3) yield {
       Meteor(
+        creatureId = creatureId,
         mainAbility = this,
         componentParameters = ComponentParameters(
           startTime = 0.1f * i,
@@ -58,6 +61,7 @@ case class MeteorCrashAbility private (
       val vector: Vector2 = facingVector.cpy()
       vector.setAngleDeg(vector.angleDeg() + 50)
       Meteor(
+        creatureId = creatureId,
         mainAbility = this,
         componentParameters = ComponentParameters(
           startTime = 0.1f * i,
@@ -73,6 +77,7 @@ case class MeteorCrashAbility private (
       val vector: Vector2 = facingVector.cpy()
       vector.setAngleDeg(vector.angleDeg() - 50)
       Meteor(
+        creatureId = creatureId,
         mainAbility = this,
         componentParameters = ComponentParameters(
           startTime = 0.1f * i,
@@ -95,22 +100,23 @@ case class MeteorCrashAbility private (
     this.modify(_.components).setTo(components.toList)
   }
 
-  override def onActiveStart(): Self = {
-    val ability = super.onActiveStart().asInstanceOf[Self]
+  override def onActiveStart(creature: Creature): Self = {
+    val ability = super.onActiveStart(creature).asInstanceOf[Self]
 
     creature.takeStaminaDamage(25f)
 
     ability
   }
 
-  override def createComponent(index: Int): AbilityComponent = {
+  override def createComponent(creature: Creature, index: Int): AbilityComponent = {
     val facingVector: Vector2 = creature.facingVector.nor()
 
     val vector: Vector2 = facingVector.cpy()
     // TODO: change angle based on index?
     vector.setAngleDeg(vector.angleDeg() + 50)
 
-    Meteor(
+    val component = Meteor(
+      creatureId = creatureId,
       mainAbility = this,
       componentParameters = ComponentParameters(
         startTime = 0.1f * index,
@@ -120,11 +126,17 @@ case class MeteorCrashAbility private (
         speed = 2.5f
       )
     )
+
+    // TODO: this is a workaround
+    component.bodyParameters.b2Body.get.setUserData((this, creature))
+
+    component
   }
 
   override def copy(
-    creature: Creature,
+    creatureId: String,
     state: AbilityState,
+    creatureOperations: List[Creature => Creature] = creatureOperations,
     onCooldown: Boolean,
     components: List[AbilityComponent],
     lastComponentFinishTime: Float,
@@ -135,8 +147,9 @@ case class MeteorCrashAbility private (
     dirVector: Vector2
   ): Self =
     MeteorCrashAbility(
-      creature = creature,
+      creatureId = creatureId,
       state = state,
+      creatureOperations = creatureOperations,
       onCooldown = onCooldown,
       components = components,
       lastComponentFinishTime = lastComponentFinishTime,

@@ -16,6 +16,7 @@ import com.easternsauce.libgdxgame.util.EsBatch
 import com.softwaremill.quicklens._
 
 case class Bubble(
+  override val creatureId: String,
   override val mainAbility: Ability,
   override val state: AbilityState = AbilityState.Inactive,
   override val started: Boolean = false,
@@ -26,6 +27,7 @@ case class Bubble(
   override val bodyParameters: BodyParameters = BodyParameters(),
   override val dirVector: Vector2 = new Vector2(0, 0)
 ) extends AbilityComponent(
+      creatureId = creatureId,
       mainAbility = mainAbility,
       state = state,
       started = started,
@@ -62,13 +64,13 @@ case class Bubble(
       .setTo(AbilityState.Channeling)
   }
 
-  override def onUpdateActive(): Self = {
+  override def onUpdateActive(creature: Creature): Self = {
     val component0: Bubble = this
     val component1: Bubble = if (component0.started) {
       component0.state match {
         case AbilityState.Channeling =>
           val component1_1: Bubble = if (component0.timerParameters.channelTimer.time > component0.channelTime) {
-            component0.onActiveStart()
+            component0.onActiveStart(creature)
           } else component0
           component1_1
         case AbilityState.Active =>
@@ -106,16 +108,16 @@ case class Bubble(
     component1
   }
 
-  private def onActiveStart(): Self = {
+  private def onActiveStart(creature: Creature): Self = {
     //Assets.sound(Assets.explosionSound).play(0.01f)
 
     timerParameters.abilityActiveAnimationTimer.restart()
 
     timerParameters.activeTimer.restart()
 
-    val body = initBody(componentParameters.startX, componentParameters.startY)
-    val dirVector = if (mainAbility.creature.asInstanceOf[Enemy].aggroedTarget.nonEmpty) {
-      mainAbility.creature.facingVector.cpy
+    val body = initBody(creature, componentParameters.startX, componentParameters.startY)
+    val dirVector = if (creature.asInstanceOf[Enemy].aggroedTarget.nonEmpty) {
+      creature.facingVector.cpy
     } else {
       new Vector2(1.0f, 0.0f)
     }
@@ -129,12 +131,12 @@ case class Bubble(
       .setTo(dirVector)
   }
 
-  def initBody(x: Float, y: Float): Option[Body] = {
+  def initBody(creature: Creature, x: Float, y: Float): Option[Body] = {
     val bodyDef = new BodyDef()
     bodyDef.position.set(x, y)
 
     bodyDef.`type` = BodyDef.BodyType.DynamicBody
-    val body = Some(mainAbility.creature.area.get.world.createBody(bodyDef))
+    val body = Some(creature.area.get.world.createBody(bodyDef))
     body.get.setUserData(this)
 
     val fixtureDef: FixtureDef = new FixtureDef()
@@ -147,7 +149,7 @@ case class Bubble(
     body
   }
 
-  override def render(batch: EsBatch): Self = {
+  override def render(creature: Creature, batch: EsBatch): Self = {
     if (state == AbilityState.Active) {
       val spriteWidth = 64
       val scale = componentParameters.radius * 2 / spriteWidth
@@ -171,7 +173,7 @@ case class Bubble(
   }
 
   override def onCollideWithCreature(creature: Creature): Self = {
-    if (!(mainAbility.creature.isEnemy && creature.isEnemy) && creature.isAlive) {
+    if (!(creature.isEnemy && creature.isEnemy) && creature.isAlive) {
       if (!creature.isImmune) creature.takeLifeDamage(70f, immunityFrames = true)
     }
 

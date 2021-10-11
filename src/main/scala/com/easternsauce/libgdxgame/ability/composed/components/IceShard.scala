@@ -17,6 +17,7 @@ import com.easternsauce.libgdxgame.util.EsBatch
 import com.softwaremill.quicklens.ModifyPimp
 
 case class IceShard(
+  override val creatureId: String,
   override val mainAbility: Ability,
   override val state: AbilityState = AbilityState.Inactive,
   override val started: Boolean = false,
@@ -26,6 +27,7 @@ case class IceShard(
   override val bodyParameters: BodyParameters = BodyParameters(),
   override val dirVector: Vector2 = new Vector2(0, 0)
 ) extends AbilityComponent(
+      creatureId = creatureId,
       mainAbility = mainAbility,
       state = state,
       started = started,
@@ -64,19 +66,21 @@ case class IceShard(
       .setTo(AbilityState.Channeling)
   }
 
-  override def onUpdateActive(): Self = {
-    val component0: IceShard   = this
+  override def onUpdateActive(creature: Creature): Self = {
+    val component0: IceShard = this
 
     val component1: IceShard = if (component0.started) {
       component0.state match {
         case AbilityState.Channeling =>
           val component1_1 = if (component0.timerParameters.channelTimer.time > component0.channelTime) {
-            component0.onActiveStart()
+            component0.onActiveStart(creature)
           } else component0
           component1_1
         case AbilityState.Active =>
           val component1_2: IceShard =
-            if (component0.bodyParameters.b2Body.nonEmpty && component0.timerParameters.activeTimer.time >= activeTime) {
+            if (
+              component0.bodyParameters.b2Body.nonEmpty && component0.timerParameters.activeTimer.time >= activeTime
+            ) {
               component0.bodyParameters.b2Body.get.getWorld.destroyBody(component0.bodyParameters.b2Body.get)
               component0
                 .modify(_.bodyParameters.b2Body)
@@ -84,11 +88,11 @@ case class IceShard(
             } else component0
 
           val component1_3: IceShard = if (component1_2.timerParameters.activeTimer.time > component1_2.activeTime) {
-              // on active stop
+            // on active stop
             component1_2
-                .modify(_.state)
-                .setTo(AbilityState.Inactive)
-            } else component1_2
+              .modify(_.state)
+              .setTo(AbilityState.Inactive)
+          } else component1_2
 
           val component1_4: IceShard = if (component1_3.bodyParameters.b2Body.nonEmpty) {
             component1_3.bodyParameters.b2Body.get
@@ -107,15 +111,13 @@ case class IceShard(
 
   }
 
-  private def onActiveStart(): Self = {
+  private def onActiveStart(creature: Creature): Self = {
 
     //Assets.sound(Assets.explosionSound).play(0.01f)
     timerParameters.activeTimer.restart()
 
-    val body = initBody(
-      mainAbility.creature.pos.x + mainAbility.creature.creatureWidth / 2f,
-      mainAbility.creature.pos.y + mainAbility.creature.creatureHeight / 2f
-    )
+    val body =
+      initBody(creature, creature.pos.x + creature.creatureWidth / 2f, creature.pos.y + creature.creatureHeight / 2f)
 
     this
       .modify(_.state)
@@ -124,12 +126,12 @@ case class IceShard(
       .setTo(body)
   }
 
-  def initBody(x: Float, y: Float): Option[Body] = {
+  def initBody(creature: Creature, x: Float, y: Float): Option[Body] = {
     val bodyDef = new BodyDef()
     bodyDef.position.set(x, y)
 
     bodyDef.`type` = BodyDef.BodyType.DynamicBody
-    val body = mainAbility.creature.area.get.world.createBody(bodyDef)
+    val body = creature.area.get.world.createBody(bodyDef)
     body.setUserData(this)
 
     val fixtureDef: FixtureDef = new FixtureDef()
@@ -142,7 +144,7 @@ case class IceShard(
     Some(body)
   }
 
-  override def render(batch: EsBatch): Self = {
+  override def render(creature: Creature, batch: EsBatch): Self = {
 
     if (state == AbilityState.Active) {
       val scale = radius * 2 / spriteWidth
@@ -165,7 +167,7 @@ case class IceShard(
   }
 
   override def onCollideWithCreature(creature: Creature): Self = {
-    if (!(mainAbility.creature.isEnemy && creature.isEnemy) && creature.isAlive) {
+    if (!(creature.isEnemy && creature.isEnemy) && creature.isAlive) {
       if (!creature.isImmune) creature.takeLifeDamage(70f, immunityFrames = true)
     }
 

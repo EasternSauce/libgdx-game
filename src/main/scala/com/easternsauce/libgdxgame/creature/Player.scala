@@ -45,7 +45,7 @@ case class Player(override val id: String, override val area: Option[Area] = Non
   override lazy val additionalAbilities: Map[String, Ability] =
     Map({
       DashAbility(
-        creature = this,
+        creatureId = id,
         soundParameters =
           SoundParameters(activeSound = Some(Assets.sound(Assets.flybySound)), activeSoundVolume = Some(0.2f))
       ).asMapEntry

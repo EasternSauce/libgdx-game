@@ -15,8 +15,9 @@ import com.easternsauce.libgdxgame.util.EsBatch
 import com.softwaremill.quicklens._
 
 abstract class ComposedAbility(
-  override val creature: Creature,
+  override val creatureId: String,
   override val state: AbilityState = Inactive,
+  override val creatureOperations: List[Creature => Creature] = List(),
   override val onCooldown: Boolean = false,
   override val components: List[AbilityComponent] = List(),
   override val lastComponentFinishTime: Float = 0,
@@ -26,8 +27,9 @@ abstract class ComposedAbility(
   override val animationParameters: AnimationParameters = AnimationParameters(),
   override val dirVector: Vector2 = new Vector2(0f, 0f)
 ) extends Ability(
-      creature = creature,
+      creatureId = creatureId,
       state = state,
+      creatureOperations = creatureOperations,
       onCooldown = onCooldown,
       components = components,
       lastComponentFinishTime = lastComponentFinishTime,
@@ -45,7 +47,7 @@ abstract class ComposedAbility(
 
   override protected lazy val activeTime: Float = 0
 
-  override def update(): Self = {
+  override def update(creature: Creature): Self = {
     val channelTimer = timerParameters.channelTimer
     val activeTimer = timerParameters.activeTimer
 
@@ -61,13 +63,13 @@ abstract class ComposedAbility(
             .setTo(AbilityState.Active)
             .modify(_.onCooldown)
             .setTo(true)
-            .onActiveStart()
+            .onActiveStart(creature)
 
         } else
           this
 
         ability
-          .onUpdateChanneling()
+          .onUpdateChanneling(creature)
 
       case Active =>
         //stop when all components are stopped
@@ -76,12 +78,12 @@ abstract class ComposedAbility(
             this
               .modify(_.state)
               .setTo(AbilityState.Inactive)
-              .onStop()
+              .onStop(creature)
           else
             this
 
         ability
-          .onUpdateActive()
+          .onUpdateActive(creature)
 
       case Inactive if onCooldown =>
         if (activeTimer.time > cooldownTime) {
@@ -92,17 +94,18 @@ abstract class ComposedAbility(
           this
       case _ => this
     }
+
     res
   }
 
-  override def render(batch: EsBatch): Self = {
+  override def render(creature: Creature, batch: EsBatch): Self = {
     this
       .modify(_.components.each)
-      .usingIf(this.state == AbilityState.Active)(_.render(batch))
+      .usingIf(this.state == AbilityState.Active)(_.render(creature, batch))
 
   }
 
-  override def onUpdateActive(): Self = {
+  override def onUpdateActive(creature: Creature): Self = {
     val activeTimer = timerParameters.activeTimer
 
     val condition: AbilityComponent => Boolean = component =>
@@ -112,12 +115,12 @@ abstract class ComposedAbility(
       .modify(_.components.eachWhere(condition))
       .using(_.start())
       .modify(_.components.each)
-      .using(_.onUpdateActive())
+      .using(_.onUpdateActive(creature))
   }
 
-  override def onChannellingStart(): Self = {
+  override def onChannellingStart(creature: Creature): Self = {
 
-    val components = for (i <- 0 until numOfComponents) yield createComponent(i)
+    val components = for (i <- 0 until numOfComponents) yield createComponent(creature, i)
 
     val lastComponent = components.maxBy(_.totalTime)
     val lastComponentFinishTime = lastComponent.totalTime
@@ -132,6 +135,6 @@ abstract class ComposedAbility(
       .setTo(lastComponentFinishTime)
   }
 
-  def createComponent(index: Int): AbilityComponent = ???
+  def createComponent(creature: Creature, index: Int): AbilityComponent = ???
 
 }

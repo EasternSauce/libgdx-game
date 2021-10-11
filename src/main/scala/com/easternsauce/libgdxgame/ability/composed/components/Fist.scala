@@ -4,14 +4,19 @@ import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.{Body, BodyDef, CircleShape, FixtureDef}
 import com.easternsauce.libgdxgame.ability.misc.AbilityState.AbilityState
 import com.easternsauce.libgdxgame.ability.misc.{Ability, AbilityState}
-import com.easternsauce.libgdxgame.ability.parameters.{AnimationParameters, BodyParameters, ComponentParameters, TimerParameters}
+import com.easternsauce.libgdxgame.ability.parameters.{
+  AnimationParameters,
+  BodyParameters,
+  ComponentParameters,
+  TimerParameters
+}
 import com.easternsauce.libgdxgame.animation.Animation
 import com.easternsauce.libgdxgame.creature.Creature
-import com.easternsauce.libgdxgame.system.Assets
 import com.easternsauce.libgdxgame.util.EsBatch
 import com.softwaremill.quicklens.ModifyPimp
 
 case class Fist(
+  override val creatureId: String,
   override val mainAbility: Ability,
   override val state: AbilityState = AbilityState.Inactive,
   override val started: Boolean = false,
@@ -28,6 +33,7 @@ case class Fist(
   override val bodyParameters: BodyParameters = BodyParameters(),
   override val dirVector: Vector2 = new Vector2(0, 0)
 ) extends AbilityComponent(
+      creatureId = creatureId,
       mainAbility = mainAbility,
       state = state,
       started = started,
@@ -61,7 +67,7 @@ case class Fist(
       .setTo(AbilityState.Channeling)
   }
 
-  override def onUpdateActive(): Self = {
+  override def onUpdateActive(creature: Creature): Self = {
     //TODO: refactor
     this
 //    modifyIf(started) {
@@ -106,12 +112,12 @@ case class Fist(
 //    }
   }
 
-  def initBody(x: Float, y: Float): Option[Body] = {
+  def initBody(creature: Creature, x: Float, y: Float): Option[Body] = {
     val bodyDef = new BodyDef()
     bodyDef.position.set(x, y)
 
     bodyDef.`type` = BodyDef.BodyType.StaticBody
-    val body = mainAbility.creature.area.get.world.createBody(bodyDef)
+    val body = creature.area.get.world.createBody(bodyDef)
     body.setUserData(this)
 
     val fixtureDef: FixtureDef = new FixtureDef()
@@ -124,7 +130,7 @@ case class Fist(
     Some(body)
   }
 
-  override def render(batch: EsBatch): Self = {
+  override def render(creature: Creature, batch: EsBatch): Self = {
 
     if (state == AbilityState.Channeling) {
 
@@ -172,7 +178,7 @@ case class Fist(
   }
 
   override def onCollideWithCreature(creature: Creature): Self = {
-    if (!(mainAbility.creature.isEnemy && creature.isEnemy) && creature.isAlive && timerParameters.activeTimer.time < 0.15f) {
+    if (!(creature.isEnemy && creature.isEnemy) && creature.isAlive && timerParameters.activeTimer.time < 0.15f) {
       if (!creature.isImmune) creature.takeLifeDamage(100f, immunityFrames = true)
     }
 

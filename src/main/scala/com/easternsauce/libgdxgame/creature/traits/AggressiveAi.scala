@@ -185,7 +185,7 @@ trait AggressiveAi {
               // TODO: temp workaround
               val currentAttack = abilityMap(pickedAbility.get.id)
 
-              abilityMap.update(pickedAbility.get.id, currentAttack.perform())
+              abilityMap.update(pickedAbility.get.id, currentAttack.perform(this))
             }
 
           }
@@ -213,7 +213,7 @@ trait AggressiveAi {
         if (targetVisible && distanceTo(aggroedTarget.get) < attackDistance) {
           // TODO: temp workaround
           val thisCurrentAttack = abilityMap(currentAttack.id)
-          abilityMap.update(thisCurrentAttack.id, thisCurrentAttack.perform())
+          abilityMap.update(thisCurrentAttack.id, thisCurrentAttack.perform(this))
         }
 
         if (!aggroedTarget.get.isAlive || (path.size > 15 && !isBoss)) {

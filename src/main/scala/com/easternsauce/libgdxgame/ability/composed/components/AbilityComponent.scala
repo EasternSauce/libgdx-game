@@ -3,12 +3,18 @@ package com.easternsauce.libgdxgame.ability.composed.components
 import com.badlogic.gdx.math.Vector2
 import com.easternsauce.libgdxgame.ability.misc.AbilityState.AbilityState
 import com.easternsauce.libgdxgame.ability.misc.{Ability, AbilityState}
-import com.easternsauce.libgdxgame.ability.parameters.{AnimationParameters, BodyParameters, ComponentParameters, TimerParameters}
+import com.easternsauce.libgdxgame.ability.parameters.{
+  AnimationParameters,
+  BodyParameters,
+  ComponentParameters,
+  TimerParameters
+}
 import com.easternsauce.libgdxgame.animation.Animation
 import com.easternsauce.libgdxgame.creature.Creature
-import com.easternsauce.libgdxgame.util.{EsBatch, EsTimer}
+import com.easternsauce.libgdxgame.util.EsBatch
 
 abstract class AbilityComponent(
+  val creatureId: String,
   val mainAbility: Ability,
   val state: AbilityState = AbilityState.Inactive,
   val started: Boolean = false,
@@ -26,10 +32,9 @@ abstract class AbilityComponent(
   val activeAnimation: Option[Animation]
   val channelAnimation: Option[Animation]
 
+  def onUpdateActive(creature: Creature): Self
 
-  def onUpdateActive(): Self
-
-  def render(batch: EsBatch): Self
+  def render(creature: Creature, batch: EsBatch): Self
 
   def onCollideWithCreature(creature: Creature): Self
 

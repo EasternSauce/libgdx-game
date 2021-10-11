@@ -7,8 +7,9 @@ import com.easternsauce.libgdxgame.ability.parameters._
 import com.easternsauce.libgdxgame.creature.{Creature, Enemy}
 
 case class IceShardAbility private (
-  override val creature: Creature,
+  override val creatureId: String,
   override val state: AbilityState = Inactive,
+  override val creatureOperations: List[Creature => Creature] = List(),
   override val onCooldown: Boolean = false,
   override val components: List[AbilityComponent] = List(),
   override val lastComponentFinishTime: Float = 0f,
@@ -18,8 +19,9 @@ case class IceShardAbility private (
   override val animationParameters: AnimationParameters = AnimationParameters(),
   override val dirVector: Vector2 = new Vector2(0f, 0f)
 ) extends ComposedAbility(
-      creature = creature,
+      creatureId = creatureId,
       state = state,
+      creatureOperations = creatureOperations,
       onCooldown = onCooldown,
       components = components,
       lastComponentFinishTime = lastComponentFinishTime,
@@ -38,12 +40,12 @@ case class IceShardAbility private (
 
   override protected val numOfComponents = 9
 
-  override def onActiveStart(): Self = {
+  override def onActiveStart(creature: Creature): Self = {
     creature.takeStaminaDamage(25f)
     this
   }
 
-  override def createComponent(index: Int): AbilityComponent = {
+  override def createComponent(creature: Creature, index: Int): AbilityComponent = {
     val facingVector =
       if (creature.asInstanceOf[Enemy].aggroedTarget.nonEmpty) {
         creature.facingVector.cpy
@@ -51,16 +53,24 @@ case class IceShardAbility private (
         new Vector2(1.0f, 0.0f)
       }
 
-    IceShard(
+    val component = IceShard(
+      creatureId = creatureId,
       mainAbility = this,
-      componentParameters = ComponentParameters(startX = creature.pos.x, startY = creature.pos.y, speed = 30f, startTime = 0.05f * index),
+      componentParameters =
+        ComponentParameters(startX = creature.pos.x, startY = creature.pos.y, speed = 30f, startTime = 0.05f * index),
       dirVector = facingVector.cpy.rotateDeg(20f * (index - 5))
     )
+
+    // TODO: this is a workaround
+    component.bodyParameters.b2Body.get.setUserData((this, creature))
+
+    component
   }
 
   override def copy(
-    creature: Creature,
+    creatureId: String,
     state: AbilityState,
+    creatureOperations: List[Creature => Creature] = creatureOperations,
     onCooldown: Boolean,
     components: List[AbilityComponent],
     lastComponentFinishTime: Float,
@@ -71,8 +81,9 @@ case class IceShardAbility private (
     dirVector: Vector2
   ): Self =
     IceShardAbility(
-      creature = creature,
+      creatureId = creatureId,
       state = state,
+      creatureOperations = creatureOperations,
       onCooldown = onCooldown,
       components = components,
       lastComponentFinishTime = lastComponentFinishTime,

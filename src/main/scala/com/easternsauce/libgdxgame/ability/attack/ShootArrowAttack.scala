@@ -19,8 +19,9 @@ import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
 
 case class ShootArrowAttack private (
-  override val creature: Creature,
+  override val creatureId: String,
   override val state: AbilityState = Inactive,
+  override val creatureOperations: List[Creature => Creature] = List(),
   override val onCooldown: Boolean = false,
   override val components: List[AbilityComponent] = List(),
   override val lastComponentFinishTime: Float = 0,
@@ -30,8 +31,9 @@ case class ShootArrowAttack private (
   override val animationParameters: AnimationParameters = AnimationParameters(),
   override val dirVector: Vector2 = new Vector2(0f, 0f)
 ) extends Ability(
-      creature = creature,
+      creatureId = creatureId,
       state = state,
+      creatureOperations = creatureOperations,
       onCooldown = onCooldown,
       components = components,
       lastComponentFinishTime = lastComponentFinishTime,
@@ -51,8 +53,8 @@ case class ShootArrowAttack private (
 
   override protected val isAttack = true
 
-  override def onChannellingStart(): Self = {
-    super.onChannellingStart()
+  override def onChannellingStart(creature: Creature): Self = {
+    super.onChannellingStart(creature)
 
     // TODO: remove side effects
     creature.isAttacking = true
@@ -62,8 +64,8 @@ case class ShootArrowAttack private (
     this
   }
 
-  override def onActiveStart(): Self = {
-    val result = super.onActiveStart().asInstanceOf[Self]
+  override def onActiveStart(creature: Creature): Self = {
+    val result = super.onActiveStart(creature).asInstanceOf[Self]
 
     // TODO: remove side effects
 
@@ -88,7 +90,7 @@ case class ShootArrowAttack private (
         arrowList,
         tiles,
         areaCreatures,
-        this.creature
+        creature
       )
       arrowList += arrow
     }
@@ -99,8 +101,9 @@ case class ShootArrowAttack private (
   }
 
   override def copy(
-    creature: Creature,
+    creatureId: String,
     state: AbilityState,
+    creatureOperations: List[Creature => Creature] = creatureOperations,
     onCooldown: Boolean,
     components: List[AbilityComponent],
     lastComponentFinishTime: Float,
@@ -111,8 +114,9 @@ case class ShootArrowAttack private (
     dirVector: Vector2
   ): Self =
     ShootArrowAttack(
-      creature = creature,
+      creatureId = creatureId,
       state = state,
+      creatureOperations = creatureOperations,
       onCooldown = onCooldown,
       components = components,
       lastComponentFinishTime = lastComponentFinishTime,

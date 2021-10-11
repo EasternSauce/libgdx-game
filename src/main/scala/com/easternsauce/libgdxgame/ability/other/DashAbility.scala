@@ -4,14 +4,20 @@ import com.badlogic.gdx.math.Vector2
 import com.easternsauce.libgdxgame.ability.composed.components.AbilityComponent
 import com.easternsauce.libgdxgame.ability.misc.Ability
 import com.easternsauce.libgdxgame.ability.misc.AbilityState.{AbilityState, Inactive}
-import com.easternsauce.libgdxgame.ability.parameters.{AnimationParameters, BodyParameters, SoundParameters, TimerParameters}
+import com.easternsauce.libgdxgame.ability.parameters.{
+  AnimationParameters,
+  BodyParameters,
+  SoundParameters,
+  TimerParameters
+}
 import com.easternsauce.libgdxgame.animation.Animation
 import com.easternsauce.libgdxgame.creature.Creature
 import com.softwaremill.quicklens.ModifyPimp
 
 case class DashAbility private (
-  override val creature: Creature,
+  override val creatureId: String,
   override val state: AbilityState = Inactive,
+  override val creatureOperations: List[Creature => Creature] = List(),
   override val onCooldown: Boolean = false,
   override val components: List[AbilityComponent] = List(),
   override val lastComponentFinishTime: Float = 0f,
@@ -21,8 +27,9 @@ case class DashAbility private (
   override val animationParameters: AnimationParameters = AnimationParameters(),
   override val dirVector: Vector2 = new Vector2(0f, 0f)
 ) extends Ability(
-      creature = creature,
+      creatureId = creatureId,
       state = state,
+      creatureOperations = creatureOperations,
       onCooldown = onCooldown,
       components = components,
       lastComponentFinishTime = lastComponentFinishTime,
@@ -44,8 +51,8 @@ case class DashAbility private (
   override val activeAnimation: Option[Animation] = None
   override val channelAnimation: Option[Animation] = None
 
-  override def onActiveStart(): Self = {
-    super.onActiveStart()
+  override def onActiveStart(creature: Creature): Self = {
+    super.onActiveStart(creature)
 
     val dashVector = new Vector2(creature.walkingVector.x * speed, creature.walkingVector.y * speed)
 
@@ -58,7 +65,7 @@ case class DashAbility private (
       .setTo(dashVector)
   }
 
-  override def onUpdateActive(): Self = {
+  override def onUpdateActive(creature: Creature): Self = {
     // TODO: remove sideffect
     creature.sustainVelocity(dirVector)
 
@@ -66,8 +73,9 @@ case class DashAbility private (
   }
 
   override def copy(
-    creature: Creature,
+    creatureId: String,
     state: AbilityState,
+    creatureOperations: List[Creature => Creature] = creatureOperations,
     onCooldown: Boolean,
     components: List[AbilityComponent],
     lastComponentFinishTime: Float,
@@ -78,8 +86,9 @@ case class DashAbility private (
     dirVector: Vector2
   ): Self =
     DashAbility(
-      creature = creature,
+      creatureId = creatureId,
       state = state,
+      creatureOperations = creatureOperations,
       onCooldown = onCooldown,
       components = components,
       lastComponentFinishTime = lastComponentFinishTime,

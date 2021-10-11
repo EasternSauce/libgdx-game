@@ -32,7 +32,7 @@ case class Serpent(override val id: String, override val area: Option[Area] = No
   )
 
   override lazy val additionalAbilities: Map[String, Ability] =
-    Map(BubbleAbility(this).asMapEntry, IceShardAbility(this).asMapEntry)
+    Map(BubbleAbility(id).asMapEntry, IceShardAbility(id).asMapEntry)
 
   override val abilityUsages: Map[String, AbilityUsage] =
     Map(

@@ -8,8 +8,9 @@ import com.easternsauce.libgdxgame.creature.Creature
 import com.easternsauce.libgdxgame.system.GameSystem
 
 case class MeteorRainAbility private (
-  override val creature: Creature,
+  override val creatureId: String,
   override val state: AbilityState = Inactive,
+  override val creatureOperations: List[Creature => Creature] = List(),
   override val onCooldown: Boolean = false,
   override val components: List[AbilityComponent] = List(),
   override val lastComponentFinishTime: Float = 0f,
@@ -19,8 +20,9 @@ case class MeteorRainAbility private (
   override val animationParameters: AnimationParameters = AnimationParameters(),
   override val dirVector: Vector2 = new Vector2(0f, 0f)
 ) extends ComposedAbility(
-      creature = creature,
+      creatureId = creatureId,
       state = state,
+      creatureOperations = creatureOperations,
       onCooldown = onCooldown,
       components = components,
       lastComponentFinishTime = lastComponentFinishTime,
@@ -38,15 +40,16 @@ case class MeteorRainAbility private (
   override protected val cooldownTime = 35f
   protected val explosionRange: Float = 9.375f
 
-  override def onActiveStart(): Self = {
+  override def onActiveStart(creature: Creature): Self = {
     creature.takeStaminaDamage(25f)
     this
   }
 
-  override def createComponent(index: Int): AbilityComponent = {
+  override def createComponent(creature: Creature, index: Int): AbilityComponent = {
     val range = 34.375f
 
-    Meteor(
+    val component = Meteor(
+      creatureId = creatureId,
       mainAbility = this,
       componentParameters = ComponentParameters(
         startTime = 0.15f * index,
@@ -56,11 +59,17 @@ case class MeteorRainAbility private (
         speed = 1.5f
       )
     )
+
+    // TODO: this is a workaround
+    component.bodyParameters.b2Body.get.setUserData((this, creature))
+
+    component
   }
 
   override def copy(
-    creature: Creature,
+    creatureId: String,
     state: AbilityState,
+    creatureOperations: List[Creature => Creature] = creatureOperations,
     onCooldown: Boolean,
     components: List[AbilityComponent],
     lastComponentFinishTime: Float,
@@ -71,8 +80,9 @@ case class MeteorRainAbility private (
     dirVector: Vector2
   ): Self =
     MeteorRainAbility(
-      creature = creature,
+      creatureId = creatureId,
       state = state,
+      creatureOperations = creatureOperations,
       onCooldown = onCooldown,
       components = components,
       lastComponentFinishTime = lastComponentFinishTime,

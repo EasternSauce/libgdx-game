@@ -69,7 +69,7 @@ abstract class Creature(val id: String, val area: Option[Area] = None, val b2Bod
   val updateDirectionTimer: EsTimer = EsTimer(true)
 
   lazy val standardAbilities: Map[String, Ability] =
-    Map(SlashAttack(this).asMapEntry, ShootArrowAttack(this).asMapEntry, ThrustAttack(this).asMapEntry)
+    Map(SlashAttack(id).asMapEntry, ShootArrowAttack(id).asMapEntry, ThrustAttack(id).asMapEntry)
 
   lazy val additionalAbilities: Map[String, Ability] = Map()
 
@@ -106,8 +106,10 @@ abstract class Creature(val id: String, val area: Option[Area] = None, val b2Bod
     updateEffects()
 
     for ((id, ability) <- abilityMap) {
-      abilityMap.update(id, ability.update())
+      abilityMap.update(id, ability.update(this))
     }
+
+
 
     //currentAttack.update()
 
@@ -141,9 +143,9 @@ abstract class Creature(val id: String, val area: Option[Area] = None, val b2Bod
     if (walkSound.nonEmpty) walkSound.get.stop()
 
     for (ability <- abilityMap.values) {
-      ability.forceStop()
+      ability.forceStop(this)
     }
-    currentAttack.forceStop()
+    currentAttack.forceStop(this)
 
     setRotation(90f)
 

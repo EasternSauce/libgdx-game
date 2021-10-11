@@ -6,15 +6,21 @@ import com.badlogic.gdx.physics.box2d._
 import com.easternsauce.libgdxgame.ability.composed.components.AbilityComponent
 import com.easternsauce.libgdxgame.ability.misc.AbilityState.{AbilityState, Inactive}
 import com.easternsauce.libgdxgame.ability.misc.{Ability, AbilityState}
-import com.easternsauce.libgdxgame.ability.parameters.{AnimationParameters, BodyParameters, SoundParameters, TimerParameters}
+import com.easternsauce.libgdxgame.ability.parameters.{
+  AnimationParameters,
+  BodyParameters,
+  SoundParameters,
+  TimerParameters
+}
 import com.easternsauce.libgdxgame.creature.Creature
 import com.easternsauce.libgdxgame.system.Assets
 import com.easternsauce.libgdxgame.util.EsBatch
 import com.softwaremill.quicklens._
 
 case class ExplodeAbility private (
-  override val creature: Creature,
+  override val creatureId: String,
   override val state: AbilityState = Inactive,
+  override val creatureOperations: List[Creature => Creature] = List(),
   override val onCooldown: Boolean = false,
   override val components: List[AbilityComponent] = List(),
   override val lastComponentFinishTime: Float = 0f,
@@ -25,8 +31,9 @@ case class ExplodeAbility private (
   override val bodyParameters: BodyParameters = BodyParameters(),
   override val dirVector: Vector2 = new Vector2(0f, 0f)
 ) extends Ability(
-      creature = creature,
+      creatureId = creatureId,
       state = state,
+      creatureOperations = creatureOperations,
       onCooldown = onCooldown,
       components = components,
       lastComponentFinishTime = lastComponentFinishTime,
@@ -49,8 +56,8 @@ case class ExplodeAbility private (
 
   override protected lazy val channelTime: Float = 1.3f
 
-  override def onActiveStart(): Self = {
-    super.onActiveStart()
+  override def onActiveStart(creature: Creature): Self = {
+    super.onActiveStart(creature)
 
     timerParameters.abilityActiveAnimationTimer.restart()
 
@@ -59,10 +66,10 @@ case class ExplodeAbility private (
     creature.takeLifeDamage(700f, immunityFrames = false, Some(creature), 0, 0, 0)
     Assets.sound(Assets.explosionSound).play(0.07f)
 
-    initBody(creature.pos.x, creature.pos.y)
+    initBody(creature, creature.pos.x, creature.pos.y)
   }
 
-  override def onUpdateActive(): Self = {
+  override def onUpdateActive(creature: Creature): Self = {
     val activeTimer = timerParameters.activeTimer
 
     if (bodyParameters.b2Body.nonEmpty && activeTimer.time > 0.1f) {
@@ -71,7 +78,7 @@ case class ExplodeAbility private (
       this
   }
 
-  override def render(batch: EsBatch): Self = {
+  override def render(creature: Creature, batch: EsBatch): Self = {
     def renderFrame(image: TextureRegion): Unit = {
 
       val scale = explosionRange * 2 / image.getRegionWidth
@@ -102,7 +109,7 @@ case class ExplodeAbility private (
     this
   }
 
-  def initBody(x: Float, y: Float): Self = {
+  def initBody(creature: Creature, x: Float, y: Float): Self = {
     // TODO: side effects
 
     val bodyDef = new BodyDef()
@@ -136,18 +143,20 @@ case class ExplodeAbility private (
       this
   }
 
-  override def onCollideWithCreature(otherCreature: Creature): Self = {
-    // TODO: side effect
-    if (!(creature.isEnemy && otherCreature.isEnemy) && otherCreature.isAlive) { // mob can't hurt a mob?
-      if (!otherCreature.isImmune) otherCreature.takeLifeDamage(700f, immunityFrames = true, Some(creature), 0, 0, 0)
-    }
-
-    this
-  }
+  // TODO: fixa
+//  override def onCollideWithCreature(creature: Creature, otherCreature: Creature): Self = {
+//    // TODO: side effect
+//    if (!(creature.isEnemy && otherCreature.isEnemy) && otherCreature.isAlive) { // mob can't hurt a mob?
+//      if (!otherCreature.isImmune) otherCreature.takeLifeDamage(700f, immunityFrames = true, Some(creature), 0, 0, 0)
+//    }
+//
+//    this
+//  }
 
   override def copy(
-    creature: Creature,
+    creatureId: String,
     state: AbilityState,
+    creatureOperations: List[Creature => Creature] = creatureOperations,
     onCooldown: Boolean,
     components: List[AbilityComponent],
     lastComponentFinishTime: Float,
@@ -158,8 +167,9 @@ case class ExplodeAbility private (
     dirVector: Vector2
   ): Self =
     ExplodeAbility(
-      creature = creature,
+      creatureId = creatureId,
       state = state,
+      creatureOperations = creatureOperations,
       onCooldown = onCooldown,
       components = components,
       lastComponentFinishTime = lastComponentFinishTime,

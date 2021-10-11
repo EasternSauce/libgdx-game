@@ -34,7 +34,7 @@ case class Ghost(override val id: String, override val area: Option[Area] = None
   override lazy val additionalAbilities: Map[String, Ability] =
     Map({
       val explodeAbility = ExplodeAbility(
-        creature = this,
+        creatureId = id,
         soundParameters = SoundParameters(
           channelSound = Some(Assets.sound(Assets.darkLaughSound)),
           channelSoundVolume = Some(0.2f),

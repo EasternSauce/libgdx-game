@@ -8,8 +8,9 @@ import com.easternsauce.libgdxgame.creature.{Creature, Enemy}
 import com.easternsauce.libgdxgame.system.GameSystem
 
 case class FistSlamAbility private (
-  override val creature: Creature,
+  override val creatureId: String,
   override val state: AbilityState = Inactive,
+  override val creatureOperations: List[Creature => Creature] = List(),
   override val onCooldown: Boolean = false,
   override val components: List[AbilityComponent] = List(),
   override val lastComponentFinishTime: Float = 0f,
@@ -19,8 +20,9 @@ case class FistSlamAbility private (
   override val animationParameters: AnimationParameters = AnimationParameters(),
   override val dirVector: Vector2 = new Vector2(0f, 0f)
 ) extends ComposedAbility(
-      creature = creature,
+      creatureId = creatureId,
       state = state,
+      creatureOperations = creatureOperations,
       onCooldown = onCooldown,
       components = components,
       lastComponentFinishTime = lastComponentFinishTime,
@@ -39,7 +41,7 @@ case class FistSlamAbility private (
 
   override protected val numOfComponents = 20
 
-  override def onActiveStart(): Self = {
+  override def onActiveStart(creature: Creature): Self = {
 
     // TODO: sideeffect
     creature.takeStaminaDamage(25f)
@@ -47,10 +49,11 @@ case class FistSlamAbility private (
     this
   }
 
-  override def createComponent(index: Int): AbilityComponent = {
+  override def createComponent(creature: Creature, index: Int): AbilityComponent = {
     val range: Float = 7.8125f
     val aggroedCreature = creature.asInstanceOf[Enemy].aggroedTarget.get // TODO targeting?
-    Fist(
+    val component = Fist(
+      creatureId = creatureId,
       mainAbility = this,
       componentParameters = ComponentParameters(
         startTime = 0.1f * index,
@@ -59,11 +62,17 @@ case class FistSlamAbility private (
         radius = 2f
       )
     )
+
+    // TODO: this is a workaround
+    component.bodyParameters.b2Body.get.setUserData((this, creature))
+
+    component
   }
 
   override def copy(
-    creature: Creature,
+    creatureId: String,
     state: AbilityState,
+    creatureOperations: List[Creature => Creature] = creatureOperations,
     onCooldown: Boolean,
     components: List[AbilityComponent],
     lastComponentFinishTime: Float,
@@ -74,8 +83,9 @@ case class FistSlamAbility private (
     dirVector: Vector2
   ): Self =
     FistSlamAbility(
-      creature = creature,
+      creatureId = creatureId,
       state = state,
+      creatureOperations = creatureOperations,
       onCooldown = onCooldown,
       components = components,
       lastComponentFinishTime = lastComponentFinishTime,
