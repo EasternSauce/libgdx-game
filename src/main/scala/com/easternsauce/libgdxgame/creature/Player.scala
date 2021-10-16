@@ -42,7 +42,7 @@ class Player private (val id: String) extends Creature {
   override lazy val additionalAbilities: Map[String, Ability] =
     Map({
       DashAbility(
-        creature = this,
+        creatureId = id,
         soundParameters =
           SoundParameters(activeSound = Some(Assets.sound(Assets.flybySound)), activeSoundVolume = Some(0.2f))
       ).asMapEntry

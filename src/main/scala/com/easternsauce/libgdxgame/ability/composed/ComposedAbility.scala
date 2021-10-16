@@ -5,12 +5,11 @@ import com.easternsauce.libgdxgame.ability.composed.components.AbilityComponent
 import com.easternsauce.libgdxgame.ability.misc.AbilityState.{AbilityState, Inactive}
 import com.easternsauce.libgdxgame.ability.misc.{Ability, AbilityState}
 import com.easternsauce.libgdxgame.ability.parameters.{AnimationParameters, BodyParameters, SoundParameters, TimerParameters}
-import com.easternsauce.libgdxgame.creature.Creature
 import com.easternsauce.libgdxgame.util.EsBatch
 import com.softwaremill.quicklens._
 
 abstract class ComposedAbility(
-  override val creature: Creature,
+  override val creatureId: String,
   override val state: AbilityState = Inactive,
   override val onCooldown: Boolean = false,
   override val components: List[AbilityComponent] = List(),
@@ -21,7 +20,7 @@ abstract class ComposedAbility(
   override val animationParameters: AnimationParameters = AnimationParameters(),
   override val dirVector: Vector2 = new Vector2(0f, 0f)
 ) extends Ability(
-      creature = creature,
+      creatureId = creatureId,
       state = state,
       onCooldown = onCooldown,
       components = components,
@@ -118,7 +117,7 @@ abstract class ComposedAbility(
     val lastComponentFinishTime = lastComponent.totalTime
 
     // TODO: remove side effect
-    creature.activateEffect("immobilized", lastComponentFinishTime)
+    modifyCreature(creature => { creature.activateEffect("immobilized", lastComponentFinishTime); creature })
 
     this
       .modify(_.components)

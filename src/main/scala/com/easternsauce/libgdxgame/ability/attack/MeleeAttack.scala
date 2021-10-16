@@ -7,13 +7,12 @@ import com.easternsauce.libgdxgame.ability.misc.AbilityState.{AbilityState, Inac
 import com.easternsauce.libgdxgame.ability.misc.{Ability, _}
 import com.easternsauce.libgdxgame.ability.parameters._
 import com.easternsauce.libgdxgame.creature.Creature
-import com.easternsauce.libgdxgame.system.GameSystem.areaMap
 import com.easternsauce.libgdxgame.system.{Constants, GameSystem}
 import com.easternsauce.libgdxgame.util.{EsBatch, EsPolygon}
 import com.softwaremill.quicklens.ModifyPimp
 
 abstract class MeleeAttack(
-  override val creature: Creature,
+  override val creatureId: String,
   override val state: AbilityState = Inactive,
   override val onCooldown: Boolean = false,
   override val components: List[AbilityComponent] = List(),
@@ -24,7 +23,7 @@ abstract class MeleeAttack(
   override val animationParameters: AnimationParameters = AnimationParameters(),
   override val dirVector: Vector2 = new Vector2(0f, 0f)
 ) extends Ability(
-      creature = creature,
+      creatureId = creatureId,
       state = state,
       onCooldown = onCooldown,
       components = components,
@@ -62,13 +61,15 @@ abstract class MeleeAttack(
   override protected lazy val activeTime: Float = baseActiveTime
   override protected lazy val channelTime: Float = baseChannelTime / attackSpeed
 
-  def attackSpeed: Float =
+  def attackSpeed: Float = {
     if (creature.isWeaponEquipped) creature.currentWeapon.template.attackSpeed.get
     else 1.4f
+  }
 
-  def attackScale: Float =
+  def attackScale: Float = {
     if (creature.isWeaponEquipped) creature.currentWeapon.template.attackScale.get
     else 1.4f
+  }
 
   override def onActiveStart(): Self = {
     val ability = super.onActiveStart()
@@ -77,7 +78,7 @@ abstract class MeleeAttack(
 
     timerParameters.abilityActiveAnimationTimer.restart()
 
-    creature.takeStaminaDamage(15f)
+    modifyCreature(creature => { creature.takeStaminaDamage(15f); creature })
 
     val attackVector = creature.attackVector
 
@@ -104,7 +105,7 @@ abstract class MeleeAttack(
     val hitbox = Some(AttackHitbox(attackRectX, attackRectY, poly))
 
     val body = if (creature.areaId.get.nonEmpty) {
-      initBody(areaMap(creature.areaId.get).world, bodyParameters.hitbox.get)
+      initBody(GameSystem.areaMap(creature.areaId.get).world, bodyParameters.hitbox.get)
     } else None
 
     ability
@@ -121,6 +122,8 @@ abstract class MeleeAttack(
   override def render(batch: EsBatch): Self = {
     // TODO: remove side effect
     def renderFrame(image: TextureRegion): Unit = {
+      val creature = GameSystem.creature(creatureId)
+
       val attackVector = creature.attackVector
       val theta = new Vector2(attackVector.x, attackVector.y).angleDeg()
 
@@ -156,6 +159,8 @@ abstract class MeleeAttack(
     val ability: Self = super.onChannellingStart()
 
     // TODO: sideeffects
+
+    val creature = GameSystem.creature(creatureId)
 
     creature.attackVector = creature.facingVector.cpy()
     timerParameters.abilityChannelAnimationTimer.restart()
@@ -236,7 +241,7 @@ abstract class MeleeAttack(
   }
 
   override def onStop(): Self = {
-    creature.isAttacking = false
+    modifyCreature(creature => { creature.isAttacking = false; creature })
 
     // IMPORTANT: ability has to be active
     // if we remove during channeling we could remove it before body is created, causing BOX2D crash
@@ -252,7 +257,7 @@ abstract class MeleeAttack(
 
     // TODO: remove sideeffect
     if (!(creature.isEnemy && otherCreature.isEnemy)) {
-      if (creature != otherCreature && !otherCreature.isImmune) {
+      if (creature.id != otherCreature.id && !otherCreature.isImmune) {
         otherCreature.takeLifeDamage(
           damage = creature.weaponDamage,
           immunityFrames = true,
@@ -274,7 +279,7 @@ abstract class MeleeAttack(
   }
 
   override def copy(
-    creature: Creature = creature,
+    creatureIc: String = creatureId,
     state: AbilityState = state,
     onCooldown: Boolean = onCooldown,
     components: List[AbilityComponent] = components,

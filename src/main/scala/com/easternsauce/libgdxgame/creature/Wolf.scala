@@ -18,7 +18,7 @@ class Wolf private (val id: String) extends Enemy {
   override val activeSound: Option[Sound] = Some(Assets.sound(Assets.dogBarkSound))
 
   override lazy val additionalAbilities: Map[String, Ability] =
-    Map(DashAbility(this).asMapEntry)
+    Map(DashAbility(id).asMapEntry)
 
   override val dropTable = Map(
     "ringmailGreaves" -> 0.1f,

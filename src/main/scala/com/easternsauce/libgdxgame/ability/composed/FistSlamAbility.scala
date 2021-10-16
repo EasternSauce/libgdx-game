@@ -4,11 +4,11 @@ import com.badlogic.gdx.math.Vector2
 import com.easternsauce.libgdxgame.ability.composed.components.{AbilityComponent, Fist}
 import com.easternsauce.libgdxgame.ability.misc.AbilityState.{AbilityState, Inactive}
 import com.easternsauce.libgdxgame.ability.parameters._
-import com.easternsauce.libgdxgame.creature.{Creature, Enemy}
+import com.easternsauce.libgdxgame.creature.Enemy
 import com.easternsauce.libgdxgame.system.GameSystem
 
 case class FistSlamAbility private (
-  override val creature: Creature,
+  override val creatureId: String,
   override val state: AbilityState = Inactive,
   override val onCooldown: Boolean = false,
   override val components: List[AbilityComponent] = List(),
@@ -19,7 +19,7 @@ case class FistSlamAbility private (
   override val animationParameters: AnimationParameters = AnimationParameters(),
   override val dirVector: Vector2 = new Vector2(0f, 0f)
 ) extends ComposedAbility(
-      creature = creature,
+      creatureId = creatureId,
       state = state,
       onCooldown = onCooldown,
       components = components,
@@ -42,7 +42,7 @@ case class FistSlamAbility private (
   override def onActiveStart(): Self = {
 
     // TODO: sideeffect
-    creature.takeStaminaDamage(25f)
+    modifyCreature(creature => { creature.takeStaminaDamage(25f); creature })
 
     this
   }
@@ -62,7 +62,7 @@ case class FistSlamAbility private (
   }
 
   override def copy(
-    creature: Creature,
+    creatureId: String,
     state: AbilityState,
     onCooldown: Boolean,
     components: List[AbilityComponent],
@@ -74,7 +74,7 @@ case class FistSlamAbility private (
     dirVector: Vector2
   ): Self =
     FistSlamAbility(
-      creature = creature,
+      creatureId = creatureId,
       state = state,
       onCooldown = onCooldown,
       components = components,

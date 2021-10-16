@@ -7,11 +7,12 @@ import com.easternsauce.libgdxgame.ability.misc.AbilityState.{AbilityState, Inac
 import com.easternsauce.libgdxgame.ability.parameters.{AnimationParameters, BodyParameters, SoundParameters, TimerParameters}
 import com.easternsauce.libgdxgame.animation.Animation
 import com.easternsauce.libgdxgame.creature.Creature
+import com.easternsauce.libgdxgame.system.GameSystem
 import com.easternsauce.libgdxgame.util.EsBatch
 import com.softwaremill.quicklens._
 
 abstract class Ability(
-  val creature: Creature,
+  val creatureId: String,
   val state: AbilityState = Inactive,
   val onCooldown: Boolean = false,
   val components: List[AbilityComponent] = List(),
@@ -38,6 +39,9 @@ abstract class Ability(
 
   val channelSound: Option[Sound] = None
   val channelSoundVolume: Option[Float] = None
+
+  def creature: Creature = GameSystem.creature(creatureId)
+  def modifyCreature(modification: Creature => Creature): Unit = GameSystem.modifyCreature(creatureId, modification)
 
   def updateHitbox(): Ability = this
 
@@ -74,6 +78,7 @@ abstract class Ability(
   def perform(): Ability = {
     val channelTimer = timerParameters.channelTimer
 
+    val creature = GameSystem.creature(creatureId)
     if (creature.staminaPoints > 0 && state == AbilityState.Inactive && !onCooldown && !creature.abilityActive) {
 
       // TODO: remove side effect
@@ -81,7 +86,14 @@ abstract class Ability(
 
       // TODO: remove side effect
       // + 0.01 to ensure regen doesn't start if we hold attack button
-      creature.activateEffect("staminaRegenerationStopped", if (isAttack) channelTime + cooldownTime + 0.01f else 1f)
+      GameSystem.modifyCreature(
+        creatureId,
+        { creature =>
+          creature
+            .activateEffect("staminaRegenerationStopped", if (isAttack) channelTime + cooldownTime + 0.01f else 1f)
+          creature // TODO: activateEffect should return creature
+        }
+      )
 
       this
         .onChannellingStart()
@@ -157,7 +169,7 @@ abstract class Ability(
   def asMapEntry: (String, Ability) = id -> this
 
   def copy(
-    creature: Creature = creature,
+    creatureId: String = creatureId,
     state: AbilityState = state,
     onCooldown: Boolean = onCooldown,
     components: List[AbilityComponent] = components,

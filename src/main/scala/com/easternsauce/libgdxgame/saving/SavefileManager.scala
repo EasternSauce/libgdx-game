@@ -3,13 +3,13 @@ package com.easternsauce.libgdxgame.saving
 import java.io.{File, PrintWriter}
 
 import com.easternsauce.libgdxgame.creature.Creature
+import com.easternsauce.libgdxgame.system.GameSystem
 import com.easternsauce.libgdxgame.system.GameSystem._
 import io.circe.generic.semiauto._
 import io.circe.parser._
 import io.circe.syntax.EncoderOps
 import io.circe.{Decoder, Encoder}
 
-import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
 
 class SavefileManager {
@@ -42,10 +42,7 @@ class SavefileManager {
       treasureLootedData += TreasureLootedSavedata(areaId, treasureId)
     })
 
-    val saveFile = SaveFile(
-      globalCreaturesMap.values.filter(c => c.isPlayer || c.isAlive).map(_.saveToData()).toList,
-      treasureLootedData.toList
-    )
+    val saveFile = SaveFile(GameSystem.saveableCreatures().map(_.saveToData()), treasureLootedData.toList)
 
     new File(saveFileLocation).mkdir()
 
@@ -68,7 +65,7 @@ class SavefileManager {
 
     val result = decoded.getOrElse(throw new RuntimeException("failed to decode save file"))
 
-    globalCreaturesMap = mutable.Map()
+    GameSystem.clearCreatures()
     result.creatures.foreach(creatureData => recreateCreatureFromSavedata(creatureData))
     result.treasuresLooted.foreach(
       treasureData => treasureLootedList += (treasureData.areaId -> treasureData.treasureId)

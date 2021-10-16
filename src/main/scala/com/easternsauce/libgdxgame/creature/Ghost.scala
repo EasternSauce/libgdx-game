@@ -29,7 +29,7 @@ class Ghost private (val id: String) extends Enemy {
   override lazy val additionalAbilities: Map[String, Ability] =
     Map({
       val explodeAbility = ExplodeAbility(
-        creature = this,
+        creatureId = id,
         soundParameters = SoundParameters(
           channelSound = Some(Assets.sound(Assets.darkLaughSound)),
           channelSoundVolume = Some(0.2f),

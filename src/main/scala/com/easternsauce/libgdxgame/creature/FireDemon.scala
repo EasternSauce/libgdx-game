@@ -33,10 +33,10 @@ class FireDemon private (val id: String) extends Boss {
 
   override lazy val additionalAbilities: Map[String, Ability] =
     Map(
-      MeteorRainAbility(this).asMapEntry,
-      FistSlamAbility(this).asMapEntry,
-      MeteorCrashAbility(this).asMapEntry,
-      DashAbility(this).asMapEntry
+      MeteorRainAbility(id).asMapEntry,
+      FistSlamAbility(id).asMapEntry,
+      MeteorCrashAbility(id).asMapEntry,
+      DashAbility(id).asMapEntry
     )
 
   override val abilityUsages: Map[String, AbilityUsage] =

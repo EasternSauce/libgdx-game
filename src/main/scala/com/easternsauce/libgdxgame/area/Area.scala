@@ -11,7 +11,7 @@ import com.easternsauce.libgdxgame.pathfinding.AStarNode
 import com.easternsauce.libgdxgame.projectile.Arrow
 import com.easternsauce.libgdxgame.spawns.EnemySpawnPoint
 import com.easternsauce.libgdxgame.system.GameSystem._
-import com.easternsauce.libgdxgame.system.{Constants, InventoryMapping}
+import com.easternsauce.libgdxgame.system.{Constants, GameSystem, InventoryMapping}
 import com.easternsauce.libgdxgame.util.EsBatch
 
 import scala.collection.mutable.ListBuffer
@@ -45,7 +45,7 @@ class Area(val mapLoader: TmxMapLoader, val areaFilesLocation: String, val id: S
   def renderTopLayer(): Unit = tiledMapRenderer.render(Array(2, 3))
 
   def creaturesMap: List[Creature] =
-    globalCreaturesMap.values.filter(creature => creature.areaId.nonEmpty && creature.areaId.get == id).toList
+    GameSystem.creaturesForArea(id)
 
   def update(): Unit = {
 
@@ -143,7 +143,7 @@ class Area(val mapLoader: TmxMapLoader, val areaFilesLocation: String, val id: S
     creaturesMap
       .filter(creature => creature.isEnemy)
       .foreach(creature => creature.destroyBody(areaMap(creature.areaId.get).world))
-    globalCreaturesMap.filterInPlace { case (_, creature) => !(creature.isEnemy && creature.areaId.get == id) }
+    GameSystem.resetCreaturesInArea(id)
     enemySpawns.foreach(spawnPoint => spawnEnemy(spawnPoint))
     arrowList.clear()
 
@@ -175,7 +175,7 @@ class Area(val mapLoader: TmxMapLoader, val areaFilesLocation: String, val id: S
         Item.generateFromTemplate(spawnPoint.weaponType.get)
     }
 
-    globalCreaturesMap += (creatureId -> creature)
+    GameSystem.addCreature(creature)
   }
 
   def width: Float = {

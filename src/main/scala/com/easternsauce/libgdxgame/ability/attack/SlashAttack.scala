@@ -5,11 +5,10 @@ import com.easternsauce.libgdxgame.ability.composed.components.AbilityComponent
 import com.easternsauce.libgdxgame.ability.misc.AbilityState.{AbilityState, Inactive}
 import com.easternsauce.libgdxgame.ability.parameters.{AnimationParameters, BodyParameters, SoundParameters, TimerParameters}
 import com.easternsauce.libgdxgame.animation.Animation
-import com.easternsauce.libgdxgame.creature.Creature
 import com.easternsauce.libgdxgame.system.Assets
 
 case class SlashAttack private (
-  override val creature: Creature,
+  override val creatureId: String,
   override val state: AbilityState = Inactive,
   override val onCooldown: Boolean = false,
   override val components: List[AbilityComponent] = List(),
@@ -28,7 +27,7 @@ case class SlashAttack private (
   ),
   override val dirVector: Vector2 = new Vector2(0f, 0f)
 ) extends MeleeAttack(
-      creature = creature,
+      creatureId = creatureId,
       state = state,
       onCooldown = onCooldown,
       components = components,
@@ -61,7 +60,7 @@ case class SlashAttack private (
   )
 
   override def copy(
-    creature: Creature,
+    creatureId: String,
     state: AbilityState,
     onCooldown: Boolean,
     components: List[AbilityComponent],
@@ -73,7 +72,7 @@ case class SlashAttack private (
     dirVector: Vector2
   ): Self =
     SlashAttack(
-      creature = creature,
+      creatureId = creatureId,
       state = state,
       onCooldown = onCooldown,
       components = components,

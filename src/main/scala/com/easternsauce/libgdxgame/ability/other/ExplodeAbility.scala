@@ -14,7 +14,7 @@ import com.easternsauce.libgdxgame.util.EsBatch
 import com.softwaremill.quicklens._
 
 case class ExplodeAbility private (
-  override val creature: Creature,
+  override val creatureId: String,
   override val state: AbilityState = Inactive,
   override val onCooldown: Boolean = false,
   override val components: List[AbilityComponent] = List(),
@@ -26,7 +26,7 @@ case class ExplodeAbility private (
   override val bodyParameters: BodyParameters = BodyParameters(),
   override val dirVector: Vector2 = new Vector2(0f, 0f)
 ) extends Ability(
-      creature = creature,
+      creatureId = creatureId,
       state = state,
       onCooldown = onCooldown,
       components = components,
@@ -56,8 +56,10 @@ case class ExplodeAbility private (
     timerParameters.abilityActiveAnimationTimer.restart()
 
     // TODO: side effects
-    creature.takeStaminaDamage(25f)
-    creature.takeLifeDamage(700f, immunityFrames = false, Some(creature), 0, 0, 0)
+    modifyCreature(creature => { creature.takeStaminaDamage(25f); creature })
+    modifyCreature(creature => {
+      creature.takeLifeDamage(700f, immunityFrames = false, Some(creature), 0, 0, 0); creature
+    })
     Assets.sound(Assets.explosionSound).play(0.07f)
 
     initBody(creature.pos.x, creature.pos.y)
@@ -153,7 +155,7 @@ case class ExplodeAbility private (
   }
 
   override def copy(
-    creature: Creature,
+    creatureId: String,
     state: AbilityState,
     onCooldown: Boolean,
     components: List[AbilityComponent],
@@ -165,7 +167,7 @@ case class ExplodeAbility private (
     dirVector: Vector2
   ): Self =
     ExplodeAbility(
-      creature = creature,
+      creatureId = creatureId,
       state = state,
       onCooldown = onCooldown,
       components = components,

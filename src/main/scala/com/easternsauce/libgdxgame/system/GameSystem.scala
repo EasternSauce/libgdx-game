@@ -32,7 +32,7 @@ object GameSystem extends Game {
   var mainMenuScreen: MainMenuScreen = _
   var playScreen: PlayScreen = _
 
-  var globalCreaturesMap: mutable.Map[String, Creature] = mutable.Map()
+  private var globalCreaturesMap: mutable.Map[String, Creature] = mutable.Map()
 
   val treasureLootedList: ListBuffer[(String, String)] = ListBuffer()
 
@@ -77,6 +77,32 @@ object GameSystem extends Game {
   val lootPickupMenu = new LootPickupMenu()
 
   val bossfightManager = new BossfightManager()
+
+  def creature(id: String): Creature = {
+    globalCreaturesMap(id) //.copy() TODO
+  }
+
+  def modifyCreature(id: String, modification: Creature => Creature): Unit = {
+    // TODO: queue a creature modification
+    globalCreaturesMap(id) = modification(globalCreaturesMap(id))
+  }
+
+  def creaturesForArea(id: String): List[Creature] = {
+    GameSystem.globalCreaturesMap.values
+      .filter(creature => creature.areaId.nonEmpty && creature.areaId.get == id)
+      .toList
+  }
+
+  def addCreature(creature: Creature): Unit = {
+    GameSystem.globalCreaturesMap += (creature.id -> creature)
+  }
+
+  def resetCreaturesInArea(id: String): Unit =
+    globalCreaturesMap.filterInPlace { case (_, creature) => !(creature.isEnemy && creature.areaId.get == id) }
+
+  def clearCreatures(): Unit = globalCreaturesMap = mutable.Map()
+
+  def saveableCreatures(): List[Creature] = globalCreaturesMap.values.filter(c => c.isPlayer || c.isAlive).toList
 
   implicit def bitmapFontToEnrichedBitmapFont(font: BitmapFont): EnrichedBitmapFont = new EnrichedBitmapFont(font)
 

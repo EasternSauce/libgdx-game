@@ -7,8 +7,8 @@ import com.easternsauce.libgdxgame.ability.attack.{ShootArrowAttack, SlashAttack
 import com.easternsauce.libgdxgame.ability.misc.Ability
 import com.easternsauce.libgdxgame.creature.traits._
 import com.easternsauce.libgdxgame.spawns.PlayerSpawnPoint
-import com.easternsauce.libgdxgame.system.Assets
-import com.easternsauce.libgdxgame.system.GameSystem.{areaMap, globalCreaturesMap}
+import com.easternsauce.libgdxgame.system.GameSystem.areaMap
+import com.easternsauce.libgdxgame.system.{Assets, GameSystem}
 import com.easternsauce.libgdxgame.util.{EsBatch, EsDirection, EsTimer}
 
 import scala.collection.mutable
@@ -69,7 +69,7 @@ abstract class Creature
   val updateDirectionTimer: EsTimer = EsTimer(true)
 
   lazy val standardAbilities: Map[String, Ability] =
-    Map(SlashAttack(this).asMapEntry, ShootArrowAttack(this).asMapEntry, ThrustAttack(this).asMapEntry)
+    Map(SlashAttack(id).asMapEntry, ShootArrowAttack(id).asMapEntry, ThrustAttack(id).asMapEntry)
 
   lazy val additionalAbilities: Map[String, Ability] = Map()
 
@@ -218,8 +218,7 @@ abstract class Creature
       this.areaId = Some(areaId)
       initBody(areaMap(this.areaId.get).world, x, y, creatureWidth / 2f)
 
-      globalCreaturesMap += (id -> this)
-
+      GameSystem.addCreature(this)
     } else {
       val oldArea = areaMap(this.areaId.get)
 
@@ -228,8 +227,7 @@ abstract class Creature
       this.areaId = Some(areaId)
       initBody(areaMap(this.areaId.get).world, x, y, creatureWidth / 2f)
 
-      globalCreaturesMap += (id -> this)
-
+      GameSystem.addCreature(this)
     }
 
   }

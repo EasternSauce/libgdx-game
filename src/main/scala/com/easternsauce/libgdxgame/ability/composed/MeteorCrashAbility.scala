@@ -4,11 +4,10 @@ import com.badlogic.gdx.math.Vector2
 import com.easternsauce.libgdxgame.ability.composed.components.{AbilityComponent, Meteor}
 import com.easternsauce.libgdxgame.ability.misc.AbilityState.{AbilityState, Inactive}
 import com.easternsauce.libgdxgame.ability.parameters._
-import com.easternsauce.libgdxgame.creature.Creature
 import com.softwaremill.quicklens.ModifyPimp
 
 case class MeteorCrashAbility private (
-  override val creature: Creature,
+  override val creatureId: String,
   override val state: AbilityState = Inactive,
   override val onCooldown: Boolean = false,
   override val components: List[AbilityComponent] = List(),
@@ -19,7 +18,7 @@ case class MeteorCrashAbility private (
   override val animationParameters: AnimationParameters = AnimationParameters(),
   override val dirVector: Vector2 = new Vector2(0f, 0f)
 ) extends ComposedAbility(
-      creature = creature,
+      creatureId = creatureId,
       state = state,
       onCooldown = onCooldown,
       components = components,
@@ -90,7 +89,7 @@ case class MeteorCrashAbility private (
     val lastComponentFinishTime = lastComponent.totalTime
 
     // TODO: sideeffect
-    creature.activateEffect("immobilized", lastComponentFinishTime)
+    modifyCreature(creature => { creature.activateEffect("immobilized", lastComponentFinishTime); creature })
 
     this.modify(_.components).setTo(components.toList)
   }
@@ -98,7 +97,7 @@ case class MeteorCrashAbility private (
   override def onActiveStart(): Self = {
     val ability = super.onActiveStart().asInstanceOf[Self]
 
-    creature.takeStaminaDamage(25f)
+    modifyCreature(creature => { creature.takeStaminaDamage(25f); creature })
 
     ability
   }
@@ -123,7 +122,7 @@ case class MeteorCrashAbility private (
   }
 
   override def copy(
-    creature: Creature,
+    creatureId: String,
     state: AbilityState,
     onCooldown: Boolean,
     components: List[AbilityComponent],
@@ -135,7 +134,7 @@ case class MeteorCrashAbility private (
     dirVector: Vector2
   ): Self =
     MeteorCrashAbility(
-      creature = creature,
+      creatureId = creatureId,
       state = state,
       onCooldown = onCooldown,
       components = components,

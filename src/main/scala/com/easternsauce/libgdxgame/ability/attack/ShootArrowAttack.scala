@@ -14,7 +14,7 @@ import com.easternsauce.libgdxgame.system.GameSystem.areaMap
 import scala.collection.mutable.ListBuffer
 
 case class ShootArrowAttack private (
-  override val creature: Creature,
+  override val creatureId: String,
   override val state: AbilityState = Inactive,
   override val onCooldown: Boolean = false,
   override val components: List[AbilityComponent] = List(),
@@ -25,7 +25,7 @@ case class ShootArrowAttack private (
   override val animationParameters: AnimationParameters = AnimationParameters(),
   override val dirVector: Vector2 = new Vector2(0f, 0f)
 ) extends Ability(
-      creature = creature,
+      creatureId = creatureId,
       state = state,
       onCooldown = onCooldown,
       components = components,
@@ -50,7 +50,7 @@ case class ShootArrowAttack private (
     super.onChannellingStart()
 
     // TODO: remove side effects
-    creature.isAttacking = true
+    modifyCreature(creature => { creature.isAttacking = true; creature })
 
     Assets.sound(Assets.bowPullSound).play(0.1f)
 
@@ -64,7 +64,7 @@ case class ShootArrowAttack private (
 
     Assets.sound(Assets.bowReleaseSound).play(0.1f)
 
-    creature.attackVector = creature.facingVector.cpy()
+    modifyCreature(creature => { creature.attackVector = creature.facingVector.cpy(); creature })
 
     val area = areaMap(creature.areaId.get)
     val arrowList: ListBuffer[Arrow] = area.arrowList
@@ -80,13 +80,13 @@ case class ShootArrowAttack private (
       arrowList += arrow
     }
 
-    creature.takeStaminaDamage(20f)
+    modifyCreature(creature => { creature.takeStaminaDamage(20f); creature })
 
     result
   }
 
   override def copy(
-    creature: Creature,
+    creatureId: String,
     state: AbilityState,
     onCooldown: Boolean,
     components: List[AbilityComponent],
@@ -98,7 +98,7 @@ case class ShootArrowAttack private (
     dirVector: Vector2
   ): Self =
     ShootArrowAttack(
-      creature = creature,
+      creatureId = creatureId,
       state = state,
       onCooldown = onCooldown,
       components = components,

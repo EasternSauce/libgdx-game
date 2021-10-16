@@ -3,7 +3,8 @@ package com.easternsauce.libgdxgame.creature.traits
 import com.easternsauce.libgdxgame.creature.Creature
 import com.easternsauce.libgdxgame.items.Item
 import com.easternsauce.libgdxgame.saving.{CreatureSavedata, ItemSavedata, PlayerSpawnPointSavedata, PositionSavedata}
-import com.easternsauce.libgdxgame.system.GameSystem.{areaMap, globalCreaturesMap, setPlayer}
+import com.easternsauce.libgdxgame.system.GameSystem
+import com.easternsauce.libgdxgame.system.GameSystem.{areaMap, setPlayer}
 
 trait SavefileParser {
   this: Creature =>
@@ -47,7 +48,7 @@ trait SavefileParser {
     creatureData.inventoryItems.foreach(item => inventoryItems += (item.index -> Item.loadFromSavedata(item)))
     creatureData.equipmentItems.foreach(item => equipmentItems += (item.index -> Item.loadFromSavedata(item)))
 
-    globalCreaturesMap += (id -> this)
+    GameSystem.addCreature(this)
 
     assignToArea(creatureData.area, creatureData.position.x, creatureData.position.y)
 
