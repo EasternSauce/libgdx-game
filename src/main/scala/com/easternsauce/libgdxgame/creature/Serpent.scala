@@ -40,6 +40,8 @@ class Serpent private (val id: String) extends Enemy {
     dirMap = Map(EsDirection.Up -> 0, EsDirection.Down -> 2, EsDirection.Left -> 1, EsDirection.Right -> 3)
   )
 
+  override val additionalAbilities: List[String] = Serpent.additionalAbilities
+
 }
 
 object Serpent extends CreatureInfo {

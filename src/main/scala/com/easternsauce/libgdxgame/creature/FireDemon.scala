@@ -50,7 +50,9 @@ class FireDemon private (val id: String) extends Boss {
 
   // TODO: how to get rid of casting?
   // TODO: refactor this before uncommenting!
-  // abilityMap("thrust").asInstanceOf[ThrustAttack].attackRange = 1.5f
+  // abilities("thrust").asInstanceOf[ThrustAttack].attackRange = 1.5f
+
+  override val additionalAbilities: List[String] = FireDemon.additionalAbilities
 }
 
 object FireDemon extends CreatureInfo {
@@ -60,5 +62,5 @@ object FireDemon extends CreatureInfo {
     obj
   }
 
-  override val additionalAbilities: List[String] = List("meteorRain", "fistSlam", "meteorCrash", "dash")
+  override val additionalAbilities: List[String] = List("meteor_rain", "fist_slam", "meteor_crash", "dash")
 }

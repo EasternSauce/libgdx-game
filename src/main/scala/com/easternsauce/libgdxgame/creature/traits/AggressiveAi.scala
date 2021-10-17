@@ -183,9 +183,9 @@ trait AggressiveAi {
 
             if (pickedAbility.nonEmpty) {
               // TODO: temp workaround
-              val currentAttack = abilityMap(pickedAbility.get.id)
+              val currentAttack = abilities(pickedAbility.get.id)
 
-              abilityMap.update(pickedAbility.get.id, currentAttack.perform())
+              abilities.update(pickedAbility.get.id, currentAttack.perform())
             }
 
           }
@@ -212,8 +212,8 @@ trait AggressiveAi {
 
         if (targetVisible && distanceTo(aggroedTarget.get) < attackDistance) {
           // TODO: temp workaround
-          val thisCurrentAttack = abilityMap(currentAttack.id)
-          abilityMap.update(thisCurrentAttack.id, thisCurrentAttack.perform())
+          val thisCurrentAttack = abilities(currentAttack.id)
+          abilities.update(thisCurrentAttack.id, thisCurrentAttack.perform())
         }
 
         if (!aggroedTarget.get.isAlive || (path.size > 15 && !isBoss)) {
@@ -274,7 +274,7 @@ trait AggressiveAi {
       case (abilityId, usage) =>
         life / maxLife <= usage.lifeThreshold && pos.dst(aggroedTarget.get.pos) > usage.minimumDistance && pos.dst(
           aggroedTarget.get.pos
-        ) < usage.maximumDistance && !abilityMap(abilityId).onCooldown
+        ) < usage.maximumDistance && !abilities(abilityId).onCooldown
     }
 
     var completeWeight = 0.0f
@@ -286,7 +286,7 @@ trait AggressiveAi {
     for (abilityUsage <- filteredAbilityUsages) {
       val (key, value) = abilityUsage
       countWeight += value.weight
-      if (countWeight > r) return Some(abilityMap(key))
+      if (countWeight > r) return Some(abilities(key))
     }
     None
   }

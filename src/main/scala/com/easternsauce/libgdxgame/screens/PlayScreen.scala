@@ -165,9 +165,9 @@ class PlayScreen() extends Screen {
       } else {
 
         // TODO: temp workaround
-        val currentAttack = player.abilityMap(player.currentAttack.id)
+        val currentAttack = player.abilities(player.currentAttack.id)
 
-        player.abilityMap.update(currentAttack.id, currentAttack.perform())
+        player.abilities.update(currentAttack.id, currentAttack.perform())
 
       }
     }
@@ -199,11 +199,11 @@ class PlayScreen() extends Screen {
     }
 
     if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
-      val dash = player.abilityMap("dash")
+      val dash = player.abilities("dash")
 
       // TODO: temp workaround
 
-      player.abilityMap.update(dash.id, dash.perform())
+      player.abilities.update(dash.id, dash.perform())
     }
 
     handlePlayerMovement()

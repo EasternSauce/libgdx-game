@@ -3,8 +3,7 @@ package com.easternsauce.libgdxgame.creature
 import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.graphics.g2d.Sprite
 import com.badlogic.gdx.math.Vector2
-import com.easternsauce.libgdxgame.ability.attack.{ShootArrowAttack, SlashAttack, ThrustAttack}
-import com.easternsauce.libgdxgame.ability.misc.templates.Ability
+import com.easternsauce.libgdxgame.ability.misc.templates.{Ability, AbilityFactory}
 import com.easternsauce.libgdxgame.creature.traits._
 import com.easternsauce.libgdxgame.spawns.PlayerSpawnPoint
 import com.easternsauce.libgdxgame.system.GameSystem.areaMap
@@ -68,19 +67,10 @@ abstract class Creature
 
   val updateDirectionTimer: EsTimer = EsTimer(true)
 
-  lazy val standardAbilities: Map[String, Ability] =
-    Map(SlashAttack(id).asMapEntry, ShootArrowAttack(id).asMapEntry, ThrustAttack(id).asMapEntry)
+  val standardAbilities: List[String] = List("shoot_arrow", "slash", "thrust")
+  val additionalAbilities: List[String]
 
-  lazy val additionalAbilities: Map[String, Ability] = Map()
-
-  // TODO: refactor this
-  lazy val abilityMap: mutable.Map[String, Ability] = {
-    val map = mutable.Map[String, Ability]()
-    map.addAll(standardAbilities)
-    map.addAll(additionalAbilities)
-
-    map
-  }
+  var abilities: mutable.Map[String, Ability] = mutable.Map()
 
   def calculateFacingVector(): Unit
   def calculateWalkingVector(): Unit
@@ -105,8 +95,8 @@ abstract class Creature
 
     updateEffects()
 
-    for ((id, ability) <- abilityMap) {
-      abilityMap.update(id, ability.update())
+    for ((id, ability) <- abilities) {
+      abilities.update(id, ability.update())
     }
 
     //currentAttack.update()
@@ -140,7 +130,7 @@ abstract class Creature
     isMoving = false
     if (walkSound.nonEmpty) walkSound.get.stop()
 
-    for (ability <- abilityMap.values) {
+    for (ability <- abilities.values) {
       ability.forceStop()
     }
     currentAttack.forceStop()
@@ -238,9 +228,9 @@ abstract class Creature
     setBounds(0, 0, creatureWidth, creatureHeight)
     setOrigin(creatureWidth / 2f, creatureHeight / 2f)
 
-    def abilityById: Map[String, Ability] = {
-      Map()
-    }
+    abilities = mutable.Map() ++
+      (for (abilityId <- standardAbilities ++ additionalAbilities)
+        yield abilityId -> AbilityFactory.ability(abilityId, id)).toMap
 
     defineEffects()
 

@@ -7,6 +7,7 @@ import com.easternsauce.libgdxgame.ability.misc.templates.Ability
 import com.easternsauce.libgdxgame.ability.misc.templates.AbilityState.{AbilityState, Inactive}
 import com.easternsauce.libgdxgame.animation.Animation
 import com.easternsauce.libgdxgame.system.Assets
+import com.easternsauce.libgdxgame.util.AbilityInfo
 import com.softwaremill.quicklens.ModifyPimp
 
 case class DashAbility private (
@@ -35,7 +36,7 @@ case class DashAbility private (
     ) {
   type Self = DashAbility
 
-  override val id = "dash"
+  override val id: String = DashAbility.id
   override val cooldownTime: Float = 1.5f
   override lazy val activeTime: Float = 0.2f
   override lazy val channelTime: Float = 0f
@@ -90,4 +91,8 @@ case class DashAbility private (
       animationParameters = animationParameters,
       dirVector = dirVector
     )
+}
+
+object DashAbility extends AbilityInfo {
+  override val id = "dash"
 }

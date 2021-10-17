@@ -10,7 +10,7 @@ import com.easternsauce.libgdxgame.ability.misc.templates.{Ability, AbilityState
 import com.easternsauce.libgdxgame.creature.Creature
 import com.easternsauce.libgdxgame.system.Assets
 import com.easternsauce.libgdxgame.system.GameSystem.areaMap
-import com.easternsauce.libgdxgame.util.EsBatch
+import com.easternsauce.libgdxgame.util.{AbilityInfo, EsBatch}
 import com.softwaremill.quicklens._
 
 case class ExplodeAbility private (
@@ -44,7 +44,7 @@ case class ExplodeAbility private (
     ) {
   type Self = ExplodeAbility
 
-  override val id: String = "explode"
+  override val id: String = ExplodeAbility.id
   override protected val cooldownTime: Float = 0.8f
 
   protected val explosionRange: Float = 10f
@@ -183,4 +183,8 @@ case class ExplodeAbility private (
       animationParameters = animationParameters,
       dirVector = dirVector
     )
+}
+
+object ExplodeAbility extends AbilityInfo {
+  override val id = "explode"
 }

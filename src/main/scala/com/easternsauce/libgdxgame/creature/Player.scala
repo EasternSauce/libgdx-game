@@ -3,8 +3,6 @@ package com.easternsauce.libgdxgame.creature
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.math.Vector2
-import com.easternsauce.libgdxgame.ability.misc.templates.Ability
-import com.easternsauce.libgdxgame.ability.other.DashAbility
 import com.easternsauce.libgdxgame.creature.traits.AnimationParams
 import com.easternsauce.libgdxgame.system.GameSystem.areaMap
 import com.easternsauce.libgdxgame.system.{Assets, GameSystem}
@@ -37,12 +35,6 @@ class Player private (val id: String) extends Creature {
     neutralStanceFrame = 1,
     dirMap = Map(EsDirection.Up -> 3, EsDirection.Down -> 0, EsDirection.Left -> 1, EsDirection.Right -> 2)
   )
-
-  override lazy val additionalAbilities: Map[String, Ability] =
-    Map({
-      DashAbility(
-        creatureId = id).asMapEntry
-    })
 
   override def calculateFacingVector(): Unit = {
     val mouseX = Gdx.input.getX
@@ -92,6 +84,8 @@ class Player private (val id: String) extends Creature {
     walkingVector = vector
 
   }
+
+  override val additionalAbilities: List[String] = Player.additionalAbilities
 
 }
 

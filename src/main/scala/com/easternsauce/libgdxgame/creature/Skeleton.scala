@@ -36,6 +36,8 @@ class Skeleton private (val id: String) extends Enemy {
     )
   }
 
+  override val additionalAbilities: List[String] = Skeleton.additionalAbilities
+
 }
 
 object Skeleton extends CreatureInfo {
@@ -45,5 +47,5 @@ object Skeleton extends CreatureInfo {
     obj
   }
 
-  override val additionalAbilities: List[String] = List("")
+  override val additionalAbilities: List[String] = List()
 }

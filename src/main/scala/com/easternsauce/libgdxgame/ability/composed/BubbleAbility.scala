@@ -87,4 +87,5 @@ case class BubbleAbility private (
 
 object BubbleAbility extends AbilityInfo {
   override val id = "bubble"
+
 }

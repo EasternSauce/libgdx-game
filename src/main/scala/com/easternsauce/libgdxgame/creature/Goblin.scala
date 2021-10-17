@@ -33,6 +33,8 @@ class Goblin private (val id: String) extends Enemy {
     dirMap = Map(EsDirection.Up -> 3, EsDirection.Down -> 0, EsDirection.Left -> 1, EsDirection.Right -> 2)
   )
 
+  override val additionalAbilities: List[String] = Goblin.additionalAbilities
+
 }
 
 object Goblin extends CreatureInfo {
@@ -42,5 +44,5 @@ object Goblin extends CreatureInfo {
     obj
   }
 
-  override val additionalAbilities: List[String] = List("")
+  override val additionalAbilities: List[String] = List()
 }

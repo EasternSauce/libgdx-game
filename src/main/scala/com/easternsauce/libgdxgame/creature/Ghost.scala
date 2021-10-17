@@ -36,6 +36,8 @@ class Ghost private (val id: String) extends Enemy {
     dirMap = Map(EsDirection.Up -> 3, EsDirection.Down -> 0, EsDirection.Left -> 1, EsDirection.Right -> 2)
   )
 
+  override val additionalAbilities: List[String] = Ghost.additionalAbilities
+
 }
 
 object Ghost extends CreatureInfo {

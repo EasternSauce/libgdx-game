@@ -14,7 +14,7 @@ trait Abilities {
   def weaponDamage: Float = if (equipmentItems.contains(0)) equipmentItems(0).damage.get.toFloat else unarmedDamage
 
   def renderAbilities(batch: EsBatch): Unit = {
-    for (ability <- abilityMap.values) {
+    for (ability <- abilities.values) {
       ability.render(batch)
     }
     currentAttack.render(batch)
@@ -23,7 +23,7 @@ trait Abilities {
   def abilityActive: Boolean = {
     var abilityActive = false
 
-    for (ability <- abilityMap.values) {
+    for (ability <- abilities.values) {
       if (!abilityActive && ability.active) {
         abilityActive = true
 
@@ -38,11 +38,11 @@ trait Abilities {
   def currentAttack: Ability = {
     if (isWeaponEquipped) {
       currentWeapon.template.attackType match {
-        case Some(id) => abilityMap(id)
+        case Some(id) => abilities(id)
         case None     => throw new RuntimeException("Unrecognized attack type")
       }
     } else {
-      abilityMap("slash")
+      abilities("slash")
     }
   }
 
