@@ -10,8 +10,8 @@ trait Stamina {
   val maxStaminaPoints = 100f
   var staminaPoints: Float = maxStaminaPoints
 
-  protected val staminaRegenerationTimer: EsTimer = EsTimer(true)
-  protected val staminaOveruseTimer: EsTimer = EsTimer()
+  var staminaRegenerationTimer: EsTimer = EsTimer(true)
+  var staminaOveruseTimer: EsTimer = EsTimer()
 
   protected val staminaRegeneration = 0.8f
 
@@ -20,7 +20,7 @@ trait Stamina {
 
   protected val staminaRegenerationTickTime = 0.005f
 
-  protected var staminaDrain = 0.0f
+  var staminaDrain = 0.0f
 
   def takeStaminaDamage(staminaDamage: Float): Unit = {
     if (staminaPoints - staminaDamage > 0) staminaPoints -= staminaDamage

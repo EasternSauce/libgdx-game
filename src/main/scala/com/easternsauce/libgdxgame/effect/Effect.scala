@@ -6,9 +6,9 @@ class Effect {
 
   protected val effectTimer: EsTimer = EsTimer()
 
-  protected var effectEndTime: Float = 0f
+  var effectEndTime: Float = 0f
 
-  protected var effectActive: Boolean = false
+  var effectActive: Boolean = false
 
   def activate(effectTime: Float): Unit = {
     if (effectActive) {

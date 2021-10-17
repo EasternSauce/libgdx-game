@@ -1,9 +1,19 @@
 package com.easternsauce.libgdxgame.creature
 
 import com.badlogic.gdx.audio.Sound
+import com.badlogic.gdx.graphics.g2d.{Animation, TextureRegion}
+import com.badlogic.gdx.math.Vector2
+import com.badlogic.gdx.physics.box2d.{Body, Fixture}
+import com.easternsauce.libgdxgame.ability.misc.templates.Ability
 import com.easternsauce.libgdxgame.creature.traits.AnimationParams
+import com.easternsauce.libgdxgame.effect.Effect
+import com.easternsauce.libgdxgame.items.Item
+import com.easternsauce.libgdxgame.spawns.PlayerSpawnPoint
 import com.easternsauce.libgdxgame.system.Assets
-import com.easternsauce.libgdxgame.util.{CreatureInfo, EsDirection}
+import com.easternsauce.libgdxgame.util.{CreatureInfo, EsDirection, EsTimer}
+
+import scala.collection.mutable
+import scala.collection.mutable.ListBuffer
 
 class Goblin private (val id: String) extends Enemy {
   override val creatureWidth = 2.85f
@@ -23,7 +33,7 @@ class Goblin private (val id: String) extends Enemy {
     "steelHelmet" -> 0.05f
   )
 
-  override val animationParams: AnimationParams = AnimationParams(
+  override var animationParams: AnimationParams = AnimationParams(
     regionName = "goblin",
     textureWidth = 32,
     textureHeight = 32,
@@ -35,6 +45,88 @@ class Goblin private (val id: String) extends Enemy {
 
   override val additionalAbilities: List[String] = Goblin.additionalAbilities
 
+
+  override def copy(
+                     areaId: Option[String],
+                     isInitialized: Boolean,
+                     currentDirection: EsDirection.Value,
+                     isMoving: Boolean,
+                     timeSinceMovedTimer: EsTimer,
+                     attackVector: Vector2,
+                     facingVector: Vector2,
+                     walkingVector: Vector2,
+                     passedGateRecently: Boolean,
+                     toSetBodyNonInteractive: Boolean,
+                     spawnPointId: Option[String],
+                     sprinting: Boolean,
+                     playerSpawnPoint: Option[PlayerSpawnPoint],
+                     recentDirections: ListBuffer[EsDirection.Value],
+                     updateDirectionTimer: EsTimer,
+                     abilities: mutable.Map[String, Ability],
+                     b2Body: Body,
+                     b2fixture: Fixture,
+                     mass: Float,
+                     bodyCreated: Boolean,
+                     standStillImages: Array[TextureRegion],
+                     walkAnimation: Array[Animation[TextureRegion]],
+                     animationTimer: EsTimer,
+                     dirMap: Map[EsDirection.Value, Int],
+                     animationParams: AnimationParams,
+                     equipmentItems: mutable.Map[Int, Item],
+                     inventoryItems: mutable.Map[Int, Item],
+                     effectMap: mutable.Map[String, Effect],
+                     life: Float,
+                     lifeRegenerationTimer: EsTimer,
+                     healingTimer: EsTimer,
+                     healingTickTimer: EsTimer,
+                     healing: Boolean,
+                     staminaPoints: Float,
+                     staminaRegenerationTimer: EsTimer,
+                     staminaOveruseTimer: EsTimer,
+                     staminaOveruse: Boolean,
+                     isAttacking: Boolean
+                   ): Creature = {
+    val creature = FireDemon(id)
+    creature.areaId = areaId
+    creature.isInitialized = isInitialized
+    creature.currentDirection = currentDirection
+    creature.isMoving = isMoving
+    creature.timeSinceMovedTimer = timeSinceMovedTimer
+    creature.attackVector = attackVector
+    creature.facingVector = facingVector
+    creature.walkingVector = walkingVector
+    creature.passedGateRecently = passedGateRecently
+    creature.toSetBodyNonInteractive = toSetBodyNonInteractive
+    creature.spawnPointId = spawnPointId
+    creature.sprinting = sprinting
+    creature.playerSpawnPoint = playerSpawnPoint
+    creature.recentDirections = recentDirections
+    creature.updateDirectionTimer = updateDirectionTimer
+    creature.abilities = abilities
+    creature.b2Body = b2Body
+    creature.b2fixture = b2fixture
+    creature.mass = mass
+    creature.bodyCreated = bodyCreated
+    creature.standStillImages = standStillImages
+    creature.walkAnimation = walkAnimation
+    creature.animationTimer = animationTimer
+    creature.dirMap = dirMap
+    creature.animationParams = animationParams
+    creature.equipmentItems = equipmentItems
+    creature.inventoryItems = inventoryItems
+    creature.effectMap = effectMap
+    creature.life = life
+    creature.lifeRegenerationTimer = lifeRegenerationTimer
+    creature.healingTimer = healingTimer
+    creature.healingTickTimer = healingTickTimer
+    creature.healing = healing
+    creature.staminaPoints = staminaPoints
+    creature.staminaRegenerationTimer = staminaRegenerationTimer
+    creature.staminaOveruseTimer = staminaOveruseTimer
+    creature.staminaOveruse = staminaOveruse
+    creature.isAttacking = isAttacking
+    creature
+  }
 }
 
 object Goblin extends CreatureInfo {

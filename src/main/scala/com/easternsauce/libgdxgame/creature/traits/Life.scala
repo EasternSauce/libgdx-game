@@ -12,16 +12,16 @@ trait Life {
   val maxLife = 100f
   var life: Float = _
 
-  protected val lifeRegenerationTimer: EsTimer = EsTimer(true)
-  protected val healingTimer: EsTimer = EsTimer()
-  protected val healingTickTimer: EsTimer = EsTimer()
+  var lifeRegenerationTimer: EsTimer = EsTimer(true)
+  var healingTimer: EsTimer = EsTimer()
+  var healingTickTimer: EsTimer = EsTimer()
 
   protected val lifeRegeneration = 0.3f
 
-  protected var healing = false
+  var healing = false
   protected val healingTickTime = 0.005f
   protected val healingItemHealTime = 3f
-  protected var healingPower = 0f
+  var healingPower = 0f
 
   def atFullLife: Boolean = life >= maxLife
 

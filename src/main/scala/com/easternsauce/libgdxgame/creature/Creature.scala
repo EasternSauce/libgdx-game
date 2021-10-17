@@ -1,10 +1,13 @@
 package com.easternsauce.libgdxgame.creature
 
 import com.badlogic.gdx.audio.Sound
-import com.badlogic.gdx.graphics.g2d.Sprite
+import com.badlogic.gdx.graphics.g2d.{Animation, Sprite, TextureRegion}
 import com.badlogic.gdx.math.Vector2
+import com.badlogic.gdx.physics.box2d.{Body, Fixture}
 import com.easternsauce.libgdxgame.ability.misc.templates.{Ability, AbilityFactory}
 import com.easternsauce.libgdxgame.creature.traits._
+import com.easternsauce.libgdxgame.effect.Effect
+import com.easternsauce.libgdxgame.items.Item
 import com.easternsauce.libgdxgame.spawns.PlayerSpawnPoint
 import com.easternsauce.libgdxgame.system.GameSystem.areaMap
 import com.easternsauce.libgdxgame.system.{Assets, GameSystem}
@@ -40,7 +43,7 @@ abstract class Creature
   var currentDirection: EsDirection.Value = EsDirection.Down
 
   var isMoving = false
-  val timeSinceMovedTimer: EsTimer = EsTimer()
+  var timeSinceMovedTimer: EsTimer = EsTimer()
 
   val directionalSpeed = 18f
 
@@ -63,9 +66,9 @@ abstract class Creature
 
   var playerSpawnPoint: Option[PlayerSpawnPoint] = None
 
-  val recentDirections: ListBuffer[EsDirection.Value] = ListBuffer()
+  var recentDirections: ListBuffer[EsDirection.Value] = ListBuffer()
 
-  val updateDirectionTimer: EsTimer = EsTimer(true)
+  var updateDirectionTimer: EsTimer = EsTimer(true)
 
   val standardAbilities: List[String] = List("shoot_arrow", "slash", "thrust")
   val additionalAbilities: List[String]
@@ -254,4 +257,45 @@ abstract class Creature
     setColor(1, 1, 1, 1)
 
   }
+
+  def copy(
+    areaId: Option[String] = areaId,
+    isInitialized: Boolean = isInitialized,
+    currentDirection: EsDirection.Value = currentDirection,
+    isMoving: Boolean = isMoving,
+    timeSinceMovedTimer: EsTimer = timeSinceMovedTimer,
+    attackVector: Vector2 = attackVector,
+    facingVector: Vector2 = facingVector,
+    walkingVector: Vector2 = walkingVector,
+    passedGateRecently: Boolean = passedGateRecently,
+    toSetBodyNonInteractive: Boolean = toSetBodyNonInteractive,
+    spawnPointId: Option[String] = spawnPointId,
+    sprinting: Boolean = sprinting,
+    playerSpawnPoint: Option[PlayerSpawnPoint] = playerSpawnPoint,
+    recentDirections: ListBuffer[EsDirection.Value] = recentDirections,
+    updateDirectionTimer: EsTimer = updateDirectionTimer,
+    abilities: mutable.Map[String, Ability] = abilities,
+    b2Body: Body = b2Body,
+    b2fixture: Fixture = b2fixture,
+    mass: Float = mass,
+    bodyCreated: Boolean = bodyCreated,
+    standStillImages: Array[TextureRegion] = standStillImages,
+    walkAnimation: Array[Animation[TextureRegion]] = walkAnimation,
+    animationTimer: EsTimer = animationTimer,
+    dirMap: Map[EsDirection.Value, Int] = dirMap,
+    animationParams: AnimationParams = animationParams,
+    equipmentItems: mutable.Map[Int, Item] = equipmentItems,
+    inventoryItems: mutable.Map[Int, Item] = inventoryItems,
+    effectMap: mutable.Map[String, Effect] = effectMap,
+    life: Float = life,
+    lifeRegenerationTimer: EsTimer = lifeRegenerationTimer,
+    healingTimer: EsTimer = healingTimer,
+    healingTickTimer: EsTimer = healingTickTimer,
+    healing: Boolean = healing,
+    staminaPoints: Float = staminaPoints,
+    staminaRegenerationTimer: EsTimer = staminaRegenerationTimer,
+    staminaOveruseTimer: EsTimer = staminaOveruseTimer,
+    staminaOveruse: Boolean = staminaOveruse,
+    isAttacking: Boolean = isAttacking
+  ): Creature
 }

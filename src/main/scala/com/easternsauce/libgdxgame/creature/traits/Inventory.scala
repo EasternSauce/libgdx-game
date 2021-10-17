@@ -10,8 +10,8 @@ import scala.collection.mutable
 trait Inventory {
   this: Creature =>
 
-  val equipmentItems: mutable.Map[Int, Item] = mutable.Map()
-  val inventoryItems: mutable.Map[Int, Item] = mutable.Map()
+  var equipmentItems: mutable.Map[Int, Item] = mutable.Map()
+  var inventoryItems: mutable.Map[Int, Item] = mutable.Map()
 
   def currentWeapon: Item = {
     equipmentItems(InventoryMapping.primaryWeaponIndex)

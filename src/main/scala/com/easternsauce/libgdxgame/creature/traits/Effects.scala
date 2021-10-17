@@ -10,7 +10,7 @@ import scala.collection.mutable
 trait Effects {
   this: Creature =>
 
-  val effectMap: mutable.Map[String, Effect] = mutable.Map()
+  var effectMap: mutable.Map[String, Effect] = mutable.Map()
 
   def updateEffects(): Unit = {
     for (effect <- effectMap.values) {
@@ -56,7 +56,7 @@ trait Effects {
   val isKnockbackable = true
   var knockbackVector = new Vector2(0f, 0f)
 
-  protected var knockbackVelocity: Float = 0f
+  var knockbackVelocity: Float = 0f
 
   def handleKnockback(): Unit = {
     if (effect("knockedBack").isActive) {

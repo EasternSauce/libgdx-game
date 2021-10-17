@@ -10,15 +10,15 @@ import scala.collection.mutable.ListBuffer
 trait AnimatedWalk {
   this: Creature =>
 
-  protected val standStillImages: Array[TextureRegion] = new Array[TextureRegion](4)
+  var standStillImages: Array[TextureRegion] = new Array[TextureRegion](4)
 
-  protected val walkAnimation: Array[Animation[TextureRegion]] = new Array[Animation[TextureRegion]](4)
+  var walkAnimation: Array[Animation[TextureRegion]] = new Array[Animation[TextureRegion]](4)
 
-  val animationTimer: EsTimer = EsTimer()
+  var animationTimer: EsTimer = EsTimer()
 
   var dirMap: Map[EsDirection.Value, Int] = _
 
-  val animationParams: AnimationParams
+  var animationParams: AnimationParams
 
   protected def setupAnimation(): Unit = {
     dirMap = animationParams.dirMap
