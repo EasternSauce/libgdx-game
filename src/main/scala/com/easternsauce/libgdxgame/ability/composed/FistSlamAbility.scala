@@ -1,11 +1,13 @@
 package com.easternsauce.libgdxgame.ability.composed
 
 import com.badlogic.gdx.math.Vector2
-import com.easternsauce.libgdxgame.ability.composed.components.{AbilityComponent, Fist}
-import com.easternsauce.libgdxgame.ability.misc.AbilityState.{AbilityState, Inactive}
-import com.easternsauce.libgdxgame.ability.parameters._
+import com.easternsauce.libgdxgame.ability.misc.components.{AbilityComponent, Fist}
+import com.easternsauce.libgdxgame.ability.misc.parameters._
+import com.easternsauce.libgdxgame.ability.misc.templates.AbilityState.{AbilityState, Inactive}
+import com.easternsauce.libgdxgame.ability.misc.templates.ComposedAbility
 import com.easternsauce.libgdxgame.creature.Enemy
 import com.easternsauce.libgdxgame.system.GameSystem
+import com.easternsauce.libgdxgame.util.AbilityInfo
 
 case class FistSlamAbility private (
   override val creatureId: String,
@@ -32,7 +34,7 @@ case class FistSlamAbility private (
     ) {
   override type Self = FistSlamAbility
 
-  override val id: String = "fist_slam"
+  override val id: String = FistSlamAbility.id
 
   override protected val cooldownTime: Float = 10f
   override protected lazy val channelTime: Float = 0.15f
@@ -85,4 +87,8 @@ case class FistSlamAbility private (
       animationParameters = animationParameters,
       dirVector = dirVector
     )
+}
+
+object FistSlamAbility extends AbilityInfo {
+  override val id = "fist_slam"
 }

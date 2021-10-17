@@ -1,7 +1,7 @@
-package com.easternsauce.libgdxgame.ability.misc
+package com.easternsauce.libgdxgame.ability.misc.templates
 
 import com.badlogic.gdx.physics.box2d._
-import com.easternsauce.libgdxgame.ability.parameters.AttackHitbox
+import com.easternsauce.libgdxgame.ability.misc.parameters.AttackHitbox
 
 trait PhysicalHitbox {
   def initBody(world: World, hitbox: AttackHitbox): Option[Body] = {

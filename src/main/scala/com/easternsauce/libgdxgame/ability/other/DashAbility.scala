@@ -1,11 +1,12 @@
 package com.easternsauce.libgdxgame.ability.other
 
 import com.badlogic.gdx.math.Vector2
-import com.easternsauce.libgdxgame.ability.composed.components.AbilityComponent
-import com.easternsauce.libgdxgame.ability.misc.Ability
-import com.easternsauce.libgdxgame.ability.misc.AbilityState.{AbilityState, Inactive}
-import com.easternsauce.libgdxgame.ability.parameters.{AnimationParameters, BodyParameters, SoundParameters, TimerParameters}
+import com.easternsauce.libgdxgame.ability.misc.components.AbilityComponent
+import com.easternsauce.libgdxgame.ability.misc.parameters.{AnimationParameters, BodyParameters, SoundParameters, TimerParameters}
+import com.easternsauce.libgdxgame.ability.misc.templates.Ability
+import com.easternsauce.libgdxgame.ability.misc.templates.AbilityState.{AbilityState, Inactive}
 import com.easternsauce.libgdxgame.animation.Animation
+import com.easternsauce.libgdxgame.system.Assets
 import com.softwaremill.quicklens.ModifyPimp
 
 case class DashAbility private (
@@ -15,7 +16,8 @@ case class DashAbility private (
   override val components: List[AbilityComponent] = List(),
   override val lastComponentFinishTime: Float = 0f,
   override val timerParameters: TimerParameters = TimerParameters(),
-  override val soundParameters: SoundParameters = SoundParameters(),
+  override val soundParameters: SoundParameters =
+    SoundParameters(activeSound = Some(Assets.sound(Assets.flybySound)), activeSoundVolume = Some(0.2f)),
   override val bodyParameters: BodyParameters = BodyParameters(),
   override val animationParameters: AnimationParameters = AnimationParameters(),
   override val dirVector: Vector2 = new Vector2(0f, 0f)

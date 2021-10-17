@@ -2,14 +2,15 @@ package com.easternsauce.libgdxgame.ability.attack
 
 import com.badlogic.gdx.maps.tiled.TiledMap
 import com.badlogic.gdx.math.Vector2
-import com.easternsauce.libgdxgame.ability.composed.components.AbilityComponent
-import com.easternsauce.libgdxgame.ability.misc.Ability
-import com.easternsauce.libgdxgame.ability.misc.AbilityState.{AbilityState, Inactive}
-import com.easternsauce.libgdxgame.ability.parameters.{AnimationParameters, BodyParameters, SoundParameters, TimerParameters}
+import com.easternsauce.libgdxgame.ability.misc.components.AbilityComponent
+import com.easternsauce.libgdxgame.ability.misc.parameters.{AnimationParameters, BodyParameters, SoundParameters, TimerParameters}
+import com.easternsauce.libgdxgame.ability.misc.templates.Ability
+import com.easternsauce.libgdxgame.ability.misc.templates.AbilityState.{AbilityState, Inactive}
 import com.easternsauce.libgdxgame.creature.Creature
 import com.easternsauce.libgdxgame.projectile.Arrow
 import com.easternsauce.libgdxgame.system.Assets
 import com.easternsauce.libgdxgame.system.GameSystem.areaMap
+import com.easternsauce.libgdxgame.util.AbilityInfo
 
 import scala.collection.mutable.ListBuffer
 
@@ -38,7 +39,7 @@ case class ShootArrowAttack private (
     ) {
   type Self = ShootArrowAttack
 
-  override val id: String = "shoot_arrow"
+  override val id: String = ShootArrowAttack.id
 
   override protected lazy val channelTime: Float = 0.85f
   override protected lazy val activeTime: Float = 0.1f
@@ -109,4 +110,8 @@ case class ShootArrowAttack private (
       animationParameters = animationParameters,
       dirVector = dirVector
     )
+}
+
+object ShootArrowAttack extends AbilityInfo {
+  override val id = "shoot_arrow"
 }

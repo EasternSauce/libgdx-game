@@ -1,7 +1,7 @@
 package com.easternsauce.libgdxgame.animation
 
 import com.badlogic.gdx.graphics.g2d.{TextureRegion, Animation => GdxAnimation, TextureAtlas => GdxTextureAtlas}
-import com.easternsauce.libgdxgame.ability.parameters.AnimationParameters
+import com.easternsauce.libgdxgame.ability.misc.parameters.AnimationParameters
 import com.easternsauce.libgdxgame.system.Assets
 
 case class Animation(

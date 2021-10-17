@@ -1,10 +1,10 @@
-package com.easternsauce.libgdxgame.ability.composed.components
+package com.easternsauce.libgdxgame.ability.misc.components
 
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.{Body, BodyDef, CircleShape, FixtureDef}
-import com.easternsauce.libgdxgame.ability.misc.AbilityState.AbilityState
-import com.easternsauce.libgdxgame.ability.misc.{Ability, AbilityState}
-import com.easternsauce.libgdxgame.ability.parameters.{AnimationParameters, BodyParameters, ComponentParameters, TimerParameters}
+import com.easternsauce.libgdxgame.ability.misc.parameters.{AnimationParameters, BodyParameters, ComponentParameters, TimerParameters}
+import com.easternsauce.libgdxgame.ability.misc.templates.AbilityState.AbilityState
+import com.easternsauce.libgdxgame.ability.misc.templates.{Ability, AbilityState}
 import com.easternsauce.libgdxgame.animation.Animation
 import com.easternsauce.libgdxgame.creature.{Creature, Enemy}
 import com.easternsauce.libgdxgame.system.GameSystem.areaMap

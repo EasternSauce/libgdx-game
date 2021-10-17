@@ -1,10 +1,12 @@
 package com.easternsauce.libgdxgame.ability.composed
 
 import com.badlogic.gdx.math.Vector2
-import com.easternsauce.libgdxgame.ability.composed.components.{AbilityComponent, Meteor}
-import com.easternsauce.libgdxgame.ability.misc.AbilityState.{AbilityState, Inactive}
-import com.easternsauce.libgdxgame.ability.parameters._
+import com.easternsauce.libgdxgame.ability.misc.components.{AbilityComponent, Meteor}
+import com.easternsauce.libgdxgame.ability.misc.parameters._
+import com.easternsauce.libgdxgame.ability.misc.templates.AbilityState.{AbilityState, Inactive}
+import com.easternsauce.libgdxgame.ability.misc.templates.ComposedAbility
 import com.easternsauce.libgdxgame.system.GameSystem
+import com.easternsauce.libgdxgame.util.AbilityInfo
 
 case class MeteorRainAbility private (
   override val creatureId: String,
@@ -31,7 +33,7 @@ case class MeteorRainAbility private (
     ) {
   override type Self = MeteorRainAbility
 
-  override val id = "meteor_rain"
+  override val id: String = MeteorRainAbility.id
 
   override protected lazy val channelTime: Float = 0.05f
   override protected val cooldownTime = 35f
@@ -81,4 +83,8 @@ case class MeteorRainAbility private (
       animationParameters = animationParameters,
       dirVector = dirVector
     )
+}
+
+object MeteorRainAbility extends AbilityInfo {
+  override val id = "meteor_rain"
 }

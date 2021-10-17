@@ -1,11 +1,10 @@
-package com.easternsauce.libgdxgame.ability.attack
+package com.easternsauce.libgdxgame.ability.misc.templates
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.math.{Rectangle, Vector2}
-import com.easternsauce.libgdxgame.ability.composed.components.AbilityComponent
-import com.easternsauce.libgdxgame.ability.misc.AbilityState.{AbilityState, Inactive}
-import com.easternsauce.libgdxgame.ability.misc.{Ability, _}
-import com.easternsauce.libgdxgame.ability.parameters._
+import com.easternsauce.libgdxgame.ability.misc.components.AbilityComponent
+import com.easternsauce.libgdxgame.ability.misc.parameters._
+import com.easternsauce.libgdxgame.ability.misc.templates.AbilityState.{AbilityState, Inactive}
 import com.easternsauce.libgdxgame.creature.Creature
 import com.easternsauce.libgdxgame.system.{Constants, GameSystem}
 import com.easternsauce.libgdxgame.util.{EsBatch, EsPolygon}

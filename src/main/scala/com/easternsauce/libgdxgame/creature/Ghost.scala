@@ -1,12 +1,9 @@
 package com.easternsauce.libgdxgame.creature
 
 import com.badlogic.gdx.audio.Sound
-import com.easternsauce.libgdxgame.ability.misc.Ability
-import com.easternsauce.libgdxgame.ability.other.ExplodeAbility
-import com.easternsauce.libgdxgame.ability.parameters.SoundParameters
 import com.easternsauce.libgdxgame.creature.traits.{AbilityUsage, AnimationParams}
 import com.easternsauce.libgdxgame.system.Assets
-import com.easternsauce.libgdxgame.util.EsDirection
+import com.easternsauce.libgdxgame.util.{CreatureInfo, EsDirection}
 
 class Ghost private (val id: String) extends Enemy {
   override val creatureWidth = 2.85f
@@ -26,21 +23,6 @@ class Ghost private (val id: String) extends Enemy {
     "steelHelmet" -> 0.05f
   )
 
-  override lazy val additionalAbilities: Map[String, Ability] =
-    Map({
-      val explodeAbility = ExplodeAbility(
-        creatureId = id,
-        soundParameters = SoundParameters(
-          channelSound = Some(Assets.sound(Assets.darkLaughSound)),
-          channelSoundVolume = Some(0.2f),
-          activeSound = Some(Assets.sound(Assets.explosionSound)),
-          activeSoundVolume = Some(0.5f)
-        )
-      )
-
-      explodeAbility
-    }.asMapEntry)
-
   override val abilityUsages: Map[String, AbilityUsage] =
     Map("explode" -> AbilityUsage(weight = 100f, minimumDistance = 6f, lifeThreshold = 0.5f))
 
@@ -56,10 +38,12 @@ class Ghost private (val id: String) extends Enemy {
 
 }
 
-object Ghost {
+object Ghost extends CreatureInfo {
   def apply(id: String): Ghost = {
     val obj = new Ghost(id)
     obj.init()
     obj
   }
+
+  override val additionalAbilities: List[String] = List("explode")
 }

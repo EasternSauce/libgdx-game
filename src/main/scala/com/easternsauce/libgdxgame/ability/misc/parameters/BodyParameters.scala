@@ -1,4 +1,4 @@
-package com.easternsauce.libgdxgame.ability.parameters
+package com.easternsauce.libgdxgame.ability.misc.parameters
 
 import com.badlogic.gdx.physics.box2d.Body
 

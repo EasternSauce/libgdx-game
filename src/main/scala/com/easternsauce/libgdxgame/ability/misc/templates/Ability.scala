@@ -1,10 +1,10 @@
-package com.easternsauce.libgdxgame.ability.misc
+package com.easternsauce.libgdxgame.ability.misc.templates
 
 import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.math.Vector2
-import com.easternsauce.libgdxgame.ability.composed.components.AbilityComponent
-import com.easternsauce.libgdxgame.ability.misc.AbilityState.{AbilityState, Inactive}
-import com.easternsauce.libgdxgame.ability.parameters.{AnimationParameters, BodyParameters, SoundParameters, TimerParameters}
+import com.easternsauce.libgdxgame.ability.misc.components.AbilityComponent
+import com.easternsauce.libgdxgame.ability.misc.parameters.{AnimationParameters, BodyParameters, SoundParameters, TimerParameters}
+import com.easternsauce.libgdxgame.ability.misc.templates.AbilityState.{AbilityState, Inactive}
 import com.easternsauce.libgdxgame.animation.Animation
 import com.easternsauce.libgdxgame.creature.Creature
 import com.easternsauce.libgdxgame.system.GameSystem

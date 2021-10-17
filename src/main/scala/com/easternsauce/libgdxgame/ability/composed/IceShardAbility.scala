@@ -1,10 +1,12 @@
 package com.easternsauce.libgdxgame.ability.composed
 
 import com.badlogic.gdx.math.Vector2
-import com.easternsauce.libgdxgame.ability.composed.components.{AbilityComponent, IceShard}
-import com.easternsauce.libgdxgame.ability.misc.AbilityState.{AbilityState, Inactive}
-import com.easternsauce.libgdxgame.ability.parameters._
+import com.easternsauce.libgdxgame.ability.misc.components.{AbilityComponent, IceShard}
+import com.easternsauce.libgdxgame.ability.misc.parameters._
+import com.easternsauce.libgdxgame.ability.misc.templates.AbilityState.{AbilityState, Inactive}
+import com.easternsauce.libgdxgame.ability.misc.templates.ComposedAbility
 import com.easternsauce.libgdxgame.creature.Enemy
+import com.easternsauce.libgdxgame.util.AbilityInfo
 
 case class IceShardAbility private (
   override val creatureId: String,
@@ -31,7 +33,7 @@ case class IceShardAbility private (
     ) {
   override type Self = IceShardAbility
 
-  override val id = "ice_shard"
+  override val id: String = IceShardAbility.id
 
   override protected lazy val channelTime: Float = 0.05f
   override protected val cooldownTime = 5f
@@ -83,4 +85,8 @@ case class IceShardAbility private (
       animationParameters = animationParameters,
       dirVector = dirVector
     )
+}
+
+object IceShardAbility extends AbilityInfo {
+  override val id = "ice_shard"
 }

@@ -1,11 +1,9 @@
 package com.easternsauce.libgdxgame.creature
 
 import com.badlogic.gdx.audio.Sound
-import com.easternsauce.libgdxgame.ability.misc.Ability
-import com.easternsauce.libgdxgame.ability.other.DashAbility
 import com.easternsauce.libgdxgame.creature.traits.{AbilityUsage, AnimationParams}
 import com.easternsauce.libgdxgame.system.Assets
-import com.easternsauce.libgdxgame.util.EsDirection
+import com.easternsauce.libgdxgame.util.{CreatureInfo, EsDirection}
 
 class Wolf private (val id: String) extends Enemy {
   override val creatureWidth = 2.85f
@@ -16,9 +14,6 @@ class Wolf private (val id: String) extends Enemy {
   override val onGettingHitSound: Option[Sound] = Some(Assets.sound(Assets.dogWhineSound))
 
   override val activeSound: Option[Sound] = Some(Assets.sound(Assets.dogBarkSound))
-
-  override lazy val additionalAbilities: Map[String, Ability] =
-    Map(DashAbility(id).asMapEntry)
 
   override val dropTable = Map(
     "ringmailGreaves" -> 0.1f,
@@ -43,10 +38,12 @@ class Wolf private (val id: String) extends Enemy {
 
 }
 
-object Wolf {
+object Wolf extends CreatureInfo {
   def apply(id: String): Wolf = {
     val obj = new Wolf(id)
     obj.init()
     obj
   }
+
+  override val additionalAbilities: List[String] = List("dash")
 }

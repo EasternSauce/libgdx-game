@@ -1,11 +1,13 @@
 package com.easternsauce.libgdxgame.ability.attack
 
 import com.badlogic.gdx.math.Vector2
-import com.easternsauce.libgdxgame.ability.composed.components.AbilityComponent
-import com.easternsauce.libgdxgame.ability.misc.AbilityState.{AbilityState, Inactive}
-import com.easternsauce.libgdxgame.ability.parameters.{AnimationParameters, BodyParameters, SoundParameters, TimerParameters}
+import com.easternsauce.libgdxgame.ability.misc.components.AbilityComponent
+import com.easternsauce.libgdxgame.ability.misc.parameters.{AnimationParameters, BodyParameters, SoundParameters, TimerParameters}
+import com.easternsauce.libgdxgame.ability.misc.templates.AbilityState.{AbilityState, Inactive}
+import com.easternsauce.libgdxgame.ability.misc.templates.MeleeAttack
 import com.easternsauce.libgdxgame.animation.Animation
 import com.easternsauce.libgdxgame.system.Assets
+import com.easternsauce.libgdxgame.util.AbilityInfo
 
 case class SlashAttack private (
   override val creatureId: String,
@@ -40,7 +42,7 @@ case class SlashAttack private (
     ) {
   override type Self = MeleeAttack
 
-  override val id: String = "slash"
+  override val id: String = SlashAttack.id
 
   override protected val baseChannelTime = 0.3f
   override protected val baseActiveTime = 0.3f
@@ -83,4 +85,8 @@ case class SlashAttack private (
       animationParameters = animationParameters,
       dirVector = dirVector
     )
+}
+
+object SlashAttack extends AbilityInfo {
+  override val id = "slash"
 }

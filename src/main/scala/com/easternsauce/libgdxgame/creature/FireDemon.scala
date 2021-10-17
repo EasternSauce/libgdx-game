@@ -1,12 +1,9 @@
 package com.easternsauce.libgdxgame.creature
 
 import com.badlogic.gdx.audio.{Music, Sound}
-import com.easternsauce.libgdxgame.ability.composed.{FistSlamAbility, MeteorCrashAbility, MeteorRainAbility}
-import com.easternsauce.libgdxgame.ability.misc.Ability
-import com.easternsauce.libgdxgame.ability.other.DashAbility
 import com.easternsauce.libgdxgame.creature.traits.{AbilityUsage, AnimationParams, Boss}
 import com.easternsauce.libgdxgame.system.Assets
-import com.easternsauce.libgdxgame.util.EsDirection
+import com.easternsauce.libgdxgame.util.{CreatureInfo, EsDirection}
 
 class FireDemon private (val id: String) extends Boss {
 
@@ -30,14 +27,6 @@ class FireDemon private (val id: String) extends Boss {
 
   override val dropTable =
     Map("ironSword" -> 0.3f, "poisonDagger" -> 0.3f, "steelArmor" -> 0.8f, "steelHelmet" -> 0.5f, "thiefRing" -> 1.0f)
-
-  override lazy val additionalAbilities: Map[String, Ability] =
-    Map(
-      MeteorRainAbility(id).asMapEntry,
-      FistSlamAbility(id).asMapEntry,
-      MeteorCrashAbility(id).asMapEntry,
-      DashAbility(id).asMapEntry
-    )
 
   override val abilityUsages: Map[String, AbilityUsage] =
     Map(
@@ -64,10 +53,12 @@ class FireDemon private (val id: String) extends Boss {
   // abilityMap("thrust").asInstanceOf[ThrustAttack].attackRange = 1.5f
 }
 
-object FireDemon {
+object FireDemon extends CreatureInfo {
   def apply(id: String): FireDemon = {
     val obj = new FireDemon(id)
     obj.init()
     obj
   }
+
+  override val additionalAbilities: List[String] = List("meteorRain", "fistSlam", "meteorCrash", "dash")
 }

@@ -1,9 +1,11 @@
 package com.easternsauce.libgdxgame.ability.composed
 
 import com.badlogic.gdx.math.Vector2
-import com.easternsauce.libgdxgame.ability.composed.components.{AbilityComponent, Meteor}
-import com.easternsauce.libgdxgame.ability.misc.AbilityState.{AbilityState, Inactive}
-import com.easternsauce.libgdxgame.ability.parameters._
+import com.easternsauce.libgdxgame.ability.misc.components.{AbilityComponent, Meteor}
+import com.easternsauce.libgdxgame.ability.misc.parameters._
+import com.easternsauce.libgdxgame.ability.misc.templates.AbilityState.{AbilityState, Inactive}
+import com.easternsauce.libgdxgame.ability.misc.templates.ComposedAbility
+import com.easternsauce.libgdxgame.util.AbilityInfo
 import com.softwaremill.quicklens.ModifyPimp
 
 case class MeteorCrashAbility private (
@@ -31,7 +33,7 @@ case class MeteorCrashAbility private (
     ) {
   override type Self = MeteorCrashAbility
 
-  override val id = "meteor_crash"
+  override val id: String = MeteorCrashAbility.id
 
   override protected lazy val channelTime: Float = 0.05f
   override protected val cooldownTime: Float = 12f
@@ -145,4 +147,8 @@ case class MeteorCrashAbility private (
       animationParameters = animationParameters,
       dirVector = dirVector
     )
+}
+
+object MeteorCrashAbility extends AbilityInfo {
+  override val id = "meteor_crash"
 }

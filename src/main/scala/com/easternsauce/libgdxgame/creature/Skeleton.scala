@@ -3,7 +3,7 @@ package com.easternsauce.libgdxgame.creature
 import com.badlogic.gdx.audio.Sound
 import com.easternsauce.libgdxgame.creature.traits.AnimationParams
 import com.easternsauce.libgdxgame.system.Assets
-import com.easternsauce.libgdxgame.util.EsDirection
+import com.easternsauce.libgdxgame.util.{CreatureInfo, EsDirection}
 
 class Skeleton private (val id: String) extends Enemy {
   override val creatureWidth = 2.85f
@@ -38,10 +38,12 @@ class Skeleton private (val id: String) extends Enemy {
 
 }
 
-object Skeleton {
+object Skeleton extends CreatureInfo {
   def apply(id: String): Skeleton = {
     val obj = new Skeleton(id)
     obj.init()
     obj
   }
+
+  override val additionalAbilities: List[String] = List("")
 }

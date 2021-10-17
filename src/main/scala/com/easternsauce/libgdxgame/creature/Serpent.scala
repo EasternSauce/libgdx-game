@@ -1,11 +1,9 @@
 package com.easternsauce.libgdxgame.creature
 
 import com.badlogic.gdx.audio.Sound
-import com.easternsauce.libgdxgame.ability.composed.{BubbleAbility, IceShardAbility}
-import com.easternsauce.libgdxgame.ability.misc.Ability
 import com.easternsauce.libgdxgame.creature.traits.{AbilityUsage, AnimationParams}
 import com.easternsauce.libgdxgame.system.Assets
-import com.easternsauce.libgdxgame.util.EsDirection
+import com.easternsauce.libgdxgame.util.{CreatureInfo, EsDirection}
 
 class Serpent private (val id: String) extends Enemy {
   override val creatureWidth = 3.85f
@@ -26,9 +24,6 @@ class Serpent private (val id: String) extends Enemy {
     "healingPowder" -> 0.5f
   )
 
-  override lazy val additionalAbilities: Map[String, Ability] =
-    Map(BubbleAbility(id).asMapEntry, IceShardAbility(id).asMapEntry)
-
   override val abilityUsages: Map[String, AbilityUsage] =
     Map(
       "bubble" -> AbilityUsage(weight = 100f, minimumDistance = 2f),
@@ -47,10 +42,12 @@ class Serpent private (val id: String) extends Enemy {
 
 }
 
-object Serpent {
+object Serpent extends CreatureInfo {
   def apply(id: String): Serpent = {
     val obj = new Serpent(id)
     obj.init()
     obj
   }
+
+  override val additionalAbilities: List[String] = List("bubble", "ice_shard")
 }

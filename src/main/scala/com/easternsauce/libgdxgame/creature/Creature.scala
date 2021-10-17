@@ -4,7 +4,7 @@ import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.graphics.g2d.Sprite
 import com.badlogic.gdx.math.Vector2
 import com.easternsauce.libgdxgame.ability.attack.{ShootArrowAttack, SlashAttack, ThrustAttack}
-import com.easternsauce.libgdxgame.ability.misc.Ability
+import com.easternsauce.libgdxgame.ability.misc.templates.Ability
 import com.easternsauce.libgdxgame.creature.traits._
 import com.easternsauce.libgdxgame.spawns.PlayerSpawnPoint
 import com.easternsauce.libgdxgame.system.GameSystem.areaMap
@@ -237,6 +237,10 @@ abstract class Creature
 
     setBounds(0, 0, creatureWidth, creatureHeight)
     setOrigin(creatureWidth / 2f, creatureHeight / 2f)
+
+    def abilityById: Map[String, Ability] = {
+      Map()
+    }
 
     defineEffects()
 

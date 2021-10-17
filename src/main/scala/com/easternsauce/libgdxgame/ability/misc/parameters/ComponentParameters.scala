@@ -1,4 +1,4 @@
-package com.easternsauce.libgdxgame.ability.parameters
+package com.easternsauce.libgdxgame.ability.misc.parameters
 
 case class ComponentParameters(
   startX: Float = 0f,

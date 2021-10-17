@@ -3,10 +3,10 @@ package com.easternsauce.libgdxgame.ability.other
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d._
-import com.easternsauce.libgdxgame.ability.composed.components.AbilityComponent
-import com.easternsauce.libgdxgame.ability.misc.AbilityState.{AbilityState, Inactive}
-import com.easternsauce.libgdxgame.ability.misc.{Ability, AbilityState}
-import com.easternsauce.libgdxgame.ability.parameters.{AnimationParameters, BodyParameters, SoundParameters, TimerParameters}
+import com.easternsauce.libgdxgame.ability.misc.components.AbilityComponent
+import com.easternsauce.libgdxgame.ability.misc.parameters.{AnimationParameters, BodyParameters, SoundParameters, TimerParameters}
+import com.easternsauce.libgdxgame.ability.misc.templates.AbilityState.{AbilityState, Inactive}
+import com.easternsauce.libgdxgame.ability.misc.templates.{Ability, AbilityState}
 import com.easternsauce.libgdxgame.creature.Creature
 import com.easternsauce.libgdxgame.system.Assets
 import com.easternsauce.libgdxgame.system.GameSystem.areaMap
@@ -22,7 +22,12 @@ case class ExplodeAbility private (
   override val timerParameters: TimerParameters = TimerParameters(),
   override val animationParameters: AnimationParameters =
     AnimationParameters(textureWidth = 64, textureHeight = 64, activeRegionName = "explosion", activeFrameCount = 21),
-  override val soundParameters: SoundParameters = SoundParameters(),
+  override val soundParameters: SoundParameters = SoundParameters(
+    channelSound = Some(Assets.sound(Assets.darkLaughSound)),
+    channelSoundVolume = Some(0.2f),
+    activeSound = Some(Assets.sound(Assets.explosionSound)),
+    activeSoundVolume = Some(0.5f)
+  ),
   override val bodyParameters: BodyParameters = BodyParameters(),
   override val dirVector: Vector2 = new Vector2(0f, 0f)
 ) extends Ability(
