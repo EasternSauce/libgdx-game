@@ -7,7 +7,7 @@ import com.easternsauce.libgdxgame.system.GameSystem
 import com.easternsauce.libgdxgame.system.GameSystem.areaMap
 import com.easternsauce.libgdxgame.util.EsTimer
 
-abstract class Enemy extends Creature with AggressiveAi {
+abstract class Enemy(override val id: String) extends Creature(id = id) with AggressiveAi {
   override val isEnemy: Boolean = true
 
   val activeSoundTimer: EsTimer = EsTimer()

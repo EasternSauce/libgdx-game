@@ -15,7 +15,7 @@ import com.easternsauce.libgdxgame.util.{CreatureInfo, EsDirection, EsTimer}
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
 
-class Ghost private (val id: String) extends Enemy {
+class Ghost private (override val id: String) extends Enemy(id = id) {
   override val creatureWidth = 2.85f
   override val creatureHeight = 2.85f
 
@@ -88,7 +88,7 @@ class Ghost private (val id: String) extends Enemy {
     staminaOveruse: Boolean,
     isAttacking: Boolean
   ): Creature = {
-    val creature = FireDemon(id)
+    val creature = Ghost(id)
     creature.areaId = areaId
     creature.isInitialized = isInitialized
     creature.currentDirection = currentDirection

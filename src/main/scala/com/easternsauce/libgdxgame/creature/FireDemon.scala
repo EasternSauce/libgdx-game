@@ -15,7 +15,7 @@ import com.easternsauce.libgdxgame.util.{CreatureInfo, EsDirection, EsTimer}
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
 
-class FireDemon private (val id: String) extends Boss {
+class FireDemon private (override val id: String) extends Boss(id = id) {
 
   override val creatureWidth = 7.5f
   override val creatureHeight = 7.5f

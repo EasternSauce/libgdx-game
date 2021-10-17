@@ -16,7 +16,7 @@ import com.easternsauce.libgdxgame.util.{EsBatch, EsDirection, EsTimer}
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
 
-abstract class Creature
+abstract class Creature(val id: String)
     extends Sprite
     with PhysicalBody
     with AnimatedWalk
@@ -32,7 +32,6 @@ abstract class Creature
   val isNPC = false
   val isBoss = false
 
-  val id: String
   var areaId: Option[String] = None
 
   val creatureWidth: Float

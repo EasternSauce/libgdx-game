@@ -15,7 +15,7 @@ import com.easternsauce.libgdxgame.util.{CreatureInfo, EsDirection, EsTimer}
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
 
-class Wolf private (val id: String) extends Enemy {
+class Wolf private (override val id: String) extends Enemy(id = id) {
   override val creatureWidth = 2.85f
   override val creatureHeight = 2.85f
 
@@ -48,48 +48,47 @@ class Wolf private (val id: String) extends Enemy {
 
   override val additionalAbilities: List[String] = Wolf.additionalAbilities
 
-
   override def copy(
-                     areaId: Option[String],
-                     isInitialized: Boolean,
-                     currentDirection: EsDirection.Value,
-                     isMoving: Boolean,
-                     timeSinceMovedTimer: EsTimer,
-                     attackVector: Vector2,
-                     facingVector: Vector2,
-                     walkingVector: Vector2,
-                     passedGateRecently: Boolean,
-                     toSetBodyNonInteractive: Boolean,
-                     spawnPointId: Option[String],
-                     sprinting: Boolean,
-                     playerSpawnPoint: Option[PlayerSpawnPoint],
-                     recentDirections: ListBuffer[EsDirection.Value],
-                     updateDirectionTimer: EsTimer,
-                     abilities: mutable.Map[String, Ability],
-                     b2Body: Body,
-                     b2fixture: Fixture,
-                     mass: Float,
-                     bodyCreated: Boolean,
-                     standStillImages: Array[TextureRegion],
-                     walkAnimation: Array[Animation[TextureRegion]],
-                     animationTimer: EsTimer,
-                     dirMap: Map[EsDirection.Value, Int],
-                     animationParams: AnimationParams,
-                     equipmentItems: mutable.Map[Int, Item],
-                     inventoryItems: mutable.Map[Int, Item],
-                     effectMap: mutable.Map[String, Effect],
-                     life: Float,
-                     lifeRegenerationTimer: EsTimer,
-                     healingTimer: EsTimer,
-                     healingTickTimer: EsTimer,
-                     healing: Boolean,
-                     staminaPoints: Float,
-                     staminaRegenerationTimer: EsTimer,
-                     staminaOveruseTimer: EsTimer,
-                     staminaOveruse: Boolean,
-                     isAttacking: Boolean
-                   ): Creature = {
-    val creature = FireDemon(id)
+    areaId: Option[String],
+    isInitialized: Boolean,
+    currentDirection: EsDirection.Value,
+    isMoving: Boolean,
+    timeSinceMovedTimer: EsTimer,
+    attackVector: Vector2,
+    facingVector: Vector2,
+    walkingVector: Vector2,
+    passedGateRecently: Boolean,
+    toSetBodyNonInteractive: Boolean,
+    spawnPointId: Option[String],
+    sprinting: Boolean,
+    playerSpawnPoint: Option[PlayerSpawnPoint],
+    recentDirections: ListBuffer[EsDirection.Value],
+    updateDirectionTimer: EsTimer,
+    abilities: mutable.Map[String, Ability],
+    b2Body: Body,
+    b2fixture: Fixture,
+    mass: Float,
+    bodyCreated: Boolean,
+    standStillImages: Array[TextureRegion],
+    walkAnimation: Array[Animation[TextureRegion]],
+    animationTimer: EsTimer,
+    dirMap: Map[EsDirection.Value, Int],
+    animationParams: AnimationParams,
+    equipmentItems: mutable.Map[Int, Item],
+    inventoryItems: mutable.Map[Int, Item],
+    effectMap: mutable.Map[String, Effect],
+    life: Float,
+    lifeRegenerationTimer: EsTimer,
+    healingTimer: EsTimer,
+    healingTickTimer: EsTimer,
+    healing: Boolean,
+    staminaPoints: Float,
+    staminaRegenerationTimer: EsTimer,
+    staminaOveruseTimer: EsTimer,
+    staminaOveruse: Boolean,
+    isAttacking: Boolean
+  ): Creature = {
+    val creature = Wolf(id)
     creature.areaId = areaId
     creature.isInitialized = isInitialized
     creature.currentDirection = currentDirection
