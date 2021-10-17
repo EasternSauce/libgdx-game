@@ -72,7 +72,8 @@ case class IceShardAbility private (
     bodyParameters: BodyParameters,
     animationParameters: AnimationParameters,
     dirVector: Vector2
-  ): Self =
+  ): Self = {
+
     IceShardAbility(
       creatureId = creatureId,
       state = state,
@@ -85,6 +86,7 @@ case class IceShardAbility private (
       animationParameters = animationParameters,
       dirVector = dirVector
     )
+  }
 }
 
 object IceShardAbility extends AbilityInfo {

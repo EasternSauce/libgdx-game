@@ -7,5 +7,5 @@ case class BodyParameters(
   body: Option[Body] = None,
   hitbox: Option[AttackHitbox] = None,
   bodyActive: Boolean = false,
-  destroyed: Boolean = false
+  bodyDestroyed: Boolean = false
 )

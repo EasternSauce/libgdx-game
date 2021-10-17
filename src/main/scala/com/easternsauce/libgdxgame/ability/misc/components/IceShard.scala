@@ -2,7 +2,12 @@ package com.easternsauce.libgdxgame.ability.misc.components
 
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.{Body, BodyDef, CircleShape, FixtureDef}
-import com.easternsauce.libgdxgame.ability.misc.parameters.{AnimationParameters, BodyParameters, ComponentParameters, TimerParameters}
+import com.easternsauce.libgdxgame.ability.misc.parameters.{
+  AnimationParameters,
+  BodyParameters,
+  ComponentParameters,
+  TimerParameters
+}
 import com.easternsauce.libgdxgame.ability.misc.templates.AbilityState.AbilityState
 import com.easternsauce.libgdxgame.ability.misc.templates.{Ability, AbilityState}
 import com.easternsauce.libgdxgame.animation.Animation
@@ -72,10 +77,10 @@ case class IceShard(
           component1_1
         case AbilityState.Active =>
           val component1_2: IceShard =
-            if (!component0.bodyParameters.destroyed && component0.timerParameters.activeTimer.time >= activeTime) {
+            if (!component0.bodyParameters.bodyDestroyed && component0.timerParameters.activeTimer.time >= activeTime) {
               component0.bodyParameters.body.get.getWorld.destroyBody(component0.bodyParameters.body.get)
               component0
-                .modify(_.bodyParameters.destroyed)
+                .modify(_.bodyParameters.bodyDestroyed)
                 .setTo(true)
                 .modify(_.bodyParameters.body)
                 .setTo(Some(null))
@@ -88,7 +93,7 @@ case class IceShard(
               .setTo(AbilityState.Inactive)
           } else component1_2
 
-          val component1_4: IceShard = if (!component1_3.bodyParameters.destroyed) {
+          val component1_4: IceShard = if (!component1_3.bodyParameters.bodyDestroyed) {
             component1_3.bodyParameters.body.get
               .setLinearVelocity(
                 component1_3.dirVector.x * component1_3.componentParameters.speed,

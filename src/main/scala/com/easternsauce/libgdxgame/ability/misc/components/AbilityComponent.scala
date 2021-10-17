@@ -9,7 +9,7 @@ import com.easternsauce.libgdxgame.creature.Creature
 import com.easternsauce.libgdxgame.util.EsBatch
 
 abstract class AbilityComponent(
-  val mainAbility: Ability,
+  val mainAbility: Ability, // TODO: change hard reference to id, so it doesn't need to be set on each copy
   val state: AbilityState = AbilityState.Inactive,
   val started: Boolean = false,
   val componentParameters: ComponentParameters = ComponentParameters(),

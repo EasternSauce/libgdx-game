@@ -70,11 +70,11 @@ case class Bubble(
         case AbilityState.Active =>
           val component1_2: Bubble =
             if (
-              !component0.bodyParameters.destroyed && component0.timerParameters.activeTimer.time >= component0.activeTime
+              !component0.bodyParameters.bodyDestroyed && component0.timerParameters.activeTimer.time >= component0.activeTime
             ) {
               component0.bodyParameters.body.get.getWorld.destroyBody(component0.bodyParameters.body.get)
               component0
-                .modify(_.bodyParameters.destroyed)
+                .modify(_.bodyParameters.bodyDestroyed)
                 .setTo(true)
                 .modify(_.bodyParameters.body)
                 .setTo(Some(null))
@@ -86,7 +86,7 @@ case class Bubble(
               .setTo(AbilityState.Inactive)
           } else component1_2
 
-          val component1_4: Bubble = if (!component1_3.bodyParameters.destroyed) {
+          val component1_4: Bubble = if (!component1_3.bodyParameters.bodyDestroyed) {
             component1_3.bodyParameters.body.get
               .setLinearVelocity(
                 component1_3.dirVector.x * component1_3.componentParameters.speed,
