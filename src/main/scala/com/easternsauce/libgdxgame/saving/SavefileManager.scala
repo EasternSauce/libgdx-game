@@ -2,6 +2,7 @@ package com.easternsauce.libgdxgame.saving
 
 import java.io.{File, PrintWriter}
 
+import com.badlogic.gdx.physics.box2d.Body
 import com.easternsauce.libgdxgame.creature.Creature
 import com.easternsauce.libgdxgame.system.GameSystem
 import com.easternsauce.libgdxgame.system.GameSystem._
@@ -67,6 +68,9 @@ class SavefileManager {
 
     GameSystem.clearCreatures()
     result.creatures.foreach(creatureData => recreateCreatureFromSavedata(creatureData))
+
+    GameSystem.initPlayer()
+
     result.treasuresLooted.foreach(
       treasureData => treasureLootedList += (treasureData.areaId -> treasureData.treasureId)
     )
@@ -81,8 +85,8 @@ class SavefileManager {
   private def recreateCreatureFromSavedata(creatureData: CreatureSavedata): Unit = {
     val action = Class
       .forName(creatureData.creatureClass)
-      .getMethod("apply", classOf[String])
-      .invoke(null, creatureData.id)
+      .getMethod("apply", classOf[String], classOf[Option[Body]])
+      .invoke(null, creatureData.id, None)
 
     val creature = action.asInstanceOf[Creature]
 

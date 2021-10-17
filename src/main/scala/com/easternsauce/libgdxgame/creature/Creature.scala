@@ -12,11 +12,12 @@ import com.easternsauce.libgdxgame.spawns.PlayerSpawnPoint
 import com.easternsauce.libgdxgame.system.GameSystem.areaMap
 import com.easternsauce.libgdxgame.system.{Assets, GameSystem}
 import com.easternsauce.libgdxgame.util.{EsBatch, EsDirection, EsTimer}
+import com.softwaremill.quicklens.ModifyPimp
 
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
 
-abstract class Creature(val id: String)
+abstract class Creature(val id: String, val body: Option[Body] = None)
     extends Sprite
     with PhysicalBody
     with AnimatedWalk
@@ -204,22 +205,33 @@ abstract class Creature(val id: String)
     }
   }
 
-  def assignToArea(areaId: String, x: Float, y: Float): Unit = {
+  def assignToArea(areaId: String, x: Float, y: Float): Creature = {
     if (this.areaId.isEmpty) {
 
       this.areaId = Some(areaId)
-      initBody(areaMap(this.areaId.get).world, x, y, creatureWidth / 2f)
+
+      val (body, fixture) = initBody(areaMap(this.areaId.get).world, x, y, creatureWidth / 2f)
+      this.fixture = fixture.get
 
       GameSystem.addCreature(this)
+
+      bodyCreated = true
+
+      this.modify(_.body).setTo(body)
     } else {
       val oldArea = areaMap(this.areaId.get)
 
       destroyBody(oldArea.world)
 
       this.areaId = Some(areaId)
-      initBody(areaMap(this.areaId.get).world, x, y, creatureWidth / 2f)
+      val (body, fixture) = initBody(areaMap(this.areaId.get).world, x, y, creatureWidth / 2f)
+      this.fixture = fixture.get
 
       GameSystem.addCreature(this)
+
+      bodyCreated = true
+
+      this.modify(_.body).setTo(body)
     }
 
   }
@@ -274,8 +286,7 @@ abstract class Creature(val id: String)
     recentDirections: ListBuffer[EsDirection.Value] = recentDirections,
     updateDirectionTimer: EsTimer = updateDirectionTimer,
     abilities: mutable.Map[String, Ability] = abilities,
-    b2Body: Body = b2Body,
-    b2fixture: Fixture = b2fixture,
+    b2fixture: Fixture = fixture,
     mass: Float = mass,
     bodyCreated: Boolean = bodyCreated,
     standStillImages: Array[TextureRegion] = standStillImages,
@@ -295,6 +306,7 @@ abstract class Creature(val id: String)
     staminaRegenerationTimer: EsTimer = staminaRegenerationTimer,
     staminaOveruseTimer: EsTimer = staminaOveruseTimer,
     staminaOveruse: Boolean = staminaOveruse,
-    isAttacking: Boolean = isAttacking
+    isAttacking: Boolean = isAttacking,
+    body: Option[Body] = body
   ): Creature
 }

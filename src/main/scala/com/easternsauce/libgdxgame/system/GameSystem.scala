@@ -32,11 +32,11 @@ object GameSystem extends Game {
   var mainMenuScreen: MainMenuScreen = _
   var playScreen: PlayScreen = _
 
-  private var globalCreaturesMap: mutable.Map[String, Creature] = mutable.Map()
+  var creatures: mutable.Map[String, Creature] = mutable.Map()
 
   val treasureLootedList: ListBuffer[(String, String)] = ListBuffer()
 
-  var player: Player = _
+  def player: Player = creatures("player").asInstanceOf[Player]
 
   var areaMap: mutable.Map[String, Area] = _
 
@@ -79,30 +79,30 @@ object GameSystem extends Game {
   val bossfightManager = new BossfightManager()
 
   def creature(id: String): Creature = {
-    globalCreaturesMap(id) //.copy() TODO
+    creatures(id) //.copy() TODO
   }
 
   def modifyCreature(id: String, modification: Creature => Creature): Unit = {
     // TODO: queue a creature modification
-    globalCreaturesMap(id) = modification(globalCreaturesMap(id))
+    creatures(id) = modification(creatures(id))
   }
 
   def creaturesForArea(id: String): List[Creature] = {
-    GameSystem.globalCreaturesMap.values
+    GameSystem.creatures.values
       .filter(creature => creature.areaId.nonEmpty && creature.areaId.get == id)
       .toList
   }
 
   def addCreature(creature: Creature): Unit = {
-    GameSystem.globalCreaturesMap += (creature.id -> creature)
+    GameSystem.creatures += (creature.id -> creature)
   }
 
   def resetCreaturesInArea(id: String): Unit =
-    globalCreaturesMap.filterInPlace { case (_, creature) => !(creature.isEnemy && creature.areaId.get == id) }
+    creatures.filterInPlace { case (_, creature) => !(creature.isEnemy && creature.areaId.get == id) }
 
-  def clearCreatures(): Unit = globalCreaturesMap = mutable.Map()
+  def clearCreatures(): Unit = creatures = mutable.Map()
 
-  def saveableCreatures(): List[Creature] = globalCreaturesMap.values.filter(c => c.isPlayer || c.isAlive).toList
+  def saveableCreatures(): List[Creature] = creatures.values.filter(c => c.isPlayer || c.isAlive).toList
 
   implicit def bitmapFontToEnrichedBitmapFont(font: BitmapFont): EnrichedBitmapFont = new EnrichedBitmapFont(font)
 
@@ -132,9 +132,7 @@ object GameSystem extends Game {
 
   }
 
-  def setPlayer(creature: Creature): Unit = {
-    if (!creature.isPlayer) throw new RuntimeException("creature is not a player")
-    player = creature.asInstanceOf[Player]
+  def initPlayer(): Unit = {
     inventoryWindow = new InventoryWindow()
     lifeStaminaBar = new PlayerInfoHud()
 
@@ -222,9 +220,12 @@ object GameSystem extends Game {
 
       if (areaMap(areaId.get).music.nonEmpty) musicManager.playMusic(areaMap(areaId.get).music.get, 0.2f)
 
-      player.assignToArea(areaId.get, player.playerSpawnPoint.get.posX, player.playerSpawnPoint.get.posY)
-
       player.setRotation(0f)
+
+      modifyCreature(
+        player.id,
+        player => player.assignToArea(areaId.get, player.playerSpawnPoint.get.posX, player.playerSpawnPoint.get.posY)
+      )
 
     }
   }
@@ -245,7 +246,7 @@ object GameSystem extends Game {
     if (creaturesToMove.nonEmpty) {
       creaturesToMove.foreach {
         case (creature, area, x, y) =>
-          creature.assignToArea(area.id, x, y)
+          modifyCreature(creature.id, creature => creature.assignToArea(area.id, x, y))
           creature.passedGateRecently = true
       }
 
@@ -258,12 +259,10 @@ object GameSystem extends Game {
 
     // TODO: npcs?
 
-    globalCreaturesMap = mutable.Map()
-    globalCreaturesMap += (creature.id -> creature)
+    creatures = mutable.Map()
+    creatures += (creature.id -> creature)
 
-    setPlayer(creature)
-
-    globalCreaturesMap("player").assignToArea("area1", 82f, 194f)
+    modifyCreature(creatures("player").id, creature => creature.assignToArea("area1", 82f, 194f))
 
     player.playerSpawnPoint = Some(areaMap("area1").playerSpawns.head)
 

@@ -4,7 +4,7 @@ import com.easternsauce.libgdxgame.creature.Creature
 import com.easternsauce.libgdxgame.items.Item
 import com.easternsauce.libgdxgame.saving.{CreatureSavedata, ItemSavedata, PlayerSpawnPointSavedata, PositionSavedata}
 import com.easternsauce.libgdxgame.system.GameSystem
-import com.easternsauce.libgdxgame.system.GameSystem.{areaMap, setPlayer}
+import com.easternsauce.libgdxgame.system.GameSystem.areaMap
 
 trait SavefileParser {
   this: Creature =>
@@ -42,15 +42,12 @@ trait SavefileParser {
       val area = areaMap(creatureData.playerSpawnPoint.get.area)
       playerSpawnPoint = Some(area.playerSpawns.filter(_.id == creatureData.playerSpawnPoint.get.id).head)
     }
-
-    if (creatureData.isPlayer) setPlayer(this)
-
     creatureData.inventoryItems.foreach(item => inventoryItems += (item.index -> Item.loadFromSavedata(item)))
     creatureData.equipmentItems.foreach(item => equipmentItems += (item.index -> Item.loadFromSavedata(item)))
 
-    GameSystem.addCreature(this)
+    val changedCreature = assignToArea(creatureData.area, creatureData.position.x, creatureData.position.y)
 
-    assignToArea(creatureData.area, creatureData.position.x, creatureData.position.y)
+    GameSystem.addCreature(changedCreature)
 
   }
 }

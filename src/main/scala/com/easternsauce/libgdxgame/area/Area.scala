@@ -168,14 +168,14 @@ class Area(val mapLoader: TmxMapLoader, val areaFilesLocation: String, val id: S
 
     creature.spawnPointId = Some(spawnPoint.id)
 
-    creature.assignToArea(id, spawnPoint.posX, spawnPoint.posY)
-
     if (spawnPoint.weaponType.nonEmpty) {
       creature.equipmentItems(InventoryMapping.primaryWeaponIndex) =
         Item.generateFromTemplate(spawnPoint.weaponType.get)
     }
 
-    GameSystem.addCreature(creature)
+    val changedCreature = creature.assignToArea(id, spawnPoint.posX, spawnPoint.posY)
+
+    GameSystem.addCreature(changedCreature)
   }
 
   def width: Float = {

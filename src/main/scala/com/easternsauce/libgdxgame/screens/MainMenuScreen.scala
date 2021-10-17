@@ -165,6 +165,7 @@ class MainMenuScreen extends Screen {
         if (previousNode.nonEmpty) currentNode = previousNode.get
       case MenuAction.NewGame =>
         GameSystem.setupNewGame()
+        GameSystem.initPlayer()
         setScreen(playScreen)
       case MenuAction.LoadGame =>
         savefileManager.loadGame()

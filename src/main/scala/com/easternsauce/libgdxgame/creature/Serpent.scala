@@ -15,7 +15,8 @@ import com.easternsauce.libgdxgame.util.{CreatureInfo, EsDirection, EsTimer}
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
 
-class Serpent private (override val id: String) extends Enemy(id = id) {
+class Serpent private (override val id: String, override val body: Option[Body] = None)
+    extends Enemy(id = id, body = body) {
   override val creatureWidth = 3.85f
   override val creatureHeight = 3.85f
 
@@ -69,7 +70,6 @@ class Serpent private (override val id: String) extends Enemy(id = id) {
     recentDirections: ListBuffer[EsDirection.Value],
     updateDirectionTimer: EsTimer,
     abilities: mutable.Map[String, Ability],
-    b2Body: Body,
     b2fixture: Fixture,
     mass: Float,
     bodyCreated: Boolean,
@@ -90,9 +90,10 @@ class Serpent private (override val id: String) extends Enemy(id = id) {
     staminaRegenerationTimer: EsTimer,
     staminaOveruseTimer: EsTimer,
     staminaOveruse: Boolean,
-    isAttacking: Boolean
+    isAttacking: Boolean,
+    body: Option[Body] = body
   ): Creature = {
-    val creature = Serpent(id)
+    val creature = Serpent(id = id, body = body)
     creature.areaId = areaId
     creature.isInitialized = isInitialized
     creature.currentDirection = currentDirection
@@ -109,8 +110,8 @@ class Serpent private (override val id: String) extends Enemy(id = id) {
     creature.recentDirections = recentDirections
     creature.updateDirectionTimer = updateDirectionTimer
     creature.abilities = abilities
-    creature.b2Body = b2Body
-    creature.b2fixture = b2fixture
+
+    creature.fixture = b2fixture
     creature.mass = mass
     creature.bodyCreated = bodyCreated
     creature.standStillImages = standStillImages
@@ -131,13 +132,16 @@ class Serpent private (override val id: String) extends Enemy(id = id) {
     creature.staminaOveruseTimer = staminaOveruseTimer
     creature.staminaOveruse = staminaOveruse
     creature.isAttacking = isAttacking
+
+    if (creature.body.nonEmpty) creature.body.get.setUserData(creature)
+
     creature
   }
 }
 
 object Serpent extends CreatureInfo {
-  def apply(id: String): Serpent = {
-    val obj = new Serpent(id)
+  def apply(id: String, body: Option[Body] = None): Serpent = {
+    val obj = new Serpent(id = id, body = body)
     obj.init()
     obj
   }

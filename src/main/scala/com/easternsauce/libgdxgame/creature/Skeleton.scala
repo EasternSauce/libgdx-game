@@ -15,7 +15,8 @@ import com.easternsauce.libgdxgame.util.{CreatureInfo, EsDirection, EsTimer}
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
 
-class Skeleton private (override val id: String) extends Enemy(id = id) {
+class Skeleton private (override val id: String, override val body: Option[Body] = None)
+    extends Enemy(id = id, body = body) {
   override val creatureWidth = 2.85f
   override val creatureHeight = 2.85f
 
@@ -48,48 +49,47 @@ class Skeleton private (override val id: String) extends Enemy(id = id) {
 
   override val additionalAbilities: List[String] = Skeleton.additionalAbilities
 
-
   override def copy(
-                     areaId: Option[String],
-                     isInitialized: Boolean,
-                     currentDirection: EsDirection.Value,
-                     isMoving: Boolean,
-                     timeSinceMovedTimer: EsTimer,
-                     attackVector: Vector2,
-                     facingVector: Vector2,
-                     walkingVector: Vector2,
-                     passedGateRecently: Boolean,
-                     toSetBodyNonInteractive: Boolean,
-                     spawnPointId: Option[String],
-                     sprinting: Boolean,
-                     playerSpawnPoint: Option[PlayerSpawnPoint],
-                     recentDirections: ListBuffer[EsDirection.Value],
-                     updateDirectionTimer: EsTimer,
-                     abilities: mutable.Map[String, Ability],
-                     b2Body: Body,
-                     b2fixture: Fixture,
-                     mass: Float,
-                     bodyCreated: Boolean,
-                     standStillImages: Array[TextureRegion],
-                     walkAnimation: Array[Animation[TextureRegion]],
-                     animationTimer: EsTimer,
-                     dirMap: Map[EsDirection.Value, Int],
-                     animationParams: AnimationParams,
-                     equipmentItems: mutable.Map[Int, Item],
-                     inventoryItems: mutable.Map[Int, Item],
-                     effectMap: mutable.Map[String, Effect],
-                     life: Float,
-                     lifeRegenerationTimer: EsTimer,
-                     healingTimer: EsTimer,
-                     healingTickTimer: EsTimer,
-                     healing: Boolean,
-                     staminaPoints: Float,
-                     staminaRegenerationTimer: EsTimer,
-                     staminaOveruseTimer: EsTimer,
-                     staminaOveruse: Boolean,
-                     isAttacking: Boolean
-                   ): Creature = {
-    val creature = Skeleton(id)
+    areaId: Option[String],
+    isInitialized: Boolean,
+    currentDirection: EsDirection.Value,
+    isMoving: Boolean,
+    timeSinceMovedTimer: EsTimer,
+    attackVector: Vector2,
+    facingVector: Vector2,
+    walkingVector: Vector2,
+    passedGateRecently: Boolean,
+    toSetBodyNonInteractive: Boolean,
+    spawnPointId: Option[String],
+    sprinting: Boolean,
+    playerSpawnPoint: Option[PlayerSpawnPoint],
+    recentDirections: ListBuffer[EsDirection.Value],
+    updateDirectionTimer: EsTimer,
+    abilities: mutable.Map[String, Ability],
+    b2fixture: Fixture,
+    mass: Float,
+    bodyCreated: Boolean,
+    standStillImages: Array[TextureRegion],
+    walkAnimation: Array[Animation[TextureRegion]],
+    animationTimer: EsTimer,
+    dirMap: Map[EsDirection.Value, Int],
+    animationParams: AnimationParams,
+    equipmentItems: mutable.Map[Int, Item],
+    inventoryItems: mutable.Map[Int, Item],
+    effectMap: mutable.Map[String, Effect],
+    life: Float,
+    lifeRegenerationTimer: EsTimer,
+    healingTimer: EsTimer,
+    healingTickTimer: EsTimer,
+    healing: Boolean,
+    staminaPoints: Float,
+    staminaRegenerationTimer: EsTimer,
+    staminaOveruseTimer: EsTimer,
+    staminaOveruse: Boolean,
+    isAttacking: Boolean,
+    body: Option[Body] = body
+  ): Creature = {
+    val creature = Skeleton(id = id, body = body)
     creature.areaId = areaId
     creature.isInitialized = isInitialized
     creature.currentDirection = currentDirection
@@ -106,8 +106,8 @@ class Skeleton private (override val id: String) extends Enemy(id = id) {
     creature.recentDirections = recentDirections
     creature.updateDirectionTimer = updateDirectionTimer
     creature.abilities = abilities
-    creature.b2Body = b2Body
-    creature.b2fixture = b2fixture
+
+    creature.fixture = b2fixture
     creature.mass = mass
     creature.bodyCreated = bodyCreated
     creature.standStillImages = standStillImages
@@ -128,13 +128,16 @@ class Skeleton private (override val id: String) extends Enemy(id = id) {
     creature.staminaOveruseTimer = staminaOveruseTimer
     creature.staminaOveruse = staminaOveruse
     creature.isAttacking = isAttacking
+
+    if (creature.body.nonEmpty) creature.body.get.setUserData(creature)
+
     creature
   }
 }
 
 object Skeleton extends CreatureInfo {
-  def apply(id: String): Skeleton = {
-    val obj = new Skeleton(id)
+  def apply(id: String, body: Option[Body] = None): Skeleton = {
+    val obj = new Skeleton(id = id, body = body)
     obj.init()
     obj
   }
