@@ -67,7 +67,7 @@ case class ShootArrowAttack private (
 
     modifyCreature(creature => { creature.attackVector = creature.facingVector.cpy(); creature })
 
-    val area = areaMap(creature.areaId.get)
+    val area = areaMap(creature.params.areaId.get)
     val arrowList: ListBuffer[Arrow] = area.arrowList
     val tiles: TiledMap = area.map
     val areaCreatures: List[Creature] =

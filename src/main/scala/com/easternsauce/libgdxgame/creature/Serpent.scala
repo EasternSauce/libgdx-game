@@ -3,7 +3,6 @@ package com.easternsauce.libgdxgame.creature
 import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.graphics.g2d.{Animation, TextureRegion}
 import com.badlogic.gdx.math.Vector2
-import com.badlogic.gdx.physics.box2d.{Body, Fixture}
 import com.easternsauce.libgdxgame.ability.misc.templates.Ability
 import com.easternsauce.libgdxgame.creature.traits.{AbilityUsage, AnimationParams}
 import com.easternsauce.libgdxgame.effect.Effect
@@ -54,7 +53,6 @@ class Serpent private (override val id: String, override val params: CreaturePar
   override val additionalAbilities: List[String] = Serpent.additionalAbilities
 
   override def copy(
-    areaId: Option[String],
     isInitialized: Boolean,
     currentDirection: EsDirection.Value,
     isMoving: Boolean,
@@ -70,7 +68,6 @@ class Serpent private (override val id: String, override val params: CreaturePar
     recentDirections: ListBuffer[EsDirection.Value],
     updateDirectionTimer: EsTimer,
     abilities: mutable.Map[String, Ability],
-    b2fixture: Fixture,
     mass: Float,
     bodyCreated: Boolean,
     standStillImages: Array[TextureRegion],
@@ -94,7 +91,6 @@ class Serpent private (override val id: String, override val params: CreaturePar
     params: CreatureParameters
   ): Creature = {
     val creature = Serpent(id = id, params = params)
-    creature.areaId = areaId
     creature.isInitialized = isInitialized
     creature.currentDirection = currentDirection
     creature.isMoving = isMoving
@@ -111,7 +107,6 @@ class Serpent private (override val id: String, override val params: CreaturePar
     creature.updateDirectionTimer = updateDirectionTimer
     creature.abilities = abilities
 
-    creature.fixture = b2fixture
     creature.mass = mass
     creature.bodyCreated = bodyCreated
     creature.standStillImages = standStillImages

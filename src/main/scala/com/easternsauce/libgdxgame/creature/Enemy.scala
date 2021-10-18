@@ -2,7 +2,6 @@ package com.easternsauce.libgdxgame.creature
 
 import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.math.Vector2
-import com.badlogic.gdx.physics.box2d.Body
 import com.easternsauce.libgdxgame.creature.traits.AggressiveAi
 import com.easternsauce.libgdxgame.system.GameSystem
 import com.easternsauce.libgdxgame.system.GameSystem.areaMap
@@ -67,13 +66,13 @@ abstract class Enemy(override val id: String, override val params: CreatureParam
   override def onDeath(): Unit = {
     super.onDeath()
 
-    areaMap(areaId.get).spawnLootPile(pos.x, pos.y, dropTable)
+    areaMap(params.areaId.get).spawnLootPile(pos.x, pos.y, dropTable)
     aggroedTarget = None
 
   }
 
   def spawnPosition: Vector2 = {
-    val spawnPoint = areaMap(areaId.get).enemySpawns.filter(_.id == spawnPointId.get).head
+    val spawnPoint = areaMap(params.areaId.get).enemySpawns.filter(_.id == spawnPointId.get).head
     new Vector2(spawnPoint.posX, spawnPoint.posY)
   }
 

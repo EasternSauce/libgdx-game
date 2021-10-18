@@ -89,7 +89,7 @@ object GameSystem extends Game {
 
   def creaturesForArea(id: String): List[Creature] = {
     GameSystem.creatures.values
-      .filter(creature => creature.areaId.nonEmpty && creature.areaId.get == id)
+      .filter(creature => creature.params.areaId.nonEmpty && creature.params.areaId.get == id)
       .toList
   }
 
@@ -98,7 +98,7 @@ object GameSystem extends Game {
   }
 
   def resetCreaturesInArea(id: String): Unit =
-    creatures.filterInPlace { case (_, creature) => !(creature.isEnemy && creature.areaId.get == id) }
+    creatures.filterInPlace { case (_, creature) => !(creature.isEnemy && creature.params.areaId.get == id) }
 
   def clearCreatures(): Unit = creatures = mutable.Map()
 
@@ -136,7 +136,7 @@ object GameSystem extends Game {
     inventoryWindow = new InventoryWindow()
     lifeStaminaBar = new PlayerInfoHud()
 
-    currentAreaId = player.areaId
+    currentAreaId = player.params.areaId
 
     if (areaMap(currentAreaId.get).music.nonEmpty) musicManager.playMusic(areaMap(currentAreaId.get).music.get, 0.2f)
   }

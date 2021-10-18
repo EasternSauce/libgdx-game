@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.graphics.g2d.{Animation, TextureRegion}
 import com.badlogic.gdx.math.Vector2
-import com.badlogic.gdx.physics.box2d.{Body, Fixture}
 import com.easternsauce.libgdxgame.ability.misc.templates.Ability
 import com.easternsauce.libgdxgame.creature.traits.AnimationParams
 import com.easternsauce.libgdxgame.effect.Effect
@@ -72,7 +71,7 @@ class Player private (override val id: String, override val params: CreaturePara
 
   def interact(): Unit = {
     if (onSpawnPointId.nonEmpty) {
-      playerSpawnPoint = Some(areaMap(areaId.get).playerSpawns.filter(_.id == onSpawnPointId.get).head)
+      playerSpawnPoint = Some(areaMap(params.areaId.get).playerSpawns.filter(_.id == onSpawnPointId.get).head)
       playerSpawnPoint.get.onRespawnSet()
     }
   }
@@ -98,7 +97,6 @@ class Player private (override val id: String, override val params: CreaturePara
   override val additionalAbilities: List[String] = Player.additionalAbilities
 
   override def copy(
-    areaId: Option[String],
     isInitialized: Boolean,
     currentDirection: EsDirection.Value,
     isMoving: Boolean,
@@ -114,7 +112,6 @@ class Player private (override val id: String, override val params: CreaturePara
     recentDirections: ListBuffer[EsDirection.Value],
     updateDirectionTimer: EsTimer,
     abilities: mutable.Map[String, Ability],
-    b2fixture: Fixture,
     mass: Float,
     bodyCreated: Boolean,
     standStillImages: Array[TextureRegion],
@@ -138,7 +135,6 @@ class Player private (override val id: String, override val params: CreaturePara
     params: CreatureParameters
   ): Creature = {
     val creature = Player(id = id, params = params)
-    creature.areaId = areaId
     creature.isInitialized = isInitialized
     creature.currentDirection = currentDirection
     creature.isMoving = isMoving
@@ -154,7 +150,6 @@ class Player private (override val id: String, override val params: CreaturePara
     creature.recentDirections = recentDirections
     creature.updateDirectionTimer = updateDirectionTimer
     creature.abilities = abilities
-    creature.fixture = b2fixture
     creature.mass = mass
     creature.bodyCreated = bodyCreated
     creature.standStillImages = standStillImages

@@ -3,7 +3,6 @@ package com.easternsauce.libgdxgame.creature
 import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.graphics.g2d.{Animation, Sprite, TextureRegion}
 import com.badlogic.gdx.math.Vector2
-import com.badlogic.gdx.physics.box2d.{Body, Fixture}
 import com.easternsauce.libgdxgame.ability.misc.templates.{Ability, AbilityFactory}
 import com.easternsauce.libgdxgame.creature.traits._
 import com.easternsauce.libgdxgame.effect.Effect
@@ -32,8 +31,6 @@ abstract class Creature(val id: String, val params: CreatureParameters)
   val isPlayer = false
   val isNPC = false
   val isBoss = false
-
-  var areaId: Option[String] = None
 
   val creatureWidth: Float
   val creatureHeight: Float
@@ -206,32 +203,42 @@ abstract class Creature(val id: String, val params: CreatureParameters)
   }
 
   def assignToArea(areaId: String, x: Float, y: Float): Creature = {
-    if (this.areaId.isEmpty) {
+    if (params.areaId.isEmpty) {
 
-      this.areaId = Some(areaId)
+      val newAreaId = Some(areaId)
 
-      val (body, fixture) = initBody(areaMap(this.areaId.get).world, x, y, creatureWidth / 2f)
-      this.fixture = fixture.get
+      val (body, fixture) = initBody(areaMap(areaId).world, x, y, creatureWidth / 2f)
 
       GameSystem.addCreature(this)
 
       bodyCreated = true
 
-      this.modify(_.params.body).setTo(body)
+      this
+        .modify(_.params.body)
+        .setTo(body)
+        .modify(_.params.fixture)
+        .setTo(fixture)
+        .modify(_.params.areaId)
+        .setTo(newAreaId)
     } else {
-      val oldArea = areaMap(this.areaId.get)
+      val oldArea = areaMap(params.areaId.get)
 
       destroyBody(oldArea.world)
 
-      this.areaId = Some(areaId)
-      val (body, fixture) = initBody(areaMap(this.areaId.get).world, x, y, creatureWidth / 2f)
-      this.fixture = fixture.get
+      val newAreaId = Some(areaId)
+      val (body, fixture) = initBody(areaMap(params.areaId.get).world, x, y, creatureWidth / 2f)
 
       GameSystem.addCreature(this)
 
       bodyCreated = true
 
-      this.modify(_.params.body).setTo(body)
+      this
+        .modify(_.params.body)
+        .setTo(body)
+        .modify(_.params.fixture)
+        .setTo(fixture)
+        .modify(_.params.areaId)
+        .setTo(newAreaId)
     }
 
   }
@@ -270,7 +277,6 @@ abstract class Creature(val id: String, val params: CreatureParameters)
   }
 
   def copy(
-    areaId: Option[String] = areaId,
     isInitialized: Boolean = isInitialized,
     currentDirection: EsDirection.Value = currentDirection,
     isMoving: Boolean = isMoving,
@@ -286,7 +292,6 @@ abstract class Creature(val id: String, val params: CreatureParameters)
     recentDirections: ListBuffer[EsDirection.Value] = recentDirections,
     updateDirectionTimer: EsTimer = updateDirectionTimer,
     abilities: mutable.Map[String, Ability] = abilities,
-    b2fixture: Fixture = fixture,
     mass: Float = mass,
     bodyCreated: Boolean = bodyCreated,
     standStillImages: Array[TextureRegion] = standStillImages,

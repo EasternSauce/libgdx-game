@@ -2,12 +2,7 @@ package com.easternsauce.libgdxgame.ability.misc.components
 
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.{Body, BodyDef, CircleShape, FixtureDef}
-import com.easternsauce.libgdxgame.ability.misc.parameters.{
-  AnimationParameters,
-  BodyParameters,
-  ComponentParameters,
-  TimerParameters
-}
+import com.easternsauce.libgdxgame.ability.misc.parameters.{AnimationParameters, BodyParameters, ComponentParameters, TimerParameters}
 import com.easternsauce.libgdxgame.ability.misc.templates.AbilityState.AbilityState
 import com.easternsauce.libgdxgame.ability.misc.templates.{Ability, AbilityState}
 import com.easternsauce.libgdxgame.animation.Animation
@@ -132,7 +127,7 @@ case class IceShard(
     bodyDef.position.set(x, y)
 
     bodyDef.`type` = BodyDef.BodyType.DynamicBody
-    val area = areaMap(mainAbility.creature.areaId.get)
+    val area = areaMap(mainAbility.creature.params.areaId.get)
 
     val body = area.world.createBody(bodyDef)
     body.setUserData(this)

@@ -2,7 +2,6 @@ package com.easternsauce.libgdxgame.saving
 
 import java.io.{File, PrintWriter}
 
-import com.badlogic.gdx.physics.box2d.Body
 import com.easternsauce.libgdxgame.creature.{Creature, CreatureParameters}
 import com.easternsauce.libgdxgame.system.GameSystem
 import com.easternsauce.libgdxgame.system.GameSystem._
@@ -90,7 +89,7 @@ class SavefileManager {
 
     val creature = action.asInstanceOf[Creature]
 
-    creature.loadFromSavedata(creatureData)
+    GameSystem.addCreature(creature.loadFromSavedata(creatureData))
 
   }
 

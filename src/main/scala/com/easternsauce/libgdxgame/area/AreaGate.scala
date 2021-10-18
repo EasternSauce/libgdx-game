@@ -65,7 +65,7 @@ class AreaGate private (
   def activate(creature: Creature): Unit = {
     if (!creature.passedGateRecently) {
       if (creature.isPlayer) {
-        val (destination: Area, posX: Float, posY: Float) = areaMap(creature.areaId.get) match {
+        val (destination: Area, posX: Float, posY: Float) = areaMap(creature.params.areaId.get) match {
           case `areaFrom` => (areaTo, toPosX, toPosY)
           case `areaTo`   => (areaFrom, fromPosX, fromPosY)
           case _          => throw new RuntimeException("should never reach here")

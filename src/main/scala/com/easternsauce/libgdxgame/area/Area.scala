@@ -83,7 +83,7 @@ class Area(val mapLoader: TmxMapLoader, val areaFilesLocation: String, val id: S
         // render debug
         enemy.path.foreach(node => {
           batch.shapeDrawer.setColor(Color.RED)
-          val area = areaMap(enemy.areaId.get)
+          val area = areaMap(enemy.params.areaId.get)
           val pos = area.getTileCenter(node.x, node.y)
           batch.shapeDrawer.filledCircle(pos.x, pos.y, 0.1f)
         })
@@ -142,7 +142,7 @@ class Area(val mapLoader: TmxMapLoader, val areaFilesLocation: String, val id: S
   def reset(): Unit = {
     creaturesMap
       .filter(creature => creature.isEnemy)
-      .foreach(creature => creature.destroyBody(areaMap(creature.areaId.get).world))
+      .foreach(creature => creature.destroyBody(areaMap(creature.params.areaId.get).world))
     GameSystem.resetCreaturesInArea(id)
     enemySpawns.foreach(spawnPoint => spawnEnemy(spawnPoint))
     arrowList.clear()

@@ -74,7 +74,7 @@ case class ExplodeAbility private (
     val activeTimer = timerParameters.activeTimer
 
     if (bodyParameters.bodyActive && activeTimer.time > 0.1f) {
-      val area = areaMap(creature.areaId.get)
+      val area = areaMap(creature.params.areaId.get)
 
       destroyBody(area.world)
     } else
@@ -119,7 +119,7 @@ case class ExplodeAbility private (
     bodyDef.position.set(x, y)
 
     bodyDef.`type` = BodyDef.BodyType.StaticBody
-    val area = areaMap(creature.areaId.get)
+    val area = areaMap(creature.params.areaId.get)
 
     val b2Body = area.world.createBody(bodyDef)
     b2Body.setUserData(this)

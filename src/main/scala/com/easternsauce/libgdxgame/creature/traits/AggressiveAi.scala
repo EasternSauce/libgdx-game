@@ -58,7 +58,7 @@ trait AggressiveAi {
 
   def lookForTarget(): Unit = {
     if (isAlive && !targetFound) {
-      areaMap(areaId.get).creaturesMap
+      areaMap(params.areaId.get).creaturesMap
         .filter(creature => !creature.isEnemy)
         .foreach(otherCreature => {
           if (otherCreature.isAlive && distanceTo(otherCreature) < aggroDistance) {
@@ -67,7 +67,7 @@ trait AggressiveAi {
 
               calculateLineOfSight(otherCreature)
 
-              calculatePath(areaMap(areaId.get), otherCreature.pos)
+              calculatePath(areaMap(params.areaId.get), otherCreature.pos)
 
               if (path.length < 20) {
                 aggroOnCreature(otherCreature)
@@ -99,7 +99,7 @@ trait AggressiveAi {
       )
     )
 
-    targetVisible = areaMap(areaId.get).terrainTiles
+    targetVisible = areaMap(params.areaId.get).terrainTiles
       .map(tile => tile.polygon)
       .forall(!Intersector.overlapConvexPolygons(_, lineOfSight.get))
 
@@ -110,7 +110,7 @@ trait AggressiveAi {
     circlingDecisionTimer.restart()
     recalculatePathTimer.restart()
 
-    calculatePath(areaMap(areaId.get), aggroedTarget.get.pos)
+    calculatePath(areaMap(params.areaId.get), aggroedTarget.get.pos)
     useAbilityTimer.restart()
     activeSoundTimer.restart()
 
@@ -173,7 +173,7 @@ trait AggressiveAi {
       if (targetFound) {
         if (recalculatePathTimer.time > 0.3f) {
           calculateLineOfSight(aggroedTarget.get)
-          calculatePath(areaMap(areaId.get), aggroedTarget.get.pos)
+          calculatePath(areaMap(params.areaId.get), aggroedTarget.get.pos)
           recalculatePathTimer.restart()
         }
 
@@ -202,7 +202,7 @@ trait AggressiveAi {
           }
         } else {
           if (path.nonEmpty) {
-            val destination = areaMap(areaId.get).getTileCenter(path.head.x, path.head.y)
+            val destination = areaMap(params.areaId.get).getTileCenter(path.head.x, path.head.y)
             if (destination.dst(pos) < 1.5f) path.dropInPlace(1)
             walkToTarget(destination.add(perpendicularNoise(0.7f)))
           } else if (distanceTo(aggroedTarget.get) < walkUpDistance) {
@@ -221,12 +221,12 @@ trait AggressiveAi {
         }
       } else {
         if (recalculatePathTimer.time > goToSpawnTime) {
-          calculatePath(areaMap(areaId.get), spawnPosition)
+          calculatePath(areaMap(params.areaId.get), spawnPosition)
           recalculatePathTimer.restart()
           recalculatePathTimer.stop()
         }
         if (path.nonEmpty) {
-          val destination = areaMap(areaId.get).getTileCenter(path.head.x, path.head.y)
+          val destination = areaMap(params.areaId.get).getTileCenter(path.head.x, path.head.y)
           if (destination.dst(pos) < 1.5f) {
             path.dropInPlace(1)
           }

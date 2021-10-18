@@ -132,7 +132,7 @@ case class Bubble(
     bodyDef.position.set(x, y)
 
     bodyDef.`type` = BodyDef.BodyType.DynamicBody
-    val area = areaMap(mainAbility.creature.areaId.get)
+    val area = areaMap(mainAbility.creature.params.areaId.get)
     val body = Some(area.world.createBody(bodyDef))
     body.get.setUserData(this)
 

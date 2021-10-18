@@ -111,7 +111,7 @@ case class Fist(
     bodyDef.position.set(x, y)
 
     bodyDef.`type` = BodyDef.BodyType.StaticBody
-    val area = areaMap(mainAbility.creature.areaId.get)
+    val area = areaMap(mainAbility.creature.params.areaId.get)
 
     val body = area.world.createBody(bodyDef)
     body.setUserData(this)

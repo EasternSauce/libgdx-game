@@ -3,8 +3,8 @@ package com.easternsauce.libgdxgame.creature.traits
 import com.easternsauce.libgdxgame.creature.Creature
 import com.easternsauce.libgdxgame.items.Item
 import com.easternsauce.libgdxgame.saving.{CreatureSavedata, ItemSavedata, PlayerSpawnPointSavedata, PositionSavedata}
-import com.easternsauce.libgdxgame.system.GameSystem
 import com.easternsauce.libgdxgame.system.GameSystem.areaMap
+import com.softwaremill.quicklens.ModifyPimp
 
 trait SavefileParser {
   this: Creature =>
@@ -15,7 +15,7 @@ trait SavefileParser {
       id = id,
       spawnPointId = spawnPointId,
       life = life,
-      area = areaId.get,
+      area = params.areaId.get,
       isPlayer = isPlayer,
       position = PositionSavedata(pos.x, pos.y),
       playerSpawnPoint =
@@ -31,10 +31,10 @@ trait SavefileParser {
     )
   }
 
-  def loadFromSavedata(creatureData: CreatureSavedata): Unit = {
+  def loadFromSavedata(creatureData: CreatureSavedata): Creature = {
     setPosition(creatureData.position.x, creatureData.position.y)
     life = creatureData.life
-    this.areaId = Some(creatureData.area)
+    val areaId = Some(creatureData.area)
 
     spawnPointId = creatureData.spawnPointId
 
@@ -45,9 +45,10 @@ trait SavefileParser {
     creatureData.inventoryItems.foreach(item => inventoryItems += (item.index -> Item.loadFromSavedata(item)))
     creatureData.equipmentItems.foreach(item => equipmentItems += (item.index -> Item.loadFromSavedata(item)))
 
-    val changedCreature = assignToArea(creatureData.area, creatureData.position.x, creatureData.position.y)
-
-    GameSystem.addCreature(changedCreature)
+    this
+      .assignToArea(creatureData.area, creatureData.position.x, creatureData.position.y)
+      .modify(_.params.areaId)
+      .setTo(areaId)
 
   }
 }

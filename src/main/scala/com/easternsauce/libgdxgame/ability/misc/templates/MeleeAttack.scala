@@ -103,8 +103,8 @@ abstract class MeleeAttack(
 
     val hitbox = Some(AttackHitbox(attackRectX, attackRectY, poly))
 
-    val body = if (creature.areaId.get.nonEmpty) {
-      initBody(GameSystem.areaMap(creature.areaId.get).world, bodyParameters.hitbox.get)
+    val body = if (creature.params.areaId.get.nonEmpty) {
+      initBody(GameSystem.areaMap(creature.params.areaId.get).world, bodyParameters.hitbox.get)
     } else None
 
     ability

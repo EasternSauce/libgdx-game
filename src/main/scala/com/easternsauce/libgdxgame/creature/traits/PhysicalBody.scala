@@ -7,8 +7,6 @@ import com.easternsauce.libgdxgame.creature.Creature
 trait PhysicalBody {
   this: Creature =>
 
-  var fixture: Fixture = _
-
   var mass: Float = 300f
   var bodyCreated = false
 
@@ -61,7 +59,7 @@ trait PhysicalBody {
   }
 
   def setNonInteractive(): Unit = {
-    fixture.setSensor(true)
+    params.fixture.get.setSensor(true)
     params.body.get.setType(BodyDef.BodyType.StaticBody)
   }
 
