@@ -8,8 +8,8 @@ import com.easternsauce.libgdxgame.system.GameSystem
 import com.easternsauce.libgdxgame.system.GameSystem.areaMap
 import com.easternsauce.libgdxgame.util.EsTimer
 
-abstract class Enemy(override val id: String, override val body: Option[Body] = None)
-    extends Creature(id = id, body = body)
+abstract class Enemy(override val id: String, override val params: CreatureParameters = CreatureParameters())
+    extends Creature(id = id, params = params)
     with AggressiveAi {
   override val isEnemy: Boolean = true
 

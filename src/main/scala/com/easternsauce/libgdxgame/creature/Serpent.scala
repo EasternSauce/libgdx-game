@@ -15,8 +15,8 @@ import com.easternsauce.libgdxgame.util.{CreatureInfo, EsDirection, EsTimer}
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
 
-class Serpent private (override val id: String, override val body: Option[Body] = None)
-    extends Enemy(id = id, body = body) {
+class Serpent private (override val id: String, override val params: CreatureParameters = CreatureParameters())
+    extends Enemy(id = id, params = params) {
   override val creatureWidth = 3.85f
   override val creatureHeight = 3.85f
 
@@ -91,9 +91,9 @@ class Serpent private (override val id: String, override val body: Option[Body] 
     staminaOveruseTimer: EsTimer,
     staminaOveruse: Boolean,
     isAttacking: Boolean,
-    body: Option[Body] = body
+    params: CreatureParameters
   ): Creature = {
-    val creature = Serpent(id = id, body = body)
+    val creature = Serpent(id = id, params = params)
     creature.areaId = areaId
     creature.isInitialized = isInitialized
     creature.currentDirection = currentDirection
@@ -133,15 +133,15 @@ class Serpent private (override val id: String, override val body: Option[Body] 
     creature.staminaOveruse = staminaOveruse
     creature.isAttacking = isAttacking
 
-    if (creature.body.nonEmpty) creature.body.get.setUserData(creature)
+    if (creature.params.body.nonEmpty) creature.params.body.get.setUserData(creature)
 
     creature
   }
 }
 
 object Serpent extends CreatureInfo {
-  def apply(id: String, body: Option[Body] = None): Serpent = {
-    val obj = new Serpent(id = id, body = body)
+  def apply(id: String, params: CreatureParameters = CreatureParameters()): Serpent = {
+    val obj = new Serpent(id = id, params = params)
     obj.init()
     obj
   }

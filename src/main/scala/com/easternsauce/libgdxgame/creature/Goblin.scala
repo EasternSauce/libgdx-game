@@ -15,8 +15,8 @@ import com.easternsauce.libgdxgame.util.{CreatureInfo, EsDirection, EsTimer}
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
 
-class Goblin private (override val id: String, override val body: Option[Body] = None)
-    extends Enemy(id = id, body = body) {
+class Goblin private (override val id: String, override val params: CreatureParameters = CreatureParameters())
+    extends Enemy(id = id, params = params) {
   override val creatureWidth = 2.85f
   override val creatureHeight = 2.85f
 
@@ -84,9 +84,9 @@ class Goblin private (override val id: String, override val body: Option[Body] =
     staminaOveruseTimer: EsTimer,
     staminaOveruse: Boolean,
     isAttacking: Boolean,
-    body: Option[Body] = body
+    params: CreatureParameters
   ): Creature = {
-    val creature = Goblin(id = id, body = body)
+    val creature = Goblin(id = id, params = params)
     creature.areaId = areaId
     creature.isInitialized = isInitialized
     creature.currentDirection = currentDirection
@@ -103,7 +103,6 @@ class Goblin private (override val id: String, override val body: Option[Body] =
     creature.recentDirections = recentDirections
     creature.updateDirectionTimer = updateDirectionTimer
     creature.abilities = abilities
-
     creature.fixture = b2fixture
     creature.mass = mass
     creature.bodyCreated = bodyCreated
@@ -126,15 +125,15 @@ class Goblin private (override val id: String, override val body: Option[Body] =
     creature.staminaOveruse = staminaOveruse
     creature.isAttacking = isAttacking
 
-    if (creature.body.nonEmpty) creature.body.get.setUserData(creature)
+    if (creature.params.body.nonEmpty) creature.params.body.get.setUserData(creature)
 
     creature
   }
 }
 
 object Goblin extends CreatureInfo {
-  def apply(id: String, body: Option[Body] = None): Goblin = {
-    val obj = new Goblin(id = id, body = body)
+  def apply(id: String, params: CreatureParameters = CreatureParameters()): Goblin = {
+    val obj = new Goblin(id = id, params = params)
     obj.init()
     obj
   }

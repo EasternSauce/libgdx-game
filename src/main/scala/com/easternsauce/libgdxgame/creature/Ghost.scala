@@ -15,8 +15,8 @@ import com.easternsauce.libgdxgame.util.{CreatureInfo, EsDirection, EsTimer}
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
 
-class Ghost private (override val id: String, override val body: Option[Body] = None)
-    extends Enemy(id = id, body = body) {
+class Ghost private (override val id: String, override val params: CreatureParameters = CreatureParameters())
+    extends Enemy(id = id, params = params) {
   override val creatureWidth = 2.85f
   override val creatureHeight = 2.85f
 
@@ -87,9 +87,9 @@ class Ghost private (override val id: String, override val body: Option[Body] = 
     staminaOveruseTimer: EsTimer,
     staminaOveruse: Boolean,
     isAttacking: Boolean,
-    body: Option[Body] = body
+    params: CreatureParameters
   ): Creature = {
-    val creature = Ghost(id = id, body = body)
+    val creature = Ghost(id = id, params = params)
     creature.areaId = areaId
     creature.isInitialized = isInitialized
     creature.currentDirection = currentDirection
@@ -129,15 +129,15 @@ class Ghost private (override val id: String, override val body: Option[Body] = 
     creature.staminaOveruse = staminaOveruse
     creature.isAttacking = isAttacking
 
-    if (creature.body.nonEmpty) creature.body.get.setUserData(creature)
+    if (creature.params.body.nonEmpty) creature.params.body.get.setUserData(creature)
 
     creature
   }
 }
 
 object Ghost extends CreatureInfo {
-  def apply(id: String, body: Option[Body] = None): Ghost = {
-    val obj = new Ghost(id = id, body = body)
+  def apply(id: String, params: CreatureParameters = CreatureParameters()): Ghost = {
+    val obj = new Ghost(id = id, params = params)
     obj.init()
     obj
   }

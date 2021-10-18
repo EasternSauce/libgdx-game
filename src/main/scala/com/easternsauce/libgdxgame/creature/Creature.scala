@@ -17,7 +17,7 @@ import com.softwaremill.quicklens.ModifyPimp
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
 
-abstract class Creature(val id: String, val body: Option[Body] = None)
+abstract class Creature(val id: String, val params: CreatureParameters)
     extends Sprite
     with PhysicalBody
     with AnimatedWalk
@@ -217,7 +217,7 @@ abstract class Creature(val id: String, val body: Option[Body] = None)
 
       bodyCreated = true
 
-      this.modify(_.body).setTo(body)
+      this.modify(_.params.body).setTo(body)
     } else {
       val oldArea = areaMap(this.areaId.get)
 
@@ -231,7 +231,7 @@ abstract class Creature(val id: String, val body: Option[Body] = None)
 
       bodyCreated = true
 
-      this.modify(_.body).setTo(body)
+      this.modify(_.params.body).setTo(body)
     }
 
   }
@@ -307,6 +307,6 @@ abstract class Creature(val id: String, val body: Option[Body] = None)
     staminaOveruseTimer: EsTimer = staminaOveruseTimer,
     staminaOveruse: Boolean = staminaOveruse,
     isAttacking: Boolean = isAttacking,
-    body: Option[Body] = body
+    params: CreatureParameters
   ): Creature
 }

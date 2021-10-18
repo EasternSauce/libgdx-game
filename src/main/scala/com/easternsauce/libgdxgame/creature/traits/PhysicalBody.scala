@@ -37,32 +37,32 @@ trait PhysicalBody {
 
   def destroyBody(world: World): Unit = {
     if (bodyCreated) {
-      world.destroyBody(body.get)
+      world.destroyBody(params.body.get)
       bodyCreated = false
     }
   }
 
   def sustainVelocity(velocity: Vector2): Unit = {
     if (bodyCreated) {
-      body.get.setLinearVelocity(velocity)
+      params.body.get.setLinearVelocity(velocity)
     }
   }
 
   def distanceTo(otherCreature: Creature): Float = {
     if (bodyCreated) {
-      body.get.getPosition.dst(otherCreature.body.get.getPosition)
+      params.body.get.getPosition.dst(otherCreature.params.body.get.getPosition)
     } else ???
   }
 
   def pos: Vector2 = {
     if (bodyCreated) {
-      body.get.getPosition
+      params.body.get.getPosition
     } else ???
   }
 
   def setNonInteractive(): Unit = {
     fixture.setSensor(true)
-    body.get.setType(BodyDef.BodyType.StaticBody)
+    params.body.get.setType(BodyDef.BodyType.StaticBody)
   }
 
 }
