@@ -3,12 +3,12 @@ package com.easternsauce.libgdxgame.creature.traits
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d._
 import com.easternsauce.libgdxgame.creature.Creature
+import com.softwaremill.quicklens.ModifyPimp
 
 trait PhysicalBody {
   this: Creature =>
 
   var mass: Float = 300f
-  var bodyCreated = false
 
   def initBody(world: World, x: Float, y: Float, radius: Float): (Option[Body], Option[Fixture]) = {
     val bodyDef = new BodyDef()
@@ -33,27 +33,29 @@ trait PhysicalBody {
     (Some(body), Some(fixture))
   }
 
-  def destroyBody(world: World): Unit = {
-    if (bodyCreated) {
+  def destroyBody(world: World): Creature = {
+    if (params.bodyCreated) {
       world.destroyBody(params.body.get)
-      bodyCreated = false
-    }
+      this
+        .modify(_.params.bodyCreated)
+        .setTo(false)
+    } else this
   }
 
   def sustainVelocity(velocity: Vector2): Unit = {
-    if (bodyCreated) {
+    if (params.bodyCreated) {
       params.body.get.setLinearVelocity(velocity)
     }
   }
 
   def distanceTo(otherCreature: Creature): Float = {
-    if (bodyCreated) {
+    if (params.bodyCreated) {
       params.body.get.getPosition.dst(otherCreature.params.body.get.getPosition)
     } else ???
   }
 
   def pos: Vector2 = {
-    if (bodyCreated) {
+    if (params.bodyCreated) {
       params.body.get.getPosition
     } else ???
   }

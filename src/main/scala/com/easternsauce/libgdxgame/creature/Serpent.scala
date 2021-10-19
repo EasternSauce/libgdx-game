@@ -69,7 +69,7 @@ class Serpent private (override val id: String, override val params: CreaturePar
     updateDirectionTimer: EsTimer,
     abilities: mutable.Map[String, Ability],
     mass: Float,
-    bodyCreated: Boolean,
+
     standStillImages: Array[TextureRegion],
     walkAnimation: Array[Animation[TextureRegion]],
     animationTimer: EsTimer,
@@ -108,8 +108,7 @@ class Serpent private (override val id: String, override val params: CreaturePar
     creature.abilities = abilities
 
     creature.mass = mass
-    creature.bodyCreated = bodyCreated
-    creature.standStillImages = standStillImages
+creature.standStillImages = standStillImages
     creature.walkAnimation = walkAnimation
     creature.animationTimer = animationTimer
     creature.dirMap = dirMap

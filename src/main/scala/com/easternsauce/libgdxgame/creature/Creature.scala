@@ -111,7 +111,7 @@ abstract class Creature(val id: String, val params: CreatureParameters)
     if (isMoving) setRegion(walkAnimationFrame(currentDirection))
     else setRegion(standStillImage(currentDirection))
 
-    if (bodyCreated) {
+    if (params.bodyCreated) {
       val roundedX = (math.floor(pos.x * 100) / 100).toFloat
       val roundedY = (math.floor(pos.y * 100) / 100).toFloat
       setPosition(roundedX - getWidth / 2f, roundedY - getHeight / 2f)
@@ -209,36 +209,39 @@ abstract class Creature(val id: String, val params: CreatureParameters)
 
       val (body, fixture) = initBody(areaMap(areaId).world, x, y, creatureWidth / 2f)
 
-      GameSystem.addCreature(this)
-
-      bodyCreated = true
-
-      this
+      val creature = this
         .modify(_.params.body)
         .setTo(body)
         .modify(_.params.fixture)
         .setTo(fixture)
         .modify(_.params.areaId)
         .setTo(newAreaId)
+        .modify(_.params.bodyCreated)
+        .setTo(true)
+
+      GameSystem.addCreature(creature)
+
+      creature
     } else {
       val oldArea = areaMap(params.areaId.get)
-
-      destroyBody(oldArea.world)
 
       val newAreaId = Some(areaId)
       val (body, fixture) = initBody(areaMap(params.areaId.get).world, x, y, creatureWidth / 2f)
 
-      GameSystem.addCreature(this)
-
-      bodyCreated = true
-
-      this
+      val creature = this
         .modify(_.params.body)
         .setTo(body)
         .modify(_.params.fixture)
         .setTo(fixture)
         .modify(_.params.areaId)
         .setTo(newAreaId)
+        .modify(_.params.bodyCreated)
+        .setTo(true)
+        .destroyBody(oldArea.world)
+
+      GameSystem.addCreature(creature)
+
+      creature
     }
 
   }
@@ -293,7 +296,6 @@ abstract class Creature(val id: String, val params: CreatureParameters)
     updateDirectionTimer: EsTimer = updateDirectionTimer,
     abilities: mutable.Map[String, Ability] = abilities,
     mass: Float = mass,
-    bodyCreated: Boolean = bodyCreated,
     standStillImages: Array[TextureRegion] = standStillImages,
     walkAnimation: Array[Animation[TextureRegion]] = walkAnimation,
     animationTimer: EsTimer = animationTimer,
