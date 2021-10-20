@@ -12,15 +12,19 @@ trait Effects {
 
   var effectMap: mutable.Map[String, Effect] = mutable.Map()
 
-  def updateEffects(): Unit = {
+  def updateEffects(): Creature = {
     for (effect <- effectMap.values) {
       effect.update()
     }
+
+    this
   }
 
-  protected def defineEffects(): Unit = {
-    def initEffect(effectName: String): Unit = {
+  protected def defineEffects(): Creature = {
+    def initEffect(effectName: String): Creature = {
       effectMap.put(effectName, Effect())
+
+      this
     }
 
     initEffect("immune")
@@ -29,6 +33,7 @@ trait Effects {
     initEffect("poisoned")
     initEffect("knockedBack")
 
+    this
   }
 
   private def effect(effectName: String): Effect = {
@@ -39,8 +44,10 @@ trait Effects {
     }
   }
 
-  def activateEffect(effectName: String, time: Float): Unit = {
+  def activateEffect(effectName: String, time: Float): Creature = {
     effect(effectName).activate(time)
+
+    this
   }
 
   def isEffectActive(effectName: String): Boolean = {
@@ -58,10 +65,12 @@ trait Effects {
 
   var knockbackVelocity: Float = 0f
 
-  def handleKnockback(): Unit = {
+  def handleKnockback(): Creature = {
     if (effect("knockedBack").isActive) {
       sustainVelocity(new Vector2(knockbackVector.x * knockbackVelocity, knockbackVector.y * knockbackVelocity))
     }
+
+    this
   }
 
   // poison
@@ -71,7 +80,7 @@ trait Effects {
   protected val poisonTickTime = 0.8f
   protected val poisonTime = 8f
 
-  def handlePoison(): Unit = {
+  def handlePoison(): Creature = {
     if (effect("poisoned").isActive) {
       if (poisonTickTimer.time > poisonTickTime) {
         val poisonDamage = 16f
@@ -79,5 +88,7 @@ trait Effects {
         poisonTickTimer.restart()
       }
     }
+
+    this
   }
 }

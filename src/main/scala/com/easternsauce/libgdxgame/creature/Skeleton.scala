@@ -65,7 +65,6 @@ class Skeleton private (override val id: String, override val params: CreaturePa
     updateDirectionTimer: EsTimer,
     abilities: mutable.Map[String, Ability],
     mass: Float,
-
     standStillImages: Array[TextureRegion],
     walkAnimation: Array[Animation[TextureRegion]],
     animationTimer: EsTimer,
@@ -104,7 +103,7 @@ class Skeleton private (override val id: String, override val params: CreaturePa
     creature.abilities = abilities
 
     creature.mass = mass
-creature.standStillImages = standStillImages
+    creature.standStillImages = standStillImages
     creature.walkAnimation = walkAnimation
     creature.animationTimer = animationTimer
     creature.dirMap = dirMap

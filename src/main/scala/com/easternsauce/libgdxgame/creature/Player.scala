@@ -45,7 +45,7 @@ class Player private (override val id: String, override val params: CreaturePara
     dirMap = Map(EsDirection.Up -> 3, EsDirection.Down -> 0, EsDirection.Left -> 1, EsDirection.Right -> 2)
   )
 
-  override def calculateFacingVector(): Unit = {
+  override def calculateFacingVector(): Creature = {
     val mouseX = Gdx.input.getX
     val mouseY = Gdx.input.getY
 
@@ -54,29 +54,36 @@ class Player private (override val id: String, override val params: CreaturePara
 
     // we need to reverse y due to mouse coordinates being in different system
     facingVector = new Vector2(mouseX - centerX, (Gdx.graphics.getHeight - mouseY) - centerY).nor()
+
+    this
   }
 
-  override def onDeath(): Unit = {
+  override def onDeath(): Creature = {
     super.onDeath()
 
     respawnTimer.restart()
     respawning = true
     sprinting = false
 
+    this
   }
 
-  def onRespawn(): Unit = {
+  def onRespawn(): Creature = {
     GameSystem.bossfightManager.stopBossfight()
+
+    this
   }
 
-  def interact(): Unit = {
+  def interact(): Creature = {
     if (onSpawnPointId.nonEmpty) {
       playerSpawnPoint = Some(areaMap(params.areaId.get).playerSpawns.filter(_.id == onSpawnPointId.get).head)
       playerSpawnPoint.get.onRespawnSet()
     }
+
+    this
   }
 
-  override def calculateWalkingVector(): Unit = {
+  override def calculateWalkingVector(): Creature = {
     val dirs: List[EsDirection.Value] = GameSystem.playerMovementDirections
 
     val vector = new Vector2(0f, 0f)
@@ -92,6 +99,7 @@ class Player private (override val id: String, override val params: CreaturePara
 
     walkingVector = vector
 
+    this
   }
 
   override val additionalAbilities: List[String] = Player.additionalAbilities
@@ -113,7 +121,6 @@ class Player private (override val id: String, override val params: CreaturePara
     updateDirectionTimer: EsTimer,
     abilities: mutable.Map[String, Ability],
     mass: Float,
-
     standStillImages: Array[TextureRegion],
     walkAnimation: Array[Animation[TextureRegion]],
     animationTimer: EsTimer,
@@ -151,7 +158,7 @@ class Player private (override val id: String, override val params: CreaturePara
     creature.updateDirectionTimer = updateDirectionTimer
     creature.abilities = abilities
     creature.mass = mass
-creature.standStillImages = standStillImages
+    creature.standStillImages = standStillImages
     creature.walkAnimation = walkAnimation
     creature.animationTimer = animationTimer
     creature.dirMap = dirMap

@@ -20,7 +20,7 @@ trait AnimatedWalk {
 
   var animationParams: AnimationParams
 
-  protected def setupAnimation(): Unit = {
+  protected def setupAnimation(): Creature = {
     dirMap = animationParams.dirMap
 
     val frames = new ListBuffer[TextureRegion]()
@@ -51,6 +51,7 @@ trait AnimatedWalk {
       frames.clear()
     }
 
+    this
   }
 
   def walkAnimationFrame(currentDirection: EsDirection.Value): TextureRegion = {

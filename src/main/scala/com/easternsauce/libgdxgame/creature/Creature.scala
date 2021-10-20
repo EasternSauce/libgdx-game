@@ -72,14 +72,14 @@ abstract class Creature(val id: String, val params: CreatureParameters)
 
   var abilities: mutable.Map[String, Ability] = mutable.Map()
 
-  def calculateFacingVector(): Unit
-  def calculateWalkingVector(): Unit
+  def calculateFacingVector(): Creature
+  def calculateWalkingVector(): Creature
 
   protected def creatureType: String = getClass.getName
 
   def totalArmor: Float = equipmentItems.values.map(item => item.armor.getOrElse(0)).sum.toFloat
 
-  def update(): Unit = {
+  def update(): Creature = {
     if (isInitialized && isAlive) {
       updateStaminaDrain()
 
@@ -124,9 +124,10 @@ abstract class Creature(val id: String, val params: CreatureParameters)
 
     handleKnockback()
 
+    this
   }
 
-  def onDeath(): Unit = {
+  def onDeath(): Creature = {
     isMoving = false
     if (walkSound.nonEmpty) walkSound.get.stop()
 
@@ -138,9 +139,11 @@ abstract class Creature(val id: String, val params: CreatureParameters)
     setRotation(90f)
 
     toSetBodyNonInteractive = true
+
+    this
   }
 
-  def moveInDirection(dirs: List[EsDirection.Value]): Unit = {
+  def moveInDirection(dirs: List[EsDirection.Value]): Creature = {
 
     if (dirs.nonEmpty) {
       if (isAlive) {
@@ -183,9 +186,11 @@ abstract class Creature(val id: String, val params: CreatureParameters)
       }
     }
 
+    this
+
   }
 
-  private def updateDirection(dir: EsDirection.Value): Unit = {
+  private def updateDirection(dir: EsDirection.Value): Creature = {
     if (updateDirectionTimer.time > 0.01f) {
       if (recentDirections.size > 11) {
         recentDirections.dropInPlace(1)
@@ -200,6 +205,8 @@ abstract class Creature(val id: String, val params: CreatureParameters)
       updateDirectionTimer.restart()
 
     }
+
+    this
   }
 
   def assignToArea(areaId: String, x: Float, y: Float): Creature = {
@@ -246,7 +253,7 @@ abstract class Creature(val id: String, val params: CreatureParameters)
 
   }
 
-  def init(): Unit = {
+  def init(): Creature = {
     setupAnimation()
 
     setBounds(0, 0, creatureWidth, creatureHeight)
@@ -263,9 +270,11 @@ abstract class Creature(val id: String, val params: CreatureParameters)
     life = maxLife
 
     isInitialized = true
+
+    this
   }
 
-  def render(batch: EsBatch): Unit = {
+  def render(batch: EsBatch): Creature = {
 
     if (isAlive && isImmune) {
       val alpha = effectMap("immune").getRemainingTime * 35f
@@ -277,6 +286,7 @@ abstract class Creature(val id: String, val params: CreatureParameters)
     draw(batch.spriteBatch)
     setColor(1, 1, 1, 1)
 
+    this
   }
 
   def copy(

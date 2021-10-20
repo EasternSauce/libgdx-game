@@ -42,10 +42,12 @@ trait PhysicalBody {
     } else this
   }
 
-  def sustainVelocity(velocity: Vector2): Unit = {
+  def sustainVelocity(velocity: Vector2): Creature = {
     if (params.bodyCreated) {
       params.body.get.setLinearVelocity(velocity)
     }
+
+    this
   }
 
   def distanceTo(otherCreature: Creature): Float = {
@@ -60,9 +62,10 @@ trait PhysicalBody {
     } else ???
   }
 
-  def setNonInteractive(): Unit = {
+  def setNonInteractive(): Creature = {
     params.fixture.get.setSensor(true)
     params.body.get.setType(BodyDef.BodyType.StaticBody)
+    this
   }
 
 }

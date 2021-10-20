@@ -56,7 +56,7 @@ trait AggressiveAi {
 
   val abilityUsages: Map[String, AbilityUsage] = Map()
 
-  def lookForTarget(): Unit = {
+  def lookForTarget(): Creature = {
     if (isAlive && !targetFound) {
       areaMap(params.areaId.get).creaturesMap
         .filter(creature => !creature.isEnemy)
@@ -79,9 +79,11 @@ trait AggressiveAi {
           }
         })
     }
+
+    this
   }
 
-  def calculateLineOfSight(otherCreature: Creature): Unit = {
+  def calculateLineOfSight(otherCreature: Creature): Creature = {
 
     val lineWidth = 0.5f
     lineOfSight = Some(
@@ -103,9 +105,10 @@ trait AggressiveAi {
       .map(tile => tile.polygon)
       .forall(!Intersector.overlapConvexPolygons(_, lineOfSight.get))
 
+    this
   }
 
-  def aggroOnCreature(otherCreature: Creature): Unit = {
+  def aggroOnCreature(otherCreature: Creature): Creature = {
     aggroedTarget = Some(otherCreature)
     circlingDecisionTimer.restart()
     recalculatePathTimer.restart()
@@ -114,9 +117,10 @@ trait AggressiveAi {
     useAbilityTimer.restart()
     activeSoundTimer.restart()
 
+    this
   }
 
-  def decideIfCircling(): Unit = {
+  def decideIfCircling(): Creature = {
     if (isAttacking) {
       circling = false
     } else {
@@ -131,9 +135,10 @@ trait AggressiveAi {
       }
     }
 
+    this
   }
 
-  def walkToTarget(destination: Vector2): Unit = {
+  def walkToTarget(destination: Vector2): Creature = {
     val dirs: ListBuffer[EsDirection.Value] = ListBuffer()
 
     if (pos.x < destination.x - 0.1f) dirs += EsDirection.Right
@@ -151,9 +156,11 @@ trait AggressiveAi {
     } else {
       moveInDirection(dirs.toList)
     }
+
+    this
   }
 
-  def circleTarget(destination: Vector2): Unit = {
+  def circleTarget(destination: Vector2): Creature = {
 
     val vector = new Vector2(destination.x - pos.x, destination.y - pos.y)
 
@@ -164,7 +171,7 @@ trait AggressiveAi {
     walkToTarget(perpendicularDestination)
   }
 
-  def searchForAndAttackTargets(): Unit = {
+  def searchForAndAttackTargets(): Creature = {
     if (isAlive) {
       lookForTarget()
 
@@ -235,6 +242,7 @@ trait AggressiveAi {
       }
     }
 
+    this
   }
 
   private def perpendicularNoise(noiseStrength: Float) = {
@@ -251,13 +259,15 @@ trait AggressiveAi {
     }
   }
 
-  private def dropAggro(): Unit = {
+  private def dropAggro(): Creature = {
     aggroedTarget = None
     goToSpawnTime = 7 * randomGenerator.nextFloat()
     recalculatePathTimer.restart()
+
+    this
   }
 
-  def calculatePath(area: Area, target: Vector2): Unit = {
+  def calculatePath(area: Area, target: Vector2): Creature = {
     area.resetPathfindingGraph()
 
     val start: Vector2 = area.getClosestTile(pos.x, pos.y)
@@ -266,6 +276,7 @@ trait AggressiveAi {
     val node = AStar.aStar(area.aStarNodes(start.y.toInt)(start.x.toInt), area.aStarNodes(end.y.toInt)(end.x.toInt))
     path = ListBuffer().addAll(AStar.getPath(node))
 
+    this
   }
 
   def pickAbilityToUse(): Option[Ability] = {

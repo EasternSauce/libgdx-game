@@ -79,15 +79,17 @@ trait Inventory {
     false
   }
 
-  def useItem(item: Item): Unit = {
+  def useItem(item: Item): Creature = {
     item.template.id match {
       case "healingPowder" =>
         startHealing(0.7f)
         onItemConsumeSound.play(0.5f)
     }
+
+    this
   }
 
-  def swapPrimaryAndSecondaryWeapons(): Unit = {
+  def swapPrimaryAndSecondaryWeapons(): Creature = {
     if (equipmentItems.contains(InventoryMapping.secondaryWeaponIndex)) {
       val primaryWeapon = equipmentItems(InventoryMapping.primaryWeaponIndex)
       val secondaryWeapon = equipmentItems(InventoryMapping.secondaryWeaponIndex)
@@ -96,9 +98,11 @@ trait Inventory {
       equipmentItems(InventoryMapping.primaryWeaponIndex) = secondaryWeapon
 
     }
+
+    this
   }
 
-  def promoteSecondaryToPrimaryWeapon(): Unit = {
+  def promoteSecondaryToPrimaryWeapon(): Creature = {
     if (
       !equipmentItems
         .contains(InventoryMapping.primaryWeaponIndex) &&
@@ -108,5 +112,7 @@ trait Inventory {
       equipmentItems(InventoryMapping.primaryWeaponIndex) = equipmentItems(InventoryMapping.secondaryWeaponIndex)
       equipmentItems.remove(InventoryMapping.secondaryWeaponIndex)
     }
+
+    this
   }
 }

@@ -16,16 +16,19 @@ abstract class Boss(override val id: String, override val params: CreatureParame
 
   val bossMusic: Option[Music]
 
-  override def aggroOnCreature(otherCreature: Creature): Unit = {
+  override def aggroOnCreature(otherCreature: Creature): Creature = {
     super.aggroOnCreature(otherCreature)
 
     if (otherCreature.isPlayer) GameSystem.bossfightManager.startBossfight(this)
+
+    this
   }
 
-  override def onDeath(): Unit = {
+  override def onDeath(): Creature = {
     super.onDeath()
 
     GameSystem.bossfightManager.stopBossfight()
 
+    this
   }
 }

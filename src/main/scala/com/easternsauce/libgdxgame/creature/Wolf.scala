@@ -65,7 +65,6 @@ class Wolf private (override val id: String, override val params: CreatureParame
     updateDirectionTimer: EsTimer,
     abilities: mutable.Map[String, Ability],
     mass: Float,
-
     standStillImages: Array[TextureRegion],
     walkAnimation: Array[Animation[TextureRegion]],
     animationTimer: EsTimer,
@@ -104,7 +103,7 @@ class Wolf private (override val id: String, override val params: CreatureParame
     creature.abilities = abilities
 
     creature.mass = mass
-creature.standStillImages = standStillImages
+    creature.standStillImages = standStillImages
     creature.walkAnimation = walkAnimation
     creature.animationTimer = animationTimer
     creature.dirMap = dirMap

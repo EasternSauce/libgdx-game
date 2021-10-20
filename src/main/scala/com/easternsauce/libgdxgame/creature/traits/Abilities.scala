@@ -13,11 +13,13 @@ trait Abilities {
 
   def weaponDamage: Float = if (equipmentItems.contains(0)) equipmentItems(0).damage.get.toFloat else unarmedDamage
 
-  def renderAbilities(batch: EsBatch): Unit = {
+  def renderAbilities(batch: EsBatch): Creature = {
     for (ability <- abilities.values) {
       ability.render(batch)
     }
     currentAttack.render(batch)
+
+    this
   }
 
   def abilityActive: Boolean = {

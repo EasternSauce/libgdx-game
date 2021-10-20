@@ -22,24 +22,27 @@ trait Stamina {
 
   var staminaDrain = 0.0f
 
-  def takeStaminaDamage(staminaDamage: Float): Unit = {
+  def takeStaminaDamage(staminaDamage: Float): Creature = {
     if (staminaPoints - staminaDamage > 0) staminaPoints -= staminaDamage
     else {
       staminaPoints = 0f
       staminaOveruse = true
       staminaOveruseTimer.restart()
     }
+
+    this
   }
 
-  def updateStamina(): Unit = {
+  def updateStamina(): Creature = {
     if (staminaDrain > 0.005f) {
       takeStaminaDamage(0.2f)
 
       staminaDrain = 0.0f
     }
+    this
   }
 
-  def regenerateStamina(): Unit = {
+  def regenerateStamina(): Creature = {
     if (sprinting && staminaPoints > 0) {
       staminaDrain += Gdx.graphics.getDeltaTime
     }
@@ -58,8 +61,9 @@ trait Stamina {
       if (staminaOveruseTimer.time > staminaOveruseTime) staminaOveruse = false
     }
 
+    this
   }
 
-  def updateStaminaDrain(): Unit = {}
+  def updateStaminaDrain(): Creature = { this }
 
 }

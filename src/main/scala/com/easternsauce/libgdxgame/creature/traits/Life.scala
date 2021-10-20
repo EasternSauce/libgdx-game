@@ -27,12 +27,13 @@ trait Life {
 
   def isAlive: Boolean = life > 0f
 
-  def heal(healValue: Float): Unit = {
+  def heal(healValue: Float): Creature = {
     if (life < maxLife) {
       val afterHeal = life + healValue
       life = Math.min(afterHeal, maxLife)
-
     }
+
+    this
   }
 
   // TODO move?
@@ -43,7 +44,7 @@ trait Life {
     attackKnockbackVelocity: Float = 0,
     sourceX: Float = 0,
     sourceY: Float = 0
-  ): Unit = {
+  ): Creature = {
     if (isAlive) {
       val beforeHP = life
 
@@ -70,9 +71,10 @@ trait Life {
 
       if (onGettingHitSound.nonEmpty && GameSystem.randomGenerator.nextFloat() < 0.3f) onGettingHitSound.get.play(0.1f)
     }
+    this
   }
 
-  def renderLifeBar(batch: EsBatch): Unit = {
+  def renderLifeBar(batch: EsBatch): Creature = {
     val lifeBarHeight = 0.16f
     val lifeBarWidth = 2.0f
     val currentLifeBarWidth = lifeBarWidth * life / maxLife
@@ -82,16 +84,19 @@ trait Life {
     batch.shapeDrawer
       .filledRectangle(new Rectangle(barPosX, barPosY, currentLifeBarWidth, lifeBarHeight), Color.RED)
 
+    this
   }
 
-  def startHealing(healingPower: Float): Unit = {
+  def startHealing(healingPower: Float): Creature = {
     healingTimer.restart()
     healingTickTimer.restart()
     healing = true
     this.healingPower = healingPower
+
+    this
   }
 
-  def regenerateLife(): Unit = {
+  def regenerateLife(): Creature = {
     if (healing) {
       if (healingTickTimer.time > healingTickTime) {
         heal(healingPower)
@@ -100,10 +105,13 @@ trait Life {
       if (healingTimer.time > healingItemHealTime || life >= maxLife)
         healing = false
     }
+
+    if (lifeRegenerationTimer.time > 0.5f) {
+      heal(lifeRegeneration)
+      lifeRegenerationTimer.restart()
+    }
+
+    this
   }
 
-  if (lifeRegenerationTimer.time > 0.5f) {
-    heal(lifeRegeneration)
-    lifeRegenerationTimer.restart()
-  }
 }
