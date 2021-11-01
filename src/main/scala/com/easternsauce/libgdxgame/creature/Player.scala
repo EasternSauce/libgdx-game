@@ -105,8 +105,6 @@ class Player private (override val id: String, override val params: CreaturePara
   override val additionalAbilities: List[String] = Player.additionalAbilities
 
   override def copy(
-    isInitialized: Boolean,
-    currentDirection: EsDirection.Value,
     isMoving: Boolean,
     timeSinceMovedTimer: EsTimer,
     attackVector: Vector2,
@@ -142,8 +140,6 @@ class Player private (override val id: String, override val params: CreaturePara
     params: CreatureParameters
   ): Creature = {
     val creature = Player(id = id, params = params)
-    creature.isInitialized = isInitialized
-    creature.currentDirection = currentDirection
     creature.isMoving = isMoving
     creature.timeSinceMovedTimer = timeSinceMovedTimer
     creature.attackVector = attackVector
@@ -185,9 +181,7 @@ class Player private (override val id: String, override val params: CreaturePara
 
 object Player extends CreatureInfo {
   def apply(id: String, params: CreatureParameters = CreatureParameters()): Player = {
-    val obj = new Player(id = id, params = params)
-    obj.init()
-    obj
+    new Player(id = id, params = params)
   }
 
   override val additionalAbilities: List[String] = List("dash")

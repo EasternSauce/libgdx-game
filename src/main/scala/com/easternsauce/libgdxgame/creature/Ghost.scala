@@ -49,9 +49,7 @@ class Ghost private (override val id: String, override val params: CreatureParam
   override val additionalAbilities: List[String] = Ghost.additionalAbilities
 
   override def copy(
-    isInitialized: Boolean,
-    currentDirection: EsDirection.Value,
-    isMoving: Boolean,
+isMoving: Boolean,
     timeSinceMovedTimer: EsTimer,
     attackVector: Vector2,
     facingVector: Vector2,
@@ -86,9 +84,7 @@ class Ghost private (override val id: String, override val params: CreatureParam
     params: CreatureParameters
   ): Creature = {
     val creature = Ghost(id = id, params = params)
-    creature.isInitialized = isInitialized
-    creature.currentDirection = currentDirection
-    creature.isMoving = isMoving
+creature.isMoving = isMoving
     creature.timeSinceMovedTimer = timeSinceMovedTimer
     creature.attackVector = attackVector
     creature.facingVector = facingVector
@@ -129,9 +125,7 @@ class Ghost private (override val id: String, override val params: CreatureParam
 
 object Ghost extends CreatureInfo {
   def apply(id: String, params: CreatureParameters = CreatureParameters()): Ghost = {
-    val obj = new Ghost(id = id, params = params)
-    obj.init()
-    obj
+    new Ghost(id = id, params = params)
   }
 
   override val additionalAbilities: List[String] = List("explode")

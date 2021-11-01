@@ -89,7 +89,12 @@ class SavefileManager {
 
     val creature = action.asInstanceOf[Creature]
 
-    GameSystem.addCreature(creature.loadFromSavedata(creatureData))
+    println("loading from savedata")
+    GameSystem.addCreature(
+      creature
+        .init()
+        .loadFromSavedata(creatureData)
+    )
 
   }
 

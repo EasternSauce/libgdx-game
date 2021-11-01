@@ -46,9 +46,7 @@ class Goblin private (override val id: String, override val params: CreaturePara
   override val additionalAbilities: List[String] = Goblin.additionalAbilities
 
   override def copy(
-    isInitialized: Boolean,
-    currentDirection: EsDirection.Value,
-    isMoving: Boolean,
+isMoving: Boolean,
     timeSinceMovedTimer: EsTimer,
     attackVector: Vector2,
     facingVector: Vector2,
@@ -83,9 +81,7 @@ class Goblin private (override val id: String, override val params: CreaturePara
     params: CreatureParameters
   ): Creature = {
     val creature = Goblin(id = id, params = params)
-    creature.isInitialized = isInitialized
-    creature.currentDirection = currentDirection
-    creature.isMoving = isMoving
+creature.isMoving = isMoving
     creature.timeSinceMovedTimer = timeSinceMovedTimer
     creature.attackVector = attackVector
     creature.facingVector = facingVector
@@ -126,9 +122,7 @@ class Goblin private (override val id: String, override val params: CreaturePara
 
 object Goblin extends CreatureInfo {
   def apply(id: String, params: CreatureParameters = CreatureParameters()): Goblin = {
-    val obj = new Goblin(id = id, params = params)
-    obj.init()
-    obj
+    new Goblin(id = id, params = params)
   }
 
   override val additionalAbilities: List[String] = List()

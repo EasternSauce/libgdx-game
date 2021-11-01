@@ -35,10 +35,6 @@ abstract class Creature(val id: String, val params: CreatureParameters)
   val creatureWidth: Float
   val creatureHeight: Float
 
-  var isInitialized = false
-
-  var currentDirection: EsDirection.Value = EsDirection.Down
-
   var isMoving = false
   var timeSinceMovedTimer: EsTimer = EsTimer()
 
@@ -80,7 +76,7 @@ abstract class Creature(val id: String, val params: CreatureParameters)
   def totalArmor: Float = equipmentItems.values.map(item => item.armor.getOrElse(0)).sum.toFloat
 
   def update(): Creature = {
-    if (isInitialized && isAlive) {
+    if (params.isInitialized && isAlive) {
       updateStaminaDrain()
 
       calculateFacingVector()
@@ -108,8 +104,14 @@ abstract class Creature(val id: String, val params: CreatureParameters)
       toSetBodyNonInteractive = false
     }
 
-    if (isMoving) setRegion(walkAnimationFrame(currentDirection))
-    else setRegion(standStillImage(currentDirection))
+    val zzz = walkAnimationFrame(params.currentDirection)
+    val yyy = standStillImage(params.currentDirection)
+    println("current dir: " + params.currentDirection)
+    println(
+      "set region to " + walkAnimationFrame(params.currentDirection) + " or " + standStillImage(params.currentDirection)
+    )
+    if (isMoving) setRegion(walkAnimationFrame(params.currentDirection))
+    else setRegion(standStillImage(params.currentDirection))
 
     if (params.bodyCreated) {
       val roundedX = (math.floor(pos.x * 100) / 100).toFloat
@@ -157,7 +159,7 @@ abstract class Creature(val id: String, val params: CreatureParameters)
 
         val vector = new Vector2(0f, 0f)
 
-        updateDirection(dirs.last)
+        val creature = updateDirection(dirs.last)
 
         val modifiedSpeed =
           if (isAttacking) directionalSpeed / 3f
@@ -183,30 +185,33 @@ abstract class Creature(val id: String, val params: CreatureParameters)
             }
           }
         }
-      }
-    }
 
-    this
+        creature
+      } else this
 
+    } else this
   }
 
   private def updateDirection(dir: EsDirection.Value): Creature = {
     if (updateDirectionTimer.time > 0.01f) {
+
       if (recentDirections.size > 11) {
         recentDirections.dropInPlace(1)
       }
 
-      if (recentDirections.nonEmpty) {
-        currentDirection = recentDirections.groupBy(identity).view.mapValues(_.size).maxBy(_._2)._1
-      }
+      val creature = if (recentDirections.nonEmpty) {
+        this
+          .modify(_.params.currentDirection)
+          .setTo(recentDirections.groupBy(identity).view.mapValues(_.size).maxBy(_._2)._1)
+      } else this
 
       recentDirections += dir
 
       updateDirectionTimer.restart()
 
-    }
+      creature
+    } else this
 
-    this
   }
 
   def assignToArea(areaId: String, x: Float, y: Float): Creature = {
@@ -226,8 +231,7 @@ abstract class Creature(val id: String, val params: CreatureParameters)
         .modify(_.params.bodyCreated)
         .setTo(true)
 
-      GameSystem.addCreature(creature)
-
+      // GameSystem.addCreature(creature) TODO: change this!
       creature
     } else {
       val oldArea = areaMap(params.areaId.get)
@@ -246,7 +250,7 @@ abstract class Creature(val id: String, val params: CreatureParameters)
         .setTo(true)
         .destroyBody(oldArea.world)
 
-      GameSystem.addCreature(creature)
+      // GameSystem.addCreature(creature) TODO: change this!
 
       creature
     }
@@ -254,6 +258,7 @@ abstract class Creature(val id: String, val params: CreatureParameters)
   }
 
   def init(): Creature = {
+    println("initializing " + id)
     setupAnimation()
 
     setBounds(0, 0, creatureWidth, creatureHeight)
@@ -265,16 +270,18 @@ abstract class Creature(val id: String, val params: CreatureParameters)
 
     defineEffects()
 
-    setRegion(standStillImage(currentDirection))
+    setRegion(standStillImage(params.currentDirection))
 
     life = maxLife
 
-    isInitialized = true
-
     this
+      .modify(_.params.isInitialized)
+      .setTo(true)
   }
 
   def render(batch: EsBatch): Creature = {
+
+    println("drawing " + id + " at " + pos.x + " " + pos.y)
 
     if (isAlive && isImmune) {
       val alpha = effectMap("immune").getRemainingTime * 35f
@@ -290,8 +297,6 @@ abstract class Creature(val id: String, val params: CreatureParameters)
   }
 
   def copy(
-    isInitialized: Boolean = isInitialized,
-    currentDirection: EsDirection.Value = currentDirection,
     isMoving: Boolean = isMoving,
     timeSinceMovedTimer: EsTimer = timeSinceMovedTimer,
     attackVector: Vector2 = attackVector,

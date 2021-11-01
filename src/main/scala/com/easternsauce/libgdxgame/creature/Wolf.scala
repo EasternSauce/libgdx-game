@@ -49,9 +49,7 @@ class Wolf private (override val id: String, override val params: CreatureParame
   override val additionalAbilities: List[String] = Wolf.additionalAbilities
 
   override def copy(
-    isInitialized: Boolean,
-    currentDirection: EsDirection.Value,
-    isMoving: Boolean,
+isMoving: Boolean,
     timeSinceMovedTimer: EsTimer,
     attackVector: Vector2,
     facingVector: Vector2,
@@ -86,9 +84,7 @@ class Wolf private (override val id: String, override val params: CreatureParame
     params: CreatureParameters
   ): Creature = {
     val creature = Wolf(id = id, params = params)
-    creature.isInitialized = isInitialized
-    creature.currentDirection = currentDirection
-    creature.isMoving = isMoving
+creature.isMoving = isMoving
     creature.timeSinceMovedTimer = timeSinceMovedTimer
     creature.attackVector = attackVector
     creature.facingVector = facingVector
@@ -130,9 +126,7 @@ class Wolf private (override val id: String, override val params: CreatureParame
 
 object Wolf extends CreatureInfo {
   def apply(id: String, params: CreatureParameters = CreatureParameters()): Wolf = {
-    val obj = new Wolf(id = id, params = params)
-    obj.init()
-    obj
+    new Wolf(id = id, params = params)
   }
 
   override val additionalAbilities: List[String] = List("dash")

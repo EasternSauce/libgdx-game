@@ -65,9 +65,7 @@ class FireDemon private (override val id: String, override val params: CreatureP
   override val additionalAbilities: List[String] = FireDemon.additionalAbilities
 
   override def copy(
-    isInitialized: Boolean,
-    currentDirection: EsDirection.Value,
-    isMoving: Boolean,
+isMoving: Boolean,
     timeSinceMovedTimer: EsTimer,
     attackVector: Vector2,
     facingVector: Vector2,
@@ -102,9 +100,7 @@ class FireDemon private (override val id: String, override val params: CreatureP
     params: CreatureParameters
   ): Creature = {
     val creature = FireDemon(id = id, params = params)
-    creature.isInitialized = isInitialized
-    creature.currentDirection = currentDirection
-    creature.isMoving = isMoving
+creature.isMoving = isMoving
     creature.timeSinceMovedTimer = timeSinceMovedTimer
     creature.attackVector = attackVector
     creature.facingVector = facingVector
@@ -145,9 +141,7 @@ class FireDemon private (override val id: String, override val params: CreatureP
 
 object FireDemon extends CreatureInfo {
   def apply(id: String, params: CreatureParameters = CreatureParameters()): FireDemon = {
-    val obj = new FireDemon(id = id, params = params)
-    obj.init()
-    obj
+    new FireDemon(id = id, params = params)
   }
 
   override val additionalAbilities: List[String] = List("meteor_rain", "fist_slam", "meteor_crash", "dash")
