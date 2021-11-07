@@ -2,7 +2,7 @@ package com.easternsauce.libgdxgame.creature
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.audio.Sound
-import com.badlogic.gdx.graphics.g2d.{Animation, Sprite, TextureRegion}
+import com.badlogic.gdx.graphics.g2d.{Animation, TextureRegion}
 import com.badlogic.gdx.math.Vector2
 import com.easternsauce.libgdxgame.ability.misc.templates.Ability
 import com.easternsauce.libgdxgame.creature.traits.AnimationParams
@@ -12,6 +12,8 @@ import com.easternsauce.libgdxgame.spawns.PlayerSpawnPoint
 import com.easternsauce.libgdxgame.system.GameSystem.areaMap
 import com.easternsauce.libgdxgame.system.{Assets, GameSystem}
 import com.easternsauce.libgdxgame.util.{CreatureInfo, EsDirection, EsTimer}
+import com.easternsauce.libgdxgame.wrapper.Sprite
+
 
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
@@ -173,7 +175,7 @@ class Player private (override val id: String, override val params: CreaturePara
     creature.staminaOveruseTimer = staminaOveruseTimer
     creature.staminaOveruse = staminaOveruse
     creature.isAttacking = isAttacking
-    creature.sprite = new Sprite(sprite) // refactor later
+    creature.sprite = sprite
 
     if (creature.params.body.nonEmpty) creature.params.body.get.setUserData(creature)
 

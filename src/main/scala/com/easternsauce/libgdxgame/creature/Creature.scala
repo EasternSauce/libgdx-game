@@ -1,7 +1,7 @@
 package com.easternsauce.libgdxgame.creature
 
 import com.badlogic.gdx.audio.Sound
-import com.badlogic.gdx.graphics.g2d.{Animation, Sprite, TextureRegion}
+import com.badlogic.gdx.graphics.g2d.{Animation, TextureRegion}
 import com.badlogic.gdx.math.Vector2
 import com.easternsauce.libgdxgame.ability.misc.templates.{Ability, AbilityFactory}
 import com.easternsauce.libgdxgame.creature.traits._
@@ -11,6 +11,7 @@ import com.easternsauce.libgdxgame.spawns.PlayerSpawnPoint
 import com.easternsauce.libgdxgame.system.GameSystem.areaMap
 import com.easternsauce.libgdxgame.system.{Assets, GameSystem}
 import com.easternsauce.libgdxgame.util.{EsBatch, EsDirection, EsTimer}
+import com.easternsauce.libgdxgame.wrapper.Sprite
 import com.softwaremill.quicklens.ModifyPimp
 
 import scala.collection.mutable
@@ -31,7 +32,7 @@ abstract class Creature(val id: String, val params: CreatureParameters)
   val isNPC = false
   val isBoss = false
 
-  var sprite: Sprite = new Sprite()
+  var sprite: Sprite = Sprite()
 
   var currentDirection: EsDirection.Value = EsDirection.Down
 
@@ -107,13 +108,15 @@ abstract class Creature(val id: String, val params: CreatureParameters)
       toSetBodyNonInteractive = false
     }
 
+    if (isMoving) sprite = sprite.setRegion(walkAnimationFrame(currentDirection))
+    else sprite = sprite.setRegion(standStillImage(currentDirection))
     if (isMoving) sprite.setRegion(walkAnimationFrame(currentDirection))
     else sprite.setRegion(standStillImage(currentDirection))
 
     if (params.bodyCreated) {
       val roundedX = (math.floor(pos.x * 100) / 100).toFloat
       val roundedY = (math.floor(pos.y * 100) / 100).toFloat
-      sprite.setPosition(roundedX - sprite.getWidth / 2f, roundedY - sprite.getHeight / 2f)
+      sprite = sprite.setPosition(roundedX - sprite.width / 2f, roundedY - sprite.height / 2f)
     }
 
     if (isMoving && timeSinceMovedTimer.time > 0.25f) {
@@ -135,7 +138,7 @@ abstract class Creature(val id: String, val params: CreatureParameters)
     }
     currentAttack.forceStop()
 
-    sprite.setRotation(90f)
+    sprite = sprite.setRotation(90f)
 
     toSetBodyNonInteractive = true
 
@@ -259,8 +262,8 @@ abstract class Creature(val id: String, val params: CreatureParameters)
   def init(): Creature = {
     setupAnimation()
 
-    sprite.setBounds(0, 0, creatureWidth, creatureHeight)
-    sprite.setOrigin(creatureWidth / 2f, creatureHeight / 2f)
+    sprite = sprite.setBounds(0, 0, creatureWidth, creatureHeight)
+    sprite = sprite.setOrigin(creatureWidth / 2f, creatureHeight / 2f)
 
     abilities = mutable.Map() ++
       (for (abilityId <- standardAbilities ++ additionalAbilities)
@@ -268,6 +271,7 @@ abstract class Creature(val id: String, val params: CreatureParameters)
 
     defineEffects()
 
+    sprite = sprite.setRegion(standStillImage(currentDirection))
     sprite.setRegion(standStillImage(currentDirection))
 
     life = maxLife
@@ -283,11 +287,11 @@ abstract class Creature(val id: String, val params: CreatureParameters)
       val alpha = effectMap("immune").getRemainingTime * 35f
       val colorComponent = 0.3f + 0.7f * (Math.sin(alpha).toFloat + 1f) / 2f
 
-      sprite.setColor(1f, colorComponent, colorComponent, 1f)
+      sprite = sprite.setColor(1f, colorComponent, colorComponent, 1f)
     }
 
-    sprite.draw(batch.spriteBatch)
-    sprite.setColor(1, 1, 1, 1)
+    sprite = sprite.draw(batch.spriteBatch)
+    sprite = sprite.setColor(1, 1, 1, 1)
 
     this
   }
