@@ -232,8 +232,6 @@ abstract class Creature(val id: String, val params: CreatureParameters)
         .modify(_.params.bodyCreated)
         .setTo(true)
 
-      GameSystem.addCreature(creature) //TODO: change this!
-
       creature
     } else {
       val oldArea = areaMap(params.areaId.get)
@@ -251,8 +249,6 @@ abstract class Creature(val id: String, val params: CreatureParameters)
         .modify(_.params.bodyCreated)
         .setTo(true)
         .destroyBody(oldArea.world)
-
-      GameSystem.addCreature(creature) //TODO: change this!
 
       creature
     }
