@@ -326,6 +326,8 @@ abstract class Creature(val id: String, val params: CreatureParameters)
     staminaOveruse: Boolean = staminaOveruse,
     isAttacking: Boolean = isAttacking,
     params: CreatureParameters,
-    sprite: Sprite = sprite
+    sprite: Sprite = sprite,
+    currentDirection: EsDirection.Value = currentDirection
+
   ): Creature
 }

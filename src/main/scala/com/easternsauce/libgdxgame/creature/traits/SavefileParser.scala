@@ -34,7 +34,6 @@ trait SavefileParser {
   def loadFromSavedata(creatureData: CreatureSavedata): Creature = {
     sprite = sprite.setPosition(creatureData.position.x, creatureData.position.y)
     life = creatureData.life
-    val areaId = Some(creatureData.area)
 
     spawnPointId = creatureData.spawnPointId
 
@@ -47,8 +46,5 @@ trait SavefileParser {
 
     this
       .assignToArea(creatureData.area, creatureData.position.x, creatureData.position.y)
-      .modify(_.params.areaId)
-      .setTo(areaId)// TODO: do we need to set area id? its already set in assignToArea
-
   }
 }

@@ -83,7 +83,8 @@ isMoving: Boolean,
     staminaOveruse: Boolean,
     isAttacking: Boolean,
     params: CreatureParameters,
-    sprite: Sprite
+    sprite: Sprite,
+currentDirection: EsDirection.Value
   ): Creature = {
     val creature = Wolf(id = id, params = params)
 creature.isMoving = isMoving
@@ -120,6 +121,7 @@ creature.isMoving = isMoving
     creature.staminaOveruse = staminaOveruse
     creature.isAttacking = isAttacking
     creature.sprite = sprite
+    creature.currentDirection = currentDirection
 
     if (creature.params.body.nonEmpty) creature.params.body.get.setUserData(creature)
 

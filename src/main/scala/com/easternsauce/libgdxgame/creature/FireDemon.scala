@@ -99,7 +99,8 @@ class FireDemon private (override val id: String, override val params: CreatureP
     staminaOveruse: Boolean,
     isAttacking: Boolean,
     params: CreatureParameters,
-    sprite: Sprite
+    sprite: Sprite,
+    currentDirection: EsDirection.Value
   ): Creature = {
     val creature = FireDemon(id = id, params = params)
     creature.isMoving = isMoving
@@ -135,6 +136,7 @@ class FireDemon private (override val id: String, override val params: CreatureP
     creature.staminaOveruse = staminaOveruse
     creature.isAttacking = isAttacking
     creature.sprite = sprite
+    creature.currentDirection = currentDirection
 
     if (creature.params.body.nonEmpty) creature.params.body.get.setUserData(creature)
 
