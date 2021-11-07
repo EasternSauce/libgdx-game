@@ -33,6 +33,8 @@ abstract class Creature(val id: String, val params: CreatureParameters)
 
   var sprite: Sprite = new Sprite()
 
+  var currentDirection: EsDirection.Value = EsDirection.Down
+
   val creatureWidth: Float
   val creatureHeight: Float
 
@@ -105,8 +107,8 @@ abstract class Creature(val id: String, val params: CreatureParameters)
       toSetBodyNonInteractive = false
     }
 
-    if (isMoving) sprite.setRegion(walkAnimationFrame(params.currentDirection))
-    else sprite.setRegion(standStillImage(params.currentDirection))
+    if (isMoving) sprite.setRegion(walkAnimationFrame(currentDirection))
+    else sprite.setRegion(standStillImage(currentDirection))
 
     if (params.bodyCreated) {
       val roundedX = (math.floor(pos.x * 100) / 100).toFloat
@@ -194,9 +196,11 @@ abstract class Creature(val id: String, val params: CreatureParameters)
       }
 
       val creature = if (recentDirections.nonEmpty) {
+
+        val newCurrentDirection = recentDirections.groupBy(identity).view.mapValues(_.size).maxBy(_._2)._1
+
+        currentDirection = newCurrentDirection // TODO: this will be val
         this
-          .modify(_.params.currentDirection)
-          .setTo(recentDirections.groupBy(identity).view.mapValues(_.size).maxBy(_._2)._1)
       } else this
 
       recentDirections += dir
@@ -264,7 +268,7 @@ abstract class Creature(val id: String, val params: CreatureParameters)
 
     defineEffects()
 
-    sprite.setRegion(standStillImage(params.currentDirection))
+    sprite.setRegion(standStillImage(currentDirection))
 
     life = maxLife
 
