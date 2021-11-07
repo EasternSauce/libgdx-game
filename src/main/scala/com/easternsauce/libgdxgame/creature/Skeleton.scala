@@ -49,8 +49,6 @@ class Skeleton private (override val id: String, override val params: CreaturePa
   override val additionalAbilities: List[String] = Skeleton.additionalAbilities
 
   override def copy(
-    isInitialized: Boolean,
-    currentDirection: EsDirection.Value,
     isMoving: Boolean,
     timeSinceMovedTimer: EsTimer,
     attackVector: Vector2,
@@ -87,8 +85,6 @@ class Skeleton private (override val id: String, override val params: CreaturePa
     sprite: Sprite
   ): Creature = {
     val creature = Skeleton(id = id, params = params)
-    creature.isInitialized = isInitialized
-    creature.currentDirection = currentDirection
     creature.isMoving = isMoving
     creature.timeSinceMovedTimer = timeSinceMovedTimer
     creature.attackVector = attackVector

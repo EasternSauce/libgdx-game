@@ -174,7 +174,9 @@ class Area(val mapLoader: TmxMapLoader, val areaFilesLocation: String, val id: S
         Item.generateFromTemplate(spawnPoint.weaponType.get)
     }
 
-    val changedCreature = creature.assignToArea(id, spawnPoint.posX, spawnPoint.posY)
+    val changedCreature = creature
+      .init()
+      .assignToArea(id, spawnPoint.posX, spawnPoint.posY)
 
     GameSystem.addCreature(changedCreature)
   }
