@@ -1,7 +1,7 @@
 package com.easternsauce.libgdxgame.creature
 
 import com.badlogic.gdx.audio.{Music, Sound}
-import com.badlogic.gdx.graphics.g2d.{Animation, TextureRegion}
+import com.badlogic.gdx.graphics.g2d.{Animation, Sprite, TextureRegion}
 import com.badlogic.gdx.math.Vector2
 import com.easternsauce.libgdxgame.ability.misc.templates.Ability
 import com.easternsauce.libgdxgame.creature.traits.{AbilityUsage, AnimationParams, Boss}
@@ -99,7 +99,8 @@ class FireDemon private (override val id: String, override val params: CreatureP
     staminaOveruseTimer: EsTimer,
     staminaOveruse: Boolean,
     isAttacking: Boolean,
-    params: CreatureParameters
+    params: CreatureParameters,
+    sprite: Sprite
   ): Creature = {
     val creature = FireDemon(id = id, params = params)
     creature.isInitialized = isInitialized
@@ -136,6 +137,7 @@ class FireDemon private (override val id: String, override val params: CreatureP
     creature.staminaOveruseTimer = staminaOveruseTimer
     creature.staminaOveruse = staminaOveruse
     creature.isAttacking = isAttacking
+    creature.sprite = new Sprite(sprite) // refactor later
 
     if (creature.params.body.nonEmpty) creature.params.body.get.setUserData(creature)
 
@@ -145,9 +147,7 @@ class FireDemon private (override val id: String, override val params: CreatureP
 
 object FireDemon extends CreatureInfo {
   def apply(id: String, params: CreatureParameters = CreatureParameters()): FireDemon = {
-    val obj = new FireDemon(id = id, params = params)
-    obj.init()
-    obj
+    new FireDemon(id = id, params = params)
   }
 
   override val additionalAbilities: List[String] = List("meteor_rain", "fist_slam", "meteor_crash", "dash")

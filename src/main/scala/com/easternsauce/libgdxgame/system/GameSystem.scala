@@ -220,7 +220,7 @@ object GameSystem extends Game {
 
       if (areaMap(areaId.get).music.nonEmpty) musicManager.playMusic(areaMap(areaId.get).music.get, 0.2f)
 
-      player.setRotation(0f)
+      player.sprite.setRotation(0f)
 
       modifyCreature(
         player.id,

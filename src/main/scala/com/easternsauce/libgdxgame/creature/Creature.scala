@@ -17,8 +17,7 @@ import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
 
 abstract class Creature(val id: String, val params: CreatureParameters)
-    extends Sprite
-    with PhysicalBody
+    extends PhysicalBody
     with AnimatedWalk
     with Inventory
     with SavefileParser
@@ -31,6 +30,8 @@ abstract class Creature(val id: String, val params: CreatureParameters)
   val isPlayer = false
   val isNPC = false
   val isBoss = false
+
+  var sprite: Sprite = new Sprite()
 
   val creatureWidth: Float
   val creatureHeight: Float
@@ -108,13 +109,13 @@ abstract class Creature(val id: String, val params: CreatureParameters)
       toSetBodyNonInteractive = false
     }
 
-    if (isMoving) setRegion(walkAnimationFrame(currentDirection))
-    else setRegion(standStillImage(currentDirection))
+    if (isMoving) sprite.setRegion(walkAnimationFrame(currentDirection))
+    else sprite.setRegion(standStillImage(currentDirection))
 
     if (params.bodyCreated) {
       val roundedX = (math.floor(pos.x * 100) / 100).toFloat
       val roundedY = (math.floor(pos.y * 100) / 100).toFloat
-      setPosition(roundedX - getWidth / 2f, roundedY - getHeight / 2f)
+      sprite.setPosition(roundedX - sprite.getWidth / 2f, roundedY - sprite.getHeight / 2f)
     }
 
     if (isMoving && timeSinceMovedTimer.time > 0.25f) {
@@ -136,7 +137,7 @@ abstract class Creature(val id: String, val params: CreatureParameters)
     }
     currentAttack.forceStop()
 
-    setRotation(90f)
+    sprite.setRotation(90f)
 
     toSetBodyNonInteractive = true
 
@@ -256,8 +257,8 @@ abstract class Creature(val id: String, val params: CreatureParameters)
   def init(): Creature = {
     setupAnimation()
 
-    setBounds(0, 0, creatureWidth, creatureHeight)
-    setOrigin(creatureWidth / 2f, creatureHeight / 2f)
+    sprite.setBounds(0, 0, creatureWidth, creatureHeight)
+    sprite.setOrigin(creatureWidth / 2f, creatureHeight / 2f)
 
     abilities = mutable.Map() ++
       (for (abilityId <- standardAbilities ++ additionalAbilities)
@@ -265,7 +266,7 @@ abstract class Creature(val id: String, val params: CreatureParameters)
 
     defineEffects()
 
-    setRegion(standStillImage(currentDirection))
+    sprite.setRegion(standStillImage(currentDirection))
 
     life = maxLife
 
@@ -280,11 +281,11 @@ abstract class Creature(val id: String, val params: CreatureParameters)
       val alpha = effectMap("immune").getRemainingTime * 35f
       val colorComponent = 0.3f + 0.7f * (Math.sin(alpha).toFloat + 1f) / 2f
 
-      setColor(1f, colorComponent, colorComponent, 1f)
+      sprite.setColor(1f, colorComponent, colorComponent, 1f)
     }
 
-    draw(batch.spriteBatch)
-    setColor(1, 1, 1, 1)
+    sprite.draw(batch.spriteBatch)
+    sprite.setColor(1, 1, 1, 1)
 
     this
   }
@@ -324,6 +325,7 @@ abstract class Creature(val id: String, val params: CreatureParameters)
     staminaOveruseTimer: EsTimer = staminaOveruseTimer,
     staminaOveruse: Boolean = staminaOveruse,
     isAttacking: Boolean = isAttacking,
-    params: CreatureParameters
+    params: CreatureParameters,
+    sprite: Sprite = sprite
   ): Creature
 }

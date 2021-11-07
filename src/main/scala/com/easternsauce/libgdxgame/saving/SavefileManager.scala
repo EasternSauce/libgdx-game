@@ -88,6 +88,7 @@ class SavefileManager {
       .invoke(null, creatureData.id, CreatureParameters())
 
     val creature = action.asInstanceOf[Creature]
+    creature.init()
 
     GameSystem.addCreature(creature.loadFromSavedata(creatureData))
 

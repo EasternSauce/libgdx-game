@@ -1,7 +1,7 @@
 package com.easternsauce.libgdxgame.creature
 
 import com.badlogic.gdx.audio.Sound
-import com.badlogic.gdx.graphics.g2d.{Animation, TextureRegion}
+import com.badlogic.gdx.graphics.g2d.{Animation, Sprite, TextureRegion}
 import com.badlogic.gdx.math.Vector2
 import com.easternsauce.libgdxgame.ability.misc.templates.Ability
 import com.easternsauce.libgdxgame.creature.traits.{AbilityUsage, AnimationParams}
@@ -83,7 +83,8 @@ class Ghost private (override val id: String, override val params: CreatureParam
     staminaOveruseTimer: EsTimer,
     staminaOveruse: Boolean,
     isAttacking: Boolean,
-    params: CreatureParameters
+    params: CreatureParameters,
+    sprite: Sprite
   ): Creature = {
     val creature = Ghost(id = id, params = params)
     creature.isInitialized = isInitialized
@@ -120,6 +121,7 @@ class Ghost private (override val id: String, override val params: CreatureParam
     creature.staminaOveruseTimer = staminaOveruseTimer
     creature.staminaOveruse = staminaOveruse
     creature.isAttacking = isAttacking
+    creature.sprite = new Sprite(sprite) // refactor later
 
     if (creature.params.body.nonEmpty) creature.params.body.get.setUserData(creature)
 
@@ -129,9 +131,7 @@ class Ghost private (override val id: String, override val params: CreatureParam
 
 object Ghost extends CreatureInfo {
   def apply(id: String, params: CreatureParameters = CreatureParameters()): Ghost = {
-    val obj = new Ghost(id = id, params = params)
-    obj.init()
-    obj
+    new Ghost(id = id, params = params)
   }
 
   override val additionalAbilities: List[String] = List("explode")

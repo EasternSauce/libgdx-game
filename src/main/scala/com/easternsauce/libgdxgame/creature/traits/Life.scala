@@ -79,7 +79,7 @@ trait Life {
     val lifeBarWidth = 2.0f
     val currentLifeBarWidth = lifeBarWidth * life / maxLife
     val barPosX = pos.x - lifeBarWidth / 2
-    val barPosY = pos.y + getWidth / 2 + 0.3125f
+    val barPosY = pos.y + sprite.getWidth / 2 + 0.3125f
     batch.shapeDrawer.filledRectangle(new Rectangle(barPosX, barPosY, lifeBarWidth, lifeBarHeight), Color.ORANGE)
     batch.shapeDrawer
       .filledRectangle(new Rectangle(barPosX, barPosY, currentLifeBarWidth, lifeBarHeight), Color.RED)

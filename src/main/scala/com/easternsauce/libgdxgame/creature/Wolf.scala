@@ -1,7 +1,7 @@
 package com.easternsauce.libgdxgame.creature
 
 import com.badlogic.gdx.audio.Sound
-import com.badlogic.gdx.graphics.g2d.{Animation, TextureRegion}
+import com.badlogic.gdx.graphics.g2d.{Animation, Sprite, TextureRegion}
 import com.badlogic.gdx.math.Vector2
 import com.easternsauce.libgdxgame.ability.misc.templates.Ability
 import com.easternsauce.libgdxgame.creature.traits.{AbilityUsage, AnimationParams}
@@ -83,7 +83,8 @@ class Wolf private (override val id: String, override val params: CreatureParame
     staminaOveruseTimer: EsTimer,
     staminaOveruse: Boolean,
     isAttacking: Boolean,
-    params: CreatureParameters
+    params: CreatureParameters,
+    sprite: Sprite
   ): Creature = {
     val creature = Wolf(id = id, params = params)
     creature.isInitialized = isInitialized
@@ -121,6 +122,7 @@ class Wolf private (override val id: String, override val params: CreatureParame
     creature.staminaOveruseTimer = staminaOveruseTimer
     creature.staminaOveruse = staminaOveruse
     creature.isAttacking = isAttacking
+    creature.sprite = new Sprite(sprite) // refactor later
 
     if (creature.params.body.nonEmpty) creature.params.body.get.setUserData(creature)
 
@@ -130,9 +132,7 @@ class Wolf private (override val id: String, override val params: CreatureParame
 
 object Wolf extends CreatureInfo {
   def apply(id: String, params: CreatureParameters = CreatureParameters()): Wolf = {
-    val obj = new Wolf(id = id, params = params)
-    obj.init()
-    obj
+    new Wolf(id = id, params = params)
   }
 
   override val additionalAbilities: List[String] = List("dash")

@@ -2,7 +2,7 @@ package com.easternsauce.libgdxgame.creature
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.audio.Sound
-import com.badlogic.gdx.graphics.g2d.{Animation, TextureRegion}
+import com.badlogic.gdx.graphics.g2d.{Animation, Sprite, TextureRegion}
 import com.badlogic.gdx.math.Vector2
 import com.easternsauce.libgdxgame.ability.misc.templates.Ability
 import com.easternsauce.libgdxgame.creature.traits.AnimationParams
@@ -139,7 +139,8 @@ class Player private (override val id: String, override val params: CreaturePara
     staminaOveruseTimer: EsTimer,
     staminaOveruse: Boolean,
     isAttacking: Boolean,
-    params: CreatureParameters
+    params: CreatureParameters,
+    sprite: Sprite
   ): Creature = {
     val creature = Player(id = id, params = params)
     creature.isInitialized = isInitialized
@@ -176,6 +177,7 @@ class Player private (override val id: String, override val params: CreaturePara
     creature.staminaOveruseTimer = staminaOveruseTimer
     creature.staminaOveruse = staminaOveruse
     creature.isAttacking = isAttacking
+    creature.sprite = new Sprite(sprite) // refactor later
 
     if (creature.params.body.nonEmpty) creature.params.body.get.setUserData(creature)
 
@@ -185,9 +187,7 @@ class Player private (override val id: String, override val params: CreaturePara
 
 object Player extends CreatureInfo {
   def apply(id: String, params: CreatureParameters = CreatureParameters()): Player = {
-    val obj = new Player(id = id, params = params)
-    obj.init()
-    obj
+    new Player(id = id, params = params)
   }
 
   override val additionalAbilities: List[String] = List("dash")

@@ -32,7 +32,7 @@ trait SavefileParser {
   }
 
   def loadFromSavedata(creatureData: CreatureSavedata): Creature = {
-    setPosition(creatureData.position.x, creatureData.position.y)
+    sprite.setPosition(creatureData.position.x, creatureData.position.y)
     life = creatureData.life
     val areaId = Some(creatureData.area)
 

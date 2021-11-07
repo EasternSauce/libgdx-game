@@ -1,7 +1,7 @@
 package com.easternsauce.libgdxgame.creature
 
 import com.badlogic.gdx.audio.Sound
-import com.badlogic.gdx.graphics.g2d.{Animation, TextureRegion}
+import com.badlogic.gdx.graphics.g2d.{Animation, Sprite, TextureRegion}
 import com.badlogic.gdx.math.Vector2
 import com.easternsauce.libgdxgame.ability.misc.templates.Ability
 import com.easternsauce.libgdxgame.creature.traits.AnimationParams
@@ -80,7 +80,8 @@ class Goblin private (override val id: String, override val params: CreaturePara
     staminaOveruseTimer: EsTimer,
     staminaOveruse: Boolean,
     isAttacking: Boolean,
-    params: CreatureParameters
+    params: CreatureParameters,
+    sprite: Sprite
   ): Creature = {
     val creature = Goblin(id = id, params = params)
     creature.isInitialized = isInitialized
@@ -117,6 +118,7 @@ class Goblin private (override val id: String, override val params: CreaturePara
     creature.staminaOveruseTimer = staminaOveruseTimer
     creature.staminaOveruse = staminaOveruse
     creature.isAttacking = isAttacking
+    creature.sprite = new Sprite(sprite) // refactor later
 
     if (creature.params.body.nonEmpty) creature.params.body.get.setUserData(creature)
 
@@ -126,9 +128,7 @@ class Goblin private (override val id: String, override val params: CreaturePara
 
 object Goblin extends CreatureInfo {
   def apply(id: String, params: CreatureParameters = CreatureParameters()): Goblin = {
-    val obj = new Goblin(id = id, params = params)
-    obj.init()
-    obj
+    new Goblin(id = id, params = params)
   }
 
   override val additionalAbilities: List[String] = List()
