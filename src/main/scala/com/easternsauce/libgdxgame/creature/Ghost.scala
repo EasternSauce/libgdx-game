@@ -77,10 +77,8 @@ class Ghost private (override val id: String, override val params: CreatureParam
     healingTimer: EsTimer,
     healingTickTimer: EsTimer,
     healing: Boolean,
-    staminaPoints: Float,
     staminaRegenerationTimer: EsTimer,
     staminaOveruseTimer: EsTimer,
-    staminaOveruse: Boolean,
     isAttacking: Boolean,
     params: CreatureParameters,
     sprite: Sprite,
@@ -114,10 +112,8 @@ class Ghost private (override val id: String, override val params: CreatureParam
     creature.healingTimer = healingTimer
     creature.healingTickTimer = healingTickTimer
     creature.healing = healing
-    creature.staminaPoints = staminaPoints
     creature.staminaRegenerationTimer = staminaRegenerationTimer
     creature.staminaOveruseTimer = staminaOveruseTimer
-    creature.staminaOveruse = staminaOveruse
     creature.isAttacking = isAttacking
     creature.sprite = sprite
     creature.currentDirection = currentDirection

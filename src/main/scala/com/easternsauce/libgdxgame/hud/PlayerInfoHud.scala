@@ -13,7 +13,7 @@ class PlayerInfoHud {
     new Rectangle(10, 40, 100 * player.life / player.maxLife, 10)
   private var maxStaminaRect = new Rectangle(10, 25, 100, 10)
   private var staminaRect =
-    new Rectangle(10, 25, 100 * player.staminaPoints / player.maxStaminaPoints, 10)
+    new Rectangle(10, 25, 100 * player.params.staminaPoints / player.params.maxStaminaPoints, 10)
 
   private val slotSize = 40f
 
@@ -121,6 +121,6 @@ class PlayerInfoHud {
       10
     )
     maxStaminaRect = new Rectangle(10, 25, 100, 10)
-    staminaRect = new Rectangle(10, 25, 100 * player.staminaPoints / player.maxStaminaPoints, 10)
+    staminaRect = new Rectangle(10, 25, 100 * player.params.staminaPoints / player.params.maxStaminaPoints, 10)
   }
 }

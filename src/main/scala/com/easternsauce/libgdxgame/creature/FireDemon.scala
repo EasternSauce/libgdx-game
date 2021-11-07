@@ -93,10 +93,8 @@ class FireDemon private (override val id: String, override val params: CreatureP
     healingTimer: EsTimer,
     healingTickTimer: EsTimer,
     healing: Boolean,
-    staminaPoints: Float,
     staminaRegenerationTimer: EsTimer,
     staminaOveruseTimer: EsTimer,
-    staminaOveruse: Boolean,
     isAttacking: Boolean,
     params: CreatureParameters,
     sprite: Sprite,
@@ -130,10 +128,8 @@ class FireDemon private (override val id: String, override val params: CreatureP
     creature.healingTimer = healingTimer
     creature.healingTickTimer = healingTickTimer
     creature.healing = healing
-    creature.staminaPoints = staminaPoints
     creature.staminaRegenerationTimer = staminaRegenerationTimer
     creature.staminaOveruseTimer = staminaOveruseTimer
-    creature.staminaOveruse = staminaOveruse
     creature.isAttacking = isAttacking
     creature.sprite = sprite
     creature.currentDirection = currentDirection

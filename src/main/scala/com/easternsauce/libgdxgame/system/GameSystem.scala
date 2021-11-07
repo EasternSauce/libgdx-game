@@ -17,6 +17,7 @@ import com.easternsauce.libgdxgame.saving.SavefileManager
 import com.easternsauce.libgdxgame.screens.{MainMenuScreen, PlayScreen}
 import com.easternsauce.libgdxgame.system.Fonts.EnrichedBitmapFont
 import com.easternsauce.libgdxgame.util.{EsBatch, EsDirection}
+import com.softwaremill.quicklens.ModifyPimp
 
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
@@ -206,9 +207,7 @@ object GameSystem extends Game {
       player.onRespawn()
 
       player.life = player.maxLife
-      player.staminaPoints = player.maxStaminaPoints
       player.isAttacking = false
-      player.staminaOveruse = false
       player.effectMap("staminaRegenerationStopped").stop()
       player.effectMap("poisoned").stop()
 
@@ -225,6 +224,8 @@ object GameSystem extends Game {
       modifyCreature(
         player.id,
         player => player.assignToArea(areaId.get, player.playerSpawnPoint.get.posX, player.playerSpawnPoint.get.posY)
+          .modify(_.params.staminaPoints).setTo(player.params.maxStaminaPoints)
+          .modify(_.params.staminaOveruse).setTo(false)
       )
 
     }

@@ -80,8 +80,7 @@ abstract class Creature(val id: String, val params: CreatureParameters)
   def totalArmor: Float = equipmentItems.values.map(item => item.armor.getOrElse(0)).sum.toFloat
 
   def update(): Creature = {
-    if (params.isInitialized && isAlive) {
-      updateStaminaDrain()
+    val updated1 = if (params.isInitialized && isAlive) {
 
       calculateFacingVector()
       calculateWalkingVector()
@@ -91,17 +90,17 @@ abstract class Creature(val id: String, val params: CreatureParameters)
 
       handlePoison()
 
-    }
+    } else this
+
 
     updateEffects()
 
+    // temporary, until this class is immutable
     for ((id, ability) <- abilities) {
       abilities.update(id, ability.update())
     }
 
-    //currentAttack.update()
-
-    updateStamina()
+    val updated2 = updated1.updateStamina()
 
     if (toSetBodyNonInteractive) {
       setNonInteractive()
@@ -126,7 +125,7 @@ abstract class Creature(val id: String, val params: CreatureParameters)
 
     handleKnockback()
 
-    this
+    updated2
   }
 
   def onDeath(): Creature = {
@@ -163,7 +162,7 @@ abstract class Creature(val id: String, val params: CreatureParameters)
 
         val modifiedSpeed =
           if (isAttacking) directionalSpeed / 3f
-          else if (sprinting && staminaPoints > 0) directionalSpeed * 1.75f
+          else if (sprinting && params.staminaPoints > 0) directionalSpeed * 1.75f
           else directionalSpeed
 
         dirs.foreach {
@@ -320,10 +319,8 @@ abstract class Creature(val id: String, val params: CreatureParameters)
     healingTimer: EsTimer = healingTimer,
     healingTickTimer: EsTimer = healingTickTimer,
     healing: Boolean = healing,
-    staminaPoints: Float = staminaPoints,
     staminaRegenerationTimer: EsTimer = staminaRegenerationTimer,
     staminaOveruseTimer: EsTimer = staminaOveruseTimer,
-    staminaOveruse: Boolean = staminaOveruse,
     isAttacking: Boolean = isAttacking,
     params: CreatureParameters,
     sprite: Sprite = sprite,

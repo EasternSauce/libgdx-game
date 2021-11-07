@@ -79,7 +79,7 @@ abstract class Ability(
     val channelTimer = timerParameters.channelTimer
 
     val creature = GameSystem.creature(creatureId)
-    if (creature.staminaPoints > 0 && state == AbilityState.Inactive && !onCooldown && !creature.abilityActive) {
+    if (creature.params.staminaPoints > 0 && state == AbilityState.Inactive && !onCooldown && !creature.abilityActive) {
 
       // TODO: remove side effect
       channelTimer.restart()

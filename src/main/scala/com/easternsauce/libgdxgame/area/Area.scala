@@ -51,7 +51,10 @@ class Area(val mapLoader: TmxMapLoader, val areaFilesLocation: String, val id: S
 
     world.step(Math.min(Gdx.graphics.getDeltaTime, 0.15f), 6, 2)
 
-    creaturesMap.foreach(_.update())
+    // temporary, until this class is immutable
+    for (creature <- creaturesMap) {
+      GameSystem.modifyCreature(creature.id, creature => creature.update())
+    }
 
     val toBeDeleted = ListBuffer[Arrow]()
     for (arrow <- arrowList) {

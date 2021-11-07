@@ -7,5 +7,8 @@ case class CreatureParameters(
   fixture: Option[Fixture] = None, // mutable!
   areaId: Option[String] = None,
   bodyCreated: Boolean = false,
-  isInitialized: Boolean = false
+  isInitialized: Boolean = false,
+  maxStaminaPoints: Float = 100f,
+  staminaPoints: Float = 100f,
+  staminaOveruse: Boolean = false
 )
