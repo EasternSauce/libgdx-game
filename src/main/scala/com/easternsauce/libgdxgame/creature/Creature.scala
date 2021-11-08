@@ -86,44 +86,43 @@ abstract class Creature(val id: String, val params: CreatureParameters)
       calculateWalkingVector()
 
       regenerateLife()
-      regenerateStamina()
+      val updated = regenerateStamina()
 
-      handlePoison()
+      updated.handlePoison()
 
+      updated
     } else this
 
 
-    updateEffects()
+    updated1.updateEffects()
 
     // temporary, until this class is immutable
-    for ((id, ability) <- abilities) {
-      abilities.update(id, ability.update())
+    for ((id, ability) <- updated1.abilities) {
+      updated1.abilities.update(id, ability.update())
     }
 
     val updated2 = updated1.updateStamina()
 
-    if (toSetBodyNonInteractive) {
-      setNonInteractive()
-      toSetBodyNonInteractive = false
+    if (updated2.toSetBodyNonInteractive) {
+      updated2.setNonInteractive()
+      updated2.toSetBodyNonInteractive = false
     }
 
-    if (isMoving) sprite = sprite.setRegion(walkAnimationFrame(currentDirection))
-    else sprite = sprite.setRegion(standStillImage(currentDirection))
-    if (isMoving) sprite.setRegion(walkAnimationFrame(currentDirection))
-    else sprite.setRegion(standStillImage(currentDirection))
+    if (updated2.isMoving) updated2.sprite = updated2.sprite.setRegion(updated2.walkAnimationFrame(updated2.currentDirection))
+    else updated2.sprite = updated2.sprite.setRegion(updated2.standStillImage(updated2.currentDirection))
 
-    if (params.bodyCreated) {
-      val roundedX = (math.floor(pos.x * 100) / 100).toFloat
-      val roundedY = (math.floor(pos.y * 100) / 100).toFloat
-      sprite = sprite.setPosition(roundedX - sprite.width / 2f, roundedY - sprite.height / 2f)
+    if (updated2.params.bodyCreated) {
+      val roundedX = (math.floor(updated2.pos.x * 100) / 100).toFloat
+      val roundedY = (math.floor(updated2.pos.y * 100) / 100).toFloat
+      updated2.sprite = updated2.sprite.setPosition(roundedX - updated2.sprite.width / 2f, roundedY - updated2.sprite.height / 2f)
     }
 
-    if (isMoving && timeSinceMovedTimer.time > 0.25f) {
-      isMoving = false
-      if (walkSound.nonEmpty) walkSound.get.stop()
+    if (updated2.isMoving && updated2.timeSinceMovedTimer.time > 0.25f) {
+      updated2.isMoving = false
+      if (updated2.walkSound.nonEmpty) updated2.walkSound.get.stop()
     }
 
-    handleKnockback()
+    updated2.handleKnockback()
 
     updated2
   }

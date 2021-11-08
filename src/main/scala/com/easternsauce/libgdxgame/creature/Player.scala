@@ -177,6 +177,8 @@ class Player private (override val id: String, override val params: CreaturePara
 
     if (creature.params.body.nonEmpty) creature.params.body.get.setUserData(creature)
 
+    println("copying")
+
     creature
   }
 }
